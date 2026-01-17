@@ -129,7 +129,7 @@
                 "./workspace/ti.cc23xx/ti.radio.cc23xx/*"
             ],
             "@$distro/*": [
-                "./workspace/emm.9305/emm.distro.9305/*"
+                "./workspace/ti.cc23xx/ti.distro.cc23xx/*"
             ]
         }
     }
