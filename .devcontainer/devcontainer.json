@@ -1,5 +1,5 @@
 {
     "name": "emporium",
     "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-    "postCreateCommand": "node -v && npm -v"
+    "postCreateCommand": "npm ci"
 }
