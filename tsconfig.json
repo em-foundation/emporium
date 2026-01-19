@@ -35,6 +35,9 @@
             "@gist.nrf54/*": [
                 "./workspace/bob.pkg/gist.nrf54/*"
             ],
+            "@rpi.gist/*": [
+                "./workspace/bob.pkg/rpi.gist/*"
+            ],
             "@sil.gist/*": [
                 "./workspace/bob.pkg/sil.gist/*"
             ],
@@ -113,6 +116,12 @@
             "@nordic.radio.nrf54/*": [
                 "./workspace/nordic.nrf5x/nordic.radio.nrf54/*"
             ],
+            "@rpi.distro.2040/*": [
+                "./workspace/rpi.2040/rpi.distro.2040/*"
+            ],
+            "@rpi.mcu.2040/*": [
+                "./workspace/rpi.2040/rpi.mcu.2040/*"
+            ],
             "@silabs.distro.efr32x/*": [
                 "./workspace/silabs.efr32x/silabs.distro.efr32x/*"
             ],
@@ -129,7 +138,7 @@
                 "./workspace/ti.cc23xx/ti.radio.cc23xx/*"
             ],
             "@$distro/*": [
-                "./workspace/ti.cc23xx/ti.distro.cc23xx/*"
+                "./workspace/rpi.2040/rpi.distro.2040/*"
             ]
         }
     }
