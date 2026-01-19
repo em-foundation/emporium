@@ -107,8 +107,8 @@ export function em$generate() {
         |-> $OBJDUMP -t --demangle $OUT/main.out | tail -n +5 | sed -e 's/[FO] /  /' | sed -e 's/df /   /' >$OUT/main.out.sym
         |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
         |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
+        |-> elf2uf2 $OUT/main.out $OUT/main.uf2
         |-> $OBJDUMP -h $OUT/main.out
-
     `)
     out.close()
 }
