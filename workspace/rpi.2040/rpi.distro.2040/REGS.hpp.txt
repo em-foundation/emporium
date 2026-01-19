@@ -1,0 +1,6 @@
+#ifndef __REGS_M
+#define __REGS_M
+
+#include "../../rpi.2040/rpi.distro.2040/inc/rp2040.h"
+
+#endif
