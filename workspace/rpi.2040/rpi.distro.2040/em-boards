@@ -3,11 +3,11 @@ PI_PICO:
     baudRate:         115200
     clockFreq:        48000000
     pins:
-        appBut:       16
-        appLed:       15
+        appBut:       28
+        appLed:       5
         appOut:       0
-        sysDbgA:      2
-        sysDbgB:      3
-        sysDbgC:      4
-        sysDbgD:      5
-        sysLed:       14
+        sysDbgA:      21
+        sysDbgB:      20
+        sysDbgC:      19
+        sysDbgD:      18
+        sysLed:       13
