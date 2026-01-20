@@ -1,3 +1,4 @@
 [wokwi]
 version = 1
-firmware = "wokwi-main.uf2"
+firmware = "workspace/.emscript/.out/main.out.hex"
+gdbServerPort = 3333
