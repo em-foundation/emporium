@@ -3,4 +3,6 @@
 
 #include "../../rpi.2040/rpi.distro.2040/inc/rp2040.h"
 
+#define IO_BANK0_CTRL_get(i) (((uint32_t)(IO_BANK0_BASE)) + (i * 8) + 4)
+
 #endif
