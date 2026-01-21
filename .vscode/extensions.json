@@ -1,6 +1,7 @@
 {
     "recommendations": [
-        "the-em-foundation.embrowser"
+        "the-em-foundation.embrowser",
+        "wokwi.wokwi-vscode"
     ],
     "unwantedRecommendations": [
         "the-em-foundation.em-builder",
