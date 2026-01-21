@@ -11,12 +11,12 @@ export function em$run() {
     delay(5_000_000)
     // GPIO
     $R.RESETS_CLR.RESET.$$ = $R.RESETS_RESET_io_bank0_Msk | $R.RESETS_RESET_pads_bank0_Msk
-    $R.IO_BANK0.GPIO13_CTRL.$$ = $R.IO_BANK0_GPIO13_CTRL_FUNCSEL_sio_13
+    $reg32[e$`IO_BANK0_CTRL_get(13)`] = 5
     $R.SIO.GPIO_OE_SET.$$ = (1 << 13)
     wink(1_000_000)
     // UART
     $R.RESETS_CLR.RESET.$$ = $R.RESETS_RESET_uart0_Msk
-    $R.IO_BANK0.GPIO0_CTRL.$$ = $R.IO_BANK0_GPIO0_CTRL_FUNCSEL_uart0_tx
+    $reg32[e$`IO_BANK0_CTRL_get(0)`] = 2
     $R.UART0.UARTCR.$$ = 0
     $R.UART0.UARTIBRD.$$ = 67
     $R.UART0.UARTFBRD.$$ = 52
