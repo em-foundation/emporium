@@ -32,8 +32,6 @@ export function flush() {
 }
 
 export function put(data: u8) {
-    $['%%d+']
     $R.UART0.UARTDR.$$ = data
     flush()
-    $['%%d-']
 }
