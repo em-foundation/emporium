@@ -11,6 +11,35 @@ import * as StartupC from '@rpi.distro.2040/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
 
+const NVIC_INTRS = <Array<string>>[
+    'TIMER_IRQ_0',
+    'TIMER_IRQ_1',
+    'TIMER_IRQ_2',
+    'TIMER_IRQ_3',
+    'PWM_IRQ_WRAP',
+    'USBCTRL_IRQ',
+    'XIP_IRQ',
+    'PIO0_IRQ_0',
+    'PIO0_IRQ_1',
+    'PIO1_IRQ_0',
+    'PIO1_IRQ_1',
+    'DMA_IRQ_0',
+    'DMA_IRQ_1',
+    'IO_IRQ_BANK0',
+    'IO_IRQ_QSPI',
+    'SIO_IRQ_PROC0',
+    'SIO_IRQ_PROC1',
+    'CLOCKS_IRQ',
+    'SPI0_IRQ',
+    'SPI1_IRQ',
+    'UART0_IRQ',
+    'UART1_IRQ',
+    'ADC_IRQ_FIFO',
+    'I2C0_IRQ',
+    'I2C1_IRQ',
+    'RTC_IRQ',
+]
+
 export function em$configure() {
     $using(ArmStartupC)
     $using(BoardC)
@@ -20,6 +49,7 @@ export function em$configure() {
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrDefault
+    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {
