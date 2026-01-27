@@ -1,4 +1,4 @@
-PI_PICO:
+PI_PICO-sim$$:
     activeLowLeds:    false
     baudRate:         115200
     clockFreq:        48000000
