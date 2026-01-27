@@ -13,7 +13,10 @@ export namespace em$meta { }
 
 export function em$run() {
     AppButPin.makeInput()
-    AppButPin.setInternalPulldown(true)
+    AppButPin.setInternalPullup(true)
+    // const pid = AppButPin.pinId()
+    // const reg = $reg32[e$`PADS_BANK0_GPIO_get(pid)`]
+    // printf`pid = %d, reg = %08x\n`(pid, reg)
     printf`waiting...\n`()
     while (!AppButPin.get()) {}
     printf`but = %d\n`(AppButPin.get())
