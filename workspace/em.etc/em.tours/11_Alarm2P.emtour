@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;11&thinsp;&ndash;&thinsp;aligned wakeups
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex12_Alarm2P.em.ts
   - em.core:em.utils/AlarmMgr.em.ts

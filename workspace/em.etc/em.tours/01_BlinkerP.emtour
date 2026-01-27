@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;01&thinsp;&ndash;&thinsp;basic blinker
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
   - em.core:em.hal/LedI.em.ts

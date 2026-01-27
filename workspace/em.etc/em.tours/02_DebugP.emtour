@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;02&thinsp;&ndash;&thinsp;real-time debug
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex03_DebugP.em.ts
 
