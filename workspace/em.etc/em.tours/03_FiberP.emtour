@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;03&thinsp;&ndash;&thinsp;threading with fibers
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex04_FiberP.em.ts
   - em.core:em.utils/FiberMgr.em.ts
