@@ -7,6 +7,7 @@ const PERI_MAP = new Map<string, string>([
     ['RESETS', 'RESETS'],
     ['SIO', 'SIO'],
     ['UART0', 'UART0'],
+    ['XIP_CTRL', 'XIP_CTRL'],
 ])
 
 let meta = em.$outfile('REGS.em.ts')
