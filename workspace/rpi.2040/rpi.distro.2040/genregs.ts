@@ -4,6 +4,7 @@ import em from '../../em.core/em.lang/emscript'
 
 const PERI_MAP = new Map<string, string>([
     ['IO_BANK0', 'IO_BANK0'],
+    ['PADS_BANK0', 'PADS_BANK0'],
     ['RESETS', 'RESETS'],
     ['SIO', 'SIO'],
     ['UART0', 'UART0'],

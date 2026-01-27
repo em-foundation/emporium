@@ -17,6 +17,7 @@ import * as Poller from '@em.mcu/Poller.em'
 import * as Uptimer from '@em.hal/UptimerN.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
+export const AppButPin = $clone(GpioT)
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
 export const AppOutPin = $clone(GpioT)
@@ -46,6 +47,7 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     const brd = $board(DEFAULTS)
+    AppButPin.pin_num.$$val = brd.pins.appBut
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed

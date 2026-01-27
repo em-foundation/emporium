@@ -3,7 +3,7 @@
   "author": "you",
   "editor": "wokwi",
   "parts": [
-    { "type": "wokwi-pi-pico", "id": "pico", "top": 58.3, "left": 170.85, "attrs": {} },
+    { "type": "wokwi-pi-pico", "id": "pico", "top": 54.45, "left": 166.8, "attrs": {} },
     { "type": "wokwi-led", "id": "led1", "top": 178.8, "left": 119, "attrs": { "color": "red" } },
     { "type": "wokwi-led", "id": "led2", "top": 82.8, "left": 119, "attrs": { "color": "green" } },
     {
@@ -25,15 +25,15 @@
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
-      "top": 122.6,
-      "left": 278.4,
+      "top": 103.4,
+      "left": 288,
       "attrs": { "color": "grey", "xray": "1", "bounce": "0" }
     },
     {
       "type": "wokwi-text",
       "id": "text3",
-      "top": 96,
-      "left": 268.8,
+      "top": 76.8,
+      "left": 278.4,
       "attrs": { "text": "AppBut" }
     },
     {
@@ -60,14 +60,14 @@
     [ "logic1:GND", "pico:GND.5", "gray", [ "h0" ] ],
     [ "logic1:D7", "pico:GP13", "violet", [ "h0" ] ],
     [ "logic1:D6", "pico:GP5", "blue", [ "h0" ] ],
-    [ "pico:GND.7", "btn1:2.l", "gray", [ "h0" ] ],
-    [ "pico:GP28", "btn1:1.l", "white", [ "h0" ] ],
     [ "logic1:D0", "pico:GP0", "black", [ "v-144", "h-178.35" ] ],
     [ "logic1:D1", "pico:GP21", "#8f4814", [ "h0" ] ],
     [ "logic1:D2", "pico:GP20", "red", [ "h0" ] ],
     [ "logic1:D3", "pico:GP19", "orange", [ "h0" ] ],
     [ "logic1:D4", "pico:GP18", "gold", [ "h0" ] ],
-    [ "logic1:D5", "btn1:1.r", "green", [ "h-28.8", "v-115.2" ] ]
+    [ "btn1:2.l", "pico:GP28", "white", [ "h0" ] ],
+    [ "pico:3V3", "btn1:1.l", "white", [ "h0" ] ],
+    [ "logic1:D5", "btn1:2.r", "green", [ "h-28.8", "v-115.6" ] ]
   ],
   "dependencies": {}
 }

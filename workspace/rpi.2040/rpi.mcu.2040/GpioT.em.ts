@@ -42,6 +42,7 @@ export namespace em$template {
     export function makeInput(): void {
         $R.SIO.GPIO_OE_CLR.$$ = mask
         $reg32[e$`IO_BANK0_CTRL_get(pid)`] = 5
+        clear()
     }
 
     export function makeOutput(): void {
@@ -63,13 +64,11 @@ export namespace em$template {
     }
 
     export function setInternalPulldown(enable: bool_t): void {
-        // $R.GPIO.RegGPIOPdEn.$$ |= mask
-        // $R.GPIO.RegGPIOPuEn.$$ &= ~mask
+        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PDE_Msk
     }
 
     export function setInternalPullup(enable: bool_t): void {
-        // $R.GPIO.RegGPIOPuEn.$$ |= mask
-        // $R.GPIO.RegGPIOPdEn.$$ &= ~mask
+        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PUE_Msk
     }
 
     export function toggle(): void {
