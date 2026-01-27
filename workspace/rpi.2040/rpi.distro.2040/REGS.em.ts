@@ -4631,6 +4631,38 @@ export const UART0_UARTPCELLID2_UARTPCELLID2_Msk: any = '(0xffUL)               
 export const UART0_UARTPCELLID3_UARTPCELLID3_Pos: any = '(0UL)                   /*!< UARTPCELLID3 (Bit 0) */'
 export const UART0_UARTPCELLID3_UARTPCELLID3_Msk: any = '(0xffUL)                /*!< UARTPCELLID3 (Bitfield-Mask: 0xff) */'
 
+// -------- XIP_CTRL TYPE -------- //
+
+export interface XIP_CTRL_t {  // @ 0x14000000
+    CTRL: $Reg                          // /*!< (@ 0x00000000) Cache control */
+    FLUSH: $Reg                         // /*!< (@ 0x00000004) Cache Flush control */
+    STAT: $Reg                          // /*!< (@ 0x00000008) Cache Status */
+    STREAM_ADDR: $Reg                   // /*!< (@ 0x00000014) FIFO stream address */
+    STREAM_CTR: $Reg                    // /*!< (@ 0x00000018) FIFO stream control */
+}
+
+// -------- XIP_CTRL CONSTANTS -------- //
+
+export const XIP_CTRL_BASE: any = '0x14000000UL'
+export const XIP_CTRL_CTRL_POWER_DOWN_Pos: any = '(3UL)                     /*!< POWER_DOWN (Bit 3) */'
+export const XIP_CTRL_CTRL_POWER_DOWN_Msk: any = '(0x8UL)                   /*!< POWER_DOWN (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_CTRL_ERR_BADWRITE_Pos: any = '(1UL)                     /*!< ERR_BADWRITE (Bit 1) */'
+export const XIP_CTRL_CTRL_ERR_BADWRITE_Msk: any = '(0x2UL)                   /*!< ERR_BADWRITE (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_CTRL_EN_Pos: any = '(0UL)                     /*!< EN (Bit 0) */'
+export const XIP_CTRL_CTRL_EN_Msk: any = '(0x1UL)                   /*!< EN (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_FLUSH_FLUSH_Pos: any = '(0UL)                     /*!< FLUSH (Bit 0) */'
+export const XIP_CTRL_FLUSH_FLUSH_Msk: any = '(0x1UL)                   /*!< FLUSH (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_STAT_FIFO_FULL_Pos: any = '(2UL)                     /*!< FIFO_FULL (Bit 2) */'
+export const XIP_CTRL_STAT_FIFO_FULL_Msk: any = '(0x4UL)                   /*!< FIFO_FULL (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_STAT_FIFO_EMPTY_Pos: any = '(1UL)                     /*!< FIFO_EMPTY (Bit 1) */'
+export const XIP_CTRL_STAT_FIFO_EMPTY_Msk: any = '(0x2UL)                   /*!< FIFO_EMPTY (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_STAT_FLUSH_READY_Pos: any = '(0UL)                     /*!< FLUSH_READY (Bit 0) */'
+export const XIP_CTRL_STAT_FLUSH_READY_Msk: any = '(0x1UL)                   /*!< FLUSH_READY (Bitfield-Mask: 0x01) */'
+export const XIP_CTRL_STREAM_ADDR_STREAM_ADDR_Pos: any = '(2UL)                  /*!< STREAM_ADDR (Bit 2) */'
+export const XIP_CTRL_STREAM_ADDR_STREAM_ADDR_Msk: any = '(0xfffffffcUL)         /*!< STREAM_ADDR (Bitfield-Mask: 0x3fffffff) */'
+export const XIP_CTRL_STREAM_CTR_STREAM_CTR_Pos: any = '(0UL)                    /*!< STREAM_CTR (Bit 0) */'
+export const XIP_CTRL_STREAM_CTR_STREAM_CTR_Msk: any = '(0x3fffffUL)             /*!< STREAM_CTR (Bitfield-Mask: 0x3fffff) */'
+
 // -------- INSTANCES -------- //
 
 export const IO_BANK0 = {} as IO_BANK0_t
@@ -4649,3 +4681,7 @@ export const UART0 = {} as UART0_t
 export const UART0_CLR = {} as UART0_t
 export const UART0_SET = {} as UART0_t
 export const UART0_XOR = {} as UART0_t
+export const XIP_CTRL = {} as XIP_CTRL_t
+export const XIP_CTRL_CLR = {} as XIP_CTRL_t
+export const XIP_CTRL_SET = {} as XIP_CTRL_t
+export const XIP_CTRL_XOR = {} as XIP_CTRL_t
