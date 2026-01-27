@@ -66,8 +66,8 @@
     [ "logic1:D3", "pico:GP19", "orange", [ "h0" ] ],
     [ "logic1:D4", "pico:GP18", "gold", [ "h0" ] ],
     [ "btn1:2.l", "pico:GP28", "white", [ "h0" ] ],
-    [ "pico:3V3", "btn1:1.l", "white", [ "h0" ] ],
-    [ "logic1:D5", "btn1:2.r", "green", [ "h-28.8", "v-115.6" ] ]
+    [ "logic1:D5", "btn1:2.r", "green", [ "h-28.8", "v-115.6" ] ],
+    [ "pico:3V3", "btn1:1.l", "white", [ "h0" ] ]
   ],
   "dependencies": {}
 }

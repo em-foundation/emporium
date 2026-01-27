@@ -42,7 +42,8 @@ export namespace em$template {
     export function makeInput(): void {
         $R.SIO.GPIO_OE_CLR.$$ = mask
         $reg32[e$`IO_BANK0_CTRL_get(pid)`] = 5
-        clear()
+        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_IE_Msk
+        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] &= ~$R.PADS_BANK0_GPIO0_OD_Msk
     }
 
     export function makeOutput(): void {
