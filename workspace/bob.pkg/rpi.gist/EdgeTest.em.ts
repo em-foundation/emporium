@@ -22,13 +22,16 @@ export function em$run() {
     AppButPin.makeInput()
     AppButPin.setInternalPulldown(true)
     const pid = AppButPin.pinId()
-    Common.GlobalInterrupts.enable()
     $reg32[e$`IO_BANK0_PROC_INTE_get(pid)`] = $R.IO_BANK0_INTR3_GPIO28_EDGE_HIGH_Msk
-    printf`waiting...\n`()
-    while (!AppButPin.get()) {}
-    printf`but = %d\n`(AppButPin.get())
+    Common.GlobalInterrupts.enable()
+    printf`ready...\n`()
+    Common.BusyWait.wait(10_000_000)
 }
 
 export function IO_IRQ_BANK0_isr$$() {
-    fail()
+    $['%%a']
+    printf`pressed\n`()
+    const pid = AppButPin.pinId()
+    $reg32[e$`IO_BANK0_INTR_get(pid)`] = $R.IO_BANK0_INTR3_GPIO28_EDGE_HIGH_Msk
+    IntrVec.NVIC_clear(e$`IO_IRQ_BANK0_IRQn`)
 }
