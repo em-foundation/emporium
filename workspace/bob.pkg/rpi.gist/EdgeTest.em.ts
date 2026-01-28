@@ -30,7 +30,7 @@ export function em$run() {
 
 export function IO_IRQ_BANK0_isr$$() {
     $['%%a']
-    printf`pressed\n`()
+    printf`but = %d\n`(AppButPin.get())
     const pid = AppButPin.pinId()
     $reg32[e$`IO_BANK0_INTR_get(pid)`] = $R.IO_BANK0_INTR3_GPIO28_EDGE_HIGH_Msk
     IntrVec.NVIC_clear(e$`IO_IRQ_BANK0_IRQn`)
