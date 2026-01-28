@@ -5,6 +5,9 @@
 
 #define IO_BANK0_CTRL_get(pid) (((uint32_t)(IO_BANK0_BASE)) + (pid * 8) + 4)
 #define IO_BANK0_INTR_get(pid) (((uint32_t)(&IO_BANK0->INTR0)) + ((pid >> 3) * 4))
+#define IO_BANK0_PROC_INTE_get(pid) (((uint32_t)(&IO_BANK0->PROC0_INTE0)) + ((pid >> 3) * 4))
+#define IO_BANK0_PROC_INTF_get(pid) (((uint32_t)(&IO_BANK0->PROC0_INTF0)) + ((pid >> 3) * 4))
+#define IO_BANK0_PROC_INTS_get(pid) (((uint32_t)(&IO_BANK0->PROC0_INTS0)) + ((pid >> 3) * 4))
 
 #define PADS_BANK0_GPIO_get(pid) (((uint32_t)(&PADS_BANK0->GPIO0)) + (pid * 4))
 
