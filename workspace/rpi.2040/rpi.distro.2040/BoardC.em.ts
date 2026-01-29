@@ -3,6 +3,7 @@ export const $U = $declare('COMPOSITE')
 
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
+import * as ButtonT from '@em.utils/ButtonT.em'
 import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
 import * as ConsoleUart from '@rpi.mcu.2040/ConsoleUart0.em'
@@ -15,9 +16,11 @@ import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@rpi.mcu.2040/Mcu.em'
 import * as OneShot from '@em.hal/OneShotN.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as Uptimer from '@em.hal/UptimerN.em'
+import * as Rtc from '@rpi.mcu.2040/Rtc.em'
+import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
+export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
 export const AppButPin = $clone(GpioT)
 export const AppLed = $clone(LedT)
@@ -49,6 +52,7 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     const brd = $board(DEFAULTS)
+    AppBut.Edge.$$dlg = AppButEdge
     AppButEdge.Pin.$$dlg = AppButPin
     AppButEdge.pin_num.$$val = AppButPin.pin_num.$$val = brd.pins.appBut
     AppLed.Pin.$$dlg = AppLedPin
@@ -77,4 +81,5 @@ export function em$configure(): void {
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
+    Uptimer.Rtc.$$dlg = Rtc
 }
