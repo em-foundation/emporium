@@ -11,7 +11,7 @@ export type Handler = RtcI.Handler
 
 export namespace em$meta {
     export function em$construct() {
-        IntrVec.em$meta.useIntr('TIMER_IRQ_0')
+        IntrVec.em$meta.useIntr('TIMER_IRQ_1')
     }
 }
 
@@ -35,7 +35,7 @@ export function toThresh(secs: T.Secs30p2): T.RtcThresh {
     return T.Secs30p2ToUsecs(secs)
 }
 
-export function TIMER_IRQ_0_isr$$() {
+export function TIMER_IRQ_1_isr$$() {
     // IntrVec.NVIC_clear(e$`GRTC_0_IRQn`)
     // const hlr = cur_hlr
     // disable()
