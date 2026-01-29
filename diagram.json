@@ -26,14 +26,14 @@
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
       "top": 93.8,
-      "left": 278.4,
+      "left": 259.2,
       "attrs": { "color": "grey", "xray": "1", "bounce": "0" }
     },
     {
       "type": "wokwi-text",
       "id": "text3",
       "top": 86.4,
-      "left": 316.8,
+      "left": 297.6,
       "attrs": { "text": "AppBut" }
     },
     {
