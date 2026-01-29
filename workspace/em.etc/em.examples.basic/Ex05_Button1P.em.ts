@@ -19,6 +19,7 @@ export function em$startup() {
 }
 
 export function em$run() {
+    AppButEdge.clearDetect()
     Common.GlobalInterrupts.enable()
     while (true) {
         AppButEdge.enableDetect()

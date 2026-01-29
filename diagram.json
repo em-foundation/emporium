@@ -25,15 +25,15 @@
     {
       "type": "wokwi-pushbutton-6mm",
       "id": "btn1",
-      "top": 103.4,
-      "left": 288,
+      "top": 93.8,
+      "left": 278.4,
       "attrs": { "color": "grey", "xray": "1", "bounce": "0" }
     },
     {
       "type": "wokwi-text",
       "id": "text3",
-      "top": 76.8,
-      "left": 278.4,
+      "top": 86.4,
+      "left": 316.8,
       "attrs": { "text": "AppBut" }
     },
     {
@@ -65,9 +65,9 @@
     [ "logic1:D2", "pico:GP20", "red", [ "h0" ] ],
     [ "logic1:D3", "pico:GP19", "orange", [ "h0" ] ],
     [ "logic1:D4", "pico:GP18", "gold", [ "h0" ] ],
-    [ "btn1:2.l", "pico:GP28", "white", [ "h0" ] ],
     [ "logic1:D5", "btn1:2.r", "green", [ "h-28.8", "v-115.6" ] ],
-    [ "pico:3V3", "btn1:1.l", "white", [ "h0" ] ]
+    [ "pico:GP28", "btn1:2.l", "gray", [ "h0" ] ],
+    [ "pico:GND.8", "btn1:1.l", "gray", [ "h0" ] ]
   ],
   "dependencies": {}
 }
