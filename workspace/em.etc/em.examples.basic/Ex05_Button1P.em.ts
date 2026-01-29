@@ -16,10 +16,10 @@ export namespace em$meta {
 export function em$startup() {
     AppButEdge.init(true)
     AppButEdge.setDetectFalling()
+    AppButEdge.clearDetect()
 }
 
 export function em$run() {
-    AppButEdge.clearDetect()
     Common.GlobalInterrupts.enable()
     while (true) {
         AppButEdge.enableDetect()
