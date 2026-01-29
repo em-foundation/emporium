@@ -4854,6 +4854,7 @@ export const RESETS_RESET_DONE_adc_Msk: any = '(0x1UL)                   /*!< ad
 // -------- SIO TYPE -------- //
 
 export interface SIO_t {  // @ 0xD0000000
+    CPUID: $Reg                         // /*!< (@ 0x00000000) Processor core identifier Value is 0 when read from processor core 0, and 1 when read from processor core 1. */
     GPIO_IN: $Reg                       // /*!< (@ 0x00000004) Input value for GPIO pins */
     GPIO_HI_IN: $Reg                    // /*!< (@ 0x00000008) Input value for QSPI pins */
     GPIO_OUT: $Reg                      // /*!< (@ 0x00000010) GPIO output value */
@@ -4873,15 +4874,80 @@ export interface SIO_t {  // @ 0xD0000000
     GPIO_HI_OE_CLR: $Reg                // /*!< (@ 0x00000048) QSPI output enable clear */
     GPIO_HI_OE_XOR: $Reg                // /*!< (@ 0x0000004C) QSPI output enable XOR */
     FIFO_ST: $Reg                       // /*!< (@ 0x00000050) Status register for inter-core FIFOs (mailboxes). There is one FIFO in the core 0 -> core 1 direction, and one core 1 -> core 0. Both are 32 bits wide and 8 words deep. Core 0 can see the read side of the 1->0 FIFO (RX), and the write side of 0->1 FIFO (TX). Core 1 can see the read side of the 0->1 FIFO (RX), and the write side of 1->0 FIFO (TX). The SIO IRQ for each core is the logical OR of the VLD, WOF and ROE fields of its FIF */
+    FIFO_WR: $Reg                       // /*!< (@ 0x00000054) Write access to this core's TX FIFO */
+    FIFO_RD: $Reg                       // /*!< (@ 0x00000058) Read access to this core's RX FIFO */
+    SPINLOCK_ST: $Reg                   // /*!< (@ 0x0000005C) Spinlock state A bitmap containing the state of all 32 spinlocks (1=locked). Mainly intended for debugging. */
+    DIV_UDIVIDEND: $Reg                 // /*!< (@ 0x00000060) Divider unsigned dividend Write to the DIVIDEND operand of the divider, i.e. the p in `p / q`. Any operand write starts a new calculation. The results appear in QUOTIENT, REMAINDER. UDIVIDEND/SDIVIDEND are aliases of the same internal register. The U alias starts an unsigned calculation, and the S alias starts a signed calculation. */
+    DIV_UDIVISOR: $Reg                  // /*!< (@ 0x00000064) Divider unsigned divisor Write to the DIVISOR operand of the divider, i.e. the q in `p / q`. Any operand write starts a new calculation. The results appear in QUOTIENT, REMAINDER. UDIVIDEND/SDIVIDEND are aliases of the same internal register. The U alias starts an unsigned calculation, and the S alias starts a signed calculation. */
+    DIV_SDIVIDEND: $Reg                 // /*!< (@ 0x00000068) Divider signed dividend The same as UDIVIDEND, but starts a signed calculation, rather than unsigned. */
+    DIV_SDIVISOR: $Reg                  // /*!< (@ 0x0000006C) Divider signed divisor The same as UDIVISOR, but starts a signed calculation, rather than unsigned. */
+    DIV_QUOTIENT: $Reg                  // /*!< (@ 0x00000070) Divider result quotient The result of `DIVIDEND / DIVISOR` (division). Contents undefined while CSR_READY is low. For signed calculations, QUOTIENT is negative when the signs of DIVIDEND and DIVISOR differ. This register can be written to directly, for context save/restore purposes. This halts any in-progress calculation and sets the CSR_READY and CSR_DIRTY flags. Reading from QUOTIENT clears the CSR_DIRTY flag, so */
+    DIV_REMAINDER: $Reg                 // /*!< (@ 0x00000074) Divider result remainder The result of `DIVIDEND % DIVISOR` (modulo). Contents undefined while CSR_READY is low. For signed calculations, REMAINDER is negative only when DIVIDEND is negative. This register can be written to directly, for context save/restore purposes. This halts any in-progress calculation and sets the CSR_READY and CSR_DIRTY flags. */
     DIV_CSR: $Reg                       // /*!< (@ 0x00000078) Control and status register for divider. */
+    INTERP0_ACCUM0: $Reg                // /*!< (@ 0x00000080) Read/write access to accumulator 0 */
+    INTERP0_ACCUM1: $Reg                // /*!< (@ 0x00000084) Read/write access to accumulator 1 */
+    INTERP0_BASE0: $Reg                 // /*!< (@ 0x00000088) Read/write access to BASE0 register. */
+    INTERP0_BASE1: $Reg                 // /*!< (@ 0x0000008C) Read/write access to BASE1 register. */
+    INTERP0_BASE2: $Reg                 // /*!< (@ 0x00000090) Read/write access to BASE2 register. */
+    INTERP0_POP_LANE0: $Reg             // /*!< (@ 0x00000094) Read LANE0 result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP0_POP_LANE1: $Reg             // /*!< (@ 0x00000098) Read LANE1 result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP0_POP_FULL: $Reg              // /*!< (@ 0x0000009C) Read FULL result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP0_PEEK_LANE0: $Reg            // /*!< (@ 0x000000A0) Read LANE0 result, without altering any internal state (PEEK). */
+    INTERP0_PEEK_LANE1: $Reg            // /*!< (@ 0x000000A4) Read LANE1 result, without altering any internal state (PEEK). */
+    INTERP0_PEEK_FULL: $Reg             // /*!< (@ 0x000000A8) Read FULL result, without altering any internal state (PEEK). */
     INTERP0_CTRL_LANE0: $Reg            // /*!< (@ 0x000000AC) Control register for lane 0 */
     INTERP0_CTRL_LANE1: $Reg            // /*!< (@ 0x000000B0) Control register for lane 1 */
     INTERP0_ACCUM0_ADD: $Reg            // /*!< (@ 0x000000B4) Values written here are atomically added to ACCUM0 Reading yields lane 0's raw shift and mask value (BASE0 not added). */
     INTERP0_ACCUM1_ADD: $Reg            // /*!< (@ 0x000000B8) Values written here are atomically added to ACCUM1 Reading yields lane 1's raw shift and mask value (BASE1 not added). */
+    INTERP0_BASE_1AND0: $Reg            // /*!< (@ 0x000000BC) On write, the lower 16 bits go to BASE0, upper bits to BASE1 simultaneously. Each half is sign-extended to 32 bits if that lane's SIGNED flag is set. */
+    INTERP1_ACCUM0: $Reg                // /*!< (@ 0x000000C0) Read/write access to accumulator 0 */
+    INTERP1_ACCUM1: $Reg                // /*!< (@ 0x000000C4) Read/write access to accumulator 1 */
+    INTERP1_BASE0: $Reg                 // /*!< (@ 0x000000C8) Read/write access to BASE0 register. */
+    INTERP1_BASE1: $Reg                 // /*!< (@ 0x000000CC) Read/write access to BASE1 register. */
+    INTERP1_BASE2: $Reg                 // /*!< (@ 0x000000D0) Read/write access to BASE2 register. */
+    INTERP1_POP_LANE0: $Reg             // /*!< (@ 0x000000D4) Read LANE0 result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP1_POP_LANE1: $Reg             // /*!< (@ 0x000000D8) Read LANE1 result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP1_POP_FULL: $Reg              // /*!< (@ 0x000000DC) Read FULL result, and simultaneously write lane results to both accumulators (POP). */
+    INTERP1_PEEK_LANE0: $Reg            // /*!< (@ 0x000000E0) Read LANE0 result, without altering any internal state (PEEK). */
+    INTERP1_PEEK_LANE1: $Reg            // /*!< (@ 0x000000E4) Read LANE1 result, without altering any internal state (PEEK). */
+    INTERP1_PEEK_FULL: $Reg             // /*!< (@ 0x000000E8) Read FULL result, without altering any internal state (PEEK). */
     INTERP1_CTRL_LANE0: $Reg            // /*!< (@ 0x000000EC) Control register for lane 0 */
     INTERP1_CTRL_LANE1: $Reg            // /*!< (@ 0x000000F0) Control register for lane 1 */
     INTERP1_ACCUM0_ADD: $Reg            // /*!< (@ 0x000000F4) Values written here are atomically added to ACCUM0 Reading yields lane 0's raw shift and mask value (BASE0 not added). */
     INTERP1_ACCUM1_ADD: $Reg            // /*!< (@ 0x000000F8) Values written here are atomically added to ACCUM1 Reading yields lane 1's raw shift and mask value (BASE1 not added). */
+    INTERP1_BASE_1AND0: $Reg            // /*!< (@ 0x000000FC) On write, the lower 16 bits go to BASE0, upper bits to BASE1 simultaneously. Each half is sign-extended to 32 bits if that lane's SIGNED flag is set. */
+    SPINLOCK0: $Reg                     // /*!< (@ 0x00000100) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK1: $Reg                     // /*!< (@ 0x00000104) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK2: $Reg                     // /*!< (@ 0x00000108) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK3: $Reg                     // /*!< (@ 0x0000010C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK4: $Reg                     // /*!< (@ 0x00000110) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK5: $Reg                     // /*!< (@ 0x00000114) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK6: $Reg                     // /*!< (@ 0x00000118) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK7: $Reg                     // /*!< (@ 0x0000011C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK8: $Reg                     // /*!< (@ 0x00000120) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK9: $Reg                     // /*!< (@ 0x00000124) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK10: $Reg                    // /*!< (@ 0x00000128) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK11: $Reg                    // /*!< (@ 0x0000012C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK12: $Reg                    // /*!< (@ 0x00000130) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK13: $Reg                    // /*!< (@ 0x00000134) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK14: $Reg                    // /*!< (@ 0x00000138) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK15: $Reg                    // /*!< (@ 0x0000013C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK16: $Reg                    // /*!< (@ 0x00000140) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK17: $Reg                    // /*!< (@ 0x00000144) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK18: $Reg                    // /*!< (@ 0x00000148) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK19: $Reg                    // /*!< (@ 0x0000014C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK20: $Reg                    // /*!< (@ 0x00000150) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK21: $Reg                    // /*!< (@ 0x00000154) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK22: $Reg                    // /*!< (@ 0x00000158) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK23: $Reg                    // /*!< (@ 0x0000015C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK24: $Reg                    // /*!< (@ 0x00000160) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK25: $Reg                    // /*!< (@ 0x00000164) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK26: $Reg                    // /*!< (@ 0x00000168) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK27: $Reg                    // /*!< (@ 0x0000016C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK28: $Reg                    // /*!< (@ 0x00000170) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK29: $Reg                    // /*!< (@ 0x00000174) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK30: $Reg                    // /*!< (@ 0x00000178) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
+    SPINLOCK31: $Reg                    // /*!< (@ 0x0000017C) Reading from a spinlock address will: - Return 0 if lock is already locked - Otherwise return nonzero, and simultaneously claim the lock Writing (any value) releases the lock. If core 0 and core 1 attempt to claim the same lock simultaneously, core 0 wins. The value returned on success is 0x1 << lock number. */
 }
 
 // -------- SIO CONSTANTS -------- //
@@ -5023,6 +5089,72 @@ export const SIO_INTERP1_ACCUM0_ADD_INTERP1_ACCUM0_ADD_Pos: any = '(0UL)        
 export const SIO_INTERP1_ACCUM0_ADD_INTERP1_ACCUM0_ADD_Msk: any = '(0xffffffUL)  /*!< INTERP1_ACCUM0_ADD (Bitfield-Mask: 0xffffff) */'
 export const SIO_INTERP1_ACCUM1_ADD_INTERP1_ACCUM1_ADD_Pos: any = '(0UL)         /*!< INTERP1_ACCUM1_ADD (Bit 0) */'
 export const SIO_INTERP1_ACCUM1_ADD_INTERP1_ACCUM1_ADD_Msk: any = '(0xffffffUL)  /*!< INTERP1_ACCUM1_ADD (Bitfield-Mask: 0xffffff) */'
+
+// -------- TIMER TYPE -------- //
+
+export interface TIMER_t {  // @ 0x40054000
+    TIMEHW: $Reg                        // /*!< (@ 0x00000000) Write to bits 63:32 of time always write timelw before timehw */
+    TIMELW: $Reg                        // /*!< (@ 0x00000004) Write to bits 31:0 of time writes do not get copied to time until timehw is written */
+    TIMEHR: $Reg                        // /*!< (@ 0x00000008) Read from bits 63:32 of time always read timelr before timehr */
+    TIMELR: $Reg                        // /*!< (@ 0x0000000C) Read from bits 31:0 of time */
+    ALARM0: $Reg                        // /*!< (@ 0x00000010) Arm alarm 0, and configure the time it will fire. Once armed, the alarm fires when TIMER_ALARM0 == TIMELR. The alarm will disarm itself once it fires, and can be disarmed early using the ARMED status register. */
+    ALARM1: $Reg                        // /*!< (@ 0x00000014) Arm alarm 1, and configure the time it will fire. Once armed, the alarm fires when TIMER_ALARM1 == TIMELR. The alarm will disarm itself once it fires, and can be disarmed early using the ARMED status register. */
+    ALARM2: $Reg                        // /*!< (@ 0x00000018) Arm alarm 2, and configure the time it will fire. Once armed, the alarm fires when TIMER_ALARM2 == TIMELR. The alarm will disarm itself once it fires, and can be disarmed early using the ARMED status register. */
+    ALARM3: $Reg                        // /*!< (@ 0x0000001C) Arm alarm 3, and configure the time it will fire. Once armed, the alarm fires when TIMER_ALARM3 == TIMELR. The alarm will disarm itself once it fires, and can be disarmed early using the ARMED status register. */
+    ARMED: $Reg                         // /*!< (@ 0x00000020) Indicates the armed/disarmed status of each alarm. A write to the corresponding ALARMx register arms the alarm. Alarms automatically disarm upon firing, but writing ones here will disarm immediately without waiting to fire. */
+    TIMERAWH: $Reg                      // /*!< (@ 0x00000024) Raw read from bits 63:32 of time (no side effects) */
+    TIMERAWL: $Reg                      // /*!< (@ 0x00000028) Raw read from bits 31:0 of time (no side effects) */
+    DBGPAUSE: $Reg                      // /*!< (@ 0x0000002C) Set bits high to enable pause when the corresponding debug ports are active */
+    PAUSE: $Reg                         // /*!< (@ 0x00000030) Set high to pause the timer */
+    INTR: $Reg                          // /*!< (@ 0x00000034) Raw Interrupts */
+    INTE: $Reg                          // /*!< (@ 0x00000038) Interrupt Enable */
+    INTF: $Reg                          // /*!< (@ 0x0000003C) Interrupt Force */
+    INTS: $Reg                          // /*!< (@ 0x00000040) Interrupt status after masking & forcing */
+}
+
+// -------- TIMER CONSTANTS -------- //
+
+export const TIMER_BASE: any = '0x40054000UL'
+export const TIMER_ARMED_ARMED_Pos: any = '(0UL)                     /*!< ARMED (Bit 0) */'
+export const TIMER_ARMED_ARMED_Msk: any = '(0xfUL)                   /*!< ARMED (Bitfield-Mask: 0x0f) */'
+export const TIMER_DBGPAUSE_DBG1_Pos: any = '(2UL)                     /*!< DBG1 (Bit 2) */'
+export const TIMER_DBGPAUSE_DBG1_Msk: any = '(0x4UL)                   /*!< DBG1 (Bitfield-Mask: 0x01) */'
+export const TIMER_DBGPAUSE_DBG0_Pos: any = '(1UL)                     /*!< DBG0 (Bit 1) */'
+export const TIMER_DBGPAUSE_DBG0_Msk: any = '(0x2UL)                   /*!< DBG0 (Bitfield-Mask: 0x01) */'
+export const TIMER_PAUSE_PAUSE_Pos: any = '(0UL)                     /*!< PAUSE (Bit 0) */'
+export const TIMER_PAUSE_PAUSE_Msk: any = '(0x1UL)                   /*!< PAUSE (Bitfield-Mask: 0x01) */'
+export const TIMER_INTR_ALARM_3_Pos: any = '(3UL)                     /*!< ALARM_3 (Bit 3) */'
+export const TIMER_INTR_ALARM_3_Msk: any = '(0x8UL)                   /*!< ALARM_3 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTR_ALARM_2_Pos: any = '(2UL)                     /*!< ALARM_2 (Bit 2) */'
+export const TIMER_INTR_ALARM_2_Msk: any = '(0x4UL)                   /*!< ALARM_2 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTR_ALARM_1_Pos: any = '(1UL)                     /*!< ALARM_1 (Bit 1) */'
+export const TIMER_INTR_ALARM_1_Msk: any = '(0x2UL)                   /*!< ALARM_1 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTR_ALARM_0_Pos: any = '(0UL)                     /*!< ALARM_0 (Bit 0) */'
+export const TIMER_INTR_ALARM_0_Msk: any = '(0x1UL)                   /*!< ALARM_0 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTE_ALARM_3_Pos: any = '(3UL)                     /*!< ALARM_3 (Bit 3) */'
+export const TIMER_INTE_ALARM_3_Msk: any = '(0x8UL)                   /*!< ALARM_3 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTE_ALARM_2_Pos: any = '(2UL)                     /*!< ALARM_2 (Bit 2) */'
+export const TIMER_INTE_ALARM_2_Msk: any = '(0x4UL)                   /*!< ALARM_2 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTE_ALARM_1_Pos: any = '(1UL)                     /*!< ALARM_1 (Bit 1) */'
+export const TIMER_INTE_ALARM_1_Msk: any = '(0x2UL)                   /*!< ALARM_1 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTE_ALARM_0_Pos: any = '(0UL)                     /*!< ALARM_0 (Bit 0) */'
+export const TIMER_INTE_ALARM_0_Msk: any = '(0x1UL)                   /*!< ALARM_0 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTF_ALARM_3_Pos: any = '(3UL)                     /*!< ALARM_3 (Bit 3) */'
+export const TIMER_INTF_ALARM_3_Msk: any = '(0x8UL)                   /*!< ALARM_3 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTF_ALARM_2_Pos: any = '(2UL)                     /*!< ALARM_2 (Bit 2) */'
+export const TIMER_INTF_ALARM_2_Msk: any = '(0x4UL)                   /*!< ALARM_2 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTF_ALARM_1_Pos: any = '(1UL)                     /*!< ALARM_1 (Bit 1) */'
+export const TIMER_INTF_ALARM_1_Msk: any = '(0x2UL)                   /*!< ALARM_1 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTF_ALARM_0_Pos: any = '(0UL)                     /*!< ALARM_0 (Bit 0) */'
+export const TIMER_INTF_ALARM_0_Msk: any = '(0x1UL)                   /*!< ALARM_0 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTS_ALARM_3_Pos: any = '(3UL)                     /*!< ALARM_3 (Bit 3) */'
+export const TIMER_INTS_ALARM_3_Msk: any = '(0x8UL)                   /*!< ALARM_3 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTS_ALARM_2_Pos: any = '(2UL)                     /*!< ALARM_2 (Bit 2) */'
+export const TIMER_INTS_ALARM_2_Msk: any = '(0x4UL)                   /*!< ALARM_2 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTS_ALARM_1_Pos: any = '(1UL)                     /*!< ALARM_1 (Bit 1) */'
+export const TIMER_INTS_ALARM_1_Msk: any = '(0x2UL)                   /*!< ALARM_1 (Bitfield-Mask: 0x01) */'
+export const TIMER_INTS_ALARM_0_Pos: any = '(0UL)                     /*!< ALARM_0 (Bit 0) */'
+export const TIMER_INTS_ALARM_0_Msk: any = '(0x1UL)                   /*!< ALARM_0 (Bitfield-Mask: 0x01) */'
 
 // -------- UART0 TYPE -------- //
 
@@ -5259,8 +5391,11 @@ export interface XIP_CTRL_t {  // @ 0x14000000
     CTRL: $Reg                          // /*!< (@ 0x00000000) Cache control */
     FLUSH: $Reg                         // /*!< (@ 0x00000004) Cache Flush control */
     STAT: $Reg                          // /*!< (@ 0x00000008) Cache Status */
+    CTR_HIT: $Reg                       // /*!< (@ 0x0000000C) Cache Hit counter A 32 bit saturating counter that increments upon each cache hit, i.e. when an XIP access is serviced directly from cached data. Write any value to clear. */
+    CTR_ACC: $Reg                       // /*!< (@ 0x00000010) Cache Access counter A 32 bit saturating counter that increments upon each XIP access, whether the cache is hit or not. This includes noncacheable accesses. Write any value to clear. */
     STREAM_ADDR: $Reg                   // /*!< (@ 0x00000014) FIFO stream address */
     STREAM_CTR: $Reg                    // /*!< (@ 0x00000018) FIFO stream control */
+    STREAM_FIFO: $Reg                   // /*!< (@ 0x0000001C) FIFO stream data Streamed data is buffered here, for retrieval by the system DMA. This FIFO can also be accessed via the XIP_AUX slave, to avoid exposing the DMA to bus stalls caused by other XIP traffic. */
 }
 
 // -------- XIP_CTRL CONSTANTS -------- //
@@ -5303,6 +5438,10 @@ export const SIO = {} as SIO_t
 export const SIO_CLR = {} as SIO_t
 export const SIO_SET = {} as SIO_t
 export const SIO_XOR = {} as SIO_t
+export const TIMER = {} as TIMER_t
+export const TIMER_CLR = {} as TIMER_t
+export const TIMER_SET = {} as TIMER_t
+export const TIMER_XOR = {} as TIMER_t
 export const UART0 = {} as UART0_t
 export const UART0_CLR = {} as UART0_t
 export const UART0_SET = {} as UART0_t

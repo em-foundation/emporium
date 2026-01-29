@@ -7,6 +7,7 @@ const PERI_MAP = new Map<string, string>([
     ['PADS_BANK0', 'PADS_BANK0'],
     ['RESETS', 'RESETS'],
     ['SIO', 'SIO'],
+    ['TIMER', 'TIMER'],
     ['UART0', 'UART0'],
     ['XIP_CTRL', 'XIP_CTRL'],
 ])
@@ -48,12 +49,12 @@ function scanFields(): Array<[string, string]> {
     while (true) {
         const ln = nextLine()!
         if (ln.startsWith('}')) break
-        if (!ln.startsWith('  union {')) continue
-        const ln2 = nextLine()!
-        const k = ln2.indexOf(';')
-        const segs = ln2.slice(0, k).trimStart().split(' ')
-        const cmt = ln2.slice(k + 1).trim()        
-        res.push([segs[2], cmt]) 
+        if (!ln.startsWith('  _') && !ln.startsWith('    _')) continue
+        const k = ln.indexOf(';')
+        const segs = ln.slice(0, k).trimStart().split(/\s+/)
+        if (segs[2].startsWith('RESERVED')) continue
+        const cmt = ln.slice(k + 1).trim()
+        res.push([segs[2], cmt])
     }
     return res
 }
