@@ -7,7 +7,8 @@ import * as BoardC from '@rpi.distro.2040/BoardC.em'
 import * as Common from '@em.mcu/Common.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
-export const AppButPin = $delegate(BoardC.AppButPin)
+export const ButEdge = $delegate(BoardC.AppButEdge)
+export const ButPin = $delegate(BoardC.AppButPin)
 
 export namespace em$meta {
     export function em$construct() {
@@ -19,19 +20,20 @@ export namespace em$meta {
 
 export function em$run() {
     IntrVec.NVIC_enable(e$`IO_IRQ_BANK0_IRQn`)
-    AppButPin.makeInput()
-    AppButPin.setInternalPulldown(true)
-    const pid = AppButPin.pinId()
-    $reg32[e$`IO_BANK0_PROC_INTE_get(pid)`] = $R.IO_BANK0_INTR3_GPIO28_EDGE_HIGH_Msk
+    ButEdge.init(false)
+    ButEdge.setDetectFalling()
+    ButEdge.enableDetect()
     Common.GlobalInterrupts.enable()
     printf`ready...\n`()
+    while (true) {
+        Common.Idle.exec()
+    }
     Common.BusyWait.wait(10_000_000)
 }
 
 export function IO_IRQ_BANK0_isr$$() {
     $['%%a']
-    printf`but = %d\n`(AppButPin.get())
-    const pid = AppButPin.pinId()
-    $reg32[e$`IO_BANK0_INTR_get(pid)`] = $R.IO_BANK0_INTR3_GPIO28_EDGE_HIGH_Msk
+    printf`but = %d\n`(ButEdge.getState())
+    ButEdge.clearDetect()
     IntrVec.NVIC_clear(e$`IO_IRQ_BANK0_IRQn`)
 }

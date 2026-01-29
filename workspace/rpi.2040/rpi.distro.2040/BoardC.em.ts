@@ -7,9 +7,10 @@ import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
 import * as ConsoleUart from '@rpi.mcu.2040/ConsoleUart0.em'
 import * as Debug from '@em.lang/Debug.em'
+import * as EdgeT from '@rpi.mcu.2040/EdgeT.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as GpioT from '@rpi.mcu.2040/GpioT.em'
-import * as Idle from '@em.hal/IdleN.em'
+import * as Idle from '@rpi.mcu.2040/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@rpi.mcu.2040/Mcu.em'
 import * as OneShot from '@em.hal/OneShotN.em'
@@ -17,6 +18,7 @@ import * as Poller from '@em.mcu/Poller.em'
 import * as Uptimer from '@em.hal/UptimerN.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
+export const AppButEdge = $clone(EdgeT)
 export const AppButPin = $clone(GpioT)
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
@@ -47,7 +49,8 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     const brd = $board(DEFAULTS)
-    AppButPin.pin_num.$$val = brd.pins.appBut
+    AppButEdge.Pin.$$dlg = AppButPin
+    AppButEdge.pin_num.$$val = AppButPin.pin_num.$$val = brd.pins.appBut
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed

@@ -65,11 +65,19 @@ export namespace em$template {
     }
 
     export function setInternalPulldown(enable: bool_t): void {
-        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PDE_Msk
+        if (enable) {
+            $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PDE_Msk
+        } else {
+            $reg32[e$`PADS_BANK0_GPIO_get(pid)`] &= ~$R.PADS_BANK0_GPIO0_PDE_Msk
+        }
     }
 
     export function setInternalPullup(enable: bool_t): void {
-        $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PUE_Msk
+        if (enable) {
+            $reg32[e$`PADS_BANK0_GPIO_get(pid)`] |= $R.PADS_BANK0_GPIO0_PUE_Msk
+        } else {
+            $reg32[e$`PADS_BANK0_GPIO_get(pid)`] &= ~$R.PADS_BANK0_GPIO0_PUE_Msk
+        }
     }
 
     export function toggle(): void {
