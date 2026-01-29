@@ -14,11 +14,13 @@ import * as GpioT from '@rpi.mcu.2040/GpioT.em'
 import * as Idle from '@rpi.mcu.2040/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@rpi.mcu.2040/Mcu.em'
-import * as OneShot from '@em.hal/OneShotN.em'
+import * as OneShot from '@rpi.mcu.2040/OneShotAlarm0.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as Rtc from '@rpi.mcu.2040/Rtc.em'
+import * as Rtc from '@rpi.mcu.2040/RtcAlarm1.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
+
+export { OneShot }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
