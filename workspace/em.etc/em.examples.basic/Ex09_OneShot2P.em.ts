@@ -29,7 +29,7 @@ function blinkFB(a: arg_t) {
     AppLed.on()
     Common.BusyWait.wait(5_000)
     AppLed.off()
-    OneShot.enable(100, $cb(handler), 0)
+    OneShot.enable(500, $cb(handler), 0)
 }
 
 function handler(arg: arg_t) {
