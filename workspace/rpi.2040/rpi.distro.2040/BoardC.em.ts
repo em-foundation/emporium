@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
+import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as ButtonT from '@em.utils/ButtonT.em'
@@ -54,6 +55,7 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     const brd = $board(DEFAULTS)
+    AlarmMgr.Rtc.$$dlg = Rtc
     AppBut.Edge.$$dlg = AppButEdge
     AppButEdge.Pin.$$dlg = AppButPin
     AppButEdge.pin_num.$$val = AppButPin.pin_num.$$val = brd.pins.appBut
