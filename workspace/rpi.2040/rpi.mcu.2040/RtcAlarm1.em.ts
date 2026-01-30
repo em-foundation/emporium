@@ -17,10 +17,25 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const ALARM_MASK = 0x1 << 1 // ALARM1
+const IRQn = e$`TIMER_IRQ_1_IRQn`
+
+var cur_hlr = <Handler>$null
+
+export function em$startup() {
+    IntrVec.NVIC_enable(IRQn)
+}
+
 export function disable() {
+    cur_hlr = $null
+    $R.TIMER_CLR.INTE.$$ = ALARM_MASK
 }
 
 export function enable(thresh: T.RtcThresh, handler: Handler) {
+    cur_hlr = handler
+    // printf`cur = %08d, thr = %08d\n`($R.TIMER.TIMELR.$$, thresh)
+    $R.TIMER.ALARM1.$$ = thresh
+    $R.TIMER_SET.INTE.$$ = ALARM_MASK
 }
 
 export function getRawTime(): T.RawTime {
@@ -36,10 +51,11 @@ export function toThresh(secs: T.Secs30p2): T.RtcThresh {
 }
 
 export function TIMER_IRQ_1_isr$$() {
-    // IntrVec.NVIC_clear(e$`GRTC_0_IRQn`)
-    // const hlr = cur_hlr
-    // disable()
-    // if (hlr != $null) hlr()
+    $R.TIMER.INTR.$$ = ALARM_MASK
+    IntrVec.NVIC_clear(IRQn)
+    const hlr = cur_hlr
+    disable()
+    if (hlr != $null) hlr()
 }
 
 function readHiLo(): u64 {

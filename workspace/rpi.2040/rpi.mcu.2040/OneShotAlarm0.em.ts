@@ -17,7 +17,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const ALARM_MASK = 0x1 << 0 // ALARM0 
+const ALARM_MASK = 0x1 << 0 // ALARM0
+const IRQn = e$`TIMER_IRQ_0_IRQn`
 
 var cur_arg: arg_t
 var cur_fxn: Handler = $null
@@ -25,7 +26,7 @@ var cur_fxn: Handler = $null
 export function disable(): void {
     $R.TIMER.ARMED.$$ = ALARM_MASK
     Idle.setPauseOnly(false)
-    IntrVec.NVIC_disable(e$`TIMER_IRQ_0_IRQn`)
+    IntrVec.NVIC_disable(IRQn)
 }
 
 export function enable(msecs: u32, handler: OneShotI.Handler, arg: arg_t): void {
@@ -41,13 +42,13 @@ function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_arg = arg
     Idle.setPauseOnly(true)
     $R.TIMER.ALARM0.$$ = $R.TIMER.TIMERAWL.$$ + usecs
-    $R.TIMER.INTE.$$ = ALARM_MASK
-    IntrVec.NVIC_enable(e$`TIMER_IRQ_0_IRQn`)
+    $R.TIMER_SET.INTE.$$ = ALARM_MASK
+    IntrVec.NVIC_enable(IRQn)
 }
 
 export function TIMER_IRQ_0_isr$$() {
-    $R.TIMER.INTR.$$ = ALARM_MASK
-    IntrVec.NVIC_clear(e$`TIMER_IRQ_0_IRQn`)
+    $R.TIMER_CLR.INTR.$$ = ALARM_MASK
+    IntrVec.NVIC_clear(IRQn)
     const fxn = cur_fxn
     disable()
     fxn(cur_arg)
