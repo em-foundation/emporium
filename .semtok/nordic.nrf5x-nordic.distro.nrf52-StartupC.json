@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "srcRel": "nordic.nrf5x/nordic.distro.nrf52/StartupC.em.ts",
+    "srcMtimeMs": 1751825481321.522,
+    "srcSize": 530,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        78,
+        11,
+        4,
+        108,
+        8,
+        4
+    ]
+}

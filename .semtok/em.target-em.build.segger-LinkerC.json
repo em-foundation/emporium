@@ -1,0 +1,38 @@
+{
+    "version": 1,
+    "srcRel": "em.target/em.build.segger/LinkerC.em.ts",
+    "srcMtimeMs": 1767123396527.6863,
+    "srcSize": 5490,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        328,
+        8,
+        4,
+        414,
+        8,
+        0,
+        911,
+        9,
+        4,
+        997,
+        8,
+        0,
+        3086,
+        8,
+        0
+    ]
+}

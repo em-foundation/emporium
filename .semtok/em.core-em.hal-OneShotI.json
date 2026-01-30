@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "srcRel": "em.core/em.hal/OneShotI.em.ts",
+    "srcMtimeMs": 1751825481289.688,
+    "srcSize": 262,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        116,
+        2,
+        4
+    ]
+}

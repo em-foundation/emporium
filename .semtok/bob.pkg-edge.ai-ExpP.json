@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "srcRel": "bob.pkg/edge.ai/ExpP.em.ts",
+    "srcMtimeMs": 1767121701884.213,
+    "srcSize": 387,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        71,
+        7,
+        5,
+        124,
+        7,
+        2,
+        137,
+        27,
+        2,
+        275,
+        6,
+        4,
+        290,
+        2,
+        1,
+        330,
+        2,
+        1
+    ]
+}

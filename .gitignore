@@ -1,0 +1,9 @@
+.history/
+**/.junk/
+node_modules/
+/tools/
+.vscode/settings.json
+workspace/.emscript
+workspace/emscript.ini
+workspace/emscript-local.ini
+.DS_Store

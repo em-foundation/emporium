@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "srcRel": "em.core/em.hal/RtcI.em.ts",
+    "srcMtimeMs": 1751825481289.688,
+    "srcSize": 311,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        74,
+        1,
+        5,
+        156,
+        2,
+        4,
+        200,
+        1,
+        5,
+        255,
+        1,
+        5,
+        285,
+        1,
+        5,
+        298,
+        1,
+        5
+    ]
+}

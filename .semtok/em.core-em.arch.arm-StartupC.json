@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "srcRel": "em.core/em.arch.arm/StartupC.em.ts",
+    "srcMtimeMs": 1767122234356.9683,
+    "srcSize": 2932,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        78,
+        11,
+        4,
+        108,
+        8,
+        4,
+        157,
+        9,
+        4
+    ]
+}

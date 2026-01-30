@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "srcRel": "adi.max326xx/adi.mcu.max326xx/UsCounter.em.ts",
+    "srcMtimeMs": 1751825481242.2312,
+    "srcSize": 135,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        58,
+        4,
+        5,
+        77,
+        4,
+        5,
+        123,
+        7,
+        2
+    ]
+}

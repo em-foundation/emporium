@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "srcRel": "em.core/em.hal/McuI.em.ts",
+    "srcMtimeMs": 1767055295872.8662,
+    "srcSize": 127,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        79,
+        2,
+        4
+    ]
+}

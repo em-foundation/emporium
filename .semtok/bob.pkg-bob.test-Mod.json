@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "srcRel": "bob.pkg/bob.test/Mod.em.ts",
+    "srcMtimeMs": 1751825481259.3792,
+    "srcSize": 306,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        7,
+        2,
+        3,
+        42,
+        2,
+        4,
+        47,
+        11,
+        3,
+        76,
+        5,
+        4,
+        98,
+        7,
+        2,
+        120,
+        7,
+        2,
+        251,
+        2,
+        4,
+        295,
+        7,
+        2
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "srcRel": "em.etc/em.benchmark.coremark/BenchAlgI.em.ts",
+    "srcMtimeMs": 1751825481305.6772,
+    "srcSize": 234,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        74,
+        5,
+        5,
+        137,
+        2,
+        4,
+        154,
+        5,
+        5,
+        202,
+        5,
+        5
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "the-em-foundation.embrowser"
+    ],
+    "unwantedRecommendations": [
+        "the-em-foundation.em-builder",
+        "the-em-foundation.emscript",
+        "the-em-foundation.vscode-zigem"
+    ]
+}

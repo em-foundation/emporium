@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "srcRel": "emm.9305/emm.mcu.9305/GlobalInterrupts.em.ts",
+    "srcMtimeMs": 1766757853214.8035,
+    "srcSize": 437,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        58,
+        17,
+        5,
+        90,
+        17,
+        5,
+        162,
+        7,
+        2,
+        175,
+        27,
+        2,
+        231,
+        17,
+        5,
+        399,
+        17,
+        5
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "srcRel": "bob.pkg/bob.test/MyFoo.em.ts",
+    "srcMtimeMs": 1751825481259.3792,
+    "srcSize": 189,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        7,
+        2,
+        3,
+        42,
+        2,
+        4,
+        47,
+        11,
+        3,
+        69,
+        4,
+        5,
+        88,
+        4,
+        5,
+        136,
+        7,
+        2,
+        164,
+        6,
+        4,
+        179,
+        4,
+        0
+    ]
+}

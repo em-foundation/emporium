@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "srcRel": "emm.9305/emm.distro.9305/StartupC.em.ts",
+    "srcMtimeMs": 1767054973174.337,
+    "srcSize": 389,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        78,
+        11,
+        4,
+        107,
+        9,
+        4,
+        176,
+        8,
+        4
+    ]
+}

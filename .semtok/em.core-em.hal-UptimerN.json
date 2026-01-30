@@ -1,0 +1,38 @@
+{
+    "version": 1,
+    "srcRel": "em.core/em.hal/UptimerN.em.ts",
+    "srcMtimeMs": 1751825481289.688,
+    "srcSize": 252,
+    "tokTypes": [
+        "em-debug",
+        "em-deref",
+        "em-domain",
+        "em-ident",
+        "em-special",
+        "em-unit",
+        "em-wrong"
+    ],
+    "tokens": [
+        34,
+        2,
+        4,
+        39,
+        8,
+        4,
+        58,
+        8,
+        5,
+        81,
+        8,
+        5,
+        129,
+        9,
+        5,
+        194,
+        9,
+        5,
+        225,
+        9,
+        5
+    ]
+}

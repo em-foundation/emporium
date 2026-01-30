@@ -1,0 +1,136 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "paths": {
+            "@$$emscript": [
+                "./workspace/em.core/em.lang/emscript"
+            ],
+            "@adi.distro.max326xx/*": [
+                "./workspace/adi.max326xx/adi.distro.max326xx/*"
+            ],
+            "@adi.mcu.max326xx/*": [
+                "./workspace/adi.max326xx/adi.mcu.max326xx/*"
+            ],
+            "@adi.gist/*": [
+                "./workspace/bob.pkg/adi.gist/*"
+            ],
+            "@bob.gist/*": [
+                "./workspace/bob.pkg/bob.gist/*"
+            ],
+            "@bob.scratch/*": [
+                "./workspace/bob.pkg/bob.scratch/*"
+            ],
+            "@bob.test/*": [
+                "./workspace/bob.pkg/bob.test/*"
+            ],
+            "@edge.ai/*": [
+                "./workspace/bob.pkg/edge.ai/*"
+            ],
+            "@emm.gist/*": [
+                "./workspace/bob.pkg/emm.gist/*"
+            ],
+            "@gist.nrf52/*": [
+                "./workspace/bob.pkg/gist.nrf52/*"
+            ],
+            "@gist.nrf54/*": [
+                "./workspace/bob.pkg/gist.nrf54/*"
+            ],
+            "@sil.gist/*": [
+                "./workspace/bob.pkg/sil.gist/*"
+            ],
+            "@ti.gist/*": [
+                "./workspace/bob.pkg/ti.gist/*"
+            ],
+            "@ti.radio.test/*": [
+                "./workspace/bob.pkg/ti.radio.test/*"
+            ],
+            "@em.arch.arc/*": [
+                "./workspace/em.core/em.arch.arc/*"
+            ],
+            "@em.arch.arm/*": [
+                "./workspace/em.core/em.arch.arm/*"
+            ],
+            "@em.hal/*": [
+                "./workspace/em.core/em.hal/*"
+            ],
+            "@em.lang/*": [
+                "./workspace/em.core/em.lang/*"
+            ],
+            "@em.mcu/*": [
+                "./workspace/em.core/em.mcu/*"
+            ],
+            "@em.utils/*": [
+                "./workspace/em.core/em.utils/*"
+            ],
+            "@em.benchmark.coremark/*": [
+                "./workspace/em.etc/em.benchmark.coremark/*"
+            ],
+            "@em.examples.basic/*": [
+                "./workspace/em.etc/em.examples.basic/*"
+            ],
+            "@em.examples.combo/*": [
+                "./workspace/em.etc/em.examples.combo/*"
+            ],
+            "@em.tours/*": [
+                "./workspace/em.etc/em.tours/*"
+            ],
+            "@em.rf.ble/*": [
+                "./workspace/em.radio/em.rf.ble/*"
+            ],
+            "@em.rf.core/*": [
+                "./workspace/em.radio/em.rf.core/*"
+            ],
+            "@em.rf.driver/*": [
+                "./workspace/em.radio/em.rf.driver/*"
+            ],
+            "@em.rf.samples/*": [
+                "./workspace/em.radio/em.rf.samples/*"
+            ],
+            "@em.build.segger/*": [
+                "./workspace/em.target/em.build.segger/*"
+            ],
+            "@emm.distro.9305/*": [
+                "./workspace/emm.9305/emm.distro.9305/*"
+            ],
+            "@emm.mcu.9305/*": [
+                "./workspace/emm.9305/emm.mcu.9305/*"
+            ],
+            "@nordic.distro.nrf52/*": [
+                "./workspace/nordic.nrf5x/nordic.distro.nrf52/*"
+            ],
+            "@nordic.distro.nrf54/*": [
+                "./workspace/nordic.nrf5x/nordic.distro.nrf54/*"
+            ],
+            "@nordic.mcu.nrf52/*": [
+                "./workspace/nordic.nrf5x/nordic.mcu.nrf52/*"
+            ],
+            "@nordic.mcu.nrf54/*": [
+                "./workspace/nordic.nrf5x/nordic.mcu.nrf54/*"
+            ],
+            "@nordic.radio.nrf52/*": [
+                "./workspace/nordic.nrf5x/nordic.radio.nrf52/*"
+            ],
+            "@nordic.radio.nrf54/*": [
+                "./workspace/nordic.nrf5x/nordic.radio.nrf54/*"
+            ],
+            "@silabs.distro.efr32x/*": [
+                "./workspace/silabs.efr32x/silabs.distro.efr32x/*"
+            ],
+            "@silabs.mcu.efr32x/*": [
+                "./workspace/silabs.efr32x/silabs.mcu.efr32x/*"
+            ],
+            "@ti.distro.cc23xx/*": [
+                "./workspace/ti.cc23xx/ti.distro.cc23xx/*"
+            ],
+            "@ti.mcu.cc23xx/*": [
+                "./workspace/ti.cc23xx/ti.mcu.cc23xx/*"
+            ],
+            "@ti.radio.cc23xx/*": [
+                "./workspace/ti.cc23xx/ti.radio.cc23xx/*"
+            ],
+            "@$distro/*": [
+                "./workspace/emm.9305/emm.distro.9305/*"
+            ]
+        }
+    }
+}

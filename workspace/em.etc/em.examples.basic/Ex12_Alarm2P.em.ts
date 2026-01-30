@@ -1,0 +1,34 @@
+import '@$$emscript'
+export const $U = $declare('MODULE')
+
+import * as AlarmMgr from '@em.utils/AlarmMgr.em'
+import * as BoardC from '@$distro/BoardC.em'
+import * as FiberMgr from '@em.utils/FiberMgr.em'
+import * as TimeTypes from '@em.utils/TimeTypes.em'
+
+export const AppLed = $delegate(BoardC.AppLed)
+
+const alarm = $config<AlarmMgr.Obj>()
+const blinkF = $config<FiberMgr.Obj>()
+
+export namespace em$meta {
+    export function em$construct() {
+        blinkF.$$val = FiberMgr.em$meta.create($cb(blinkFB))
+        alarm.$$val = AlarmMgr.em$meta.create(blinkF)
+    }
+}
+
+let counter = <u32>0
+
+export function em$run() {
+    blinkF.$$.post()
+    FiberMgr.run()
+}
+
+function blinkFB(a: arg_t) {
+    $['%%c']
+    counter += 1
+    let msecs = (counter & 0x1) != 0 ? 100 : 5
+    AppLed.wink(msecs)
+    alarm.$$.wakeupAligned(TimeTypes.Secs30p2_initMsecs(1_500))
+}
