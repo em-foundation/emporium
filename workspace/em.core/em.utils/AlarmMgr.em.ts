@@ -36,10 +36,12 @@ export namespace em$meta {
 
 const DBG_FLG = false
 
+var nxt_alarm = <Obj>$null
+
 function dispatch(cur_time: T.Secs30p2) {
     if (DBG_FLG) printf`dis: cur = %08x\n`(cur_time)
     Rtc.disable()
-    let nxt_alarm = <Obj>$null
+    nxt_alarm = <Obj>$null
     let max_wup_time = ~(<T.Secs30p2>0)
     for (let a of alarm_tab) {
         // iterate through all alarms
@@ -77,7 +79,8 @@ function setup(alarm: Obj, delta: T.Secs30p2, aligned: bool_t) {
 }
 
 function wakeupHandler() {
-    dispatch(readCurTime())
+    // TODO: assert nxt_alarm
+    dispatch(nxt_alarm.$$._wup_time)
 }
 
 Alarm.prototype.cancel = function (this: Alarm) {
