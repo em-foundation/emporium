@@ -3,6 +3,7 @@
 node_modules/
 /tools/
 .vscode/settings.json
+wokwi.vcd
 workspace/.emscript
 workspace/emscript.ini
 workspace/emscript-local.ini

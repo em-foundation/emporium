@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;10&thinsp;&ndash;&thinsp;wakeup alarms
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex11_Alarm1P.em.ts
   - em.core:em.hal/RtcI.em.ts

@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;09&thinsp;&ndash;&thinsp;timer service
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex10_PollerP.em.ts
   - em.core:em.hal/PollerI.em.ts

@@ -153,9 +153,7 @@ export function em$run() {
     inputs[3] = 71.3
     inputs[4] = 0.00266337
     $['%%d+']
-    for (const _ of $range(100)) {
-        res = predict(inputs)
-    }
+    res = predict(inputs)
     $['%%d-']
     MathF32.println(res)
 }

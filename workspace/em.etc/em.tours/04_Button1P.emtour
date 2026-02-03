@@ -1,5 +1,4 @@
 title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;04&thinsp;&ndash;&thinsp;button handlers
-$dev: false
 files:
   - em.etc:em.examples.basic/Ex05_Button1P.em.ts
   - em.core:em.hal/EdgeI.em.ts

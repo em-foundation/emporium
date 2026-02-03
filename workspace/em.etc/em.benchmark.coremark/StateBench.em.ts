@@ -159,6 +159,7 @@ function nextState(pStr: $$<ptr_t<u8>>, transCnt: index_t<u32>): State {
     let state = <State>State.START
     for (; str.$$ && state != State.INVALID; str.$inc()) {
         let ch = str.$$
+        // printf`ch = %c\n`(ch)
         if (ch == c$`,`) {
             str.$inc()
             break
@@ -231,9 +232,13 @@ function nextState(pStr: $$<ptr_t<u8>>, transCnt: index_t<u32>): State {
                     transCnt[ord(State.INVALID)] += 1
                 }
                 break
+            default:
+                printf`*** bad state: %d\n`(state)
+                fail()
         }
     }
     pStr.$$ = str
+    // printf`state = %d\n`(state)
     return state
 }
 

@@ -1,0 +1,145 @@
+import '@$$emscript'
+export const $U = $declare('COMPOSITE')
+
+import * as ArmStartupC from '@em.arch.arm/StartupC.em'
+import * as BoardC from '@rpi.distro.2040/BoardC.em'
+import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as IsrDefault from '@em.arch.arm/IsrEmpty.em'
+import * as LinkerC from '@em.build.segger/LinkerC.em'
+import * as REGS from '@rpi.distro.2040/REGS.em'
+import * as StartupC from '@rpi.distro.2040/StartupC.em'
+import * as TargC from '@em.lang/TargC.em'
+
+
+const NVIC_INTRS = <Array<string>>[
+    'TIMER_IRQ_0',
+    'TIMER_IRQ_1',
+    'TIMER_IRQ_2',
+    'TIMER_IRQ_3',
+    'PWM_IRQ_WRAP',
+    'USBCTRL_IRQ',
+    'XIP_IRQ',
+    'PIO0_IRQ_0',
+    'PIO0_IRQ_1',
+    'PIO1_IRQ_0',
+    'PIO1_IRQ_1',
+    'DMA_IRQ_0',
+    'DMA_IRQ_1',
+    'IO_IRQ_BANK0',
+    'IO_IRQ_QSPI',
+    'SIO_IRQ_PROC0',
+    'SIO_IRQ_PROC1',
+    'CLOCKS_IRQ',
+    'SPI0_IRQ',
+    'SPI1_IRQ',
+    'UART0_IRQ',
+    'UART1_IRQ',
+    'ADC_IRQ_FIFO',
+    'I2C0_IRQ',
+    'I2C1_IRQ',
+    'RTC_IRQ',
+]
+
+export function em$configure() {
+    $using(ArmStartupC)
+    $using(BoardC)
+    $using(IntrVec)
+    $using(LinkerC)
+    $using(REGS)
+    $using(StartupC)
+    $using(TargC)
+    IntrVec.IsrDefault.$$dlg = IsrDefault
+    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
+}
+
+export function em$generate() {
+    const boot_sz = 0x100
+    LinkerC.genScript(
+        {
+            dmem_flash: { orig: 0x2000_0000, len: 0x0000_8000 },
+            imem_flash: { orig: 0x1000_0000 + boot_sz, len: 0x0008_0000 - boot_sz },
+            dmem_sram: { orig: 0, len: 0 },
+            imem_sram: { orig: 0, len: 0 },
+            lmem_sram: { orig: 0, len: 0 },
+        },
+        [
+            { name: 'BOOT2', sect: '.boot2', desc: { orig: 0x1000_0000, len: boot_sz } }
+        ]
+    )
+    let opt = $property('em.build.Optimize', 'Oz')
+    let tools = $property('em.build.ToolsHome', '')
+    let libflav = opt == 'Oz' ? 'small' : 'balanced'
+    let out = $outfile('build.sh', 0o755)
+    out.addFrag(`
+        |-> #!/bin/sh
+        |-> 
+        |-> set -e
+        |-> 
+        |-> TOOLS=${tools}/segger-arm
+        |-> CC=$TOOLS/bin/segger-cc
+        |-> LD=$TOOLS/gcc/arm-none-eabi/bin/ld
+        |-> OBJCOPY=$TOOLS/gcc/arm-none-eabi/bin/objcopy
+        |-> OBJDUMP=$TOOLS/gcc/arm-none-eabi/bin/objdump
+        |-> 
+        |-> OUT=.out
+        |-> 
+        |-> rm -rf $OUT
+        |-> mkdir $OUT
+        |-> 
+        |-> CFLAGS="\\
+        |->     -D__EM_ARCH_arm__ \\
+        |->     -D__EM_BOOT__=0 \\
+        |->     -D__EM_BOOT_FLASH__=0 \\
+        |->     -D__EM_COMPILER_segger__ \\
+        |->     -D__EM_CPU_cortex_m0plus__ \\
+        |->     -D__EM_MCU_null__ \\
+        |->     -D__EM_LANG__=1 \\
+        |->     --std=c++14 \\
+        |->     -triple thumbv6m-none-eabi \\
+        |->     -target-cpu cortex-m0plus \\
+        |->     -ffunction-sections \\
+        |->     -fdata-sections \\
+        |->     -fno-threadsafe-statics \\
+        |->     -Wno-deprecated-register \\
+        |->     -Wno-invalid-noreturn \\
+        |->     -Wno-macro-redefined \\
+        |->     -Wno-switch \\
+        |->     -Wno-uninitialized \\
+        |->     -Wno-c99-designator \\
+        |->     -Wno-c++20-designator \\
+        |->     -Wpointer-to-int-cast \\
+        |->     -target-feature +strict-align -target-feature +soft-float -target-feature +soft-float-abi -msoft-float -target-abi aapcs -mfloat-abi soft -fno-signed-char -fnative-half-type -fnative-half-arguments-and-returns \\
+        |-> "
+        |-> 
+        |-> CINCS="\\
+        |->     -I . \\
+        |->     -I $TOOLS/include \\
+        |->     -I ../em.core/em.arch.arm/inc
+        |-> "
+        |-> 
+        |-> COPTS="\\
+        |->     -${opt} \\
+        |-> "
+        |-> 
+        |-> LFLAGS="\\
+        |->     -eem__start \\
+        |->     -N \\
+        |->     --gc-sections \\
+        |-> "
+        |-> 
+        |-> LIBS="
+        |->     $TOOLS/lib/libc_v6m_t_le_eabi_${libflav}.a \\
+        |->     $TOOLS/lib/strops_v6m_t_le_eabi_${libflav}.a \\
+        |-> "
+        |-> 
+        |-> $CC -c $CFLAGS $CINCS $COPTS -x c++ main.cpp -o $OUT/main.obj
+        |-> $LD $LFLAGS -Map=$OUT/main.map -T linkcmd.ld -o $OUT/main.out $OUT/main.obj $LIBS
+        |-> $OBJCOPY -O ihex $OUT/main.out $OUT/main.out.hex
+        |-> $OBJDUMP -h -d --demangle $OUT/main.out >$OUT/main.out.dis
+        |-> $OBJDUMP -t --demangle $OUT/main.out | tail -n +5 | sed -e 's/[FO] /  /' | sed -e 's/df /   /' >$OUT/main.out.sym
+        |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
+        |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
+        |-> $OBJDUMP -h $OUT/main.out
+    `)
+    out.close()
+}

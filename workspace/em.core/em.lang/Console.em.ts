@@ -101,12 +101,20 @@ export function print(
         }
     }
 }
+
+export function put(b: u8) {
+    Common.ConsoleUart.put(b)
+}
+
 export function putbuf(buf: frame_t<u8>) {
-    for (const p of buf) putch(p.$$)
+    for (const p of buf) put(p.$$)
 }
 
 export function putch(ch: u8) {
-    Common.ConsoleUart.put(ch)
+    if (ch == c$`\n`) {
+        put(c$`\r`)
+    }
+    put(ch)
 }
 
 export function puts(sp: ptr_t<u8>) {
