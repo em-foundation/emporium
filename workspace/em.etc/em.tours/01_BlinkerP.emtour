@@ -13,13 +13,13 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]BlinkerP.em &ndash; welcome}
+        {[ht,$start]Ex02_BlinkerP &ndash; welcome}
 
-        The {[cu]BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
+        The {[cu]Ex02_BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
 
         Many of the other tours you'll take as part of the {[le,https://docs.openem.org/using/using-02]Using EM} series will build on the code seen here.
 
-        With that, let's build&thinsp;+&thinsp;load {[cu]BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
+        With that, let's build&thinsp;+&thinsp;load {[cu]Ex02_BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
 
   - cmds:
       - build 1 -l
@@ -27,13 +27,13 @@ steps:
     acts: ['$build']
     text: |
 
-        {[ht,$build]BlinkerP.em &ndash; build + load}
+        {[ht,$build]Ex02_BlinkerP &ndash; build + load}
 
-        Once {[cu]BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
+        Once {[cu]Ex02_BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
         
         The EM runtime will turn-on the board's {[cx]sysLed} pin (typically a red LED) after the program terminates.
 
-        You can re-run {[cu]BlinkerP} by simply pressing the board's {[cx]RESET} button.
+        You can re-run {[cu]Ex02_BlinkerP} by simply pressing the board's {[cx]RESET} button.
 
   - cmds:
       - mark 1 A 5
@@ -42,13 +42,13 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]BlinkerP.em &ndash; details}
+        {[ht,$details]Ex02_BlinkerP &ndash; details}
 
         <div class="em-bmlist">
 
         {[bm,A]} The {[cu]Common} module exposes several proxies imple&shy;menting core MCU services, including {[cu]BusyWait}.
 
-        {[bm,B]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]BlinkerP}
+        {[bm,B]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]Ex02_BlinkerP}
 
         {[bm,C]} The {[cf]em$run} intrinsic then invokes public functions of these two imported units.
 
@@ -66,7 +66,7 @@ steps:
 
         The {[cn]em.hal}/{[cu]LedI} interface specifies a set of functions which an LED must implement in the abstract.
 
-        Our {[cu]BlinkerP} program invoked several of these func&shy;tions within its {[cf]em$run} intrinsic.
+        Our {[cu]Ex02_BlinkerP} program invoked several of these func&shy;tions within its {[cf]em$run} intrinsic.
 
   - cmds:
       - open 3
@@ -94,7 +94,7 @@ steps:
 
         {[ht,$peek]BusyWaitI.em &ndash; quick peek}
 
-        And last, {[cu]BusyWaitI} specifices a {[cf]wait} function &ndash; called from our {[cu]BlinkerP} program to spin for 0.5 seconds.
+        And last, {[cu]BusyWaitI} specifices a {[cf]wait} function &ndash; called from our {[cu]Ex02_BlinkerP} program to spin for 0.5 seconds.
 
         In practice, however, you'll want to use EM platform timers for delays longer than a few milliseconds
 
@@ -102,11 +102,11 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]BlinkerP.em &ndash; extra credit}
+        {[ht,$extra]Ex02_BlinkerP.em &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-01-basic-blinker]here}.
 
-        {[bi,task_alt]} Clone {[cu]BlinkerP} into your personal bundle.
+        {[bi,task_alt]} Clone {[cu]Ex02_BlinkerP} into your personal bundle.
 
         {[bi,task_alt]} Modify the value passed to {[cf]wait}.
 
@@ -118,7 +118,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]BlinkerP.em &ndash; next steps}
+        {[ht,$steps]Ex02_BlinkerP.em &ndash; next steps}
 
         The next several tours in the {[le,https://docs.openem.org/using/using-02]Using EM} series will build upon the code seen here.
 

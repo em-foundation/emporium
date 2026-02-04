@@ -8,9 +8,10 @@ steps:
   - cmds:
       - open 1
     focus: [1,1]
+    acts: ['$reveal']
     text: |
 
-        {[ht,$start]FiberP.em &ndash; welcome}
+        {[ht,$start]Ex04_FiberP &ndash; welcome}
 
         The {[cu]FiberP} program introduces _fibers_ &ndash; a very light&shy;weight threading model supported by the EM runtime.
 
@@ -23,9 +24,10 @@ steps:
   - cmds:
       - build 1 -l
     focus: [1,1]
+    acts: ['$build']
     text: |
 
-        {[ht,$build]FiberP.em &ndash; build + load}
+        {[ht,$build]Ex04_FiberP &ndash; build + load}
 
         Looking at the {[cx]OUTPUT} panel, you'll notice that the pro&shy;gram image consumes &asymp;&thinsp;1.6 KB of memory.
 
@@ -37,14 +39,14 @@ steps:
 
 
   - cmds:
-      - mark 1 A 7
+      - mark 1 A 6
       - mark 1 B 13
       - mark 1 C 15
       - mark 1 D 22
     focus: [1,1]
     text: |
 
-        {[ht,$details]FiberP.em &ndash; details}
+        {[ht,$details]Ex04_FiberP &ndash; details}
 
         <div class="em-bmlist">
 
@@ -66,6 +68,7 @@ steps:
       - mark 2 B 10
       - mark 2 C 32
     focus: [2,6]
+    acts: ['$reveal']
     text: |
 
         {[ht,$details]FiberMgr.em &ndash; details}
@@ -93,7 +96,7 @@ steps:
     focus: [1,20]
     text: |
 
-        {[ht,$details]FiberP.em &ndash; more details}
+        {[ht,$details]Ex04_FiberP &ndash; more details}
         
         <div class="em-bmlist">
 
@@ -157,7 +160,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]FiberP.em &ndash; extra credit}
+        {[ht,$extra]Ex04_FiberP &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-03-threading-with-fibers]here}.
 
@@ -173,7 +176,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]FiberP.em &ndash; next steps}
+        {[ht,$steps]Ex04_FiberP &ndash; next steps}
 
         {[cu]FiberP} remains active until it reaches {[cd]halt}; and the MCU never suspends execution via {[cu]Idle}.{[cf]exec}.
 
