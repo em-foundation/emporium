@@ -10,6 +10,7 @@ steps:
   - cmds:
       - open 1
     focus: [1,1]
+    acts: ['$reveal']
     text: |
 
         {[ht,$start]BlinkerP.em &ndash; welcome}
@@ -23,6 +24,7 @@ steps:
   - cmds:
       - build 1 -l
     focus: [1,1]
+    acts: ['$build']
     text: |
 
         {[ht,$build]BlinkerP.em &ndash; build + load}
@@ -34,9 +36,9 @@ steps:
         You can re-run {[cu]BlinkerP} by simply pressing the board's {[cx]RESET} button.
 
   - cmds:
-      - mark 1 A 4
-      - mark 1 B 6
-      - mark 1 C 15
+      - mark 1 A 5
+      - mark 1 B 7
+      - mark 1 C 9
     focus: [1,1]
     text: |
 
@@ -44,9 +46,9 @@ steps:
 
         <div class="em-bmlist">
 
-        {[bm,A]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]BlinkerP}
+        {[bm,A]} The {[cu]Common} module exposes several proxies imple&shy;menting core MCU services, including {[cu]BusyWait}.
 
-        {[bm,B]} The {[cu]Common} module exposes several proxies imple&shy;menting core MCU services, including {[cu]BusyWait}.
+        {[bm,B]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]BlinkerP}
 
         {[bm,C]} The {[cf]em$run} intrinsic then invokes public functions of these two imported units.
 
@@ -57,6 +59,7 @@ steps:
   - cmds:
       - open 2
     focus: [2,1]
+    acts: ['$reveal']
     text: |
 
         {[ht,$peek]LedI.em &ndash; quick peek}
@@ -67,9 +70,10 @@ steps:
 
   - cmds:
       - open 3
-      - mark 3 A 3
-      - mark 3 B 13
+      - mark 3 A 4
+      - mark 3 B 12
     focus: [3,1]
+    acts: ['$reveal']
     text: |
 
         {[ht,$details]Common.em &ndash; details}
@@ -85,6 +89,7 @@ steps:
   - cmds:
       - open 4
     focus: [4,1]
+    acts: ['$reveal']
     text: |
 
         {[ht,$peek]BusyWaitI.em &ndash; quick peek}

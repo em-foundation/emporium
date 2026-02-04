@@ -19,10 +19,12 @@ export function em$run() {
         AppLed.toggle()
         if (!dbg_flag) continue
         if (cnt > (min_cnt + max_cnt) / 2) fail()
+        $['%%>'](<u16>cnt)
         let bits11 = <u8>(cnt & 0x3)
-        $['%%c:'](bits11)
         $['%%>'](bits11)
+        $['%%c:'](bits11)
         printf`cnt = %d (0x%04x), bits11 = %d\n`(cnt, cnt, bits11)
     }
     AppLed.off()
+    halt()
 }

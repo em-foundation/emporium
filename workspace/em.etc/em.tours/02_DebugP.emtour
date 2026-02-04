@@ -7,11 +7,12 @@ steps:
   - cmds:
       - open 1
     focus: [1,1]
+    acts: ['$reveal']
     text: |
 
-        {[ht,$start]BlinkerDbgP.em &ndash; welcome}
+        {[ht,$start]Ex03_DebugP &ndash; welcome}
 
-        The {[cu]BlinkerDbgP} program introduces some elementary debug capabilities available within the EM platform.
+        The {[cu]Ex03_DebugP} program introduces some elementary debug capabilities available within the EM platform.
 
         Building upon {[cd]printf} &ndash; still vital for debugging live code &ndash; EM offers capabilities with far less overhead.
 
@@ -22,25 +23,26 @@ steps:
   - cmds:
       - build 1 -l
     focus: [1,1]
+    acts: ['$reveal']
     text: |
 
-        {[ht,$build]BlinkerDbgP.em &ndash; build + load}
+        {[ht,$build]Ex03_DebugP &ndash; build + load}
 
-        As presently configured, {[cu]BlinkerDbgP} will start toggling {[cx]appLed} &ndash; not unlike the {[cu]BlinkerP} program seen earlier.
+        As presently configured, {[cu]Ex03_DebugP} will start toggling {[cx]appLed} &ndash; not unlike the {[cu]Ex02_BlinkerP} program seen earlier.
 
-        Midway through execution, however, {[cu]BlinkerDbgP} will abruptly terminate &ndash; leaving {[cx]sysLed} flashing rapidly.
+        Midway through execution, however, {[cu]Ex03_DebugP} will abruptly terminate &ndash; leaving {[cx]sysLed} flashing rapidly.
 
-        To fully grasp the EM features used by {[cu]BlinkerDbgP}, view the real-time  program trace found {[le,https://docs.openem.org/using/using-02/#tour-02-real-time-debug]here}.
+        To fully grasp the EM features used by {[cu]Ex03_DebugP}, view the real-time  program trace found {[le,https://docs.openem.org/using/using-02/#tour-02-real-time-debug]here}.
 
   - cmds:
-      - mark 1 A 20
-      - mark 1 B 22
-      - mark 1 C 24
-      - mark 1 D 25
+      - mark 1 A 16
+      - mark 1 B 18
+      - mark 1 C 20
+      - mark 1 D 21
     focus: [1,1]
     text: |
 
-        {[ht,$details]BlinkerDbgP.em &ndash; details}
+        {[ht,$details]Ex03_DebugP &ndash; details}
 
         <div class="em-bmlist">
 
@@ -48,24 +50,24 @@ steps:
 
         {[bm,B]} This EM debug statement de-asserts {[cx]dbgD}, allowing us to easily measure the time consumed by {[cf]wait}.
 
-        {[bm,C]} {[cu]BlinkerDbgP} skips the remaining debug code when the {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
+        {[bm,C]} {[cu]Ex03_DebugP} skips the remaining debug code when the {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
 
-        {[bm,D]} Using a {[cd]fail} statement, {[cu]BlinkerDbgP} explicitly aborts the program when this condition tests {[ck]true}.
+        {[bm,D]} Using a {[cd]fail} statement, {[cu]Ex03_DebugP} explicitly aborts the program when this condition tests {[ck]true}.
 
         </div>
 
   - cmds:
-      - mark 1 E 26
-      - mark 1 F 28
-      - mark 1 G 29
+      - mark 1 E 22
+      - mark 1 F 24
+      - mark 1 G 25
     focus: [1,8]
     text: |
 
-        {[ht,$details]BlinkerDbgP.em &ndash; more details}
+        {[ht,$details]Ex03_DebugP &ndash; more details}
 
         <div class="em-bmlist">
 
-        {[bm,E]} This EM debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.
+        {[bm,E]} This EM debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
 
         {[bm,F]} This EM statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
 
@@ -76,18 +78,18 @@ steps:
         In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
 
   - cmds:
-      - mark 1 H 30
-      - mark 1 I 33
+      - mark 1 H 26
+      - mark 1 I 29
     focus: [1,8]
     text: |
 
-        {[ht,$details]BlinkerDbgP.em &ndash; still more details}
+        {[ht,$details]Ex03_DebugP &ndash; still more details}
 
         <div class="em-bmlist">
 
         {[bm,H]} EM's {[cd]printf} implements a "practical" subset of the standard C/C++ function, emphasizing efficiency.
 
-        {[bm,I]} Using a {[cd]halt} statement, {[cu]BlinkerDbgP} gracefully ter&shy;minates execution at this point in time.
+        {[bm,I]} Using a {[cd]halt} statement, {[cu]Ex03_DebugP} gracefully ter&shy;minates execution at this point in time.
 
         </div>
 
@@ -104,11 +106,11 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]BlinkerDbgP.em &ndash; extra credit}
+        {[ht,$extra]Ex03_DebugP &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-02-real-time-debug]here}.
 
-        {[bi,task_alt]} Clone {[cu]BlinkerDbgP} into your personal bundle.
+        {[bi,task_alt]} Clone {[cu]Ex03_DebugP} into your personal bundle.
 
         {[bi,sentiment_satisfied]} If you have a Saleae, just go wild in these tours&thinsp;!!!
 
@@ -116,7 +118,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]BlinkerDbgP.em &ndash; next steps}
+        {[ht,$steps]Ex03_DebugP &ndash; next steps}
 
         The remaining tours in this series make minimal use of {[cd]%%[_p_]} statements, and don't use {[cd]printf} at all.
 

@@ -13,6 +13,8 @@ steps:
 
         {[ht,$start]HelloP.em &ndash; welcome}
 
+        {[bu,target,embrowser.revealActiveUnit]Reveal}
+
         This tour does _not_ explain the {[cu]HelloP} program; rather it gives you some hints on using the **EM TOUR GUIDE**.
 
         After selecting the **EM•Script – Start Tour** command, this view appears in the lower-right of your workspace.
