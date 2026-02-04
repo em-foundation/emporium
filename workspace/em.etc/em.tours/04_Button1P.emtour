@@ -11,7 +11,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]Button1P.em &ndash; introduction}
+        {[ht,$start]⟪[cu]Ex05_Button1P⟫ &ndash; introduction}
 
         The {[cu]Button1P} program illustrates the handling of incom&shy;ing events that awaken the MCU when sleeping.
 
@@ -26,7 +26,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]Button1P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex05_Button1P⟫ &ndash; build + load}
 
         Once execution begins &ndash; indicated by two quick blinks of the {[cx]sysLed} &ndash; {[cu]BlinkyP} awaits incoming events.
 
@@ -45,7 +45,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]Button1P.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex05_Button1P⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -67,7 +67,7 @@ steps:
     focus: [1,23]
     text: |
 
-        {[ht,$details]Button1P.em &ndash; more details}
+        {[ht,$details]⟪[cu]Ex05_Button1P⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -88,7 +88,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$peek]EdgeI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]EdgeI⟫ &ndash; quick peek}
 
         The {[cu]EdgeI} interface (which {[cu]AppButEdge} imple&shy;ments) declares features seen earlier in {[cu]Button1P}.
 
@@ -99,7 +99,7 @@ steps:
     focus: [3,1]
     text: |
 
-        {[ht,$peek]GpioI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]GpioI⟫ &ndash; quick peek}
 
         The {[cu]GpioI} interface specifies basic functions for work&shy;ing with GPIO pins found in the underlying MCU.
 
@@ -109,7 +109,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Button1P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex05_Button1P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-03-button-handlers]here}.
 
@@ -123,6 +123,6 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Button1P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex05_Button1P⟫ &ndash; next steps}
 
         Applying what we've already covered, **Tour&thinsp;05** essen&shy;tially re-implements the {[cu]Button1P} program using fibers.

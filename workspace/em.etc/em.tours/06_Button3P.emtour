@@ -11,7 +11,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]Button3P.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex07_Button3P⟫ &ndash; welcome}
 
         Unlike {[cu]Button1P} and {[cu]Button2P}, the {[cu]Button3P} program in&shy;cludes functionality to debounce button events.
 
@@ -24,7 +24,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]Button3P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex07_Button3P⟫ &ndash; build + load}
 
         While &asymp;&thinsp;300 bytes larger than {[cu]Button2P}, explore the en&shy;hanced features of {[cu]Button3P} once execution begins.
 
@@ -41,7 +41,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]Button3P.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex07_Button3P⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -60,7 +60,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$look]ButtonI.em &ndash; longer look}
+        {[ht,$look]⟪[cu]ButtonI⟫ &ndash; longer look}
 
         {[cu]Button3P} uses {[cf]onPressed} in its simplest form &ndash; binding a callback just once, with default duration parameters.
 
@@ -81,7 +81,7 @@ steps:
     focus: [3,1]
     text: |
 
-        {[ht,$details]BoardC__AppBut.em &ndash; details}
+        {[ht,$details]⟪[cu]BoardC__AppBut⟫ &ndash; details}
 
         {[cu]BoardC} uses the {[cn]em.utils}/{[cu]ButtonT} template to syn&shy;thesize its exported {[cu]AppBut} module at build-time.
 
@@ -104,7 +104,7 @@ steps:
     focus: [3,29]
     text: |
 
-        {[ht,$details]BoardC__AppBut.em &ndash; more details}
+        {[ht,$details]⟪[cu]BoardC__AppBut⟫ &ndash; more details}
 
         The synthesized {[cu]BoardC_AppBut} module generalizes the design of our earlier fiber-based {[cu]Button2P} program.
 
@@ -128,7 +128,7 @@ steps:
     focus: [3,40]
     text: |
 
-        {[ht,$details]BoardC__AppBut.em &ndash; still more details}
+        {[ht,$details]⟪[cu]BoardC__AppBut⟫ &ndash; still more details}
 
         <div class="em-bmlist">
 
@@ -151,7 +151,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Button3P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex07_Button3P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-06-button-objects]here}.
 
@@ -167,7 +167,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Button3P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex07_Button3P⟫ &ndash; next steps}
 
         Having finished a set of examples that process in&shy;coming button events, we'll now pivot to MCU timer events.
 

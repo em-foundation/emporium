@@ -10,7 +10,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]OneShot1P.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex08_OneShot1P⟫ &ndash; welcome}
 
         The {[cu]OneShot1P} program illustrates the handling of in&shy;coming timer events that awaken the MCU.
 
@@ -23,7 +23,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]OneShot1P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex08_OneShot1P⟫ &ndash; build + load}
 
         After building and loading completes, {[cu]OneShot1P} blinks {[cx]appLed} five times before halting.
 
@@ -36,7 +36,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]OneShot1P.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex08_OneShot1P⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -56,7 +56,7 @@ steps:
     focus: [1,21]
     text: |
 
-        {[ht,$details]OneShot1P.em &ndash; more details}
+        {[ht,$details]⟪[cu]Ex08_OneShot1P⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -75,7 +75,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$peek]OneShotI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]OneShotI⟫ &ndash; quick peek}
 
         This interface should require little explanation, based on what you've already seen in the {[cu]OneShot1P} program.
 
@@ -87,7 +87,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]OneShot1P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex08_OneShot1P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-07-timer-handlers]here}.
 
@@ -101,7 +101,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]OneShot1P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex08_OneShot1P⟫ &ndash; next steps}
 
         Like the {[cu]Button1P}&thinsp;&rarr;&thinsp;{[cu]Button2P} transformation seen ear&shy;lier, **Tour&thinsp;08** re-implements {[cu]OneShot1P} using fibers.
         

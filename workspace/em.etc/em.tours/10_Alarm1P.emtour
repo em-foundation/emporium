@@ -11,7 +11,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]Alarm1P.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex11_Alarm1P⟫ &ndash; welcome}
 
         Earlier tours focused on millisecond-resolution timers, typically used to idle the MCU for shorter durations.
 
@@ -26,7 +26,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]Alarm1P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex11_Alarm1P⟫ &ndash; build + load}
 
         Since this program never explicitly halts, {[cu]Alarm1P} will continuously wink {[cx]appLed} once execution begins.
 
@@ -39,7 +39,7 @@ steps:
     focus: [1,11]
     text: |
 
-        {[ht,$details]Alarm1P.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex11_Alarm1P⟫ &ndash; details}
 
         The {[cu]Alarm1P} program uses {[cu]AlarmMgr} in a manner simi&shy;lar to how its uses {[cu]FiberMgr}:
 
@@ -60,7 +60,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$look]RtcI.em &ndash; longer look}
+        {[ht,$look]⟪[cu]RtcI⟫ &ndash; longer look}
 
         The implementation of {[cn]em.mcu}/{[cu]AlarmMgr} &ndash; which we'll visit next &ndash; builds upon an {[cn]em.hal}/{[cu]RtcI} proxy.
 
@@ -77,7 +77,7 @@ steps:
     focus: [3,1]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; details}
+        {[ht,$details]⟪[cu]AlarmMgr⟫ &ndash; details}
 
         Turning to {[cu]AlarmMgr}, we'll focus on the implementation of features viewed earlier in our {[cu]Alarm1P} program.
 
@@ -99,7 +99,7 @@ steps:
     focus: [3,30]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; more details}
+        {[ht,$details]⟪[cu]AlarmMgr⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -118,7 +118,7 @@ steps:
     focus: [3,74]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; still more details}
+        {[ht,$details]⟪[cu]AlarmMgr⟫ &ndash; still more details}
 
         <div class="em-bmlist">
 
@@ -140,7 +140,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Alarm1P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex11_Alarm1P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-10-wakeup-alarms]here}.
 
@@ -156,7 +156,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Alarm1P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex11_Alarm1P⟫ &ndash; next steps}
 
         Embedded system not only sleep _for_ a period of time, but sometimes must awaken _at_ a particular time.
 

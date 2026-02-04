@@ -10,7 +10,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]TickerP.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex13_TickerP⟫ &ndash; welcome}
 
         {[cn]TickerP} introduces {[cn]em.utils}/{[cu]TickerMgr}, which gener&shy;al&shy;izes the cyclic nature of our earlier {[cu]Alarm2P} program.
 
@@ -21,7 +21,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]TickerP.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex13_TickerP⟫ &ndash; build + load}
 
         Once execution begins, {[cu]TickerP} will wink {[cx]appLed} _and_ {[cx]sysLed} at different rates &ndash; 1s and 1.5s respectively.
 
@@ -34,7 +34,7 @@ steps:
     focus: [1,12]
     text: |
 
-        {[ht,$details]TickerP.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex13_TickerP⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -55,7 +55,7 @@ steps:
     focus: [2,3]
     text: |
 
-        {[ht,$details]TickerMgr.em &ndash; details}
+        {[ht,$details]⟪[cu]TickerMgr⟫ &ndash; details}
 
         The design of the {[cu]TickerMgr} module shares many traits seen previously inside {[cu]AlarmMgr} and {[cu]FiberMgr}.   
 
@@ -79,7 +79,7 @@ steps:
     focus: [2,36]
     text: |
 
-        {[ht,$details]TickerMgr.em &ndash; more details}
+        {[ht,$details]⟪[cu]TickerMgr⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -99,7 +99,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]TickerP.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex13_TickerP⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-12-cyclic-tickers]here}.
 
@@ -115,7 +115,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]TickerP.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex13_TickerP⟫ &ndash; next steps}
 
         Congratulations &ndash; you've completed a series of tours covering fundamentals of the EM language runtime.
 

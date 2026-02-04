@@ -9,7 +9,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]OneShot2P.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex09_OneShot2P⟫ &ndash; welcome}
 
         Like {[cu]OneShot1p}, the {[cu]OneShot2P} program uses a timer with millisecond-resolution to blink an LED.
 
@@ -20,7 +20,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]OneShot2P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex09_OneShot2P⟫ &ndash; build + load}
 
         Once built and loaded, the {[cu]OneShot2P} program blinks {[cx]appLed} five times at a 100&thinsp;ms rate.
 
@@ -35,7 +35,7 @@ steps:
     focus: [1,16]
     text: |
 
-        {[ht,$details]OneShot2P.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex09_OneShot2P⟫ &ndash; details}
 
         Reinforcing a {[cu]FiberMgr} design pattern used earlier in {[cu]Button2P}, the {[cu]OneShot2P} program proceeds to:
 
@@ -57,7 +57,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]OneShot2P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex09_OneShot2P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-08-timer-fibers]here}.
 
@@ -71,7 +71,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]OneShot2P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex09_OneShot2P⟫ &ndash; next steps}
 
         The {[cu]OneShot1P} and {[cu]OneShot2P} programs use a _con&shy;crete_ {[cu]OneShotMilli} module to initiate a timed delay.
 

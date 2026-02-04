@@ -13,7 +13,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]Ex02_BlinkerP &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex02_BlinkerP⟫ &ndash; welcome}
 
         The {[cu]Ex02_BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
 
@@ -27,7 +27,7 @@ steps:
     acts: ['$build']
     text: |
 
-        {[ht,$build]Ex02_BlinkerP &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex02_BlinkerP⟫ &ndash; build + load}
 
         Once {[cu]Ex02_BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
         
@@ -42,7 +42,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]Ex02_BlinkerP &ndash; details}
+        {[ht,$details]⟪[cu]Ex02_BlinkerP⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -62,7 +62,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$peek]LedI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]LedI⟫ &ndash; quick peek}
 
         The {[cn]em.hal}/{[cu]LedI} interface specifies a set of functions which an LED must implement in the abstract.
 
@@ -76,7 +76,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$details]Common.em &ndash; details}
+        {[ht,$details]⟪[cu]Common⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -92,7 +92,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$peek]BusyWaitI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]BusyWaitI⟫ &ndash; quick peek}
 
         And last, {[cu]BusyWaitI} specifices a {[cf]wait} function &ndash; called from our {[cu]Ex02_BlinkerP} program to spin for 0.5 seconds.
 
@@ -102,7 +102,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Ex02_BlinkerP.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex02_BlinkerP⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-01-basic-blinker]here}.
 
@@ -118,7 +118,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Ex02_BlinkerP.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex02_BlinkerP⟫ &ndash; next steps}
 
         The next several tours in the {[le,https://docs.openem.org/using/using-02]Using EM} series will build upon the code seen here.
 

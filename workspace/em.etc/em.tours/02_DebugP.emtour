@@ -10,7 +10,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]Ex03_DebugP &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex03_DebugP⟫ &ndash; welcome}
 
         The {[cu]Ex03_DebugP} program introduces some elementary debug capabilities available within the EM platform.
 
@@ -26,7 +26,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$build]Ex03_DebugP &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex03_DebugP⟫ &ndash; build + load}
 
         As presently configured, {[cu]Ex03_DebugP} will start toggling {[cx]appLed} &ndash; not unlike the {[cu]Ex02_BlinkerP} program seen earlier.
 
@@ -42,7 +42,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]Ex03_DebugP &ndash; details}
+        {[ht,$details]⟪[cu]Ex03_DebugP⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -63,7 +63,7 @@ steps:
     focus: [1,8]
     text: |
 
-        {[ht,$details]Ex03_DebugP &ndash; more details}
+        {[ht,$details]⟪[cu]Ex03_DebugP⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -83,7 +83,7 @@ steps:
     focus: [1,8]
     text: |
 
-        {[ht,$details]Ex03_DebugP &ndash; still more details}
+        {[ht,$details]⟪[cu]Ex03_DebugP⟫ &ndash; still more details}
 
         <div class="em-bmlist">
 
@@ -106,7 +106,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Ex03_DebugP &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex03_DebugP⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-02-real-time-debug]here}.
 
@@ -118,7 +118,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Ex03_DebugP &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex03_DebugP⟫ &ndash; next steps}
 
         The remaining tours in this series make minimal use of {[cd]%%[_p_]} statements, and don't use {[cd]printf} at all.
 

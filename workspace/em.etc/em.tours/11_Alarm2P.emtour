@@ -10,7 +10,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]Alarm2P.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex12_Alarm2P⟫ &ndash; welcome}
 
         The {[cu]Alarm2P} program employs an important feature of {[cu]AlarmMgr} &ndash; _aligning_ wakeups to future time windows.
 
@@ -23,7 +23,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]Alarm2P.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex12_Alarm2P⟫ &ndash; build + load}
 
         Once execution begins, {[cu]Alarm2P} alternately performs long- and short-winks of {[cx]appLed} every 1.5 secs.
 
@@ -55,7 +55,7 @@ steps:
     focus: [2,50]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex12_Alarm2P⟫ &ndash; details}
 
         {[cu]AlarmMgr} schedules the next wakeup within its {[cf]update} function, with {[cn]deltaTicks} denoting elapsed time.
 
@@ -76,7 +76,7 @@ steps:
     focus: [2,50]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; more details}
+        {[ht,$details]⟪[cu]AlarmMgr⟫ &ndash; more details}
 
         The {[cf]update}&thinsp;{[ck]for} loop also locates the alarm {[cn]a} with the fewest number of ticks remaining before its expiration.
 
@@ -99,7 +99,7 @@ steps:
     focus: [2,82]
     text: |
 
-        {[ht,$details]AlarmMgr.em &ndash; still more details}
+        {[ht,$details]⟪[cu]AlarmMgr⟫ &ndash; still more details}
 
         We'll turn now to {[ct]Alarm}.{[cf]wakeupAt} and the role played by {[cn]em.mcu}/{[cu]EpochTime} in its implementation.
 
@@ -119,7 +119,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Alarm2P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex12_Alarm2P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-11-aligned-wakeups]here}.
 
@@ -133,7 +133,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Alarm2P.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex12_Alarm2P⟫ &ndash; next steps}
 
         With {[cu]AlarmMgr} as a base, we can build a range of high&shy;er-level modules that encapsulate time management.
                 

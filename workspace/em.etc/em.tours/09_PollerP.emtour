@@ -12,7 +12,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]PollerP.em &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex10_PollerP⟫ &ndash; welcome}
 
         The {[cu]PollerP} program introduces {[cn]em.mcu}/{[cu]Poller}, which provides a portable function to pause execution.
 
@@ -25,7 +25,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]PollerP.em &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex10_PollerP⟫ &ndash; build + load}
 
         Once executing, the {[cu]PollerP} program performs a series of "winks" that turn {[cx]appLed} on&thinsp;/&thinsp;off for 5ms.
         
@@ -39,7 +39,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]PollerP.em &ndash; details}
+        {[ht,$details]⟪[cu]Ex10_PollerP⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -56,7 +56,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$peek]PollerI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]PollerI⟫ &ndash; quick peek}
 
         The {[cn]em.mcu}/{[cu]Poller} module inherits the {[cu]PollerI} in&shy;terface, which abstracts periodic testing for a condition.
 
@@ -69,7 +69,7 @@ steps:
     focus: [3,1]
     text: |
 
-        {[ht,$look]Poller.em &ndash; longer look}
+        {[ht,$look]⟪[cu]Ex10_PollerP⟫ &ndash; longer look}
 
         The {[cn]em.mcu}/{[cu]Poller} module inherits the {[cu]PollerI} in&shy;terface viewed at the previous stop on this tour.
 
@@ -87,7 +87,7 @@ steps:
     focus: [4,1]
     text: |
 
-        {[ht,$details]PollerAux.em &ndash; details}
+        {[ht,$details]⟪[cu]PollerAux⟫ &ndash; details}
 
         The {[cu]PollerAux} module implements a portable {[cu]PollerI} delegate using elements toured earlier in {[cu]Button1P}.
 
@@ -109,7 +109,7 @@ steps:
     focus: [4,23]
     text: |
 
-        {[ht,$details]PollerAux.em &ndash; more details}
+        {[ht,$details]⟪[cu]PollerAux⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -129,7 +129,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]PollerP.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex10_PollerP⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-09-timer-service]here}.
 
@@ -143,7 +143,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]PollerP.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex10_PollerP⟫ &ndash; next steps}
 
         With a series of {[cu]OneShotMilli} examples behind us, we'll now focus on timers with a much greater range.
 

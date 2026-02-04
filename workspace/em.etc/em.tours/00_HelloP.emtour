@@ -11,9 +11,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]HelloP.em &ndash; welcome}
-
-        {[bu,target,embrowser.revealActiveUnit]Reveal}
+        {[ht,$start]⟪[cu]HelloP⟫ &ndash; welcome}
 
         This tour does _not_ explain the {[cu]HelloP} program; rather it gives you some hints on using the **EM TOUR GUIDE**.
 
@@ -34,7 +32,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$build]HelloP.em &ndash; build + load}
+        {[ht,$build]⟪[cu]HelloP⟫ &ndash; build + load}
 
         Stop **2 of _n_** of all tours within this series will build and then load the current program of interest.
 
@@ -51,7 +49,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]HelloP.em &ndash; details}
+        {[ht,$details]⟪[cu]HelloP⟫ &ndash; details}
 
         All tours in this series will eventually deep-dive into the current program, as well as other units it may {[ck]import}.
 
@@ -74,7 +72,7 @@ steps:
     focus: [2,1]
     text: |
 
-        {[ht,$peek]ConsoleUartI.em &ndash; quick peek}
+        {[ht,$peek]⟪[cu]ConsoleUartI⟫ &ndash; quick peek}
 
         Sometimes the tour will just take a quick peek at a par&shy;ticular&thinsp;{[cx].em.ts} source file, with minimal commentary.
 
@@ -87,7 +85,7 @@ steps:
     focus: [3,94]
     text: |
 
-        {[ht,$look]Console.em &ndash; longer look}
+        {[ht,$look]⟪[cu]Console⟫ &ndash; longer look}
 
         But sometimes the tour lingers a bit longer on a par&shy;ticular&thinsp;{[cx].em.ts} file, explaining its design in more depth.
 
@@ -99,7 +97,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]HelloP.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]HelloP⟫ &ndash; extra credit}
 
         The penultimate stop on each tour will offer a set of suggestions to increase your knowledge of EM.
 
@@ -117,7 +115,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]HelloP.em &ndash; next steps}
+        {[ht,$steps]⟪[cu]HelloP⟫ &ndash; next steps}
 
         The last stop on each tour typically prepares you for the next tour in the series.
 

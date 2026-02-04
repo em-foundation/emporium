@@ -9,7 +9,7 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$start]Button2P.em &ndash; welcome}
+      {[ht,$start]⟪[cu]Ex06_Button2P⟫ &ndash; welcome}
 
       Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
 
@@ -22,7 +22,7 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$build]Button2P.em &ndash; build + load}
+      {[ht,$build]⟪[cu]Ex06_Button2P⟫ &ndash; build + load}
 
       Looking at the {[cx]OUTPUT} panel, notice that the {[cu]Button2P} program image consumes &asymp;&thinsp;1.6 KB of memory.
 
@@ -36,7 +36,7 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$details]Button2P.em &ndash; details}
+      {[ht,$details]⟪[cu]Ex06_Button2P⟫ &ndash; details}
 
       <div class="em-bmlist">
 
@@ -52,7 +52,7 @@ steps:
     focus: [1,29]
     text: |
 
-      {[ht,$details]Button2P.em &ndash; more details}
+      {[ht,$details]⟪[cu]Ex06_Button2P⟫ &ndash; more details}
 
       <div class="em-bmlist">
 
@@ -69,9 +69,9 @@ steps:
     focus: [2,19]
     text: |
 
-      {[ht,$look]Button1P.em &ndash; review}
+      {[ht,$look]⟪[cu]Ex05_Button1P⟫ &ndash; review}
 
-      Reviewing {[cu]Button1P}, note how {[cf]handler} blinks {[cu]AppLed} _before_ returning to the program's scheduling loop.
+      Reviewing {[cu]Ex05_Button1P}, note how {[cf]handler} blinks {[cu]AppLed} _before_ returning to the scheduling loop.
 
       In fact, {[cf]handler} runs with all interrupts _disabled_ &ndash; until this routine eventually returns.
 
@@ -85,7 +85,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Button2P.em &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex06_Button2P⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-05-button-fibers]here}.
 
@@ -99,7 +99,7 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$steps]Button2P.em &ndash; next steps}
+      {[ht,$steps]⟪[cu]Ex06_Button2P⟫ &ndash; next steps}
 
       Both {[cu]Button2} as well as the earlier {[cu]Button1} program have no logic to handle "glitches" on the {[cx]appBut} pin.
 

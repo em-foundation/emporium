@@ -11,7 +11,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]Ex04_FiberP &ndash; welcome}
+        {[ht,$start]⟪[cu]Ex04_FiberP⟫ &ndash; welcome}
 
         The {[cu]FiberP} program introduces _fibers_ &ndash; a very light&shy;weight threading model supported by the EM runtime.
 
@@ -27,7 +27,7 @@ steps:
     acts: ['$build']
     text: |
 
-        {[ht,$build]Ex04_FiberP &ndash; build + load}
+        {[ht,$build]⟪[cu]Ex04_FiberP⟫ &ndash; build + load}
 
         Looking at the {[cx]OUTPUT} panel, you'll notice that the pro&shy;gram image consumes &asymp;&thinsp;1.6 KB of memory.
 
@@ -46,7 +46,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]Ex04_FiberP &ndash; details}
+        {[ht,$details]⟪[cu]Ex04_FiberP⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -71,7 +71,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$details]FiberMgr.em &ndash; details}
+        {[ht,$details]⟪[cu]FiberMgr⟫ &ndash; details}
 
         <div class="em-bmlist">
 
@@ -96,7 +96,7 @@ steps:
     focus: [1,20]
     text: |
 
-        {[ht,$details]Ex04_FiberP &ndash; more details}
+        {[ht,$details]⟪[cu]Ex04_FiberP⟫ &ndash; more details}
         
         <div class="em-bmlist">
 
@@ -120,7 +120,7 @@ steps:
     focus: [2,49]
     text: |
 
-        {[ht,$details]FiberMgr.em &ndash; more details}
+        {[ht,$details]⟪[cu]FiberMgr⟫ &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -140,7 +140,7 @@ steps:
     focus: [2,75]
     text: |
 
-        {[ht,$details]FiberMgr.em &ndash; still more details}
+        {[ht,$details]⟪[cu]FiberMgr⟫ &ndash; still more details}
 
         Functions defined over opaque types can access their current instance object via an implicit {[cn]this} parameter.
 
@@ -160,7 +160,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra]Ex04_FiberP &ndash; extra credit}
+        {[ht,$extra]⟪[cu]Ex04_FiberP⟫ &ndash; extra credit}
 
         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-03-threading-with-fibers]here}.
 
@@ -176,7 +176,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Ex04_FiberP &ndash; next steps}
+        {[ht,$steps]⟪[cu]Ex04_FiberP⟫ &ndash; next steps}
 
         {[cu]FiberP} remains active until it reaches {[cd]halt}; and the MCU never suspends execution via {[cu]Idle}.{[cf]exec}.
 
