@@ -1,4 +1,4 @@
-title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;07&thinsp;&ndash;&thinsp;timer handlers
+title: Timer handlers
 files:
   - em.etc:em.examples.basic/Ex08_OneShot1P.em.ts
   - em.core:em.hal/OneShotI.em.ts

@@ -1,4 +1,4 @@
-title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;08&thinsp;&ndash;&thinsp;timer fibers
+title: Timer fibers
 files:
   - em.etc:em.examples.basic/Ex09_OneShot2P.em.ts
 

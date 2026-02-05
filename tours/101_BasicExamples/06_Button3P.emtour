@@ -1,4 +1,4 @@
-title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;06&thinsp;&ndash;&thinsp;button objects
+title: Button objects
 files:
   - em.etc:em.examples.basic/Ex07_Button3P.em.ts
   - em.core:em.hal/ButtonI.em.ts

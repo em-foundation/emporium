@@ -1,4 +1,4 @@
-title: Using EM&ensp;&rarr;&ensp;Tour&thinsp;12&thinsp;&ndash;&thinsp;cyclic tickers
+title: Cyclic tickers
 files:
   - em.etc:em.examples.basic/Ex13_TickerP.em.ts
   - em.core:em.utils/TickerMgr.em.ts
