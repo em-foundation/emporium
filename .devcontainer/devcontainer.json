@@ -21,7 +21,6 @@
                     "editor.defaultFormatter": "vscode.typescript-language-features"
                 },
                 "chat.disableAIFeatures": true,
-                "workbench.secondarySideBar.defaultVisibility": "hidden",
                 "chat.commandCenter.enabled": false,
                 "workbench.settings.showAISearchToggle": false
             }
