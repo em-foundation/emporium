@@ -1,18 +1,9 @@
 {
     "name": "emporium",
     "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-    "hostRequirements": {
-        "cpus": 2,
-        "memory": "8gb",
-        "storage": "32gb"
-    },
     "postCreateCommand": "printf \"\\n# emporium shell init\\n[ -f /workspaces/emporium/init-shell.sh ] && source /workspaces/emporium/init-shell.sh\\n\" >> ~/.bashrc && npm ci",
     "customizations": {
         "vscode": {
-            "extensions": [
-                "the-em-foundation.embrowser",
-                "wokwi.wokwi-vscode"
-            ],
             "settings": {
                 "breadcrumbs.enabled": false,
                 "chat.disableAIFeatures": true,
