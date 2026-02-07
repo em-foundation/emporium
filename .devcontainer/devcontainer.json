@@ -6,23 +6,24 @@
         "vscode": {
             "settings": {
                 "breadcrumbs.enabled": false,
+                "chat.disableAIFeatures": true,
+                "chat.commandCenter.enabled": false,
                 "editor.fontSize": 14,
                 "editor.formatOnSave": true,
                 "editor.minimap.enabled": false,
                 "typescript.disableAutomaticTypeAcquisition": true,
                 "typescript.tsserver.web.typeAcquisition.enabled": false,
+                "window.zoomLevel": -1,
                 "workbench.colorTheme": "EM•Script Dark",
                 "workbench.iconTheme": "vs-minimal",
                 "workbench.tree.indent": 20,
+                "workbench.settings.showAISearchToggle": false,
                 "[typescript]": {
                     "editor.defaultFormatter": "vscode.typescript-language-features"
                 },
                 "[typescriptreact]": {
                     "editor.defaultFormatter": "vscode.typescript-language-features"
-                },
-                "chat.disableAIFeatures": true,
-                "chat.commandCenter.enabled": false,
-                "workbench.settings.showAISearchToggle": false
+                }
             }
         }
     }
