@@ -14,7 +14,6 @@
                 "typescript.disableAutomaticTypeAcquisition": true,
                 "typescript.tsserver.web.typeAcquisition.enabled": false,
                 "window.zoomLevel": -1,
-                "workbench.colorTheme": "EM•Script Dark",
                 "workbench.iconTheme": "vs-minimal",
                 "workbench.tree.indent": 20,
                 "workbench.settings.showAISearchToggle": false,
