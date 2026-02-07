@@ -9,6 +9,10 @@
     "postCreateCommand": "printf \"\\n# emporium shell init\\n[ -f /workspaces/emporium/init-shell.sh ] && source /workspaces/emporium/init-shell.sh\\n\" >> ~/.bashrc && npm ci",
     "customizations": {
         "vscode": {
+            "extensions": [
+                "the-em-foundation.embrowser",
+                "wokwi.wokwi-vscode"
+            ],
             "settings": {
                 "breadcrumbs.enabled": false,
                 "chat.disableAIFeatures": true,
@@ -16,6 +20,8 @@
                 "editor.fontSize": 14,
                 "editor.formatOnSave": true,
                 "editor.minimap.enabled": false,
+                "extensions.autoUpdate": false,
+                "extensions.verifySignature": false,
                 "typescript.disableAutomaticTypeAcquisition": true,
                 "typescript.tsserver.web.typeAcquisition.enabled": false,
                 "window.zoomLevel": -1,
