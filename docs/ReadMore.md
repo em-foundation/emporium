@@ -33,6 +33,31 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Installing the components
 
+<details><summary>&ensp;✅&ensp;fork the <code>em-foundation/emporium</code> repository</summary><br>
+<p>This is some text</p>
+</details>
+
+<details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
+<p>This is some text</p>
+</details>
+
+<details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
+<p>This is some text</p>
+</details>
+
+<details><summary>&ensp;✅&ensp;sign in to your <b>GitHub</b> account</summary><br>
+<p>This is some text</p>
+</details>
+
+<details><summary>&ensp;✅&ensp;create a <b>Codespace</b> on your <code>emporium</code> fork</summary><br>
+<p>This is some text</p>
+</details>
+
+<details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
+<p>This is some text</p>
+</details>
+
+
 ## Learning about **EM&bull;Script**
 
 ## Contributing to the cause
