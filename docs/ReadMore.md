@@ -55,16 +55,17 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 </details>
 
 <details><summary>&ensp;✅&ensp;sign in to your <b>GitHub</b> account</summary><br>
-<p>The <b>GitHub Codespaces</b> extension now needs your crendentials.</p>
+<p>The <b>GitHub Codespaces</b> extension now needs your crendentials....</p>
 <p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
-<p>Sign in to your account on <code>github.com</code>.</p>
+<p>Sign in to your account on <code>github.com</code>.....</p>
 <p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
-<p>Just return to your <b>VS Code</b> window.</p>
+<p>And just return to your <b>VS Code</b> window.....</p>
 <p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
 </details>
 
-<details><summary>&ensp;✅&ensp;create a <b>Codespace</b> on your <code>emporium</code> fork</summary><br>
-<p>This is some text</p>
+<details><summary>&ensp;✅&ensp;create a codespace on your <code>emporium</code> fork</summary><br>
+<p>Click the <b>Remote Explorer</b> icon, click <b>Create Codespace</b>, and select your fork:</p>
+<p align="center"><img src="images/fig-7.png" alt="" width="900"><p>    
 </details>
 
 <details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
