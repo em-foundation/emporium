@@ -15,7 +15,7 @@
 
 <br>
 
-The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten its learning curve, our **EM&bull;Browser** extension for **VS Code** brings **EM&bull;Script** language support to this pervasive and ever-popular development environment.
+The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten its learning curve, our **EM&bull;Browser** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
 
 ## Preparing an environment
 
@@ -33,8 +33,13 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Installing the components
 
-<details><summary>&ensp;✅&ensp;fork the <code>em-foundation/emporium</code> repository</summary><br>
-<p>This is some text</p>
+<details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary>
+
+<p>Navigating to <a href="https://github.com/em-foundation/emporium/fork">emporium/fork</a> will present the following dialogue:</p>
+
+<img src="images/fig-1.png" alt="" width="900">
+
+<p>After selecting yourself as the new owner, verify that you can find the fork at github.com/&lt;USERNAME&gt;/emporium.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
