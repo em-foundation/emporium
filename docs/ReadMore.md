@@ -49,11 +49,18 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 </details>
 
 <details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
-<p>This is some text</p>
+<p>Click the <b>Open a Remote Window</b> icon in the lower-right corner and then select <b>GitHub Codespace</b> from the dropdown:</p>
+<p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
+<p><b>VS Code</b> will then automatically install its <b>GitHub Codespaces</b> extension.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;sign in to your <b>GitHub</b> account</summary><br>
-<p>This is some text</p>
+<p>The <b>GitHub Codespaces</b> extension now needs your crendentials.</p>
+<p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
+<p>Sign in to your account on <code>github.com</code>.</p>
+<p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
+<p>Just return to your <b>VS Code</b> window.</p>
+<p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;create a <b>Codespace</b> on your <code>emporium</code> fork</summary><br>
