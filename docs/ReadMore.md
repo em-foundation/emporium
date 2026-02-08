@@ -19,6 +19,18 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Preparing an environment
 
+#### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
+
+&emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify you have **VS Code** version 1.90 or later.
+
+#### 🟠&ensp;signup at [**Wokwi**](https://wokwi.com/)
+
+&emsp;&emsp;&emsp;An sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Browser**
+
+#### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
+
+&emsp;&emsp;&emsp;If you don't have an account, the **GitHub Free** plan would suffice for working with the **EM&bull;porium** repository.
+
 ## Installing the components
 
 ## Learning about **EM&bull;Script**
