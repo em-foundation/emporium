@@ -34,16 +34,18 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 ## Installing the components
 
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-
 <p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which will present the following dialogue:</p>
-
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
-
 <p>After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>This is some text</p>
+<p>Execute these three commands from your local computer's shell, starting from your home directory:</p>
+<pre><code>    mkdir EM
+    cd EM
+    code --user-data-dir . --extensions-dir .</code></pre>
+<p>The latter command will launch a "sandboxed" instance of <b>VS Code</b> with an empty workspace &ndash; effectively isolated from any other ongoing <b>VS Code</b> projects on your local computer.</p>
+<p align="center"><img src="images/fig-2.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
