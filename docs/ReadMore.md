@@ -16,3 +16,11 @@
 <br>
 
 The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten its learning curve, our **EM&bull;Browser** extension for **VS Code** brings **EM&bull;Script** language support to this pervasive and ever-popular development environment.
+
+## Preparing an environment
+
+## Installing the components
+
+## Learning about **EM&bull;Script**
+
+## Contributing to the cause
