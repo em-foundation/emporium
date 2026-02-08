@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="images/logo.png" alt="EM•Scope Logo" width="700">
+</p>
+
 -----
 
 <a id="toc"></a>
