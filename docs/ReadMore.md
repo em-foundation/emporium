@@ -34,42 +34,48 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 ## Installing the components
 
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-<p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which will present the following dialogue:</p>
+<p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which presents the following dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
 <p>After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>Execute these three commands from your local computer's shell, starting from your home directory:</p>
+<p>Execute these three commands from your local computer's shell, starting from your home directory&thinsp;....</p>
 <pre><code>    mkdir EM
     cd EM
     code --user-data-dir . --extensions-dir .</code></pre>
-<p>The latter command will launch a "sandboxed" instance of <b>VS Code</b> with an empty workspace &ndash; effectively isolated from any other ongoing <b>VS Code</b> projects on your local computer.</p>
+<p>The last command launches a "sandboxed" instance of <b>VS Code</b>, isolated from any other <b>VS Code</b> projects on your local computer&thinsp;....</p>
 <p align="center"><img src="images/fig-2.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
-<p>Click the <b>Open a Remote Window</b> icon in the lower-right corner and then select <b>GitHub Codespace</b> from the dropdown:</p>
+<p>Click the <b>Open a Remote Window</b> icon in the lower-right corner and then select <b>GitHub Codespace</b> from the dropdown&thinsp;....</p>
 <p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
 <p><b>VS Code</b> will then automatically install its <b>GitHub Codespaces</b> extension.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;sign in to your <b>GitHub</b> account</summary><br>
-<p>The <b>GitHub Codespaces</b> extension now needs your crendentials....</p>
+<p>The <b>GitHub Codespaces</b> extension now needs your credentials&thinsp;....</p>
 <p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
-<p>Sign in to your account on <code>github.com</code>.....</p>
+<p>Sign in to your account on <code>github.com</code>&thinsp;....</p>
 <p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
-<p>And just return to your <b>VS Code</b> window.....</p>
+<p>And just return to your <b>VS Code</b> window&thinsp;....</p>
 <p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;create a codespace on your <code>emporium</code> fork</summary><br>
-<p>Click the <b>Remote Explorer</b> icon, click <b>Create Codespace</b>, and select your fork:</p>
-<p align="center"><img src="images/fig-7.png" alt="" width="900"><p>    
+<p>Click the <b>Remote Explorer</b> icon, click <b>Create Codespace</b>, and select your fork&thinsp;....</p>
+<p align="center"><img src="images/fig-7.png" alt="" width="900"><p>
+<p>Accept the default <code>dev</code> branch when prompted&thinsp;....</p>
+<p align="center"><img src="images/fig-8.png" alt="" width="900"><p>
+<p>Select the minimal VM for your codespace&thinsp;....</p>
+<p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
+<p>Now sit back and watch the magic happen&thinsp;!!!</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
-<p>This is some text</p>
+<p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
 </details>
 
 
