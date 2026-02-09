@@ -70,11 +70,12 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 <p align="center"><img src="images/fig-8.png" alt="" width="900"><p>
 <p>Select the minimal VM for your codespace&thinsp;....</p>
 <p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
-<</p>
+<p>Now sit back and watch the magic happen&thinsp;!!!</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
-<p>This is some text</p>
+<p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
 </details>
 
 
