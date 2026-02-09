@@ -87,5 +87,5 @@ export function em$configure(): void {
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
     Uptimer.Rtc.$$dlg = Rtc
-    UsCounter.MHZ.$$val = 64
+    UsCounter.MHZ_P.$$val = 64
 }

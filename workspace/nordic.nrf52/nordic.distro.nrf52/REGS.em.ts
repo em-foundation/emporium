@@ -3,7 +3,7 @@ export const $U = $declare('COMPOSITE')
 
 export function em$generate() {
     let out = $outfile('nordic.distro.nrf52/REGS.hpp')
-    out.addFile('../nordic.nrf5x/nordic.distro.nrf52/REGS.hpp.txt')
+    out.addFile('../nordic.nrf52/nordic.distro.nrf52/REGS.hpp.txt')
     out.close()
 }
 

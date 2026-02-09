@@ -62,6 +62,10 @@ function resetConfig(): void {
     e$`NVIC_SystemReset()`
 }
 
+export function isWarm(): bool_t {
+    return false
+}
+
 export function startup(): void {
     resetConfig()
     Debug.startup()
