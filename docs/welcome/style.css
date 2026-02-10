@@ -1,0 +1,72 @@
+.action {
+    bottom: 0;
+    color: #a6a6a6;
+    font-family: 'Calibri';
+    font-size: 26px;
+    height: 20px;
+    padding-bottom: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cmd-wc {
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.cmd-wc:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.label {
+    display: inline;
+}
+
+.dot {
+    color: hsl(165, 80%, 45%);
+    font-weight: bold;
+}
+
+.frame {
+    height: 500px;
+    position: relative;
+}
+
+.tour {
+    left: 0;
+    justify-content: flex-start;
+}
+
+.tour-icon {
+    color: hsl(145, 85%, 50%);
+    font-size: 1.4em;
+    font-weight: bolder;
+    margin-bottom: 2px;
+}
+
+.shut {
+    right: 0;
+    justify-content: flex-end;
+}
+
+.shut-icon {
+    color: hsl(0, 85%, 50%);
+    font-size: 1.4em;
+    font-weight: bolder;
+    margin-bottom: 6px;
+    margin-left: 8px;
+}
+
+.logo {
+    margin: 0 auto;
+    padding-top: 64px;
+    width: 380px;
+}
