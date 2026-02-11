@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1.5 16 15">
+    <g fill="none" stroke="#f85149" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <!-- stem -->
+        <path d="M8 0.5v7.0"/>
+        <!-- ring kept inside 16x16 -->
+        <path d="M3.4 3.9a6.6 6.6 0 1 0 9.2 0"/>
+    </g>
+</svg>
