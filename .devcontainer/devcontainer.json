@@ -1,31 +1,5 @@
 {
     "name": "emporium",
     "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-    "postCreateCommand": "printf \"\\n# emporium shell init\\n[ -f /workspaces/emporium/init-shell.sh ] && source /workspaces/emporium/init-shell.sh\\n\" >> ~/.bashrc && npm ci",
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "breadcrumbs.enabled": false,
-                "chat.disableAIFeatures": true,
-                "chat.commandCenter.enabled": false,
-                "editor.fontSize": 14,
-                "editor.formatOnSave": true,
-                "editor.minimap.enabled": false,
-                "extensions.autoUpdate": false,
-                "extensions.verifySignature": false,
-                "typescript.disableAutomaticTypeAcquisition": true,
-                "typescript.tsserver.web.typeAcquisition.enabled": false,
-                "window.zoomLevel": -1,
-                "workbench.iconTheme": "vs-minimal",
-                "workbench.tree.indent": 20,
-                "workbench.settings.showAISearchToggle": false,
-                "[typescript]": {
-                    "editor.defaultFormatter": "vscode.typescript-language-features"
-                },
-                "[typescriptreact]": {
-                    "editor.defaultFormatter": "vscode.typescript-language-features"
-                }
-            }
-        }
-    }
+    "postCreateCommand": "printf \"\\n# emporium shell init\\n[ -f /workspaces/emporium/init-shell.sh ] && source /workspaces/emporium/init-shell.sh\\n\" >> ~/.bashrc && npm ci"
 }
