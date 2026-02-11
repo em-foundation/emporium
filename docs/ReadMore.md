@@ -33,6 +33,8 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Installing its components
 
+As you work through the steps presented here, click each &thinsp;▶&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
+
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
 <p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which presents the following dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
