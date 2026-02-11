@@ -74,10 +74,15 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 </details>
 
 <details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
+<p>Click through each of following prompts&thinsp;....</p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-12.png" alt="" width="900"><p>
 </details>
 
+<details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
+<p align="center"><img src="images/fig-13.png" alt="" width="900"><p>
+</details>
 
 ## Learning about **EM&bull;Script**
 
