@@ -17,7 +17,7 @@
 
 The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten its learning curve, our **EM&bull;Browser** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
 
-## Preparing an environment
+## Preparing the environment
 
 #### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
 
@@ -31,7 +31,7 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 &emsp;&emsp;&emsp;If you don't have an account, the **GitHub Free** plan would suffice for working with the **EM&bull;porium** repository.
 
-## Installing the components
+## Installing its components
 
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
 <p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which presents the following dialogue&thinsp;....</p>
@@ -74,9 +74,19 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 </details>
 
 <details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
+<p>Click through the prompts on the following three screens&thinsp;....</p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-12.png" alt="" width="900"><p>
 </details>
+
+<details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
+<p>Let's discover more about the <b>EM</b> environment you've now provisioned&thinsp;....</p>
+<p align="center"><img src="images/fig-13.png" alt="" width="900"><p>
+</details>
+
+> [!IMPORTANT]
+> 
 
 
 ## Learning about **EM&bull;Script**
