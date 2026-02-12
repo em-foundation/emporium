@@ -33,6 +33,8 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Installing its components
 
+As you work through the steps presented here, click each &thinsp;▶&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
+
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
 <p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which presents the following dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
@@ -86,7 +88,13 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 </details>
 
 > [!IMPORTANT]
-> 
+> While you've installed **VS Code** locally, understand that the **GitHub Codespace** we've created resides in the cloud &ndash; running on a virtual machine associated with your account.&thinsp; A "free" **GitHub** plan includes about 60 hours/month of CPU time on the minimal (2 cores) configuration you selected earlier.
+>
+> When finished using **EM&bull;Browser** you should *shutdown* the environment using the <img src="images/shutdown.svg" width="16"> button on the **Welcome** page&thinsp;....
+> <p align="center"><img src="images/fig-14.png" alt="" width="900"><p>
+> <p>You'll then return to the <b>VS Code Welcome</b> page &ndash; where you can always re-connect to the same <code>emporium</code> codespace&thinsp;....</p>
+> <p align="center"><img src="images/fig-15.png" alt="" width="900"><p>
+> <p>Should you exit <b>VS Code</b>, you can re-launch the application by executing the <code>code --user-data-dir . --extensions-dir .</code></pre></code> command from within the <code>EM</code> folder under your home directory.</p>
 
 
 ## Learning about **EM&bull;Script**
