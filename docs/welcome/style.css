@@ -1,16 +1,28 @@
-.action {
-    bottom: 0;
+body {
+    font-family: 'Calibri', system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.35;
     color: #a6a6a6;
-    font-family: 'Calibri';
-    font-size: 26px;
-    height: 20px;
-    padding-bottom: 32px;
-    padding-left: 16px;
-    padding-right: 16px;
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+}
+
+.frame {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0;
+    padding-left: 48px;
+    height: 500px;
+}
+
+.logo {
+    margin: 48px 0 0 0;
+    width: 280px;
+}
+
+.action {
+    display: block;
+    margin-top: 22px;
 }
 
 .cmd-wc {
@@ -18,8 +30,10 @@
     align-items: center;
     color: inherit;
     cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
+    padding: 0;
+    margin-left: -25px;
+    border-radius: 0;
+    width: auto;
 }
 
 .cmd-wc:hover {
@@ -35,42 +49,23 @@
     font-weight: bold;
 }
 
-.frame {
-    height: 500px;
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.tour {
-    left: 0;
-    justify-content: flex-start;
-}
-
 .tour-icon {
     color: hsl(145, 85%, 50%);
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: bolder;
-    margin-bottom: 2px;
-    margin-left: 8px;
-}
-
-.shut {
-    right: 0;
-    justify-content: flex-end;
+    margin: 0;
 }
 
 .shut-icon {
     color: hsl(0, 85%, 50%);
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: bolder;
-    margin-bottom: 6px;
-    margin-left: 8px;
+    margin: 0;
 }
 
-.logo {
-    margin: 0 auto;
-    padding-top: 64px;
-    width: 380px;
+.tour,
+.shut {
+    left: auto;
+    right: auto;
+    justify-content: flex-start;
 }
