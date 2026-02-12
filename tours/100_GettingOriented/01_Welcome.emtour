@@ -1,0 +1,35 @@
+title: Welcome aboard
+files:
+  - .assets/img-100-01-01.png
+
+steps:
+
+  - text: |
+
+      {[ht,$start]Welcome aboard}
+
+      This initial tour has two primary objectives:
+
+      {[bi,arrow_circle_right]} Learning how to use the **EM&bull;TOUR GUIDE**.
+
+      {[bi,arrow_circle_right]} Tweaking the UI to remove some visual clutter.
+
+      To proceed through the current tour, you'll use the five buttons across the top of this view:
+
+      {[bm,1]} **Back** &ndash; go to the previous stop on this tour<br>
+      {[bm,2]} **Next** &ndash; go to the next stop on this tour<br>
+      {[bm,3]} **Refresh** &ndash; replay the current stop on this tour<br>
+      {[bm,4]} **Restart** &ndash; rewind to the first stop on this tour <br>
+      {[bm,5]} **End** &ndash; stop this tour and close the **EM&bull;TOUR GUIDE**<br>
+
+      Click on **Next** to continue with **Tour&thinsp;01**.
+
+  - cmds:
+      - view 1
+    text: |
+
+        {[ht,household_supplies]Tidying up}
+
+
+
+
