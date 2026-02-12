@@ -1,6 +1,7 @@
 title: Welcome aboard
 files:
   - .assets/img-100-01-01.png
+  - .assets/img-100-01-02.png
 
 steps:
 
@@ -28,7 +29,13 @@ steps:
       - view 1
     text: |
 
-        {[ht,household_supplies]Tidying up}
+        {[ht,household_supplies]Tidying up &ndash; Activity bar}
+
+  - cmds:
+      - view 2
+    text: |
+
+        {[ht,household_supplies]Tidying up &ndash; Outline view}
 
 
 
