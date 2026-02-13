@@ -1,4 +1,4 @@
-title: Timer fibers
+title: Timer Fibers
 files:
   - em.etc:em.examples.basic/Ex09_OneShot2P.em.ts
 

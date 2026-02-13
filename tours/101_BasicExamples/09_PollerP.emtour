@@ -1,4 +1,4 @@
-title: Timer service
+title: Timer Service
 files:
   - em.etc:em.examples.basic/Ex10_PollerP.em.ts
   - em.core:em.hal/PollerI.em.ts

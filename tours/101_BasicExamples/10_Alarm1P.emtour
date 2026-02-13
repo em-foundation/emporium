@@ -1,4 +1,4 @@
-title: Wakeup alarms
+title: Wakeup Alarms
 files:
   - em.etc:em.examples.basic/Ex11_Alarm1P.em.ts
   - em.core:em.hal/RtcI.em.ts
