@@ -2,6 +2,8 @@ title: Welcome aboard
 files:
   - .assets/img-100-01-01.png
   - .assets/img-100-01-02.png
+  - em.etc:em.examples.basic/Ex01_HelloP.em.ts
+  - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
 
 steps:
 
@@ -23,20 +25,118 @@ steps:
       {[bm,4]} **Restart** &ndash; rewind to the first stop on this tour <br>
       {[bm,5]} **End** &ndash; stop this tour and close the **EM&bull;TOUR GUIDE**<br>
 
-      Click on **Next** to continue with **Tour&thinsp;01**.
+      Click the **Next** button to continue with **Tour&thinsp;01**&thinsp;....
 
   - cmds:
       - view 1
     text: |
 
-        {[ht,household_supplies]Tidying up &ndash; Activity bar}
+      {[ht,household_supplies]Tidying up &ndash; Activity Bar}
+
+      You can remove some extraneous elements from the **Activity Bar** at the left of the **VS Code** window.
+
+      Right-click inside the **Activity Bar** and uncheck the items suggested in the screenshot.
+
+      We also moved the **EM&bull;Browser** and **EM&bull;Tours** activities to the top and bottom &ndash; for easy reference.
+
+      Suggestions only &ndash; click **Next** and let's keep moving&thinsp;....
 
   - cmds:
       - view 2
     text: |
 
-        {[ht,household_supplies]Tidying up &ndash; Outline view}
+      {[ht,household_supplies]Tidying up &ndash; Outline View}
+
+      We should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
+
+      The **Outline View** proves invaluable once we start exploring some **EM&bull;Script** source code.
+
+      {[bm,1]} select **View > Open View** from the main menu<br>
+      {[bm,2]} type `Outline` to locate then `<ENTER>` to open<br>
+      {[bm,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
+      {[bm,4]} drop the **OUTLINE** tab just below **CHAT**<br>
+      
+      Again, suggestions only &ndash; click **Next** to continue&thinsp;....
+
+  - cmds:
+      - open 3
+    focus: [3,1]
+    text: |
+
+        {[ht,front_hand]Hello EM&bull;Script}
+
+        Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
+
+        In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
+
+        Even if you've never seen **EM&bull;Script** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
+
+        Let's dive in&thinsp;....
+
+  - cmds:
+      - mark 3 A 2
+      - mark 3 B 5
+    focus: [3,1]
+    acts: ['$reveal']
+    text: |
+
+        {[ht,$details]⟪[cu]HelloP⟫ &ndash; details}
+
+        Many tour-stops will examine a particular source file in greater detail.
+
+        As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
+
+        <div class="em-bmlist">
+
+        {[bm,A]} Boilerplate found in all **EM•Script** files
+
+        {[bm,B]} Note the somewhat unusual {[cd]printf} syntax.
+
+        </div>
+
+        You can also use the orange *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
+
+        And now, let's execute this **EM&bull;Script** program&thinsp;....
+
+  - cmds:
+    focus: [3,1]
+    acts: [$build]
+    text: |
+
+        {[ht,$build]⟪[cu]HelloP⟫ &ndash; build&thinsp;+&thinsp;load}
+
+        Tours focused on specific **EM&bull;Script** programs include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
+
+        For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
+
+        If you haven't done so already, follow the **Obtain a Wowki license** link on the **EM&bull;Home** editor tab.
+
+        When ready, click the orange *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
+
+        A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
+
+        Close the **Wokwi Simulator** tab before clicking **Next**.
+
+        
 
 
+  - cmds:
+    - open 4
+    focus: [4,1]
+    acts: [$build, $reveal]
+    text: |
 
+        {[ht,$build]⟪[cu]BlinkerP⟫ &ndash; build&thinsp;+&thinsp;load}
 
+        While some **EM&bull;Scripts** programs rely on{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
+
+        To that end, take a quick look at the {[cu]BlinkerP} shown here.&thinsp; Then click **build&thinsp;+&thinsp;load** and enjoy the show&thinsp;!!
+
+        Over time, you'll run **EM&bull;Script** programs on a growing list of target platforms featuring a wide range of MCUs.
+
+        Before moving on, click the {[em]⟪[ci,circuit-board]⟫&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
+
+  - cmds: []
+    text: |
+
+        {[ht,$steps]Next steps}
