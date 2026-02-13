@@ -58,7 +58,7 @@ body {
 
 .key-icon {
     color: hsl(42, 75%, 50%);
-    font-size: 1.28em;
+    font-size: 1.2em;
     font-weight: bolder;
     margin: 0;
 }
@@ -68,11 +68,4 @@ body {
     font-size: 1.2em;
     font-weight: bolder;
     margin: 0;
-}
-
-.tour,
-.shut {
-    left: auto;
-    right: auto;
-    justify-content: flex-start;
 }
