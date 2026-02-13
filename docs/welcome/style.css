@@ -22,18 +22,20 @@ body {
 
 .action {
     display: block;
-    margin-top: 22px;
+    margin-left: -18px;
+    margin-top: 18px;
 }
 
 .cmd-wc {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    color: inherit;
-    cursor: pointer;
-    padding: 0;
-    margin-left: -25px;
-    border-radius: 0;
-    width: auto;
+    width: 315px;
+}
+
+.cmd-wc .icon {
+    width: 50px;
+    flex: 0 0 50px;
+    text-align: center;
 }
 
 .cmd-wc:hover {
@@ -58,6 +60,13 @@ body {
 
 .key-icon {
     color: hsl(42, 75%, 50%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.wave-icon {
+    color: hsl(205, 85%, 70%);
     font-size: 1.2em;
     font-weight: bolder;
     margin: 0;
