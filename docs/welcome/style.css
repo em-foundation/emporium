@@ -56,6 +56,13 @@ body {
     margin: 0;
 }
 
+.key-icon {
+    color: hsl(42, 75%, 50%);
+    font-size: 1.28em;
+    font-weight: bolder;
+    margin: 0;
+}
+
 .shut-icon {
     color: hsl(0, 85%, 50%);
     font-size: 1.2em;
