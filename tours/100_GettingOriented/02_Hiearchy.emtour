@@ -1,1 +1,72 @@
 title: Content Hierarchy
+files:
+  - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
+
+steps:
+
+ -  cmds:
+     - open 1
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,$start]EM&bull;Script Content Hierarchy}
+
+      This tour has two objectives which revolve around the **EM&bull;Builder Content** view seen in the **Primary Sidebar**:
+
+      {[bi,arrow_circle_right]} Understanding the elements comprising this view.
+
+      {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
+
+      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
+
+      Click the orange *action button* to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
+
+      The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** elements.
+
+ -  cmds:
+      - mark 1 A 2
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,account_tree]EM&bull;Script Unit &ndash; source file}
+
+      The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}
+
+      The statement labeled {[bm,A]} declares the _role_ played by this particular **Unit** &ndash; here, an **EM&bull;Script Module**.
+
+      Upcoming tours will visit more **Unit** files playing other roles, as we dive deeper into the **EM&bull;Script** language.
+
+      You'll also learn why all **EM&bull;Script Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
+
+      Let's move on and talk about the **EM&bull;Script Bucket** associated with our {[cu]Blinker} program.
+
+ -  cmds:
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,account_tree]EM&bull;Script Bucket &ndash; namespace}
+
+      The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EM&bull;Script Bucket** named {[cx]em.examples.basic}
+
+      Logically a namespace (and physically a folder), a **Unit** of the *same* name can reside in more than one **Bucket**.
+
+      As a rule, each **EM&bull;Script Bucket** has a *globally unique* name comprising multiple identifiers joined by dots.
+
+      In fact, the very first identifier constrains the scope:
+
+      {[bi,arrow_circle_right]} <code>em.&ast;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **EM Foundation** content<br>
+      {[bi,arrow_circle_right]} <code>nordic.&ast;&nbsp;</code>&mdash; **Nordic Semiconductor** content<br>
+      {[bi,arrow_circle_right]} <code>rpi.&ast;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **Raspberry Pi** content<br>
+
+      As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EM&bull;Script Package** names.
+
+      
+ -  cmds:
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,account_tree]EM&bull;Script Package &ndash; container}
