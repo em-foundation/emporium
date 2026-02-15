@@ -65,8 +65,83 @@ steps:
 
       
  -  cmds:
+      - mark 1 B 5
     focus: [1,1]
     acts: ['$reveal']
     text: |
 
       {[ht,account_tree]EM&bull;Script Package &ndash; container}
+
+      The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.etc} **Package**.
+
+      Seemingly redundant, an **EM&bull;Script Package** serves as a uniquely-name *container* for **Bucket &middot; Unit** *content*.
+
+      A prefixed naming scheme enables us to identify the content *supplier* independent of the content itself.
+
+      Line {[bm,B]} shows how one **Unit** can import another using only the latter's fully-qualified `bucket/Unit` name.
+
+      In fact, **EM&bull;Script Package** names will rarely appear within **EM&bull;Script Unit** source code.
+
+      You'll soon learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
+
+ -  cmds:
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,snippet_folder]Files and Folders}
+
+      We've already mentioned how an **EM&bull;Script Unit** cor&shy;responds to a source file of the same name.
+
+      This pattern continues with each **EM&bull;Script Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
+
+      To switch perspective, right-click on *any* visible icon within the **Content** view and select **Reveal in Explorer**.
+
+      You'll now see the same as a file or folder within your local **Git** clone of the `emporium` repository.
+
+      To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
+
+ -  cmds:
+    focus: [1,1]
+    text: |
+
+      {[ht,note_add]Adding EM&bull;Script Content}
+
+      We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
+
+      To begin, right-click on the special **EM&bull;Script Source** item and select its **EM &ndash; New Package** command.
+
+      When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+
+      Now, right-click on the new **Package** once it appears and select its **EM &ndash; New Bucket** command.
+
+      When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+
+      Finally, select **EM &ndash; New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+
+ -  cmds:
+    acts: ['$build']
+    text: |
+
+      {[ht,note_add]Implementing ⟪[cu]Blinky⟫}
+
+      Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
+
+      At this stage, our skeletal {[cu]Blinky} program simply halts execution  &ndash; indicated by  `SysLed` remaining lit.
+
+      Next, you should *overwrite* your skeletal {[cx]Blinky.em.ts} file with the contents of {[cx]Ex02_BlinkerP.em.ts}.
+
+      ⟪&thinsp;**VS Code** provides familiar **Select All &middot; Copy &middot; Paste &middot; Save** commands in its **File &middot; Edit &middot; Selection** menus&thinsp;⟫
+
+      Return focus to your enhanced {[cx]Blinky.em.ts} file and now click the **build&thinsp;+&thinsp;load** button.
+
+      Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
+
+ -  cmds:
+    text: |
+
+      {[ht,bucket_check]Odd and Ends}
+
+      Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity 
+      
+
