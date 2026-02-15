@@ -1,6 +1,7 @@
 title: Content Hierarchy
 files:
   - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
+  - .assets/img-100-02-01.png
 
 steps:
 
@@ -138,10 +139,32 @@ steps:
       Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
 
  -  cmds:
+     - view 2
     text: |
 
       {[ht,bucket_check]Odd and Ends}
 
-      Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity 
-      
+      Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
 
+      Best practice, you should regularly push any changes up to your personal `emporium` fork on **GitHub**.
+
+      To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
+
+      And finally, you can always **Discard changes** to the workspace made intentionally &ndash; or accidentally.😉
+ 
+ -  cmds: []
+    text: |
+
+        {[ht,$steps]Next steps}
+
+        Well done &ndash; you're now officially dangerous.🔥
+
+        Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EM&bull;Script** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
+
+        While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
+
+        To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
+
+        And don't forget about that **Discard Changes** command we highlighted on the previous tour-stop&thinsp;!!
+
+        {[hc]}
