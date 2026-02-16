@@ -58,6 +58,15 @@ body {
     margin: 0;
 }
 
+.gram-icon {
+    color: hsl(165, 85%, 70%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+    margin-left: -4px;
+    margin-right: 4px;
+}
+
 .key-icon {
     color: hsl(42, 75%, 50%);
     font-size: 1.2em;
