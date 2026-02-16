@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', RtcI)
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RtcI from '@em.hal/RtcI.em'

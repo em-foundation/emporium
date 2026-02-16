@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', IdleI)
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
 import * as Debug from '@em.lang/Debug.em'
 import * as IdleI from '@em.hal/IdleI.em'

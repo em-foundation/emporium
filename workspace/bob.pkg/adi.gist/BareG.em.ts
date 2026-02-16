@@ -11,7 +11,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
 const RED_LED = 24
 const GRN_LED = 25

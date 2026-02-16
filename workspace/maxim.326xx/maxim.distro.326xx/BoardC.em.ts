@@ -7,19 +7,19 @@ import * as BusyWait from '@em.utils/BusyWait.em'
 import * as ButtonT from '@em.utils/ButtonT.em'
 import * as Console from '@em.lang/Console.em'
 import * as Common from '@em.mcu/Common.em'
-import * as ConsoleUart0 from '@adi.mcu.max326xx/ConsoleUart0.em'
-import * as ConsoleUart3 from '@adi.mcu.max326xx/ConsoleUart3.em'
+import * as ConsoleUart0 from '@maxim.mcu.326xx/ConsoleUart0.em'
+import * as ConsoleUart3 from '@maxim.mcu.326xx/ConsoleUart3.em'
 import * as Debug from '@em.lang/Debug.em'
-import * as EdgeT from '@adi.mcu.max326xx/EdgeT.em'
+import * as EdgeT from '@maxim.mcu.326xx/EdgeT.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
-import * as GpioT from '@adi.mcu.max326xx/GpioT.em'
-import * as Idle from '@adi.mcu.max326xx/Idle.em'
+import * as GpioT from '@maxim.mcu.326xx/GpioT.em'
+import * as Idle from '@maxim.mcu.326xx/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
-import * as Mcu from '@adi.mcu.max326xx/Mcu.em'
-import * as OneShot from '@adi.mcu.max326xx/OneShotTmr0.em'
+import * as Mcu from '@maxim.mcu.326xx/Mcu.em'
+import * as OneShot from '@maxim.mcu.326xx/OneShotTmr0.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as Rtc from '@adi.mcu.max326xx/Rtc.em'
-import * as SysOsc from '@adi.mcu.max326xx/SysOsc.em'
+import * as Rtc from '@maxim.mcu.326xx/Rtc.em'
+import * as SysOsc from '@maxim.mcu.326xx/SysOsc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
@@ -95,5 +95,5 @@ export function em$configure(): void {
     SysLedPin.pin_num.$$val = brd.pins.sysLed
     SysOsc.use_ERFO.$$val = brd.sysOscSrc == 'ERFO'
     Uptimer.Rtc.$$dlg = Rtc
-    UsCounter.MHZ.$$val = brd.sysOscSrc == 'ERFO' ? 32 : 60
+    UsCounter.MHZ_P.$$val = brd.sysOscSrc == 'ERFO' ? 32 : 60
 }

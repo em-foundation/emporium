@@ -1,7 +1,7 @@
 import em from '@$$emscript'
 export const $U = em.$declare('MODULE')
 
-import * as BoardC from '@adi.distro.max326xx/BoardC.em'
+import * as BoardC from '@maxim.distro.326xx/BoardC.em'
 import * as Common from '@em.mcu/Common.em'
 
 export const AppLed = $delegate(BoardC.AppLed)

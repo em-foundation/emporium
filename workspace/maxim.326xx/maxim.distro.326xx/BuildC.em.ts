@@ -2,13 +2,13 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 import * as ArmStartupC from '@em.arch.arm/StartupC.em'
-import * as BoardC from '@adi.distro.max326xx/BoardC.em'
+import * as BoardC from '@maxim.distro.326xx/BoardC.em'
 import * as IsrDebug from '@em.arch.arm/IsrDebug.em'
 import * as IsrEmpty from '@em.arch.arm/IsrEmpty.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LinkerC from '@em.build.segger/LinkerC.em'
-import * as REGS from '@adi.distro.max326xx/REGS.em'
-import * as StartupC from '@adi.distro.max326xx/StartupC.em'
+import * as REGS from '@maxim.distro.326xx/REGS.em'
+import * as StartupC from '@maxim.distro.326xx/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
 import * as ChildProc from 'child_process'

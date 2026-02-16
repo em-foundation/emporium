@@ -1,7 +1,7 @@
 import em from '@$$emscript'
 export const $U = em.$declare('MODULE')
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 import * as UartC from '@bob.test/UartC.em'
 
 const TxPin = $delegate(UartC.TxPin)

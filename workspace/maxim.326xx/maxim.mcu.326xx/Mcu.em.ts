@@ -1,13 +1,17 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', McuI)
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
 import * as Debug from '@em.lang/Debug.em'
 import * as McuI from '@em.hal/McuI.em'
-import * as SysOsc from '@adi.mcu.max326xx/SysOsc.em'
+import * as SysOsc from '@maxim.mcu.326xx/SysOsc.em'
 
 export namespace em$meta { }
+
+export function isWarm(): bool_t {
+    return false
+}
 
 export function startup(): void {
     const vrego_A = $R.F_SIMO_VREGO_A_RANGEA | ((1750 - 600) / 10)

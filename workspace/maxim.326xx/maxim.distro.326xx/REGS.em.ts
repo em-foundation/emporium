@@ -2,8 +2,8 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 export function em$generate() {
-    let out = $outfile('adi.distro.max326xx/REGS.hpp')
-    out.addFile('../adi.max326xx/adi.distro.max326xx/REGS.hpp.txt')
+    let out = $outfile('maxim.distro.326xx/REGS.hpp')
+    out.addFile('../maxim.326xx/maxim.distro.326xx/REGS.hpp.txt')
     out.close()
 }
 

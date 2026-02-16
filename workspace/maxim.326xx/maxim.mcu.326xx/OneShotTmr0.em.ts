@@ -1,12 +1,12 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', OneShotI)
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
-import * as Idle from '@adi.mcu.max326xx/Idle.em'
+import * as Idle from '@maxim.mcu.326xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
-import * as SysOsc from '@adi.mcu.max326xx/SysOsc.em'
+import * as SysOsc from '@maxim.mcu.326xx/SysOsc.em'
 
 export type Handler = OneShotI.Handler
 

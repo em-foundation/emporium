@@ -1,9 +1,9 @@
 import '@$$emscript'
 export const $T = $declare('TEMPLATE')
 
-import * as $R from '@adi.distro.max326xx/REGS.em'
+import * as $R from '@maxim.distro.326xx/REGS.em'
 
-import * as Aux from '@adi.mcu.max326xx/EdgeAux.em'
+import * as Aux from '@maxim.mcu.326xx/EdgeAux.em'
 import * as EdgeI from '@em.hal/EdgeI.em'
 import * as GpioI from '@em.hal/GpioI.em'
 

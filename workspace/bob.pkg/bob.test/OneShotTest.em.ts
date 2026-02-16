@@ -2,7 +2,7 @@ import em from '@$$emscript'
 export const $U = em.$declare('MODULE')
 
 import * as Common from '@em.mcu/Common.em'
-import * as OneShot from '@adi.mcu.max326xx/OneShotTmr0.em'
+import * as OneShot from '@maxim.mcu.326xx/OneShotTmr0.em'
 
 export namespace em$meta { }
 
