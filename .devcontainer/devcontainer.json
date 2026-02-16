@@ -1,0 +1,5 @@
+{
+    "name": "emporium",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+    "postCreateCommand": "printf \"\\n# emporium shell init\\nclear\\n[ -f /workspaces/emporium/init-shell.sh ] && source /workspaces/emporium/init-shell.sh\\n\" >> ~/.bashrc && npm ci"
+}
