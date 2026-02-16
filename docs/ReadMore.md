@@ -19,17 +19,28 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Preparing the environment
 
+#### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
+
+&emsp;&emsp;&emsp;If you don't have an account, the **GitHub Free** plan would suffice for working with the **EM&bull;porium** repository.
+
 #### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
 
 &emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify you have **VS Code** version 1.90 or later.
+
+#### 🟠&ensp;download [**Node.js**](https://nodejs.org/en/download)
+
+&emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify you have **Node.js** version 22 or later.
 
 #### 🟠&ensp;signup at [**Wokwi**](https://wokwi.com/)
 
 &emsp;&emsp;&emsp;An sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Browser**
 
-#### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
-
-&emsp;&emsp;&emsp;If you don't have an account, the **GitHub Free** plan would suffice for working with the **EM&bull;porium** repository.
+> [!IMPORTANT]
+> **MS Windows** users should also install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a comparable command-line environment to what you'd find on **Linux** or **MacOS**.&thinsp; Ensure that you can execute the `code --version` and `node --version` commands from the shell.
+>
+> You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
+>
+> <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
 ## Installing its components
 
