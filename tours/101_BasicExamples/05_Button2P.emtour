@@ -16,6 +16,8 @@ steps:
       Unlike {[cu]Button1P}, however, {[cu]Button2P} uses a {[ct]Fiber} object to better handle incoming button events.
 
       Besides simplifying {[cu]Button2P}, this design enables more lengthy responses to incoming events.
+
+      {[uc]}
 # 
 #   - cmds:
 #     - build 1 -l

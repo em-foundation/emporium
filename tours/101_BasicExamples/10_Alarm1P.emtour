@@ -20,6 +20,8 @@ steps:
         With durations specified in (sub-)seconds, {[cu]AlarmMgr} would enable the MCU to hibernate for years at a time.
 
         In practice, {[cu]AlarmMgr} wakeups typically occur more fre&shy;quently &ndash; say, every two minutes or once an hour.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l

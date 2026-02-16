@@ -18,6 +18,8 @@ steps:
         The program can also distinguish "long" button presses, and will blink a different LED accordingly.
 
         Finally, {[cu]Button3P} introduces some new platform capa&shy;bilities that further streamline the program's design.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l

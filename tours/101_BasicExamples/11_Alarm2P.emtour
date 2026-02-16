@@ -16,6 +16,8 @@ steps:
 
         This feature enables {[cu]AlarmP} to precisely wakeup every 1.5 secs &ndash; despite its varying active duty-cycle.
 
+        {[uc]}
+
 #         
 # 
 #   - cmds:

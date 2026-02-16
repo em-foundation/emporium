@@ -15,6 +15,8 @@ steps:
         {[cn]TickerP} introduces {[cn]em.utils}/{[cu]TickerMgr}, which gener&shy;al&shy;izes the cyclic nature of our earlier {[cu]Alarm2P} program.
 
         {[cu]TickerMgr} also reinforces an important EM design pat&shy;tern seen in prev&shy;ious tours of {[cu]AlarmMgr} and {[cu]FiberMgr}.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l

@@ -17,6 +17,8 @@ steps:
         In response to these events &ndash; programmed to occur at a specific time interval &ndash; {[cu]OneShot1P} will blink an LED.
 
         Like the {[cu]Button1P} program toured earlier, {[cu]OneShot1P} uses a lower-level handler in lieu of a fiber object.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l

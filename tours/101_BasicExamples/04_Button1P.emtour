@@ -21,6 +21,8 @@ steps:
 
         Subsequent tours will explore alternative implementa&shy;tions which do, in fact, leverage opaque {[ct]Fiber} objects.
 
+        {[uc]}
+
 #   - cmds:
 #       - build 1 -l
 #     focus: [1,1]

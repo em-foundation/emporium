@@ -14,6 +14,8 @@ steps:
         Like {[cu]OneShot1p}, the {[cu]OneShot2P} program uses a timer with millisecond-resolution to blink an LED.
 
         And like {[cu]Button2P} toured earlier, {[cu]OneShot2P} uses fibers to better manage its res&shy;ponse to events.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l

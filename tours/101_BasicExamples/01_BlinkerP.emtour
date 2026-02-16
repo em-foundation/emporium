@@ -21,6 +21,8 @@ steps:
 
         With that, let's build&thinsp;+&thinsp;load {[cu]Ex02_BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
 
+        {[uc]}
+
 #   - cmds:
 #       - build 1 -l
 #     focus: [1,1]

@@ -20,6 +20,8 @@ steps:
         While {[cu]FiberP} also blinks an LED five times, its imple&shy;men&shy;tation lacks an overt {[ck]for} loop &ndash; unlike {[cu]BlinkerP}.
 
         Rather, the {[cu]FiberP} program relies on a sort of "reactive call&shy;back" function triggered under software control.
+
+        {[uc]}
 # 
 #   - cmds:
 #       - build 1 -l
