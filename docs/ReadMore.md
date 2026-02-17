@@ -19,7 +19,7 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Preparing the environment
 
-<a id="preparing">
+<a id="preparing"></a>
 
 #### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
 
@@ -46,7 +46,7 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 ## Installing its components
 
-<a id="installing">
+<a id="installing"></a>
 
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
@@ -100,7 +100,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 ## Learning about **EM&bull;Script**
 
-<a id="learning">
+<a id="learning"></a>
 
 <details><summary>&ensp;✅&ensp;Yourfirst tour</summary><br>
 <p align="center"><img src="images/tour.gif" alt="" width="900"><p>
@@ -109,6 +109,6 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 ## Contributing to the cause
 
-<a id="contributing">
+<a id="contributing"></a>
 
 
