@@ -17,9 +17,8 @@
 
 The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten the learning curve, our **EM&bull;Builder** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
 
-## Preparing the environment
-
 <a id="preparing"></a>
+## Preparing the environment
 
 #### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
 
@@ -44,9 +43,8 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 >
 > <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
-## Installing its components
-
 <a id="installing"></a>
+## Installing its components
 
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
@@ -98,17 +96,16 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
 </details>
 
+<a id="learning"></a>
 ## Learning about **EM&bull;Script**
 
-<a id="learning"></a>
+With your **EM&bull;porium** environment up and running, we'll now pivot towards exploring its *software content* written in the **EM&bull;Script** program&shy;ming language.&thinsp; To that end, this environment features an ever-growing set of **EM&bull;Tours** &ndash; self-paced learning modules that bring you face-to-face with working **EM&bull;Script** code that you can *cut &middot; copy &middot; paste* to your heart's content.
 
-<details><summary>&ensp;✅&ensp;Yourfirst tour</summary><br>
+<details><summary>&ensp;🔎&ensp;preview your first <b>EM&bull;Tour</b></summary><br>
+<p>Click on this screenshot to restart the animation&thinsp;....</p>
 <p align="center"><img src="images/tour.gif" alt="" width="900"><p>
 </details>
 
-
-## Contributing to the cause
-
 <a id="contributing"></a>
-
+## Contributing to the cause
 
