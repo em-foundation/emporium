@@ -7,10 +7,10 @@
 <a id="toc"></a>
 
 <h3 align="center">
-  <a href="#preparing">preparing-the-environment</a>&nbsp;&#xFF5C;&nbsp;
-  <a href="#installing">installing-the-components</a>&nbsp;&#xFF5C;&nbsp;
+  <a href="#preparing-the-environment">Preparing</a>&nbsp;&#xFF5C;&nbsp;
+  <a href="#installing-the-components">Installing</a>&nbsp;&#xFF5C;&nbsp;
   <a href="#learning">Learning</a>&nbsp;&#xFF5C;&nbsp;
-  <a href="#contributing">contributing-to-the-cause</a>
+  <a href="#contributing-to-the-cause">Contributing</a>
 </h3>
 
 <br>
