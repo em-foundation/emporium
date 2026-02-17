@@ -102,7 +102,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 <a id="learning"></a>
 
-<details><summary>&ensp;✅&ensp;Yourfirst tour</summary><br>
+<details><summary>&ensp;✅&ensp;</summary><br>
 <p align="center"><img src="images/tour.gif" alt="" width="900"><p>
 </details>
 
