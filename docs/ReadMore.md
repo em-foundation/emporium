@@ -47,59 +47,52 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-<p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which presents the following dialogue&thinsp;....</p>
+<p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which brings up this dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
 <p>After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
 <p>We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
-<pre><code>    mkdir EM
-    cd EM
+<pre><code>    mkdir $HOME/EM
+    cd $HOME/EM
     mkdir data exts repo</code></pre>
-<p>From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command as follows&thinsp;....</p>
+<p>From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
 <pre><code>    code --install-extension the-em-foundation.embuilder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
 <p>Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
 <pre><code>    code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
 
 <details><summary>&ensp;✅&ensp;prepare to interact with <b>GitHub</b></summary><br>
-<p>Perform the following series of actions through the <b>Source Control</b> activity&thinsp;....</p>
-<p align="center"><img src="images/fig-2.png" alt="" width="900"><p>
+<p>Perform this sequence of actions using the <b>Source Control</b> activity found in <b>VS Code Activity Bar</b>&thinsp;....</p>
+<p align="center"><img src="images/fig-2.png" alt="" width="900"><p
 <p>The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
 <p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
 <p>Sign in to your account on <code>github.com</code>&thinsp;....</p>
 <p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
-<p>And just return to your <b>VS Code</b> window&thinsp;....</p>
+<p>Just dismiss this dialogue and return to your <b>VS Code</b> window&thinsp;....</p>
 <p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;clone your <code>emporium</code> fork to <code>~/EM/repo</code></summary><br>
+<p>Back in <b>VS Code</b> now, continue your <b>Source Control</b> activity by now selecting <code>&lt;USERNAME&gt;/emporium</code></p>
 <p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
+<p><b>VS Code</b> will next prompt you to locate your (now empty) <code>~/EM/repo</code> folder</p>
 <p align="center"><img src="images/fig-7.png" alt="" width="900"><p>
+<p>Time for a short break&thinsp;.... <b>☕</b></p>
 <p align="center"><img src="images/fig-8.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;populate your <b>VS Code</b> workspace</summary><br>
-<p>Click through the prompts on the following three screens&thinsp;....</p>
+<p>Click through the prompts on the next two screens&thinsp;....</p>
 <p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
-<p>Let's discover more about the <b>EM</b> environment you've now provisioned&thinsp;....</p>
+<p>You've arrived&thinsp;.... ✨</p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
 </details>
-
-> [!IMPORTANT]
-> While you've installed **VS Code** locally, understand that the **GitHub Codespace** we've created resides in the cloud &ndash; running on a virtual machine associated with your account.&thinsp; A "free" **GitHub** plan includes about 60 hours/month of CPU time on the minimal (2 cores) configuration you selected earlier.
->
-> When finished using **EM&bull;Builder** you should *shutdown* the environment using the <img src="images/shutdown.svg" width="16"> button on the **Welcome** page&thinsp;....
-> <p align="center"><img src="images/fig-14.png" alt="" width="900"><p>
-> <p>You'll then return to the <b>VS Code Welcome</b> page &ndash; where you can always re-connect to the same <code>emporium</code> codespace&thinsp;....</p>
-> <p align="center"><img src="images/fig-15.png" alt="" width="900"><p>
-> <p>Should you exit <b>VS Code</b>, you can re-launch the application by executing the <code>code --user-data-dir . --extensions-dir .</code></pre></code> command from within the <code>EM</code> folder under your home directory.</p>
-
 
 ## Learning about **EM&bull;Script**
 
