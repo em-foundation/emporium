@@ -96,4 +96,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 ## Learning about **EM&bull;Script**
 
+<p align="center"><img src="images/tour.gif" alt="" width="900"><p>
+
+
 ## Contributing to the cause
