@@ -2,8 +2,8 @@ title: Welcome Aboard
 files:
   - .assets/img-100-01-01.png
   - .assets/img-100-01-02.png
-  - em.etc:em.examples.basic/Ex01_HelloP.em.ts
-  - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.prog:em.examples.basic/Ex01_HelloP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
 
 steps:
 

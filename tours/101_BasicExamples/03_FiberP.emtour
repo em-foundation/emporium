@@ -1,6 +1,6 @@
 title: Threading with Fibers
 files:
-  - em.etc:em.examples.basic/Ex04_FiberP.em.ts
+  - em.prog:em.examples.basic/Ex04_FiberP.em.ts
   - em.core:em.utils/FiberMgr.em.ts
 
 steps:

@@ -1,8 +1,8 @@
 title: Button Objects
 files:
-  - em.etc:em.examples.basic/Ex07_Button3P.em.ts
+  - em.prog:em.examples.basic/Ex07_Button3P.em.ts
   - em.core:em.hal/ButtonI.em.ts
-  - em.etc.gen/ti.distro.cc23xx/BoardC__AppBut.em.ts
+  - em.prog.gen/ti.distro.cc23xx/BoardC__AppBut.em.ts
 
 steps:
 

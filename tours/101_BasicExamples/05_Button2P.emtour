@@ -1,7 +1,7 @@
 title: Button Fibers
 files:
-  - em.etc:em.examples.basic/Ex06_Button2P.em.ts
-  - em.etc:em.examples.basic/Ex05_Button1P.em.ts
+  - em.prog:em.examples.basic/Ex06_Button2P.em.ts
+  - em.prog:em.examples.basic/Ex05_Button1P.em.ts
 
 steps:
   - cmds:

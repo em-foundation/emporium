@@ -1,6 +1,6 @@
 title: Timer Service
 files:
-  - em.etc:em.examples.basic/Ex10_PollerP.em.ts
+  - em.prog:em.examples.basic/Ex10_PollerP.em.ts
   - em.core:em.hal/PollerI.em.ts
   - em.core:em.mcu/Poller.em.ts
   - em.core:em.utils/PollerAux.em.ts

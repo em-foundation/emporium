@@ -1,6 +1,6 @@
 title: Blinking LEDs
 files:
-  - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - em.core:em.hal/LedI.em.ts
   - em.core:em.mcu/Common.em.ts
   - em.core:em.hal/BusyWaitI.em.ts

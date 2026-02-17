@@ -1,6 +1,6 @@
 title: Content Hierarchy
 files:
-  - em.etc:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-100-02-01.png
 
 steps:
@@ -73,7 +73,7 @@ steps:
 
       {[ht,account_tree]EM&bull;Script Package &ndash; container}
 
-      The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.etc} **Package**.
+      The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
 
       Seemingly redundant, an **EM&bull;Script Package** serves as a uniquely-name *container* for **Bucket &middot; Unit** *content*.
 

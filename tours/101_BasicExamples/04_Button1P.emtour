@@ -1,6 +1,6 @@
 title: Button Handlers
 files:
-  - em.etc:em.examples.basic/Ex05_Button1P.em.ts
+  - em.prog:em.examples.basic/Ex05_Button1P.em.ts
   - em.core:em.hal/EdgeI.em.ts
   - em.core:em.hal/GpioI.em.ts
 

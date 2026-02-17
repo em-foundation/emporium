@@ -1,6 +1,6 @@
 title: Timer Handlers
 files:
-  - em.etc:em.examples.basic/Ex08_OneShot1P.em.ts
+  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
   - em.core:em.hal/OneShotI.em.ts
 
 steps:

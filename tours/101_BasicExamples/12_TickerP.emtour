@@ -1,6 +1,6 @@
 title: Cyclic Tickers
 files:
-  - em.etc:em.examples.basic/Ex13_TickerP.em.ts
+  - em.prog:em.examples.basic/Ex13_TickerP.em.ts
   - em.core:em.utils/TickerMgr.em.ts
 
 steps:

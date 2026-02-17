@@ -1,6 +1,6 @@
 title: Aligned Wakeups
 files:
-  - em.etc:em.examples.basic/Ex12_Alarm2P.em.ts
+  - em.prog:em.examples.basic/Ex12_Alarm2P.em.ts
   - em.core:em.utils/AlarmMgr.em.ts
 
 steps:

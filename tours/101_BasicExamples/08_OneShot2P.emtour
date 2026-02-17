@@ -1,6 +1,6 @@
 title: Timer Fibers
 files:
-  - em.etc:em.examples.basic/Ex09_OneShot2P.em.ts
+  - em.prog:em.examples.basic/Ex09_OneShot2P.em.ts
 
 steps:
 
