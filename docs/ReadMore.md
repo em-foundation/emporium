@@ -15,7 +15,7 @@
 
 <br>
 
-The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten its learning curve, our **EM&bull;Browser** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
+The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten the learning curve, our **EM&bull;Builder** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
 
 ## Preparing the environment
 
@@ -33,7 +33,7 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 #### 🟠&ensp;signup at [**Wokwi**](https://wokwi.com/)
 
-&emsp;&emsp;&emsp;An sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Browser**
+&emsp;&emsp;&emsp;An sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Builder**
 
 > [!IMPORTANT]
 > **MS Windows** users should also install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a comparable command-line environment to what you'd find on **Linux** or **MacOS**.&thinsp; Ensure that you can execute the `code --version` and `node --version` commands from the shell.
@@ -53,12 +53,14 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>Execute these three commands from your local computer's shell, starting from your home directory&thinsp;....</p>
+<p>We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
 <pre><code>    mkdir EM
     cd EM
-    code --user-data-dir . --extensions-dir .</code></pre>
-<p>The last command launches a "sandboxed" instance of <b>VS Code</b>, isolated from any other <b>VS Code</b> projects on your local computer&thinsp;....</p>
-<p align="center"><img src="images/fig-2.png" alt="" width="900"><p>
+    mkdir data exts repo</code></pre>
+<p>From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command as follows&thinsp;....</p>
+<pre><code>    code --install-extension the-em-foundation.embuilder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
+<p>Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
+<pre><code>    code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
 
 <details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
@@ -86,7 +88,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p>Now sit back and watch the magic happen&thinsp;!!!</p>
 </details>
 
-<details><summary>&ensp;✅&ensp;install <code>embrowser</code> and other extensions</summary><br>
+<details><summary>&ensp;✅&ensp;install <code>embuilder</code> and other extensions</summary><br>
 <p>Click through the prompts on the following three screens&thinsp;....</p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
@@ -101,7 +103,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 > [!IMPORTANT]
 > While you've installed **VS Code** locally, understand that the **GitHub Codespace** we've created resides in the cloud &ndash; running on a virtual machine associated with your account.&thinsp; A "free" **GitHub** plan includes about 60 hours/month of CPU time on the minimal (2 cores) configuration you selected earlier.
 >
-> When finished using **EM&bull;Browser** you should *shutdown* the environment using the <img src="images/shutdown.svg" width="16"> button on the **Welcome** page&thinsp;....
+> When finished using **EM&bull;Builder** you should *shutdown* the environment using the <img src="images/shutdown.svg" width="16"> button on the **Welcome** page&thinsp;....
 > <p align="center"><img src="images/fig-14.png" alt="" width="900"><p>
 > <p>You'll then return to the <b>VS Code Welcome</b> page &ndash; where you can always re-connect to the same <code>emporium</code> codespace&thinsp;....</p>
 > <p align="center"><img src="images/fig-15.png" alt="" width="900"><p>
