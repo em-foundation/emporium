@@ -63,41 +63,32 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <pre><code>    code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
 
-<details><summary>&ensp;✅&ensp;enable <b>GitHub Codespace</b> support</summary><br>
-<p>Click the <b>Open a Remote Window</b> icon in the lower-right corner and then select <b>GitHub Codespace</b> from the dropdown&thinsp;....</p>
+<details><summary>&ensp;✅&ensp;prepare to interact with <b>GitHub</b></summary><br>
+<p>Perform the following series of actions through the <b>Source Control</b> activity&thinsp;....</p>
+<p align="center"><img src="images/fig-2.png" alt="" width="900"><p>
+<p>The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
 <p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
-<p><b>VS Code</b> will then automatically install its <b>GitHub Codespaces</b> extension.</p>
-</details>
-
-<details><summary>&ensp;✅&ensp;sign in to your <b>GitHub</b> account</summary><br>
-<p>The <b>GitHub Codespaces</b> extension now needs your credentials&thinsp;....</p>
-<p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
 <p>Sign in to your account on <code>github.com</code>&thinsp;....</p>
-<p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
 <p>And just return to your <b>VS Code</b> window&thinsp;....</p>
+<p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
+</details>
+
+<details><summary>&ensp;✅&ensp;clone your <code>emporium</code> fork to <code>~/EM/repo</code></summary><br>
 <p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
-</details>
-
-<details><summary>&ensp;✅&ensp;create a codespace on your <code>emporium</code> fork</summary><br>
-<p>Click the <b>Remote Explorer</b> icon, click <b>Create Codespace</b>, and select your fork&thinsp;....</p>
 <p align="center"><img src="images/fig-7.png" alt="" width="900"><p>
-<p>Accept the default <code>dev</code> branch when prompted&thinsp;....</p>
 <p align="center"><img src="images/fig-8.png" alt="" width="900"><p>
-<p>Select the minimal VM for your codespace&thinsp;....</p>
-<p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
-<p>Now sit back and watch the magic happen&thinsp;!!!</p>
 </details>
 
-<details><summary>&ensp;✅&ensp;install <code>embuilder</code> and other extensions</summary><br>
+<details><summary>&ensp;✅&ensp;populate your <b>VS Code</b> workspace</summary><br>
 <p>Click through the prompts on the following three screens&thinsp;....</p>
+<p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
-<p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
-<p align="center"><img src="images/fig-12.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
 <p>Let's discover more about the <b>EM</b> environment you've now provisioned&thinsp;....</p>
-<p align="center"><img src="images/fig-13.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
 </details>
 
 > [!IMPORTANT]
