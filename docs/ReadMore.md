@@ -7,10 +7,10 @@
 <a id="toc"></a>
 
 <h3 align="center">
-  <a href="#preparing-the-environment">Preparing</a>&nbsp;&#xFF5C;&nbsp;
-  <a href="#installing-the-components">Installing</a>&nbsp;&#xFF5C;&nbsp;
+  <a href="#preparing">Preparing</a>&nbsp;&#xFF5C;&nbsp;
+  <a href="#installing">Installing</a>&nbsp;&#xFF5C;&nbsp;
   <a href="#learning">Learning</a>&nbsp;&#xFF5C;&nbsp;
-  <a href="#contributing-to-the-cause">Contributing</a>
+  <a href="#contributing">Contributing</a>
 </h3>
 
 <br>
@@ -18,6 +18,8 @@
 The **EM&bull;porium** serves as a central repository for open-source firmware written in **EM&bull;Script** &ndash; a novel programming language targeting resource-constrained embedded systems and often *outperforming* comparable code written in C/C++.&thinsp; To flatten the learning curve, our **EM&bull;Builder** extension for **VS Code** brings **EM&bull;Script** language support to this ubiquitous and ever-popular development environment.
 
 ## Preparing the environment
+
+<a id="preparing">
 
 #### 🟠&ensp;signup at [**GitHub**](https://github.com/signup)
 
@@ -43,6 +45,8 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 > <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
 ## Installing its components
+
+<a id="installing">
 
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
@@ -95,9 +99,16 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 </details>
 
 ## Learning about **EM&bull;Script**
+
+<a id="learning">
+
 <details><summary>&ensp;✅&ensp;Yourfirst tour</summary><br>
 <p align="center"><img src="images/tour.gif" alt="" width="900"><p>
 </details>
 
 
 ## Contributing to the cause
+
+<a id="contributing">
+
+
