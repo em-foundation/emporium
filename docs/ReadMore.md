@@ -95,8 +95,9 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 </details>
 
 ## Learning about **EM&bull;Script**
-
+<details><summary>&ensp;✅&ensp;Yourfirst tour</summary><br>
 <p align="center"><img src="images/tour.gif" alt="" width="900"><p>
+</details>
 
 
 ## Contributing to the cause
