@@ -21,7 +21,7 @@ steps:
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
 
-      Click the orange *action button* to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
+      Click the {[cb,target]} *action button* to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
 
       The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** elements.
 

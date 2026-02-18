@@ -13,7 +13,7 @@ steps:
 
       This initial tour has two primary objectives:
 
-      {[bi,arrow_circle_right]} Learning how to use the **EM&bull;TOUR GUIDE**.
+      {[bi,arrow_circle_right]} Learning how to use the **TOUR GUIDE**.
 
       {[bi,arrow_circle_right]} Tweaking the UI to remove some visual clutter.
 
@@ -23,7 +23,7 @@ steps:
       {[bm,2]} **Next** &ndash; go to the next stop on this tour<br>
       {[bm,3]} **Refresh** &ndash; replay the current stop on this tour<br>
       {[bm,4]} **Restart** &ndash; rewind to the first stop on this tour <br>
-      {[bm,5]} **End** &ndash; stop this tour and close the **EM&bull;TOUR GUIDE**<br>
+      {[bm,5]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
 
       Click the **Next** button to continue with **Tour&thinsp;01**&thinsp;....
 
@@ -48,7 +48,7 @@ steps:
 
       {[ht,household_supplies]Tidying up &ndash; Outline View}
 
-      We should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
+      You should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
 
       The **Outline View** proves invaluable once we start exploring some **EM&bull;Script** source code.
 
@@ -96,7 +96,7 @@ steps:
 
         </div>
 
-        You can also use the orange *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
+        You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
 
         And now, let's execute this **EM&bull;Script** program&thinsp;....
 
@@ -111,9 +111,9 @@ steps:
 
         For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
 
-        If you haven't done so already, follow the **Obtain a Wowki license** link on the **EM&bull;Home** editor tab.
+        If you haven't done so already, follow the **Request a Wowki Key** link on the **EM&bull;Home** editor tab.
 
-        When ready, click the orange *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
+        When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
 
         A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
 
@@ -132,7 +132,7 @@ steps:
 
         While some **EM&bull;Scripts** programs rely on{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
 
-        To that end, take a quick look at the {[cu]BlinkerP} shown here.&thinsp; Then click **build&thinsp;+&thinsp;load** and enjoy the show&thinsp;!!
+        To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
 
         Over time, you'll run **EM&bull;Script** programs on a growing list of target platforms featuring a wide range of MCUs.
 
