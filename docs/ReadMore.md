@@ -49,50 +49,50 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
 <details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-<p>Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which brings up this dialogue&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which brings up this dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
-<p>After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
-<pre><code>    mkdir $HOME/EM
-    cd $HOME/EM
-    mkdir data exts repo</code></pre>
-<p>From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
-<pre><code>    code --install-extension the-em-foundation.embuilder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
-<p>Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
-<pre><code>    code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
+<p>&emsp;&emsp;<b>➜</b>&ensp;We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
+<pre><code>        mkdir $HOME/EM
+        cd $HOME/EM
+        mkdir data exts repo</code></pre>
+<p>&emsp;&emsp;<b>➜</b>&ensp;From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
+<pre><code>        code --install-extension the-em-foundation.embuilder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
+<pre><code>        code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
 
 <details><summary>&ensp;✅&ensp;prepare to interact with <b>GitHub</b></summary><br>
-<p>Perform this sequence of actions using the <b>Source Control</b> activity found in <b>VS Code Activity Bar</b>&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Perform this sequence of actions using the <b>Source Control</b> activity found in <b>VS Code Activity Bar</b>&thinsp;....</p>
 <p align="center"><img src="images/fig-2.png" alt="" width="900"><p
-<p>The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
 <p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
-<p>Sign in to your account on <code>github.com</code>&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Sign in to your account on <code>github.com</code>&thinsp;....</p>
 <p align="center"><img src="images/fig-4.png" alt="" width="900"></p>
-<p>Just dismiss this dialogue and return to your <b>VS Code</b> window&thinsp;....</p>
+<p&emsp;&emsp;<b>➜</b>&ensp;Just dismiss this dialogue and return to your <b>VS Code</b> window&thinsp;....</p>
 <p align="center"><img src="images/fig-5.png" alt="" width="900"></p>
 </details>
 
 <details><summary>&ensp;✅&ensp;clone your <code>emporium</code> fork to <code>~/EM/repo</code></summary><br>
-<p>Back in <b>VS Code</b> now, continue your <b>Source Control</b> activity by now selecting <code>&lt;USERNAME&gt;/emporium</code></p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Back in <b>VS Code</b> now, continue your <b>Source Control</b> activity by now selecting <code>&lt;USERNAME&gt;/emporium</code></p>
 <p align="center"><img src="images/fig-6.png" alt="" width="900"></p>
-<p><b>VS Code</b> will next prompt you to locate your (now empty) <code>~/EM/repo</code> folder</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;<b>VS Code</b> will next prompt you to locate your (now empty) <code>~/EM/repo</code> folder</p>
 <p align="center"><img src="images/fig-7.png" alt="" width="900"></p>
-<p>Time for a short break&thinsp;.... <b>☕</b></p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Time for a short break&thinsp;.... <b>☕</b></p>
 <p align="center"><img src="images/fig-8.png" alt="" width="900"></p>
 </details>
 
 <details><summary>&ensp;✅&ensp;populate your <b>VS Code</b> workspace</summary><br>
-<p>Click through the prompts on the next two screens&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Click through the prompts on the next two screens&thinsp;....</p>
 <p align="center"><img src="images/fig-9.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
-<p>You've arrived&thinsp;.... ✨</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;You've arrived&thinsp;.... ✨</p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"></p>
 </details>
 
