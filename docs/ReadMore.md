@@ -101,10 +101,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 With your **EM&bull;porium** environment up and running, we'll now pivot towards exploring its *software content* written in the **EM&bull;Script** program&shy;ming language.&thinsp; To that end, this environment features an ever-growing set of **EM&bull;Tours** &ndash; self-paced learning modules that bring you face-to-face with working **EM&bull;Script** code that you can *cut &middot; copy &middot; paste* to your heart's content.
 
-<details><summary>&ensp;🧭&ensp;a preview of your first <b>EM&bull;Tour&thinsp;....</b></summary><br>
-<p>Click on this screenshot to restart the animation&thinsp;....</p>
-<p align="center"><img src="images/tour.gif" alt="" width="900"><p>
-</details>
+> 🎬 [Preview](docs/images/tour-ani.md) &nbsp;**➜**&nbsp; a quick drive-by video of your first **EM&bull;Tour**
 
 <a id="contributing"></a>
 ## Contributing to the cause
