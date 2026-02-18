@@ -126,6 +126,7 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <ul><li>&emsp;Assuming you've already registered at Wokwi, initiate the process from the EM•Home welcome page…</li></ul>
 <p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-20.png" alt="" width="900"></p>
 </details>
 
 <a id="contributing"></a>
