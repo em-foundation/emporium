@@ -107,8 +107,8 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 
 <pre><code>$HOME/EM/launch.sh</code></pre>
 
-<details><summary><code> ✅ </code>request a (free) <b>Wokwi</b> simulator key</summary><br>
-<p><code>&nbsp;&nbsp;&nbsp;☐&nbsp;&nbsp;</code>Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
+<details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
 <p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
 <p>Then select&thinsp;....</p>
 <p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
@@ -123,8 +123,7 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 </details>
 
 <details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;☐&ensp;Blah blah blah&thinsp;....</p>     
-<p>&ensp;&ensp;&ensp;☐&ensp;Blah blah blah&thinsp;....</p>     
+<ul><li>&emsp;Assuming you've already registered at Wokwi, initiate the process from the EM•Home welcome page…</li></ul>
 <p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
 </details>
