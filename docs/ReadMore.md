@@ -108,7 +108,7 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <pre><code>$HOME/EM/launch.sh</code></pre>
 
 <details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
+<p>&emsp;&emsp;<b>➜</b>&ensp;Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome view&thinsp;....</p>  
 <p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
 <p>&emsp;&emsp;<b>➜</b>&ensp;Then select&thinsp;....</p>
 <p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
@@ -123,11 +123,19 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 </details>
 
 <details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
-<ul><li>&emsp;Assuming you've already registered at Wokwi, initiate the process from the EM•Home welcome page…</li></ul>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Go ahead and launch the first tour from the <b>EM&bull;Home</b> page&thinsp;....</p>
 <p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Drag &middot; Drop the <b>TOUR GUIDE</b> view between the primary and secondary side-panels&thinsp;....</p>
 <p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Refresh the <b>TOUR GUIDE</b> text and widen the secondary side-panel&thinsp;....</p>
 <p align="center"><img src="images/fig-20.png" alt="" width="900"></p>
 </details>
+
+Going forward, we'll leverage the **EM&bull;porium** itself to learn more about **EM&bull;Script** &ndash; starting with the **Welcome Aboard** tour you've already launched.&thinsp; Use the **Back &middot; Next &middot; Refresh &middot; Restart &middot; End** buttons atop the **TOUR GUIDE** for navigation and control.
+
+As a "best practice", the **EM&bull;Tours** will encourage use of the built-in **Source Control** activity &ndash; to *commit* any changes you might have made to your local workspace, as well as to *sync* the workspace with your personal `em-foundation/emporium` fork stored at **GitHub**.
+
+With our work done here, we'll meet up again *inside* the **EM&bull;porium** environment &ndash; where our **EM&bull;Script** journey formally begins.&thinsp;🧭
 
 <a id="contributing"></a>
 ## Contributing to the cause
