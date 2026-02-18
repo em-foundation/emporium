@@ -71,29 +71,29 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p>The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
 <p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
 <p>Sign in to your account on <code>github.com</code>&thinsp;....</p>
-<p align="center"><img src="images/fig-4.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-4.png" alt="" width="900"></p>
 <p>Just dismiss this dialogue and return to your <b>VS Code</b> window&thinsp;....</p>
-<p align="center"><img src="images/fig-5.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-5.png" alt="" width="900"></p>
 </details>
 
 <details><summary>&ensp;✅&ensp;clone your <code>emporium</code> fork to <code>~/EM/repo</code></summary><br>
 <p>Back in <b>VS Code</b> now, continue your <b>Source Control</b> activity by now selecting <code>&lt;USERNAME&gt;/emporium</code></p>
-<p align="center"><img src="images/fig-6.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-6.png" alt="" width="900"></p>
 <p><b>VS Code</b> will next prompt you to locate your (now empty) <code>~/EM/repo</code> folder</p>
-<p align="center"><img src="images/fig-7.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-7.png" alt="" width="900"></p>
 <p>Time for a short break&thinsp;.... <b>☕</b></p>
-<p align="center"><img src="images/fig-8.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-8.png" alt="" width="900"></p>
 </details>
 
 <details><summary>&ensp;✅&ensp;populate your <b>VS Code</b> workspace</summary><br>
 <p>Click through the prompts on the next two screens&thinsp;....</p>
-<p align="center"><img src="images/fig-9.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-9.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
 <p>You've arrived&thinsp;.... ✨</p>
-<p align="center"><img src="images/fig-11.png" alt="" width="900"><p>
+<p align="center"><img src="images/fig-11.png" alt="" width="900"></p>
 </details>
 
 <a id="learning"></a>
@@ -108,9 +108,20 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <pre><code>$HOME/EM/launch.sh</code></pre>
 
 <details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
+<p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-14.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-15.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-16.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-17.png" alt="" width="900"></p>
 </details>
 
-<details><summary>&ensp;✅&ensp;rearrange the UI for optimal <viewing </summary><br>
+<details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
+<p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-20.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-21.png" alt="" width="900"></p>
+<p align="center"><img src="images/fig-22.png" alt="" width="900"></p>
 </details>
 
 <a id="contributing"></a>
