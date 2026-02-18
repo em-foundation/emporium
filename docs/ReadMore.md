@@ -119,9 +119,6 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
 <p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
-<p align="center"><img src="images/fig-20.png" alt="" width="900"></p>
-<p align="center"><img src="images/fig-21.png" alt="" width="900"></p>
-<p align="center"><img src="images/fig-22.png" alt="" width="900"></p>
 </details>
 
 <a id="contributing"></a>
