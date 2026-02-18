@@ -110,15 +110,15 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
 <p>&emsp;&emsp;<b>➜</b>&ensp;Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
 <p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
-<p>Then select&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Then select&thinsp;....</p>
 <p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
-<p>Cancel this dialogue&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Cancel this dialogue&thinsp;....</p>
 <p align="center"><img src="images/fig-14.png" alt="" width="900"></p>
-<p>Copy your key to the clipboard&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Copy your key to the clipboard&thinsp;....</p>
 <p align="center"><img src="images/fig-15.png" alt="" width="900"></p>
-<p>Execute <b>Manually Enter License Key</b> from the <b>Command Palette</b> and then paste your key&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Execute <b>Manually Enter License Key</b> from the <b>Command Palette</b> and then paste your key&thinsp;....</p>
 <p align="center"><img src="images/fig-16.png" alt="" width="900"></p>
-<p>Voilà&thinsp;....</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;Voilà&thinsp;....</p>
 <p align="center"><img src="images/fig-17.png" alt="" width="900"></p>
 </details>
 
