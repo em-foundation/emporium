@@ -123,6 +123,8 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 </details>
 
 <details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;☐&ensp;Blah blah blah&thinsp;....</p>     
+<p>&ensp;&ensp;&ensp;☐&ensp;Blah blah blah&thinsp;....</p>     
 <p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
 <p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
 </details>
