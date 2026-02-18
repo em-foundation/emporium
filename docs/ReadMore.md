@@ -103,6 +103,16 @@ With your **EM&bull;porium** environment up and running, we'll now pivot towards
 
 > 🎬 [Preview](images/tour-ani.md) &nbsp;**➜**&nbsp; a 54-second video drive-by of your first **EM&bull;Tour**
 
+Before you can launch any **EM&bull;Tours**, however, you'll need to perform two more tasks *inside* **VS Code**.&thinsp; If you've already closed **VS Code** after installing the **EM&bull;porium** components, you can always re-open the environment using a shell script we've provisioned&thinsp;....
+
+<pre><code>$HOME/EM/launch.sh</code></pre>
+
+<details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
+</details>
+
+<details><summary>&ensp;✅&ensp;rearrange the UI for optimal <viewing </summary><br>
+</details>
+
 <a id="contributing"></a>
 ## Contributing to the cause
 
