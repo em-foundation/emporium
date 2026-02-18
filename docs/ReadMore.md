@@ -107,8 +107,8 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 
 <pre><code>$HOME/EM/launch.sh</code></pre>
 
-<details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
-<p>Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
+<details><summary><code> ✅ </code>request a (free) <b>Wokwi</b> simulator key</summary><br>
+<p><code>&nbsp;&nbsp;&nbsp;☐&nbsp;&nbsp;</code>Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome page&thinsp;....</p>  
 <p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
 <p>Then select&thinsp;....</p>
 <p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
@@ -118,7 +118,7 @@ Before you can launch any **EM&bull;Tours**, however, you'll need to perform two
 <p align="center"><img src="images/fig-15.png" alt="" width="900"></p>
 <p>Execute <b>Manually Enter License Key</b> from the <b>Command Palette</b> and then paste your key&thinsp;....</p>
 <p align="center"><img src="images/fig-16.png" alt="" width="900"></p>
-<p>Success&thinsp;....</p>
+<p>Voilà&thinsp;....</p>
 <p align="center"><img src="images/fig-17.png" alt="" width="900"></p>
 </details>
 
