@@ -21,7 +21,7 @@ steps:
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
 
-      Click the {[cb,target]} *action button* to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
+      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
 
       The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** elements.
 
@@ -35,7 +35,7 @@ steps:
 
       The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}
 
-      The statement labeled {[bm,A]} declares the _role_ played by this particular **Unit** &ndash; here, an **EM&bull;Script Module**.
+      The statement labeled {[bm,A]} declares the _role_ played by this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
 
       Upcoming tours will visit more **Unit** files playing other roles, as we dive deeper into the **EM&bull;Script** language.
 
@@ -56,7 +56,7 @@ steps:
 
       As a rule, each **EM&bull;Script Bucket** has a *globally unique* name comprising multiple identifiers joined by dots.
 
-      In fact, the very first identifier constrains the scope:
+      In fact, its first identifier alone defines a unique scope:
 
       {[bi,arrow_circle_right]} <code>em.&ast;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **EM Foundation** content<br>
       {[bi,arrow_circle_right]} <code>nordic.&ast;&nbsp;</code>&mdash; **Nordic Semiconductor** content<br>
@@ -75,7 +75,7 @@ steps:
 
       The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
 
-      Seemingly redundant, an **EM&bull;Script Package** serves as a uniquely-name *container* for **Bucket &middot; Unit** *content*.
+      Seemingly redundant, an **EM&bull;Script Package** serves as a uniquely-named *container* for **Bucket &middot; Unit** *content*.
 
       A prefixed naming scheme enables us to identify the content *supplier* independent of the content itself.
 
@@ -83,7 +83,7 @@ steps:
 
       In fact, **EM&bull;Script Package** names will rarely appear within **EM&bull;Script Unit** source code.
 
-      You'll soon learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
+      You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
 
  -  cmds:
     focus: [1,1]
@@ -110,15 +110,15 @@ steps:
 
       We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
 
-      To begin, right-click on the special **EM&bull;Script Source** item and select its **EM &ndash; New Package** command.
+      {[bm,1]} Right-click on the special **EM&bull;Script Source** item and select its **EM &ndash; New Package** command.
 
-      When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      {[bm,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
 
-      Now, right-click on the new **Package** once it appears and select its **EM &ndash; New Bucket** command.
+      {[bm,3]} Now, right-click on the new **Package** once it appears and select its **EM &ndash; New Bucket** command.
 
-      When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      {[bm,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
 
-      Finally, select **EM &ndash; New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+      {[bm,5]}Finally, select **EM &ndash; New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
 
  -  cmds:
     acts: ['$build']
@@ -152,7 +152,8 @@ steps:
 
       And finally, you can always **Discard changes** to the workspace made intentionally &ndash; or accidentally.😉
  
- -  cmds: []
+ -  cmds:
+      - close 2
     text: |
 
         {[ht,$steps]Next steps}

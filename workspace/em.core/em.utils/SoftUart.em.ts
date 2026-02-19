@@ -16,6 +16,8 @@ export namespace em$meta {
     }
 }
 
+//>> ---- em$targ ---- <<//
+
 export function em$startup(): void {
     TxPin.makeOutput()
     TxPin.set()
@@ -27,7 +29,7 @@ export function put(data: u8): void {
     const bit_cnt = 10
     let tx_byte: u16 = (data << 1) | 0x600
     const key = Common.GlobalInterrupts.disable()
-    for (let _ of $range(bit_cnt)) {
+    for (const _ of $range(bit_cnt)) {
         Common.UsCounter.set(bit_time)
         if (tx_byte & 0x1) {
             TxPin.set()

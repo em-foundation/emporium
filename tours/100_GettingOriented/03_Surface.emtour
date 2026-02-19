@@ -1,1 +1,57 @@
-title: Language Surface
+title: Language Overview
+files:
+  - em.core:em.utils/SoftUart.em.ts
+  - em.core:em.hal/ConsoleUartI.em.ts
+  - em.core:em.hal/GpioI.em.ts
+  - em.core:em.mcu/Common.em.ts
+  - em.core:em.utils/LedT.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+
+steps:
+
+  - text: |
+
+      {[ht,$start]Language Overview}
+
+  - cmds:
+      - open 1
+    focus: [1,1]
+    text: |
+
+      {[ht,$details]⟪[cu]SoftUart⟫}
+
+  - cmds:
+      - open 2
+    focus: [2,1]
+    text: |
+
+      {[ht,$details]⟪[cu]ConsoleUartI⟫}
+
+  - cmds:
+      - open 3
+    focus: [3,1]
+    text: |
+
+      {[ht,$details]⟪[cu]GpioI⟫}
+
+  - cmds:
+      - open 4
+    focus: [4,1]
+    text: |
+
+      {[ht,$details]⟪[cu]Common⟫}
+
+  - cmds:
+      - open 5
+    focus: [5,1]
+    text: |
+
+      {[ht,$details]⟪[cu]LedT⟫}
+
+  - cmds:
+      - open 6
+    focus: [6,1]
+    text: |
+
+      {[ht,$details]⟪[cu]BoardC⟫}
+  

@@ -9,7 +9,7 @@ steps:
 
   - text: |
 
-      {[ht,$start]Welcome aboard}
+      {[ht,$start]Welcome Aboard}
 
       This initial tour has two primary objectives:
 
