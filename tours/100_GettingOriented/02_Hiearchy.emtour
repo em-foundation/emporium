@@ -35,9 +35,9 @@ steps:
 
       The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}
 
-      The statement labeled {[bm,A]} declares the _role_ played by this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
+      The statement labeled {[bm,A]} declares the _flavor_ of this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
 
-      Upcoming tours will visit more **Unit** files playing other roles, as we dive deeper into the **EM&bull;Script** language.
+      Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EM&bull;Script** language.
 
       You'll also learn why all **EM&bull;Script Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
 
@@ -132,8 +132,8 @@ steps:
 
       Next, you should *overwrite* your skeletal {[cx]Blinky.em.ts} file with the contents of {[cx]Ex02_BlinkerP.em.ts}.
 
-      ⟪&thinsp;**VS Code** provides familiar **Select All &middot; Copy &middot; Paste &middot; Save** commands in its **File &middot; Edit &middot; Selection** menus&thinsp;⟫
-
+      {[in]<b>VS Code</b> provides familiar <b>Select All · Copy · Paste · Save          commands in its <b>File · Edit · Selection</b> menus.}
+      
       Return focus to your enhanced {[cx]Blinky.em.ts} file and now click the **build&thinsp;+&thinsp;load** button.
 
       Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
