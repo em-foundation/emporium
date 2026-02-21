@@ -22,11 +22,11 @@ steps:
       {[bi,arrow_circle_right]} add a novel back-end program translator&thinsp;....<br>
       {[bi,arrow_circle_right]} generate highly-optimized target C/C++&thinsp;....
 
-      Starting with {[cu]SoftUart}, you'll learn key **EM&bull;Script** con&shy;structs &ndash; but seen on the **TypeScript** language surface.
+      This tour introduces some core constructs of **EM&bull;Script** [**EMS**] &ndash; but viewed through a **TS** language lens.
 
   - cmds:
-      - mark 1 A 13
-      - mark 1 B 19
+      - mark 1 M 13
+      - mark 1 T 19
     focus: [1,1]
     text: |
 
@@ -41,11 +41,12 @@ steps:
       {[bi,counter_1]} *target* domain, where functions like {[cf]put} will run<br>
       {[bi,counter_2]} *meta* domain, where app configuration takes place
 
-      Unlike resource-limited domain {[bi,counter_1]}, the code of domain {[bi,counter_2]} runs inside the **EM&bull;Script** translator &ndash; on your PC.
+      Unlike resource-limited domain {[bi,counter_1]}, code belonging to domain {[bi,counter_2]} runs inside the **EMS** translator &ndash; on your PC.
 
-      The **TS** namespace at {[bm,A]} contains all of the *meta* code; the special comment at {[bm,B]} begins the *target* code.
+      The **TS** namespace at {[bm,M]} contains all of the *meta* code; the special comment at {[bm,T]} begins the *target* code.
 
-  - focus: [1,1]
+  - cmds:
+    focus: [1,1]
     text: |
 
       {[ht,timeline]Lifecycle Functions}
@@ -55,8 +56,27 @@ steps:
       {[cs]em$construct} [**`meta`**]&thinsp; called to initialize private state<br>
       {[cs]em$startup&nbsp;&nbsp;} [**`targ`**]&thinsp; called before program {[cs]em$run}
 
-      {[in]Programs like ⟪[cu]BlinkerP⟫ viewed in earlier tours imple&shy;ment the ⟪[cs]em$run⟫ intrinsic as their main entry-point.}
+      {[in]Programs like %[cu]BlinkerP% viewed in earlier tours imple&shy;ment the %[cs]em$run% intrinsic as their main entry-point.}
 
-      The **EM&bull;Script** translator sequences intrinsic function calls &ndash; at build-time [**`meta`**] as well as run-time [**`targ`**].
+      The **EMS** translator sequences calls to intrinsic func&shy;tions &ndash; at build-time [**`meta`**] as well as run-time [**`targ`**].
 
-      By design, each intrinsic belongs to only *one* **EM&bull;Script** domain &ndash; and may apply to just some **Unit** *flavors*.
+      By design, each intrinsic belongs to only *one* **EMS** do&shy;main &ndash; and may apply to only some **EMS Unit** *flavors*.
+
+  - cmds:
+      - clear 1
+    focus: [1,1]
+    text: |
+
+      {[ht,handshake]Client&thinsp;&middot;&thinsp;Supplier Relationship}
+
+      The {[ck]import} directives in {[cu]SoftUart} establish a *client&thinsp;&middot;&thinsp;sup&shy;plier* relationship between this and other **Units**.
+
+      The {[ck]export} qualifiers in {[cu]SoftUart} make functions like {[cf]flush} and {[cf]put} publically visible to clients of this **Unit**.
+
+      All **Units** so far have played the **Module** role &ndash; hiding its *private* implementation of its *public* specification.
+      
+      In the case of {[cu]SoftUart}, some of its public spec in fact derives from {[cu]ConsoleUartI} &ndash; an **EMS Interface**.
+
+      {[in]Select %[cu]ConsoleUartI% on line 5 and press <b>F12</b> to see the original "spec-only" definition of %[cf]flush% and %[cf]put%.}
+
+      Each **EMS Interface** in general defines a *programmatic contract* between **EMS Module** clients and suppliers.

@@ -23,7 +23,7 @@ steps:
 
       Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
 
-      The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** elements.
+      The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** [**EMS**] elements.
 
  -  cmds:
       - mark 1 A 2
@@ -33,15 +33,15 @@ steps:
 
       {[ht,account_tree]EM&bull;Script Unit &ndash; source file}
 
-      The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}
+      The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}.
 
       The statement labeled {[bm,A]} declares the _flavor_ of this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
 
-      Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EM&bull;Script** language.
+      Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EMS** language.
 
-      You'll also learn why all **EM&bull;Script Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
+      You'll also learn why all **EMS Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
 
-      Let's move on and talk about the **EM&bull;Script Bucket** associated with our {[cu]Blinker} program.
+      Let's move on and talk about the **EMS Bucket** associ&shy;ated with our {[cu]Blinker} program.
 
  -  cmds:
     focus: [1,1]
@@ -50,11 +50,11 @@ steps:
 
       {[ht,account_tree]EM&bull;Script Bucket &ndash; namespace}
 
-      The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EM&bull;Script Bucket** named {[cx]em.examples.basic}
+      The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EMS Bucket** named {[cx]em.examples.basic}
 
       Logically a namespace (and physically a folder), a **Unit** of the *same* name can reside in more than one **Bucket**.
 
-      As a rule, each **EM&bull;Script Bucket** has a *globally unique* name comprising multiple identifiers joined by dots.
+      As a rule, each **EMS Bucket** has a *globally unique* name comprising multiple identifiers joined by dots.
 
       In fact, its first identifier alone defines a unique scope:
 
@@ -62,7 +62,7 @@ steps:
       {[bi,arrow_circle_right]} <code>nordic.&ast;&nbsp;</code>&mdash; **Nordic Semiconductor** content<br>
       {[bi,arrow_circle_right]} <code>rpi.&ast;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **Raspberry Pi** content<br>
 
-      As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EM&bull;Script Package** names.
+      As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EMS Package** names.
 
       
  -  cmds:
@@ -75,26 +75,27 @@ steps:
 
       The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
 
-      Seemingly redundant, an **EM&bull;Script Package** serves as a uniquely-named *container* for **Bucket &middot; Unit** *content*.
+      Seemingly redundant, an **EMS Package** serves as a uniquely-named *container* for **Bucket &middot; Unit** *content*.
 
       A prefixed naming scheme enables us to identify the content *supplier* independent of the content itself.
 
       Line {[bm,B]} shows how one **Unit** can import another using only the latter's fully-qualified `bucket/Unit` name.
 
-      In fact, **EM&bull;Script Package** names will rarely appear within **EM&bull;Script Unit** source code.
+      In fact, **EMS Package** names will rarely appear within **EMS Unit** source code.
 
       You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
 
  -  cmds:
+      - clear 1
     focus: [1,1]
     acts: ['$reveal']
     text: |
 
       {[ht,snippet_folder]Files and Folders}
 
-      We've already mentioned how an **EM&bull;Script Unit** cor&shy;responds to a source file of the same name.
+      We've already mentioned how an **EMS Unit** corres&shy;ponds to a source file of the same name.
 
-      This pattern continues with each **EM&bull;Script Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
+      This pattern continues with each **EMS Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
 
       To switch perspective, right-click on *any* visible icon within the **Content** view and select **Reveal in Explorer**.
 
@@ -110,11 +111,11 @@ steps:
 
       We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
 
-      {[bm,1]} Right-click on the special **EM&bull;Script Source** item and select its **EM &ndash; New Package** command.
+      {[bm,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **EMS &ndash; New Package** command.
 
       {[bm,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
 
-      {[bm,3]} Now, right-click on the new **Package** once it appears and select its **EM &ndash; New Bucket** command.
+      {[bm,3]} Now, right-click on the new **Package** once it appears and select its **EMS &ndash; New Bucket** command.
 
       {[bm,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
 
@@ -124,7 +125,7 @@ steps:
     acts: ['$build']
     text: |
 
-      {[ht,note_add]Implementing ⟪[cu]Blinky⟫}
+      {[ht,note_add]Implementing %[cu]Blinky%}
 
       Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
 
@@ -160,7 +161,7 @@ steps:
 
         Well done &ndash; you're now officially dangerous.🔥
 
-        Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EM&bull;Script** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
+        Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
 
         While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
 

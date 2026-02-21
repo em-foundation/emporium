@@ -7,7 +7,8 @@ files:
 
 steps:
 
-  - text: |
+  - cmds:
+    text: |
 
       {[ht,$start]Welcome Aboard}
 
@@ -71,7 +72,9 @@ steps:
 
         In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
 
-        Even if you've never seen **EM&bull;Script** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
+        {[in]We'll start using '<b>EMS</b>' as shorthand for <b>EM&bull;Script</b>. }
+
+        Even if you've never seen **EMS** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
 
         Let's dive in&thinsp;....
 
@@ -82,7 +85,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$details]⟪[cu]HelloP⟫ &ndash; details}
+        {[ht,$details]%[cu]HelloP% &ndash; details}
 
         Many tour-stops will examine a particular source file in greater detail.
 
@@ -90,7 +93,7 @@ steps:
 
         <div class="em-bmlist">
 
-        {[bm,A]} Boilerplate found in all **EM•Script** files
+        {[bm,A]} Boilerplate found in all **EMS** files
 
         {[bm,B]} Note the somewhat unusual {[cd]printf} syntax.
 
@@ -98,16 +101,17 @@ steps:
 
         You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
 
-        And now, let's execute this **EM&bull;Script** program&thinsp;....
+        And now, let's execute this **EMS** program&thinsp;....
 
   - cmds:
+      - clear 3
     focus: [3,1]
     acts: [$build]
     text: |
 
-        {[ht,$build]⟪[cu]HelloP⟫ &ndash; build&thinsp;+&thinsp;load}
+        {[ht,$build]%[cu]HelloP% &ndash; build&thinsp;+&thinsp;load}
 
-        Tours focused on specific **EM&bull;Script** programs include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
+        Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
 
         For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
 
@@ -119,26 +123,23 @@ steps:
 
         Close the **Wokwi Simulator** tab before clicking **Next**.
 
-        
-
-
   - cmds:
     - open 4
     focus: [4,1]
     acts: [$build, $reveal]
     text: |
 
-        {[ht,$build]⟪[cu]BlinkerP⟫ &ndash; build&thinsp;+&thinsp;load}
+        {[ht,$build]%[cu]BlinkerP% &ndash; build&thinsp;+&thinsp;load}
 
-        While some **EM&bull;Scripts** programs rely on{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
+        While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
 
         To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
 
-        Over time, you'll run **EM&bull;Script** programs on a growing list of target platforms featuring a wide range of MCUs.
+        Over time, you'll run **EMS** programs on a growing list of target platforms featuring a wide range of MCUs.
 
-        Before moving on, click the {[em]⟪[ci,circuit-board]⟫&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
+        Before moving on, click the {[em]%[ci,circuit-board]%&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
 
-  - cmds: []
+  - cmds:
     text: |
 
         {[ht,$steps]Next steps}
