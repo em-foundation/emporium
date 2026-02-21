@@ -64,6 +64,8 @@ steps:
 
   - cmds:
       - clear 1
+      - mark 1 I 5
+      - mark 1 E 26
     focus: [1,1]
     text: |
 
@@ -77,6 +79,54 @@ steps:
       
       In the case of {[cu]SoftUart}, some of its public spec in fact derives from {[cu]ConsoleUartI} &ndash; an **EMS Interface**.
 
-      {[in]Select %[cu]ConsoleUartI% on line 5 and press <b>F12</b> to see the original "spec-only" definition of %[cf]flush% and %[cf]put%.}
+      {[in]Select %[cu]ConsoleUartI% on line %[bm,I]% and press <b>F12</b> to see the original "spec-only" definition of %[cf]flush% and %[cf]put%.}
 
       Each **EMS Interface** in general defines a *programmatic contract* between **EMS Module** clients and suppliers.
+
+  - cmds:
+      - clear 1
+      - mark 1 C 8
+    focus: [1,1]
+    text: |
+
+      {[ht,settings]Configuration Parameters}
+
+      Line {[bm,C]} exports an intrinsic **EMS** {[cs]$config} parameter named {[cn]baud_rate} &ndash; which clients can assign as needed.
+
+      This {[cs]$config} parameter holds a 32-bit unsigned integer [{[ct]u32}] with a default value of {[ce]57_600}.
+
+      Most critical, {[cs]$config} assignments *only* occur at build-time [**`meta`**].&thinsp; At run-time their values remain constant.
+
+      {[cu]SoftUart} also declares {[cn]bit_time} &ndash; a private {[cs]$config} bound by the intrinsic {[cs]em$construct} [**`meta`**] function.
+
+      Run-time function like {[cf]put} will then use {[cn]bit_time} no differently from any statically initialized constant.
+
+      By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*. 
+
+  - cmds:
+      - clear 1
+      - mark 1 P 9
+   
+    focus: [1,1]
+    text: |
+
+      {[ht,plug_connect]Client&thinsp;&middot;&thinsp;Supplier Proxies}
+
+      Line {[bm,P]} exports an intrinsic **EMS** {[cs]$proxy} object named {[cn]TxPin} &ndash; which clients *must* bind to use {[cu]SoftUart}.
+
+      Like a {[cs]$config}, each {[cs]$proxy} declares the *type* of its bound value &ndash; an *abstract* **EMS Interface**.
+
+      Said another way, each {[cs]$proxy} serves as a place&shy;holder for a *concrete* **EMS Module** from an unknown supplier.
+
+      {[in]Select %[cu]GpioI% at its %[ck]import% statement and press <bf>F12</b> to see the functions callable through %[cs]$proxy% %[cn]TxPin%.}
+
+      At run-time [**`targ`**], calls to {[cn]TxPin}**.**{[cf]set} behave as if {[cu]SoftUart} had imported the bound **Module** directly.
+
+      But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
+
+      
+
+
+
+
+
