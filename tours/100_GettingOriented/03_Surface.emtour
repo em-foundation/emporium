@@ -1,6 +1,8 @@
 title: Language Overview
 files:
   - em.core:em.utils/SoftUart.em.ts
+  - em.core:em.mcu/Common.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
 
 steps:
 
@@ -112,21 +114,85 @@ steps:
 
       {[ht,plug_connect]Client&thinsp;&middot;&thinsp;Supplier Proxies}
 
-      Line {[bm,P]} exports an intrinsic **EMS** {[cs]$proxy} object named {[cn]TxPin} &ndash; which clients *must* bind to use {[cu]SoftUart}.
+      Line {[bm,P]} exports a {[cn]TxPin} {[cs]$proxy} &ndash; which {[cu]SoftUart} clients must bind to a conformant *delegate* **Module**.
 
-      Like a {[cs]$config}, each {[cs]$proxy} declares the *type* of its bound value &ndash; an *abstract* **EMS Interface**.
+      Like {[cs]$config} values, a {[cs]$proxy} declares the *type* of its delegate &ndash; specified through an *abstract* **Interface**.
 
-      Said another way, each {[cs]$proxy} serves as a place&shy;holder for a *concrete* **EMS Module** from an unknown supplier.
+      As such, each {[cs]$proxy} serves as a place&shy;holder for some *concrete* **Module** &ndash; but from an unknown supplier.
 
       {[in]Select %[cu]GpioI% at its %[ck]import% statement and press <bf>F12</b> to see the functions callable through %[cs]$proxy% %[cn]TxPin%.}
 
-      At run-time [**`targ`**], calls to {[cn]TxPin}**.**{[cf]set} behave as if {[cu]SoftUart} had imported the bound **Module** directly.
+      At run-time [**`targ`**], calls to {[cn]TxPin}**.**{[cf]set} behave as if {[cu]SoftUart} had directly imported the delegate **Module**.
 
       But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
 
+  - cmds:
+      - clear 1
+      - mark 1 A 30
+      - mark 1 B 32
+      - mark 1 C 33
+      - mark 1 D 39
+    focus: [1,30]
+    text: |
+
+      {[ht,electric_bolt]Bit-Banging those Bytes}
+
+      Let's dive into the implementation of {[cf]put}, which trans&shy;mits 8-bit [{[ct]u8}] {[cn]data} as a framed 10-bit sequence.
+
+      {[bm,A]} {[cn]tx_bits} contains the frame's leading START bits<br>
+      {[bm,B]} a **TS**-style {[ck]for} loop iterating from {[ce]0}..{[cn]bit_cnt}<br>
+      {[bm,C]} {[cf]set}&middot;{[cf]clear} the {[cn]TxPin} GPIO based on {[cn]tx_bits}<br>
+      {[bm,D]} shift {[cn]tx_bits} and {[cf]spin} for {[cn]bit_time} &mu;secs
+
+      {[in]Stay seated &ndash; we'll visit %[cu]Common% at our next stop&thinsp;!!}
+
+      Remember, **EMS** ≡ **TS** &ndash; some new keywords, familiar C-like stmts &middot; exprs, and *optional*&thinsp; trailing semi-colons.
+
+      Compared with C, **EMS** offers a higher-level program&shy;ming paradigm *AND*&thinsp; a higher-level of performance.
+
+  - cmds:
+      - clear 1
+      - open 2
+    focus: [2,1]
+    text: |
+
+      {[ht,hub]Pluggable Software Backplane}
+
+      The rather sparse {[cu]Common} **Module** shown here takes the **EMS** {[cs]$proxy} pattern to an entirely new level.
+
+      Used widely in the codebase, {[cu]Common} en&shy;ables its clients to *portably* invoke "low-level" hardware functions.
+
+      Unlike a legacy HAL [HW abstraction layer], {[cu]Common} acts more like a mix-and-match, *pluggable* SW backplane.
+
+      Despite this extra level of indirection, calls through a {[cu]Common} {[cs]$proxy} incur no additional run-time overhead.
+
+      {[in]Use <b>F12</b> to view the <b>Interface</b> spec of each %[cs]$proxy%.}
+
+      And now, let's see how {[cs]$proxy} (as well as {[cs]$config}) bindings often occur at program build-time [**`meta`**].
+
+  - cmds:
+      - open 3
+      - mark 3 A 8
+      - mark 3 B 29
+      - mark 3 C 68
+    focus: [3,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,api]Integration &middot; Specialization}
+
+      We'll now introduces a new flavor of **EMS Unit** &ndash; the **Composite**, as exemplified by {[cu]BoardC}.
+
+      A **Composite** will generally *wire-up &middot; fine-tune* other program ele&shy;ments through {[cs]$proxy}&middot;{[cs]$config} bindings.
+
+      Unlike other **Units** we've seen, {[cu]BoardC} resides in a *HW-specific* **Package** supporting the **Raspberry Pi Pico**.
+
+      {[in]The <span class="em codicon codicon-circuit-board"></span> status item shows the <i>current</i> target board.}
+
+      {[bm,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
+      {[bm,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
+      {[bm,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
+
+      The {[cs]em$configure} [**`meta`**] intrinsic often serves as the focal point within this (and other) {[cu]BoardC} **Composites**.
+
       
-
-
-
-
-
