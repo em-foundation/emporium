@@ -7,6 +7,7 @@ import * as LedI from '@em.hal/LedI.em'
 import * as Poller from '@em.mcu/Poller.em'
 
 export namespace em$template {
+
     export const $U = $declare('MODULE', LedI)
 
     export const Pin = $proxy<GpioI.$I>()

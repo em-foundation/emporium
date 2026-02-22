@@ -3,6 +3,7 @@ files:
   - em.core:em.utils/SoftUart.em.ts
   - em.core:em.mcu/Common.em.ts
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - em.core:em.utils/LedT.em.ts
 
 steps:
 
@@ -181,7 +182,7 @@ steps:
 
       {[ht,api]Integration &middot; Specialization}
 
-      We'll now introduces a new flavor of **EMS Unit** &ndash; the **Composite**, as exemplified by {[cu]BoardC}.
+      We'll now introduce a new flavor of **EMS Unit** &ndash; the **Composite**, as exemplified by {[cu]BoardC}.
 
       A **Composite** will generally *wire-up &middot; fine-tune* other program ele&shy;ments through {[cs]$proxy}&middot;{[cs]$config} bindings.
 
@@ -195,4 +196,29 @@ steps:
 
       The {[cs]em$configure} [**`meta`**] intrinsic often serves as the focal point within this (and other) {[cu]BoardC} **Composites**.
 
-      
+  - cmds:
+      - open 4
+      - mark 4 I 5
+      - mark 4 T 9
+      - mark 4 M 11
+      - mark 4 C 65
+    focus: [4,1]
+    acts: ['$reveal']
+    text: |
+
+      {[ht,control_point_duplicate]Templates for Cloning}
+
+      We've now come to our last flavor of **EMS Unit** &ndash; the **Template**, as exemplified by {[cu]LedT}.
+
+      {[bm,T]} **Templates** feature the **`em$template`** namespace<br>
+      {[bm,M]} **`em$template`** envelopes a **Module** prototype<br>
+      {[bm,I]} this prototype often implements an **Interface**<br>
+      {[bm,C]} **Composites** typically invoke its {[cs]$clone} intrinsic
+
+      {[in]Go <b>Back</b> one stop to review use of <code class="cmd-cs">$clone</code> in <code class="cmd-cu">BoardC</code>.}
+
+      **Templates** (like **Composites**) only exist at *build-time* on your PC &ndash; instantiated very early by the **EMS** translator.
+
+      Clones of the **Module** prototype, of course, will have a presence at build-time [**`meta`**] *and* run-time [**`targ`**]. 
+
+      {[in] Try clicking <b>New Template</b> on your <code>zgit.*</code> <b>Bucket</b>. }
