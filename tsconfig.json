@@ -5,12 +5,6 @@
             "@$$emscript": [
                 "./workspace/em.core/em.lang/emscript"
             ],
-            "@adi.distro.max326xx/*": [
-                "./workspace/adi.max326xx/adi.distro.max326xx/*"
-            ],
-            "@adi.mcu.max326xx/*": [
-                "./workspace/adi.max326xx/adi.mcu.max326xx/*"
-            ],
             "@adi.gist/*": [
                 "./workspace/bob.pkg/adi.gist/*"
             ],
@@ -74,9 +68,6 @@
             "@em.examples.combo/*": [
                 "./workspace/em.etc/em.examples.combo/*"
             ],
-            "@em.tours/*": [
-                "./workspace/em.etc/em.tours/*"
-            ],
             "@em.rf.ble/*": [
                 "./workspace/em.radio/em.rf.ble/*"
             ],
@@ -98,23 +89,29 @@
             "@emm.mcu.9305/*": [
                 "./workspace/emm.9305/emm.mcu.9305/*"
             ],
-            "@nordic.distro.nrf52/*": [
-                "./workspace/nordic.nrf5x/nordic.distro.nrf52/*"
+            "@maxim.distro.326xx/*": [
+                "./workspace/maxim.326xx/maxim.distro.326xx/*"
             ],
-            "@nordic.distro.nrf54/*": [
-                "./workspace/nordic.nrf5x/nordic.distro.nrf54/*"
+            "@maxim.mcu.326xx/*": [
+                "./workspace/maxim.326xx/maxim.mcu.326xx/*"
+            ],
+            "@nordic.distro.nrf52/*": [
+                "./workspace/nordic.nrf52/nordic.distro.nrf52/*"
             ],
             "@nordic.mcu.nrf52/*": [
-                "./workspace/nordic.nrf5x/nordic.mcu.nrf52/*"
-            ],
-            "@nordic.mcu.nrf54/*": [
-                "./workspace/nordic.nrf5x/nordic.mcu.nrf54/*"
+                "./workspace/nordic.nrf52/nordic.mcu.nrf52/*"
             ],
             "@nordic.radio.nrf52/*": [
-                "./workspace/nordic.nrf5x/nordic.radio.nrf52/*"
+                "./workspace/nordic.nrf52/nordic.radio.nrf52/*"
+            ],
+            "@nordic.distro.nrf54/*": [
+                "./workspace/nordic.nrf54/nordic.distro.nrf54/*"
+            ],
+            "@nordic.mcu.nrf54/*": [
+                "./workspace/nordic.nrf54/nordic.mcu.nrf54/*"
             ],
             "@nordic.radio.nrf54/*": [
-                "./workspace/nordic.nrf5x/nordic.radio.nrf54/*"
+                "./workspace/nordic.nrf54/nordic.radio.nrf54/*"
             ],
             "@rpi.distro.2040/*": [
                 "./workspace/rpi.2040/rpi.distro.2040/*"
@@ -138,7 +135,7 @@
                 "./workspace/ti.cc23xx/ti.radio.cc23xx/*"
             ],
             "@$distro/*": [
-                "./workspace/rpi.2040/rpi.distro.2040/*"
+                "./workspace/maxim.326xx/maxim.distro.326xx/*"
             ]
         }
     }

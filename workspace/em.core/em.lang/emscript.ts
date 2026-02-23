@@ -29,7 +29,7 @@ namespace em {
 
     export function $board<T extends Object>(proto: T): T {
         const path = Path.join($property('em.lang.Distro', '').replace('://', '/'), 'em-boards')
-        const brd: string = $property('em.lang.BoardKind', '')
+        const brd: string = $property('em.lang.BoardKind', '').split('://')[1]
         const yobj = Yaml.load(String(Fs.readFileSync(path))) as Object
         const bobj = (yobj as Record<string, Object>)[brd] as T
         let res = clone(proto) as T

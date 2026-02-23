@@ -1,0 +1,89 @@
+body {
+    font-family: 'Calibri', system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.35;
+    color: #a6a6a6;
+}
+
+.frame {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    margin: 0;
+    padding-left: 48px;
+    height: 500px;
+}
+
+.logo {
+    margin: 48px 0 0 0;
+    width: 280px;
+}
+
+.action {
+    display: block;
+    margin-left: -18px;
+    margin-top: 18px;
+}
+
+.cmd-wc {
+    display: flex;
+    align-items: center;
+    width: 315px;
+}
+
+.cmd-wc .icon {
+    width: 50px;
+    flex: 0 0 50px;
+    text-align: center;
+}
+
+.cmd-wc:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.label {
+    display: inline;
+}
+
+.dot {
+    color: hsl(165, 80%, 45%);
+    font-weight: bold;
+}
+
+.tour-icon {
+    color: hsl(145, 85%, 50%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.gram-icon {
+    color: hsl(180, 0%, 50%);
+    font-size: 1.1em;
+    font-weight: bolder;
+    margin: 0;
+    margin-left: -4px;
+    margin-right: 4px;
+}
+
+.key-icon {
+    color: hsl(42, 75%, 50%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.wave-icon {
+    color: hsl(205, 85%, 70%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.shut-icon {
+    color: hsl(0, 85%, 50%);
+    font-size: 1.2em;
+    font-weight: bolder;
+    margin: 0;
+}

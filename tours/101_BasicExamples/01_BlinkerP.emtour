@@ -1,0 +1,129 @@
+title: Blinking LEDs
+files:
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.core:em.hal/LedI.em.ts
+  - em.core:em.mcu/Common.em.ts
+  - em.core:em.hal/BusyWaitI.em.ts
+
+steps:
+
+  - cmds:
+      - open 1
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+        {[ht,$start]⟪[cu]Ex02_BlinkerP⟫ &ndash; welcome}
+
+        The {[cu]Ex02_BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
+
+        Many of the other tours you'll take as part of the {[le,https://docs.openem.org/using/using-02]Using EM} series will build on the code seen here.
+
+        With that, let's build&thinsp;+&thinsp;load {[cu]Ex02_BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
+
+        {[uc]}
+
+#   - cmds:
+#       - build 1 -l
+#     focus: [1,1]
+#     acts: ['$build']
+#     text: |
+# 
+#         {[ht,$build]⟪[cu]Ex02_BlinkerP⟫ &ndash; build + load}
+# 
+#         Once {[cu]Ex02_BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
+#         
+#         The EM runtime will turn-on the board's {[cx]sysLed} pin (typically a red LED) after the program terminates.
+# 
+#         You can re-run {[cu]Ex02_BlinkerP} by simply pressing the board's {[cx]RESET} button.
+# 
+#   - cmds:
+#       - mark 1 A 5
+#       - mark 1 B 7
+#       - mark 1 C 9
+#     focus: [1,1]
+#     text: |
+# 
+#         {[ht,$details]⟪[cu]Ex02_BlinkerP⟫ &ndash; details}
+# 
+#         <div class="em-bmlist">
+# 
+#         {[bm,A]} The {[cu]Common} module exposes several proxies imple&shy;menting core MCU services, including {[cu]BusyWait}.
+# 
+#         {[bm,B]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]Ex02_BlinkerP}
+# 
+#         {[bm,C]} The {[cf]em$run} intrinsic then invokes public functions of these two imported units.
+# 
+#         </div>
+# 
+#         {[cu]AppLed} and {[cu]Common}.{[cu]BusyWait} respectively implement the {[cu]AppLedI} and {[cu]BusyWaitI} interfaces, which we'll visit next.
+# 
+#   - cmds:
+#       - open 2
+#     focus: [2,1]
+#     acts: ['$reveal']
+#     text: |
+# 
+#         {[ht,$peek]⟪[cu]LedI⟫ &ndash; quick peek}
+# 
+#         The {[cn]em.hal}/{[cu]LedI} interface specifies a set of functions which an LED must implement in the abstract.
+# 
+#         Our {[cu]Ex02_BlinkerP} program invoked several of these func&shy;tions within its {[cf]em$run} intrinsic.
+# 
+#   - cmds:
+#       - open 3
+#       - mark 3 A 4
+#       - mark 3 B 12
+#     focus: [3,1]
+#     acts: ['$reveal']
+#     text: |
+# 
+#         {[ht,$details]⟪[cu]Common⟫ &ndash; details}
+# 
+#         <div class="em-bmlist">
+# 
+#         {[bm,A]} {[cu]Common} imports a number of abstract interfaces from the {[cn]em.hal} package, including {[cu]BusyWaitI}.
+# 
+#         {[bm,B]} The current {[cn]em$distro} package binds the {[cu]BusyWait} proxy and others at program build-time.
+# 
+#         </div>
+# 
+#   - cmds:
+#       - open 4
+#     focus: [4,1]
+#     acts: ['$reveal']
+#     text: |
+# 
+#         {[ht,$peek]⟪[cu]BusyWaitI⟫ &ndash; quick peek}
+# 
+#         And last, {[cu]BusyWaitI} specifices a {[cf]wait} function &ndash; called from our {[cu]Ex02_BlinkerP} program to spin for 0.5 seconds.
+# 
+#         In practice, however, you'll want to use EM platform timers for delays longer than a few milliseconds
+# 
+#   - cmds: []
+#     focus: [1,1]
+#     text: |
+# 
+#         {[ht,$extra]⟪[cu]Ex02_BlinkerP⟫ &ndash; extra credit}
+# 
+#         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-01-basic-blinker]here}.
+# 
+#         {[bi,task_alt]} Clone {[cu]Ex02_BlinkerP} into your personal bundle.
+# 
+#         {[bi,task_alt]} Modify the value passed to {[cf]wait}.
+# 
+#         {[bi,sentiment_satisfied]} Happy coding&thinsp;!!!
+# 
+# 
+# 
+#   - cmds: []
+#     focus: [1,1]
+#     text: |
+# 
+#         {[ht,$steps]⟪[cu]Ex02_BlinkerP⟫ &ndash; next steps}
+# 
+#         The next several tours in the {[le,https://docs.openem.org/using/using-02]Using EM} series will build upon the code seen here.
+# 
+#         While introducing threads&thinsp;/&thinsp;events&thinsp;/&thinsp;timers in EM, these programs will otherwise just blink the LEDs.
+# 
+#         But first, let's add some "real-time" debug statements in **Tour&thinsp;02**. 

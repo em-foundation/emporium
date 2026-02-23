@@ -12,8 +12,6 @@ let cur_thresh = <u32>0
 
 export function set(time_us: u32) {
     cur_thresh = MAX - (time_us * MHZ_P / MHZ_Q)
-    // $['%%>'](cur_thresh)
-    printf`%08x\n`(cur_thresh)
     start()
 }
 
