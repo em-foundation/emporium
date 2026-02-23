@@ -5,6 +5,7 @@ files:
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - em.core:em.utils/LedT.em.ts
   - .assets/img-100-03-01.png
+  - em.prog/em.examples.basic/Ex02_BlinkerP.em.ts
 
 
 steps:
@@ -244,4 +245,25 @@ steps:
       Use the **Back** &middot; **Top** &middot; **Next** buttons at the top-left corner for navigating in multiple directions.
 
       {[in]Use the <b>Top</b> diagram as a high-level grammar index.}
+
+  - cmds:
+      - open 6
+    focus: [6,1]
+    text: |
+
+        {[ht,$steps]Next steps}
+
+        We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
+
+        The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
+
+        Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
+
+        {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
+        {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
+        {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
+        {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
+
+
+        {[hc]}
 
