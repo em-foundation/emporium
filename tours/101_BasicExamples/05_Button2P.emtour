@@ -9,7 +9,7 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$start]⟪[cu]Ex06_Button2P⟫ &ndash; welcome}
+      {[ht,$start]%[cu]Button2P% &ndash; Button Fibers}
 
       Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
 

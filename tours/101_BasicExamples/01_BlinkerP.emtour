@@ -13,13 +13,13 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]⟪[cu]Ex02_BlinkerP⟫ &ndash; welcome}
+        {[ht,$start]%[cu]BlinkerP% &ndash; Blinking LEDs}
 
-        The {[cu]Ex02_BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
+        The {[cu]BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
 
-        Many of the other tours you'll take as part of the {[le,https://docs.openem.org/using/using-02]Using EM} series will build on the code seen here.
+        Many of the other tours you'll take within the **Basic Examples** group will build upon the code seen here.
 
-        With that, let's build&thinsp;+&thinsp;load {[cu]Ex02_BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
+        With that, let's build&thinsp;+&thinsp;load {[cu]BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
 
         {[uc]}
 

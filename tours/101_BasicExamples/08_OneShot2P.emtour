@@ -9,7 +9,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]⟪[cu]Ex09_OneShot2P⟫ &ndash; welcome}
+        {[ht,$start]%[cu]OneShot2P% &ndash; Timer Fibers}
 
         Like {[cu]OneShot1p}, the {[cu]OneShot2P} program uses a timer with millisecond-resolution to blink an LED.
 

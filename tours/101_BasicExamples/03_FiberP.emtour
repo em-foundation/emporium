@@ -11,11 +11,11 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]⟪[cu]Ex04_FiberP⟫ &ndash; welcome}
+        {[ht,$start]%[cu]FiberP% &ndash; Threading with Fibers}
 
-        The {[cu]FiberP} program introduces _fibers_ &ndash; a very light&shy;weight threading model supported by the EM runtime.
+        The {[cu]FiberP} program introduces _fibers_ &ndash; a light&shy;weight threading model at the heart of the **EMS** runtime.
 
-        The {[cn]em.utils}/{[cu]FiberMgr} module (which we'll visit short&shy;ly) publicizes features used by the {[cu]FiberP} client.
+        The {[cn]em.utils}/{[cu]FiberMgr} **Module** (which we'll visit short&shy;ly) publicizes features used by the {[cu]FiberP} client.
 
         While {[cu]FiberP} also blinks an LED five times, its imple&shy;men&shy;tation lacks an overt {[ck]for} loop &ndash; unlike {[cu]BlinkerP}.
 

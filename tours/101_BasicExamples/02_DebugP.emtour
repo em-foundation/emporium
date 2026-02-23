@@ -10,13 +10,13 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$start]⟪[cu]Ex03_DebugP⟫ &ndash; welcome}
+        {[ht,$start]%[cu]Debug% &ndash; Real-time Debug}
 
-        The {[cu]Ex03_DebugP} program introduces some elementary debug capabilities available within the EM platform.
+        The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
 
-        Building upon {[cd]printf} &ndash; still vital for debugging live code &ndash; EM offers capabilities with far less overhead.
+        Building upon {[cd]printf} &ndash; still vital for debugging live code &ndash; **EMS** offers capabilities with far less overhead.
 
-        In practice, some of these lightweight mechanisms can remain _embedded_ within deployed EM applications.
+        In practice, some of these lightweight mechanisms can remain _embedded_ within deployed **EMS** applications.
 
         {[uc]}
 

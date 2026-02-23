@@ -10,7 +10,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]⟪[cu]Ex12_Alarm2P⟫ &ndash; welcome}
+        {[ht,$start]%[cu]Alarm2P% &ndash; Aligned Wakeups}
 
         The {[cu]Alarm2P} program employs an important feature of {[cu]AlarmMgr} &ndash; _aligning_ wakeups to future time windows.
 

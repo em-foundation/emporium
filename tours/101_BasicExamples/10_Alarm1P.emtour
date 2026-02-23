@@ -11,7 +11,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]⟪[cu]Ex11_Alarm1P⟫ &ndash; welcome}
+        {[ht,$start]%[cu]Alarm1P% &ndash; Wakeup Alarms}
 
         Earlier tours focused on millisecond-resolution timers, typically used to idle the MCU for shorter durations.
 
