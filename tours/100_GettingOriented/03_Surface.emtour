@@ -4,6 +4,8 @@ files:
   - em.core:em.mcu/Common.em.ts
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - em.core:em.utils/LedT.em.ts
+  - .assets/img-100-03-01.png
+
 
 steps:
 
@@ -222,3 +224,24 @@ steps:
       Clones of the **Module** prototype, of course, will have a presence at build-time [**`meta`**] *and* run-time [**`targ`**]. 
 
       {[in] Try clicking <b>New Template</b> on your <code>zgit.*</code> <b>Bucket</b>. }
+
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,schema]Language Grammar}
+
+      The **EM&bull;porium** includes a complete gram&shy;mar for the **EMS** language &ndash; accessed via the **EM&bull;Home** editor tab.
+
+      Once inside, you'll see all **EMS** language constructs pre&shy;sented through a network of *railroad-track* diagrams.
+
+      {[bi,arrow_circle_right]} green rectangle {[em]⇒} (non-terminal) syntactic category<br>
+      {[bi,arrow_circle_right]} beige rounded rect {[em]⇒} (terminal) lexical category<br>
+      {[bi,arrow_circle_right]} literal text {[em]⇒} &laquo;{[ck]keyword}&raquo;, &laquo;{[cs]intrinsic}&raquo;, etc
+
+      Clicking on non-terminals such as **decl** or **expr** navigate to their point of definition within the grammar.
+
+      Use the **Back** &middot; **Top** &middot; **Next** buttons at the top-left corner for navigating in multiple directions.
+
+      {[in]Use the <b>Top</b> diagram as a high-level grammar index.}
+
