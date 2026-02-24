@@ -101,9 +101,9 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 
 With your **EM&bull;porium** environment up and running, we'll now pivot towards exploring its *software content* written in the **EM&bull;Script** program&shy;ming language.&thinsp; To that end, this environment features an ever-growing set of **EM&bull;Tours** &ndash; self-paced learning modules that bring you face-to-face with working **EM&bull;Script** code that you can *cut &middot; copy &middot; paste* to your heart's content.
 
-<a id="tour-preview"></a>
+> 🎬 [Preview](images/tour-ani-a.md) &nbsp;**➜**&nbsp; a 54-second video drive-by of your first **EM&bull;Tour**
 
-> 🎬 [Preview](images/tour-ani.md) &nbsp;**➜**&nbsp; a 54-second video drive-by of your first **EM&bull;Tour**
+<a id="tour-preview"></a>
 
 Before you can launch any **EM&bull;Tours**, however, you'll need to perform two more tasks *inside* **VS Code**.&thinsp; If you've already closed **VS Code** after installing the **EM&bull;porium** components, you can always re-open the environment using a shell script we've provisioned&thinsp;....
 
