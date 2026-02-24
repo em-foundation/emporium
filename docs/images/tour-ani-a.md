@@ -4,4 +4,4 @@
   <a href="tour-ani-b.md" title="Restart the animation"><img src="refresh.svg" width="32" alt="Refresh"></a>
 </p>
 
-<p align="center"><img src="tour-ani.gif" alt="" width="900"><p>
+<p align="center"><img src="tour-ani.gif#v=1" alt="" width="900"><p>
