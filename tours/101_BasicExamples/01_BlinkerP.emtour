@@ -1,6 +1,7 @@
 title: Blinking LEDs
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - .assets/img-101-01-01.png
 
 steps:
 
@@ -47,7 +48,40 @@ steps:
 
         </div>
 
+  - cmds:
+      - clear 1
+      - view 2
+    text: |
 
+        {[ht,browse_activity]&thinsp;Introducing PulseView}
+
+        The **Basic Examples** tours will leverage **PulseView** for real-time analysis [RTA] of **EMS** programs.
+
+        {[in]The <b>EM&bull;Home</b> editor tab contains a link for installing this application on your PC.}
+
+        <div class="em-bmlist">
+
+        {[bm,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
+
+        {[bm,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
+
+        {[bm,3]} Reloading `wokwi.vcd` inside a running **PulseView** window will refresh the application's display.
+
+        </div>
+
+        {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
+
+  - cmds:
+    text: |
+
+        {[ht,checklist]&thinsp;PulseView Setup}
+
+
+
+
+
+
+ 
 
 
 
