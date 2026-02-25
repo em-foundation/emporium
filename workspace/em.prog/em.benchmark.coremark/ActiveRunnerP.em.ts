@@ -24,7 +24,7 @@ export function em$run() {
     AppLed.off()
     Common.UsCounter.start()
     $['%%d+']
-    for (let _ of $range(iterations)) {
+    for (const _ of $range(iterations)) {
         CoreBench.run(0)
     }
     $['%%d-']

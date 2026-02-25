@@ -11,7 +11,7 @@ var active_flag: volatile_t<bool_t> = false
 
 export function em$run() {
     Common.GlobalInterrupts.enable()
-    for (let _ of $range(5)) {
+    for (const _ of $range(5)) {
         $['%%d']
         AppLed.on()
         Common.BusyWait.wait(5_000)

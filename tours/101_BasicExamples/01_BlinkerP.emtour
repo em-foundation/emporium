@@ -1,27 +1,55 @@
 title: Blinking LEDs
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
-  - em.core:em.hal/LedI.em.ts
-  - em.core:em.mcu/Common.em.ts
-  - em.core:em.hal/BusyWaitI.em.ts
 
 steps:
 
   - cmds:
       - open 1
     focus: [1,1]
-    acts: ['$reveal']
     text: |
 
         {[ht,$start]%[cu]BlinkerP% &ndash; Blinking LEDs}
 
-        The {[cu]BlinkerP} program toggles your target board's {[cx]appLed} pin &ndash; typically connected to a green LED.
+        Having completed the **Orientation** tours, you've already viewed (and executed) the {[cu]BlinkerP} program.
 
-        Many of the other tours you'll take within the **Basic Examples** group will build upon the code seen here.
+        In fact, you also know quite about the other **Units** used by this program &ndash; {[cu]BoardC}, {[cu]Common}, {[cu]AppLed}.
 
-        With that, let's build&thinsp;+&thinsp;load {[cu]BlinkerP} for the next stop on our tour &ndash; monitoring progress in the {[cx]OUTPUT} panel.
+        {[in]We will highlight some other <b>EMS</b> features seen here.}
 
-        {[uc]}
+        To prepare for other **Basic Examples** tours, we'll now pivot to *real-time analysis* [RTA] of **EMS** programs.
+
+  - cmds:
+      - mark 1 A 4
+      - mark 1 B 7
+      - mark 1 C 9
+      - mark 1 D 11
+      - mark 1 E 12
+    focus: [1,1]
+    acts: ['$reveal']
+    text: |
+
+        {[ht,$details]%[cu]BlinkerP% &ndash; A Few Details}
+
+        More language features you've noticed along the way:
+
+        <div class="em-bmlist">
+
+        {[bm,A]} The {[ck]import} of {[cu]BoardC} uses {[cs]'@$distro'} to logically name the **Bucket** associated with the current &emsp;&nbsp; <span class="em codicon codicon-circuit-board"></span>.
+
+        {[bm,B]} Like {[ck]import}, {[cs]$delegate} brings a **Unit** into scope &ndash; but without knowing its `'@bucket/Unit.em'` name.
+
+        {[bm,C]} The {[cs]em$run} intrinsic provides a &laquo;`main`&raquo; program entry-point &ndash; executed after any {[cs]em$startup} calls.
+
+        {[bm,D]} Local identifiers starting with `_` conventionally im&shy;ply their *non-usage* &ndash; silencing some **TS** warnings.
+
+        {[bm,E]} Numeric constants can use `_` for readability &ndash; part of standard **TS** automatically inherited by **EMS**.
+
+        </div>
+
+
+
+
 
 #   - cmds:
 #       - build 1 -l
@@ -29,7 +57,7 @@ steps:
 #     acts: ['$build']
 #     text: |
 # 
-#         {[ht,$build]⟪[cu]Ex02_BlinkerP⟫ &ndash; build + load}
+#         {[ht,$details]⟪[cu]Ex02_BlinkerP⟫ &ndash; build + load}
 # 
 #         Once {[cu]Ex02_BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
 #         

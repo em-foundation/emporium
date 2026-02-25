@@ -48,7 +48,7 @@ export function em$halt(): void {
 }
 
 function blink(times: u8, usecs: u32): void {
-    for (let _ of $range(times * 2)) {
+    for (const _ of $range(times * 2)) {
         Led.toggle()
         Common.BusyWait.wait(usecs)
     }
