@@ -78,6 +78,17 @@ steps:
 
         {[ht,checklist]&thinsp;PulseView Setup}
 
+        You should first **build&middot;load** {[cu]BlinkerP} and then explictly terminate the **Wokwi** Simulator using its **Stop ■** button.
+
+        {[in]Status messages will pop-up in the lower-right corner of your <b>VS Code</b> window.&thinsp; Go <b>Back</b> for reference.}
+
+        You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
+
+        {[bm,A]} select **Import Value Change ...** then locate this file<br>
+        {[bm,B]} set **Downsampling** to **125** before clicking **Ok**<br>
+        {[bm,C]} drag the **UART** signal above the **D0** signal
+
+        Feel free to keep **PulseView** active while working with other programs on these tours.
 
 
 
