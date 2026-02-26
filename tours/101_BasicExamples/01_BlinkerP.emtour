@@ -2,6 +2,7 @@ title: Blinking LEDs
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-101-01-01.png
+  - .assets/img-101-01-02.png
 
 steps:
 
@@ -27,7 +28,7 @@ steps:
       - mark 1 D 11
       - mark 1 E 12
     focus: [1,1]
-    acts: ['$reveal']
+    acts: ['$build']
     text: |
 
         {[ht,$details]%[cu]BlinkerP% &ndash; A Few Details}
@@ -72,6 +73,7 @@ steps:
         {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
 
   - cmds:
+      - view 3
     text: |
 
         {[ht,checklist]&thinsp;PulseView Setup}
