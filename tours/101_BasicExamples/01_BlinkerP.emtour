@@ -3,6 +3,8 @@ files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-101-01-01.png
   - .assets/img-101-01-02.png
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - .assets/img-101-01-03.png
 
 steps:
 
@@ -84,121 +86,67 @@ steps:
 
         You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
 
-        {[bm,A]} select **Import Value Change ...** then locate this file<br>
+        {[bm,A]} select **Import Value Change ...** to locate this file<br>
         {[bm,B]} set **Downsampling** to **125** before clicking **Ok**<br>
         {[bm,C]} drag the **UART** signal above the **D0** signal
 
         Feel free to keep **PulseView** active while working with other programs on these tours.
 
+  - cmds:
+      - open 4
+      - mark 4 A 26
+      - mark 4 B 57
 
+    focus: [4,30]
+    acts: ['$reveal']
+    text: |
 
+        {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Closer Look}
 
+        Signals **D0 - D7** first captured by **Wokwi** and then ren&shy;dered by **PulseView** have their origin within {[cu]BoardC}.
 
- 
+        Starting at line {[bm,A]}, {[cu]BoardC} uses {[cs]$clone} to synthesize these (and other) supporting **Modules**: 
 
+        &emsp;**D0** {[cu]AppOutPin} •&thinsp; **D1** {[cu]DbgA} •&thinsp; **D2** {[cu]DbgB} •&thinsp; **D3** {[cu]DbgC}<br>
+        &emsp;**D4** •&thinsp; {[cu]DbgD} **D5** {[cu]AppButPin} •&thinsp; **D6** {[cu]AppLedPin} •&thinsp; **D7** {[cu]SysLedPin}
 
+        Each implementing the {[cu]GpioI} **Interface**, {[cs]em$configure} ultimately binds their {[cn]pin_num} {[cs]$config} parameters.
 
-#   - cmds:
-#       - build 1 -l
-#     focus: [1,1]
-#     acts: ['$build']
-#     text: |
-# 
-#         {[ht,$details]⟪[cu]Ex02_BlinkerP⟫ &ndash; build + load}
-# 
-#         Once {[cu]Ex02_BlinkerP} begins execution, you'' see {[cx]appLed} blink on&thinsp;/&thinsp;off five times before the program terminates.
-#         
-#         The EM runtime will turn-on the board's {[cx]sysLed} pin (typically a red LED) after the program terminates.
-# 
-#         You can re-run {[cu]Ex02_BlinkerP} by simply pressing the board's {[cx]RESET} button.
-# 
-#   - cmds:
-#       - mark 1 A 5
-#       - mark 1 B 7
-#       - mark 1 C 9
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$details]⟪[cu]Ex02_BlinkerP⟫ &ndash; details}
-# 
-#         <div class="em-bmlist">
-# 
-#         {[bm,A]} The {[cu]Common} module exposes several proxies imple&shy;menting core MCU services, including {[cu]BusyWait}.
-# 
-#         {[bm,B]} The {[cu]BoardC} composite configures and exports the {[cu]AppLed} module, imported here by {[cu]Ex02_BlinkerP}
-# 
-#         {[bm,C]} The {[cf]em$run} intrinsic then invokes public functions of these two imported units.
-# 
-#         </div>
-# 
-#         {[cu]AppLed} and {[cu]Common}.{[cu]BusyWait} respectively implement the {[cu]AppLedI} and {[cu]BusyWaitI} interfaces, which we'll visit next.
-# 
-#   - cmds:
-#       - open 2
-#     focus: [2,1]
-#     acts: ['$reveal']
-#     text: |
-# 
-#         {[ht,$peek]⟪[cu]LedI⟫ &ndash; quick peek}
-# 
-#         The {[cn]em.hal}/{[cu]LedI} interface specifies a set of functions which an LED must implement in the abstract.
-# 
-#         Our {[cu]Ex02_BlinkerP} program invoked several of these func&shy;tions within its {[cf]em$run} intrinsic.
-# 
-#   - cmds:
-#       - open 3
-#       - mark 3 A 4
-#       - mark 3 B 12
-#     focus: [3,1]
-#     acts: ['$reveal']
-#     text: |
-# 
-#         {[ht,$details]⟪[cu]Common⟫ &ndash; details}
-# 
-#         <div class="em-bmlist">
-# 
-#         {[bm,A]} {[cu]Common} imports a number of abstract interfaces from the {[cn]em.hal} package, including {[cu]BusyWaitI}.
-# 
-#         {[bm,B]} The current {[cn]em$distro} package binds the {[cu]BusyWait} proxy and others at program build-time.
-# 
-#         </div>
-# 
-#   - cmds:
-#       - open 4
-#     focus: [4,1]
-#     acts: ['$reveal']
-#     text: |
-# 
-#         {[ht,$peek]⟪[cu]BusyWaitI⟫ &ndash; quick peek}
-# 
-#         And last, {[cu]BusyWaitI} specifices a {[cf]wait} function &ndash; called from our {[cu]Ex02_BlinkerP} program to spin for 0.5 seconds.
-# 
-#         In practice, however, you'll want to use EM platform timers for delays longer than a few milliseconds
-# 
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$extra]⟪[cu]Ex02_BlinkerP⟫ &ndash; extra credit}
-# 
-#         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-01-basic-blinker]here}.
-# 
-#         {[bi,task_alt]} Clone {[cu]Ex02_BlinkerP} into your personal bundle.
-# 
-#         {[bi,task_alt]} Modify the value passed to {[cf]wait}.
-# 
-#         {[bi,sentiment_satisfied]} Happy coding&thinsp;!!!
-# 
-# 
-# 
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$steps]⟪[cu]Ex02_BlinkerP⟫ &ndash; next steps}
-# 
-#         The next several tours in the {[le,https://docs.openem.org/using/using-02]Using EM} series will build upon the code seen here.
-# 
-#         While introducing threads&thinsp;/&thinsp;events&thinsp;/&thinsp;timers in EM, these programs will otherwise just blink the LEDs.
-# 
-#         But first, let's add some "real-time" debug statements in **Tour&thinsp;02**. 
+        The {[cs]$board} intrinsic at line {[bm,B]} returns a helper object popu&shy;lated by reading a collocated `em-boards` file.
+
+        {[in]You'll always find this file in the <code class="cmd-cs">'@$distro'</code> <b>Bucket</b>.}
+
+  - cmds:
+      - view 5
+    text: |
+
+        {[ht,monitor_heart]&thinsp;%[cu]BlinkerP% &ndash; Signal Capture}
+
+        At this point, we'll examine the values of signals **D0 - D7** over five seconds of {[cu]BlinkerP} execution time.
+
+        Label {[bm,A]} shows two quick winks of the [RED] `SysLed`, which **EMS** will always trigger before entering {[cs]em$run}.
+
+        Label {[bm,B]} uses the **PulseView** cursor to measure the ac&shy;curacy of {[cu]Common}.{[cn]BusyWait} over {[ce]500_000} &mu;seconds.
+
+        Label {[bm,C]} show a special {[ce]0x4} byte written to `AppOut` through {[cd]halt}, followed by asserting `SysLed`.
+
+        {[in]If not called explicitly, the <b>EMS</b> run-time automati&shy;cally invokes <code class="cmd-cd">halt</code> during orderly program shutdown.}
+
+        The next tour shows what happens when calling {[cd]fail}.
+
+  - cmds:
+      - clear 1
+    focus: [1,1]
+    text: |
+
+        {[ht,$steps]Next steps}
+
+        The **Basic Examples** tours will present many variants of {[cu]BlinkerP} &ndash; each blinking LEDS, albeit very differently.
+
+        Along the way, we'll visit some additional (portable) **Units** found in the `em.core` **Package**.
+
+        We'll also introduce a few more **EMS** features &ndash; though you've actually seen much of the language already.
+
+        The truly novel aspect of these tours lies in leverag&shy;ing **PulseView** for analyzing real-time program execution.
+
+        {[in]While these tours will view canned signal captures, do spend a moment exploring the <b>PulseView</b> UI.}
