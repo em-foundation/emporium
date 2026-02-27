@@ -139,6 +139,20 @@ steps:
     focus: [1,1]
     text: |
 
+        {[ht,$extra]Extra Credit}
+
+        {[bi,task_alt]} Come up to speed on the **PulseView** UI.
+
+        {[bi,task_alt]} Inspect the **UART** signal after running {[cu]HelloP}.
+
+
+
+        {[bi,task_alt]} View captures of your own `zgit.*` programs.
+
+  - cmds:
+    focus: [1,1]
+    text: |
+
         {[ht,$steps]Next steps}
 
         The **Basic Examples** tours will present many variants of {[cu]BlinkerP} &ndash; each blinking LEDS, albeit very differently.
@@ -149,4 +163,4 @@ steps:
 
         The truly novel aspect of these tours lies in leverag&shy;ing **PulseView** for analyzing real-time program execution.
 
-        {[in]While these tours will view canned signal captures, do spend a moment exploring the <b>PulseView</b> UI.}
+        {[hc]}
