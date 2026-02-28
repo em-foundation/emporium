@@ -31,7 +31,7 @@
     {
       "type": "wokwi-text",
       "id": "text1",
-      "top": 192,
+      "top": 182.4,
       "left": 67.2,
       "attrs": {
         "text": "SysLed"
@@ -40,7 +40,7 @@
     {
       "type": "wokwi-text",
       "id": "text2",
-      "top": 96,
+      "top": 86.4,
       "left": 67.2,
       "attrs": {
         "text": "AppLed"
@@ -83,16 +83,16 @@
     {
       "type": "wokwi-text",
       "id": "text4",
-      "top": 172.8,
-      "left": 259.2,
+      "top": 163.2,
+      "left": 268.8,
       "attrs": {
-        "text": "SysDbg [A-D]"
+        "text": "Dbg [A-D]"
       }
     },
     {
       "type": "wokwi-text",
       "id": "text5",
-      "top": 19.2,
+      "top": 9.6,
       "left": 182.4,
       "attrs": {
         "text": "AppOut"

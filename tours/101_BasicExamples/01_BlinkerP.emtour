@@ -52,7 +52,6 @@ steps:
         </div>
 
   - cmds:
-      - clear 1
       - view 2
     text: |
 
@@ -107,8 +106,8 @@ steps:
 
         Starting at line {[bm,A]}, {[cu]BoardC} uses {[cs]$clone} to synthesize these (and other) supporting **Modules**: 
 
-        &emsp;**D0** {[cu]AppOutPin} •&thinsp; **D1** {[cu]DbgA} •&thinsp; **D2** {[cu]DbgB} •&thinsp; **D3** {[cu]DbgC}<br>
-        &emsp;**D4** •&thinsp; {[cu]DbgD} **D5** {[cu]AppButPin} •&thinsp; **D6** {[cu]AppLedPin} •&thinsp; **D7** {[cu]SysLedPin}
+        &nbsp;&nbsp;**D0**&thinsp;{[cu]AppOutPin}|&thinsp;**D1**&thinsp;{[cu]DbgA}|&thinsp;**D2**&thinsp;{[cu]DbgB}|&thinsp;**D3**&thinsp;{[cu]DbgC}|&thinsp;**D4**&thinsp;{[cu]DbgD}<br>
+        &nbsp;&nbsp;**D5**&thinsp;{[cu]AppButPin}|&thinsp;**D6**&thinsp;{[cu]AppLedPin}|&thinsp;**D7**&thinsp;{[cu]SysLedPin}
 
         Each implementing the {[cu]GpioI} **Interface**, {[cs]em$configure} ultimately binds their {[cn]pin_num} {[cs]$config} parameters.
 
@@ -135,7 +134,6 @@ steps:
         The next tour shows what happens when calling {[cd]fail}.
 
   - cmds:
-      - clear 1
     focus: [1,1]
     text: |
 

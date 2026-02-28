@@ -86,7 +86,6 @@ steps:
       You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
 
  -  cmds:
-      - clear 1
     focus: [1,1]
     acts: ['$reveal']
     text: |

@@ -52,6 +52,8 @@ steps:
       The **TS** namespace at {[bm,M]} contains all of the *meta* code; the special comment at {[bm,T]} begins the *target* code.
 
   - cmds:
+      - mark 1 M 13
+      - mark 1 T 19
     focus: [1,1]
     text: |
 
@@ -69,7 +71,6 @@ steps:
       By design, each intrinsic belongs to only *one* **EMS** do&shy;main &ndash; and may apply to only some **EMS Unit** *flavors*.
 
   - cmds:
-      - clear 1
       - mark 1 I 5
       - mark 1 E 26
     focus: [1,1]
@@ -90,7 +91,6 @@ steps:
       Each **EMS Interface** in general defines a *programmatic contract* between **EMS Module** clients and suppliers.
 
   - cmds:
-      - clear 1
       - mark 1 C 8
     focus: [1,1]
     text: |
@@ -110,7 +110,6 @@ steps:
       By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*. 
 
   - cmds:
-      - clear 1
       - mark 1 P 9
    
     focus: [1,1]
@@ -131,7 +130,6 @@ steps:
       But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
 
   - cmds:
-      - clear 1
       - mark 1 A 30
       - mark 1 B 32
       - mark 1 C 33
@@ -155,7 +153,6 @@ steps:
       Compared with C, **EMS** offers a higher-level program&shy;ming paradigm *AND*&thinsp; a higher-level of performance.
 
   - cmds:
-      - clear 1
       - open 2
     focus: [2,1]
     text: |
