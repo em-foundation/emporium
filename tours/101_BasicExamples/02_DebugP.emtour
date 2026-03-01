@@ -2,6 +2,7 @@ title: Real-time Debug
 files:
   - em.prog:em.examples.basic/Ex03_DebugP.em.ts
   - .assets/img-101-02-01.png
+  - em.core/em.lang/Debug.em.ts
 
 steps:
 
@@ -45,7 +46,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]%[cu]Ex03_DebugP% &ndash; details}
+        {[ht,$details]%[cu]DebugP% &ndash; details}
 
         <div class="em-bmlist">
 
@@ -66,7 +67,7 @@ steps:
     focus: [1,8]
     text: |
 
-        {[ht,$details]%[cu]Ex03_DebugP% &ndash; more details}
+        {[ht,$details]%[cu]DebugP% &ndash; more details}
 
         <div class="em-bmlist">
 
@@ -84,7 +85,7 @@ steps:
       - view 2
     text: |
 
-        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; Signal Capture}
+        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; signal capture}
 
         <div class="em-bmlist">
 
@@ -103,55 +104,77 @@ steps:
 
         {[in]Also note that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
 
+  - cmds:
+      - mark 1 H 26
+      - mark 1 I 29
+    focus: [1,8]
+    text: |
+
+        {[ht,$details]%[cu]DebugP% &ndash; still more details}
+
+        <div class="em-bmlist">
+
+        {[bm,H]} **EMS**' {[cd]printf} implements a "practical" subset of the legacy C function, emphasizing efficiency.
+
+        {[bm,I]} Using a {[cd]halt} statement, {[cu]DebugP} gracefully ter&shy;mi&shy;nates execution at this point in time.
+
+        </div>
+
+        **EMS**' {[cd]fail} / {[cd]halt} statements (like {[cd]printf}) serve a more practical role when (say) unit testing a module.
+
+        Compared with {[cd]printf}, however, {[cd]%%[>_e_]} statements have mini&shy;mal (and *determinstic*) run-time overhead.
+
+        **EMS**' {[cd]%%[_p_&hellip;]} debug statements incur even less over&shy;head (&le; 1&mu;s) &ndash; ideal for testing in the factory&thinsp;&middot;&thinsp;field.
+
+  - cmds:
+      - open 3
+    focus: [3,1]
+    acts: ['$reveal']
+    text: |
+
+        {[ht,$look] Portable Implementation}
+
+        The portable {[cu]Debug} **Module** shown here provides the underlying implementation for {[cd]%%[_p_&hellip;]} statements.
+
+        {[in]Use the %[cb,target]% action button to precisely locate %[cu]Debug% within the <b>Package/Bucket</b> hierarchy.}
+
+        The **EMS** translator *replaces* {[cd]%%[_p_&hellip;]} statements in any source file with calls to these run-time functions.
+
+        {[in]Feel good that you can fully comprehend this code&thinsp;!!}
+
+        A peer {[cu]Console} <b>Module</b> likewise implements the **EMS** translator's run-time for {[cd]%%[>_e_]} and {[cd]printf}.
 
 
-#   - cmds:
-#       - mark 1 H 26
-#       - mark 1 I 29
-#     focus: [1,8]
-#     text: |
-# 
-#         {[ht,$details]⟪[cu]Ex03_DebugP⟫ &ndash; still more details}
-# 
-#         <div class="em-bmlist">
-# 
-#         {[bm,H]} EM's {[cd]printf} implements a "practical" subset of the standard C/C++ function, emphasizing efficiency.
-# 
-#         {[bm,I]} Using a {[cd]halt} statement, {[cu]Ex03_DebugP} gracefully ter&shy;minates execution at this point in time.
-# 
-#         </div>
-# 
-#         EM {[cd]fail} / {[cd]halt} statements (like {[cd]printf}) serve a more practical role when (say) unit testing a module.
-# 
-#         Compared with {[cd]printf}, {[cd]%%[>_e_]} statements have mini&shy;mal (and determinstic) run-time overhead.
-# 
-#         EM's {[cd]%%[_p_&hellip;]} debug statements incur even less overhead (&le; 1&mu;s), ideal for factory&thinsp;/&thinsp;field testing.
-# 
-#         As they say &ndash; _test what you fly, fly what you test_.
-# 
-# 
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$extra]⟪[cu]Ex03_DebugP⟫ &ndash; extra credit}
-# 
-#         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-02-real-time-debug]here}.
-# 
-#         {[bi,task_alt]} Clone {[cu]Ex03_DebugP} into your personal bundle.
-# 
-#         {[bi,sentiment_satisfied]} If you have a Saleae, just go wild in these tours&thinsp;!!!
-# 
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$steps]⟪[cu]Ex03_DebugP⟫ &ndash; next steps}
-# 
-#         The remaining tours in this series make minimal use of {[cd]%%[_p_]} statements, and don't use {[cd]printf} at all.
-# 
-#         But do clone any modules of interest into your personal bundle &ndash; and add all the debug code you wish.
-# 
-#         With that, let's move on to **Tour&thinsp;03** and learn about the threading model supported by the EM runtime.
-# 
-# 
+        
+
+  - cmds:
+    focus: [1,1]
+    text: |
+
+        {[ht,$extra]Extra Credit}
+
+        {[bi,task_alt]} Use **PulseView** cursors to measure {[cd]%%[_p_&hellip;]} timings.
+
+        {[bi,task_alt]} Study the small {[cu]Console}.{[cf]print} implementation.
+
+        {[bi,task_alt]} Add some real-time analysis to your own {[cu]BlinkyP}.
+
+
+
+
+  - cmds:
+    focus: [1,1]
+    text: |
+
+        {[ht,$steps]Next Steps}
+
+        The remaining **Basic Examples** tours will use {[cd]%%[_p_]} for RTA with minimal impact on run-time performance.
+
+        We will, however, shy away from {[cd]printf} &ndash; favoring the more efficient **UART** output available with {[cd]%%[>_e_]}.
+
+        Unlike "debug" scaffolding, you can *deploy* RTA features intrinsic to **EMS** as part of your production code.
+
+        As they say &ndash; _test what you fly, fly what you test_.
+
+        {[hc]}
+
