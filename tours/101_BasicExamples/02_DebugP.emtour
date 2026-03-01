@@ -1,6 +1,7 @@
 title: Real-time Debug
 files:
   - em.prog:em.examples.basic/Ex03_DebugP.em.ts
+  - .assets/img-101-02-01.png
 
 steps:
 
@@ -24,6 +25,8 @@ steps:
     text: |
 
         {[ht,$build]%[cu]DebugP% &ndash; build&middot;load}
+
+        {[in]Observe the LEDs when executing this program.}
 
         As configured here, {[cu]DebugP} will start toggling [GREEN] `AppLed` &ndash; not unlike our reference {[cu]BlinkerP} program.
 
@@ -67,15 +70,40 @@ steps:
 
         <div class="em-bmlist">
 
-        {[bm,E]} This EM debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
+        {[bm,E]} This **EMS** debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
 
-        {[bm,F]} This EM statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
+        {[bm,F]} This **EMS** statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
 
         {[bm,G]} With {[cn]bits11} ranging from {[ce]0&ndash;3}, this statement would toggle your board's {[cx]dbgC} pin {[ce]1&ndash;4} times.
 
         </div>
 
         In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
+
+  - cmds:
+      - view 2
+    text: |
+
+        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; Signal Capture}
+
+        <div class="em-bmlist">
+
+        {[bm,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
+
+        {[bm,B]} At each `AppLed` edge, the current {[ct]u16 value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
+
+        {[bm,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
+
+        {[bm,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
+
+        </div>
+
+        The {[cd]%%>} intrinsic always outputs a leading <code>0x8<i>n</i></code> con&shy;trol byte to the **UART**, followed 
+        by _n_ bytes of payload.
+
+        {[in]Also note that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
+
+
 
 #   - cmds:
 #       - mark 1 H 26
