@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EM•Script — Mobile Column Mock</title>
+    <style>
+        :root {
+            --bg: #0b0b0c;
+            --page: #121214;
+            --ink: #f2f2f3;
+            --muted: #a7a7ad;
+            --rule: #2a2a2f;
+            --accent: #d9d9de;
+            --em: hsl(165, 100%, 60%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            line-height: 1.45;
+            hyphens: auto;
+            overflow-wrap: break-word;
+        }
+
+        /* "device frame" */
+        .frame {
+            width: 390px;
+            /* iPhone 14-ish */
+            max-width: 100%;
+            margin: 0 auto;
+            border: 2px solid var(--rule);
+            border-radius: 18px;
+            background: var(--page);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        header {
+            padding: 18px 18px 24px 18px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            opacity: 0.9;
+            transform: translateY(4px);
+        }
+
+        .kicker {
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        h1 {
+            margin: 8px 0 0 0;
+            font-size: 22px;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+        }
+
+        main {
+            padding: 8px 18px 24px 18px;
+        }
+
+        .em-bull::before {
+            content: '•';
+            color: var(--em);
+            display: inline-block;
+            transform: scale(1.35) translateY(-0.1em);
+            transform-origin: center;
+            line-height: 0;
+            margin: 0 0.08em;
+        }
+
+        .group {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--em)
+        }
+
+        /* .group:last-child .item:last-child h2 {
+            color: var(--em);
+        }
+        */
+
+        .group:first-child {
+            margin-top: 0;
+            padding-top: 10px;
+            border-top: none;
+        }
+
+        .group-title {
+            display: block;
+            text-align: right;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 0 0 20px 0;
+        }
+
+        .item {
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(42, 42, 47, 0.65);
+        }
+
+        .item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+        }
+
+        .hint {
+            margin: 12px 0 0 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .code-shot {
+            display: block;
+            width: 100%;
+            height: auto;
+            padding-top: 6px;
+        }
+
+        figure.code {
+            margin: 14px 0 6px 0;
+        }
+
+        figure.code figcaption {
+            margin: 6px 0 0 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="frame" role="document" aria-label="Mobile-column mockup">
+
+        <header class="masthead">
+            <h1>Introducing EM<span class="em-bull"></span>Script</h1>
+            <img src="logo.png" class="logo" alt="EM logo">
+        </header>
+
+        <main>
+            <section class="group">
+                <div class="group-title">The Principle</div>
+
+                <div class="item">
+                    <h2>Tiny chips demand tiny code</h2>
+                </div>
+                <div class="item">
+                    <h2>C leaves performance on the table</h2>
+                </div>
+                <div class="item">
+                    <h2>A new language for embedded systems</h2>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="group-title">The Proof</div>
+
+                <div class="item">
+                    <h2>Show me the code &ndash; hello, world</h2>
+                    <figure class="code">
+                        <img class="code-shot" src="snip-1.png" alt="EM•Script hello world">
+                    </figure>
+                </div>
+                <div class="item">
+                    <h2>Show me the code &ndash; blink an LED</h2>
+                    <figure class="code">
+                        <img class="code-shot" src="snip-2.png" alt="EM•Script blinker">
+                    </figure>
+                </div>
+                <div class="item">
+                    <h2>Show me the code &ndash; bit-bang a UART</h2>
+                    <figure class="code">
+                        <img class="code-shot" src="snip-3.png" alt="EM•Script bit-banged UART">
+                    </figure>
+                </div>
+            </section>
+
+
+            <section class="group">
+                <div class="group-title">The Mechanism</div>
+
+                <div class="item">
+                    <h2>At first glance &ndash; a simple transpiler</h2>
+                </div>
+                <div class="item">
+                    <h2>The innovation &ndash; build-time configuration</h2>
+                </div>
+                <div class="item">
+                    <h2>EM<span class="em-bull"></span>Script &ndash; its own meta-language</h2>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="group-title">The Environment</div>
+
+                <div class="item">
+                    <h2>Use VS Code &ndash; familiar and proven</h2>
+                </div>
+                <div class="item">
+                    <h2>Write TypeScript &ndash; first-class tooling</h2>
+                </div>
+                <div class="item">
+                    <h2>Add EM<span class="em-bull"></span>Builder &ndash; from tour to target</h2>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="group-title">The Foundation</div>
+
+                <div class="item">
+                    <h2>Backed by The EM Foundation</h2>
+                    <p>The EM Foundation promotes, sustains, and evolves EM™ programming technology for the embedded
+                        systems community.</p>
+                    <p>Formed in 2023 as a California public benefit corporation, it operates as a 501(c)(3) nonprofit.
+                    </p>
+                </div>
+                <div class="item">
+                    <h2>15+ years of real-world experience</h2>
+                    <p>Since 2010, EM programming technology has spanned more than twenty 8-, 16-, and 32-bit MCUs
+                        across a dozen silicon vendors.</p>
+                    <p>Commercial deployments on select platforms have demonstrated
+                        measurable reductions in code size, power consumption, and system cost.</p>
+                </div>
+                <div class="item">
+                    <h2>Get involved &ndash; contribute &middot; collaborate</h2>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="group-title">The Vision</div>
+
+                <div class="item">
+                    <h2>A growing EM<span class="em-bull"></span>porium of tiny code</h2>
+                </div>
+                <div class="item">
+                    <h2>10× smaller software than legacy C</h2>
+                </div>
+                <div class="item">
+                    <h2>10× impact on future silicon PPA</h2>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
