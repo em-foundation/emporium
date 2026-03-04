@@ -33,7 +33,7 @@ export namespace em$meta {
         curHead = elem_tab.$$add()
         curHead.$$.data = data_tab.$$add()
         let p = curHead
-        for (let _ of $range(maxElems - 1)) {
+        for (const _ of $range(maxElems - 1)) {
             let q = (p.$$.next = elem_tab.$$add())
             q.$$.data = data_tab.$$add()
             p = q
@@ -199,7 +199,7 @@ function sort(list: $$<Elem>, cmp: Comparator): $$<Elem> {
             // step `insize` places along from p
             q = p
             let psize = 0
-            for (let _ of $range(insize)) {
+            for (const _ of $range(insize)) {
                 psize++
                 q = q.$$.next
                 if (!q) break

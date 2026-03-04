@@ -8,7 +8,7 @@ const AppLed = $delegate(BoardC.AppLed)
 
 export function em$run() {
     AppLed.on()
-    for (let _ of $range(10)) {
+    for (const _ of $range(10)) {
         Common.BusyWait.wait(500_000)
         AppLed.toggle()
     }

@@ -7,4 +7,5 @@ wokwi.vcd
 workspace/.emscript
 workspace/emscript.ini
 workspace/emscript-local.ini
+workspace/zlocal/
 .DS_Store

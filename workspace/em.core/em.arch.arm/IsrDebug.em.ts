@@ -11,7 +11,7 @@ export function exec() {
     $['%%>'](vnum)
     let fp = <ptr_t<u32>>e$`__get_MSP()`
     $['%%>'](fp.$cur())
-    for (let _ of $range(8)) {
+    for (const _ of $range(8)) {
         $['%%b']
         $['%%>'](fp.$$)
         fp.$inc()

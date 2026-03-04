@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+    <g fill="none" stroke="hsl(195, 109%, 70%)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+
+        <!-- two vertical bars -->
+        <path d="M10.8 2.0v12"/>
+        <path d="M13.8 2.0v12"/>
+
+        <!-- triangle reaches the full height of the inner bar -->
+        <path d="M3.0 8.0L10.8 2.0"/>
+        <path d="M3.0 8.0L10.8 14.0"/>
+    </g>
+</svg>

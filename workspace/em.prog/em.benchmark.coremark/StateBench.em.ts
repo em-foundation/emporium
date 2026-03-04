@@ -61,7 +61,7 @@ export namespace em$meta {
     }
 
     export function em$construct() {
-        for (let _ of $range(memsize)) membuf.$$add(0)
+        for (const _ of $range(memsize)) membuf.$$add(0)
     }
 }
 

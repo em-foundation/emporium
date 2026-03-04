@@ -10,15 +10,17 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]⟪[cu]Ex08_OneShot1P⟫ &ndash; welcome}
-
-        The {[cu]OneShot1P} program illustrates the handling of in&shy;coming timer events that awaken the MCU.
-
-        In response to these events &ndash; programmed to occur at a specific time interval &ndash; {[cu]OneShot1P} will blink an LED.
-
-        Like the {[cu]Button1P} program toured earlier, {[cu]OneShot1P} uses a lower-level handler in lieu of a fiber object.
+        {[ht,$start]%[cu]OneShot1P% &ndash; Timer Handlers}
 
         {[uc]}
+
+
+#         The {[cu]OneShot1P} program illustrates how to handle in&shy;coming timer events that awaken the MCU.
+# 
+#         In response to these events &ndash; programmed to occur *once* in the future &ndash; {[cu]OneShot1P} will blink an LED.
+# 
+#         Like the {[cu]Button1P} program toured earlier, {[cu]OneShot1P} uses a lower-level handler in lieu of a fiber object.
+
 # 
 #   - cmds:
 #       - build 1 -l

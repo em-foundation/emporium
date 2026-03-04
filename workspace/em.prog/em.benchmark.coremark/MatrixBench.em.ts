@@ -24,7 +24,7 @@ export namespace em$meta {
             j = i * i * 2 * 4
         }
         dimN.$$val = i - 1
-        for (let _ of $range(dimN * dimN)) {
+        for (const _ of $range(dimN * dimN)) {
             matA.$$add(0)
             matB.$$add(0)
             matC.$$add(0)

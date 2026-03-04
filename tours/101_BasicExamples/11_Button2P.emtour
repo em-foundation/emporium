@@ -9,15 +9,16 @@ steps:
     focus: [1,1]
     text: |
 
-      {[ht,$start]⟪[cu]Ex06_Button2P⟫ &ndash; welcome}
-
-      Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
-
-      Unlike {[cu]Button1P}, however, {[cu]Button2P} uses a {[ct]Fiber} object to better handle incoming button events.
-
-      Besides simplifying {[cu]Button2P}, this design enables more lengthy responses to incoming events.
+      {[ht,$start]%[cu]Button2P% &ndash; Button Fibers}
 
       {[uc]}
+
+#       Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
+# 
+#       Unlike {[cu]Button1P}, however, {[cu]Button2P} uses a {[ct]Fiber} object to better handle incoming button events.
+# 
+#       Besides simplifying {[cu]Button2P}, this design enables more lengthy responses to incoming events.
+# 
 # 
 #   - cmds:
 #     - build 1 -l
