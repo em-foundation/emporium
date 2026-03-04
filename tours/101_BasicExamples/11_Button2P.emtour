@@ -11,13 +11,14 @@ steps:
 
       {[ht,$start]%[cu]Button2P% &ndash; Button Fibers}
 
-      Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
-
-      Unlike {[cu]Button1P}, however, {[cu]Button2P} uses a {[ct]Fiber} object to better handle incoming button events.
-
-      Besides simplifying {[cu]Button2P}, this design enables more lengthy responses to incoming events.
-
       {[uc]}
+
+#       Like the {[cu]Button1P} program toured earlier, {[cu]Button2P} blinks {[cx]appLed} once upon detecting an {[cx]appBut} edge.
+# 
+#       Unlike {[cu]Button1P}, however, {[cu]Button2P} uses a {[ct]Fiber} object to better handle incoming button events.
+# 
+#       Besides simplifying {[cu]Button2P}, this design enables more lengthy responses to incoming events.
+# 
 # 
 #   - cmds:
 #     - build 1 -l

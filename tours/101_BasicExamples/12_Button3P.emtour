@@ -13,13 +13,14 @@ steps:
 
         {[ht,$start]%[cu]Button3P% &ndash; Button Objects}
 
-        Unlike {[cu]Button1P} and {[cu]Button2P}, the {[cu]Button3P} program in&shy;cludes functionality to debounce button events.
+        {[uc]}        
 
-        The program can also distinguish "long" button presses, and will blink a different LED accordingly.
-
-        Finally, {[cu]Button3P} introduces some new platform capa&shy;bilities that further streamline the program's design.
-
-        {[uc]}
+#         Unlike {[cu]Button1P} and {[cu]Button2P}, the {[cu]Button3P} program in&shy;cludes functionality to debounce button events.
+# 
+#         The program can also distinguish "long" button presses, and will blink a different LED accordingly.
+# 
+#         Finally, {[cu]Button3P} introduces some new platform capa&shy;bilities that further streamline the program's design.
+# 
 # 
 #   - cmds:
 #       - build 1 -l

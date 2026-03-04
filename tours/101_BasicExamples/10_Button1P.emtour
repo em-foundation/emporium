@@ -13,16 +13,16 @@ steps:
 
         {[ht,$start]%[cu]Button1P% &ndash; Button Handlers}
 
-        The {[cu]Button1P} program illustrates how to handle in&shy;com&shy;ing events that awaken the MCU when sleeping.
-
-        In this case, pressing a button will source the event; the program will then blink an LED in response.
-
-        Since {[cu]Button1P} does _not_ use fibers, the program direct&shy;ly calls lower-level functions seen earlier in {[cu]FiberMgr}.
-
-        Later tours will explore alternative implementa&shy;tions which do, in fact, leverage opaque {[ct]Fiber} objects.
-
         {[uc]}
 
+#         The {[cu]Button1P} program illustrates how to handle in&shy;com&shy;ing events that awaken the MCU when sleeping.
+# 
+#         In this case, pressing a button will source the event; the program will then blink an LED in response.
+# 
+#         Since {[cu]Button1P} does _not_ use fibers, the program direct&shy;ly calls lower-level functions seen earlier in {[cu]FiberMgr}.
+# 
+#         Later tours will explore alternative implementa&shy;tions which do, in fact, leverage opaque {[ct]Fiber} objects.
+# 
 #   - cmds:
 #       - build 1 -l
 #     focus: [1,1]

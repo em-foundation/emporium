@@ -12,16 +12,18 @@ steps:
     text: |
 
         {[ht,$start]%[cu]FiberP% &ndash; Threading with Fibers}
-
-        The {[cu]FiberP} program introduces _fibers_ &ndash; a light&shy;weight threading model at the heart of the **EMS** runtime.
-
-        The {[cn]em.utils}/{[cu]FiberMgr} **Module** (which we'll visit short&shy;ly) publicizes features used by the {[cu]FiberP} client.
-
-        While {[cu]FiberP} also blinks an LED five times, its imple&shy;men&shy;tation lacks an overt {[ck]for} loop &ndash; unlike {[cu]BlinkerP}.
-
-        Rather, the {[cu]FiberP} program relies on a sort of "reactive call&shy;back" function triggered under software control.
-
+        
         {[uc]}
+
+# 
+#         The {[cu]FiberP} program introduces _fibers_ &ndash; a light&shy;weight threading model at the heart of the **EMS** runtime.
+# 
+#         The {[cn]em.utils}/{[cu]FiberMgr} **Module** (which we'll visit short&shy;ly) publicizes features used by the {[cu]FiberP} client.
+# 
+#         While {[cu]FiberP} also blinks an LED five times, its imple&shy;men&shy;tation lacks an overt {[ck]for} loop &ndash; unlike {[cu]BlinkerP}.
+# 
+#         Rather, the {[cu]FiberP} program relies on a sort of "reactive call&shy;back" function triggered under software control.
+# 
 # 
 #   - cmds:
 #       - build 1 -l

@@ -13,15 +13,16 @@ steps:
 
         {[ht,$start]%[cu]Alarm1P% &ndash; Wakeup Alarms}
 
-        Earlier tours focused on millisecond-resolution timers, typically used to idle the MCU for shorter durations.
-
-        The {[cu]Alarm1P} program introduces the {[cu]AlarmMgr} utility module &ndash; used for much longer periods of deep-sleep.
-
-        With durations specified in (sub-)seconds, {[cu]AlarmMgr} would enable the MCU to hibernate for years at a time.
-
-        In practice, {[cu]AlarmMgr} wakeups typically occur more fre&shy;quently &ndash; say, every two minutes or once an hour.
-
         {[uc]}
+
+#         Earlier tours focused on millisecond-resolution timers, typically used to idle the MCU for shorter durations.
+# 
+#         The {[cu]Alarm1P} program introduces the {[cu]AlarmMgr} utility module &ndash; used for much longer periods of deep-sleep.
+# 
+#         With durations specified in (sub-)seconds, {[cu]AlarmMgr} would enable the MCU to hibernate for years at a time.
+# 
+#         In practice, {[cu]AlarmMgr} wakeups typically occur more fre&shy;quently &ndash; say, every two minutes or once an hour.
+# 
 # 
 #   - cmds:
 #       - build 1 -l

@@ -14,13 +14,14 @@ steps:
 
         {[ht,$start]%[cu]PollerP% &ndash; Timer Service}
 
-        The {[cu]PollerP} program introduces {[cn]em.mcu}/{[cu]Poller}, which provides a portable function to pause execution.
-
-        {[cu]PollerP} also introduces a new function for "winking" an LED &ndash; which itself uses {[cn]em.mcu}/{[cu]Poller} internally.
-
-        Recall that the {[cu]AppBut} implementation viewed previ&shy;ously also uses {[cn]em.mcu}/{[cu]Poller} in a similar manner.
-
         {[uc]}
+
+#         The {[cu]PollerP} program introduces {[cn]em.mcu}/{[cu]Poller}, which provides a portable function to pause execution.
+# 
+#         {[cu]PollerP} also introduces a new function for "winking" an LED &ndash; which itself uses {[cn]em.mcu}/{[cu]Poller} internally.
+# 
+#         Recall that the {[cu]AppBut} implementation viewed previ&shy;ously also uses {[cn]em.mcu}/{[cu]Poller} in a similar manner.
+# 
 # 
 #   - cmds:
 #       - build 1 -l
