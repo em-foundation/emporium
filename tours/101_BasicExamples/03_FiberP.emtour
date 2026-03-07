@@ -43,7 +43,7 @@ steps:
 
         {[bm,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used both domains [**`meta`**, **`targ`**].
 
-        {[bm,C]} {[cu]blinkF} will internally associate with our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
+        {[bm,C]} {[cu]blinkF} will internally reference our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
 
         {[bm,D]} Using the {[cu]FiberMgr} build-time [**`meta`**] {[cf]create} function, we bind a new fiber object to {[cn]blinkF}.
 
@@ -55,101 +55,124 @@ steps:
     
   - cmds:
       - open 2
-      - mark 2 A 8
-      - mark 2 B 10
-      - mark 2 C 32
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
     focus: [2,6]
     acts: ['$reveal']
     text: |
 
         {[ht,$details]%[cu]FiberMgr% &ndash; details}
 
+        Several **EMS** data-types which support {[cu]FiberMgr} clients as well as the implementation of this **Module**.
+
         <div class="em-bmlist">
 
-        {[bm,A]} A {[ct]FiberBodyFxn} represents a "callback" function as&shy;sociated with each opaque {[ct]Fiber} object.
+        {[bm,A]} *fiber body* type &ndash; callback function that accepts one scalar {[ct]arg_t} parameter.
 
-        {[bm,A]} While publicized to its clients, {[cu]FiberMgr} also uses {[ct]FiberBodyFxn} within its private implementation.
+        {[bm,B]} *fiber object* type &ndash; reference to an internal {[ct]Fiber} structure; note that {[ct]$$} in **EMS** matches `*` in C.
 
-        {[bm,B]} An {[ck]opaque} EM type in general declares a set of public methods applicable to objects of this type.
+        {[bm,C]} The **EMS** idiom for defining a (private) structure with a set of typed fields.
 
-        {[bm,B]} Note that {[ct]Fiber} methods declared as {[ck]host} func&shy;tions can only execute at program build-time.
+        {[bm,D]} An **EMS** {[cs]$struct} can optionally declare methods which operate on instances of this type.
 
-        {[bm,C]} The private section of {[cu]FiberMgr} defines the internal representation of the opaque {[ct]Fiber} type.
+        {[bm,E]} Another internal {[cs]$struct} which supports {[cu]FiberMgr}.
 
         </div>
 
   - cmds:
-      - mark 1 D 22
-      - mark 1 E 26
-      - mark 1 F 27
-      - mark 1 G 30
-      - mark 1 H 37
-    focus: [1,20]
-    text: |
-
-        {[ht,$details]%[cu]Fiber% &ndash; more details}
-        
-        <div class="em-bmlist">
-
-        {[bm,D]} {[cu]FiberMgr}.{[cf]createH} allocates&thinsp;/&thinsp;initializes the {[cn]blinkF} fiber at build-time, binding {[cf]blinkFB} as its callback.
-
-        {[bm,E]} The {[cf]post} method marks our opaque {[cn]blinkF} {[ct]Fiber} as "ready-to-run" at the next scheduling point.
-
-        {[bm,F]} Calling {[cu]FiberMgr}.{[cf]run} at the end of the program's {[cf]em$run} intrinsic starts dispatching {[ct]Fiber} objects.
-
-        {[bm,G]} The {[cu]FiberMgr} scheduler executes the {[cf]blinkFB} func&shy;tion bound to our "ready-to-run" {[cn]blinkF} object.
-
-        {[bm,H]} Unless {[cf]blinkFB} explicitly halts, calling {[cf]post} marks {[cn]blinkF} as "ready-to-run" and starts the next cycle.
-
-        </div>
-
-  - cmds:
-      - mark 2 D 49
-      - mark 2 E 55
-      - mark 2 F 66
-      - mark 2 G 72
-    focus: [2,49]
+      - mark 2 F 28
+      - mark 2 G 31
+      - mark 2 H 41
+      - mark 2 I 43
+    focus: [2,32]
     text: |
 
         {[ht,$details]%[cu]FiberMgr% &ndash; more details}
 
+        The implementation of {[cu]FiberMgr} declares a pair of private variables used to maintain internal state.
+
         <div class="em-bmlist">
 
-        {[bm,D]} At build-time, {[cf]createH} calls {[cf]initH} to initialize a {[ct]Fiber} object allocated within a static array.
+        {[bm,F]} The {[cs]$table} operator declares a static array of mutable {[ct]Fiber} structures.
 
-        {[bm,E]} At run-time, {[cf]dispatch} calls the {[ct]FiberBodyFxn} of each {[ct]Fiber} object found on {[cn]readyList}.
+        {[bm,G]} {[cf]create} adds a new element to {[cn]fiber_tab} at build-time; note that {[cn]arg} (if absent) defaults to `0`.
 
-        {[bm,F]} The public {[cf]run} function in turn calls {[cf]dispatch}, which returns when {[cn]readyList} tests empty.
+        {[bm,H]} The {[cs]$make} operator here allocates a {[ct]List} instance, held in the private {[cn]ready_list} variable. 
 
-        {[bm,G]} With no more {[ct]Fiber} objects to dispatch, {[cu]Idle}.{[cf]exec} then puts the MCU into a low-power "sleep" mode.
+        {[bm,I]} {[cf]dispatch} repeatedly takes {[ct]Fiber} objects from {[cn]ready_list} and then invokes their {[cf]body} callback.
 
         </div>
 
+        {[in]When used within a function, the %[ct]$$% operator be&shy;haves like the <code>-&gt;</code> dereference operator in C}
+
   - cmds:
-      - mark 2 G 76
-      - mark 2 H 82
-    focus: [2,75]
+      - mark 2 J 52
+      - mark 2 K 57
+      - mark 2 L 61
+
+    focus: [2,43]
     text: |
 
         {[ht,$details]%[cu]FiberMgr% &ndash; still more details}
 
-        Functions defined over opaque types can access their current instance object via an implicit {[cn]this} parameter.
+        {[cu]FiberMgr} uses methods of the {[cn]GlobalInterrupts} proxy to enforce the consistency of its internal data.
 
         <div class="em-bmlist">
 
-        {[bm,G]} {[ct]Fiber}.{[cf]initH} initiailizes the current object's three internal fields (accessed via {[cn]this}) at build-time.
+        {[bm,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
 
-        {[bm,H]} {[ct]Fiber}.{[cf]post} effectively adds the current object to the private {[cn]fiberList} at run-time.
+        {[bm,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
+
+        {[bm,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
 
         </div>
 
-        Note that {[cu]FiberMgr} leverages another mod&shy;ule that sim&shy;ilarly manages opaque types &ndash; {[cn]em.utils}/{[cu]ListMgr}.
+        The {[ct]List} methods seen here implement a singly-linked chain of {[ct]Fiber} references.
+
+        {[in]The %[cs]$null% and %[cs]$ref% intrinics mean what you'd think.}
+
+  - cmds:
+    focus: [1,22]
+    text: |
+
+        {[ht,$peek]%[cu]FiberP% &ndash; a look back}
+
+        Knowing how {[cu]FiberMgr} works, its internal {[cn]ready_list} will already contain {[cn]blinkF} when calling {[cf]run}.
+
+        {[cf]run} then calls its private {[cf]dispatch} function &ndash; which in turn passes control to our {[cf]blinkFB} fiber body.
+
+        After conditionally blinking `AppLed`, {[cf]blinkFB} schedules its *next* callback by again invoking {[cf]post} on {[cn]blinkF}.
+
+        Since our fiber body re-schedules itself, {[cn]ready_list} will never empty and the system will never sleep.
+
+        {[in]Toggling <code>DbgD</code> inside %[cf]BlinkFB% will allow us to pre&shy;cisely measure dispatch overhead using <b>PulseView</b>.}
 
   - cmds:
       - view 3
+    acts: [$build]
     text: |
 
         {[ht,measuring_tape]&thinsp;%[cu]FiberP% &ndash; program size}
+
+        Before we turn to a run-time signal capture of {[cu]FiberP}, a few remarks about the *size* of its program image.
+
+        While overtly identical to {[cu]BlinkerP}, the current pro&shy;gram relies upon {[cu]FiberMgr} &ndash; at some additional cost.
+
+        {[in]When using &thinsp;%[cb,build]%&thinsp;, translator stats will briefly appears in the <b>OUTPUT</b> panel &ndash; which you click to regain focus.}
+
+        We've shown the {[cn]FiberP} ({[cn]BlinkerP}) program stats in succes&shy;sion for easy comparision:
+
+        {[bi,arrow_circle_right]} 82 (82) **EMS Units** present during configuration<br>
+        {[bi,arrow_circle_right]} 28 (27) **EMS Units** remaining at compilation<br>
+        {[bi,arrow_circle_right]} 1048+32 (616+0) bytes of readonly memory<br>
+        {[bi,arrow_circle_right]} 16+24 (0+16) bytes of readwrite memory<br>
+        {[bi,recommend]} not bad &ndash; we now have a ≈400B scheduler&thinsp;!!
+
+
+
 
   - cmds:
       - view 4
@@ -157,6 +180,15 @@ steps:
 
         {[ht,monitor_heart]&thinsp;%[cu]FiberP% &ndash; signal capture}
 
+        Looking at {[cu]FiberP} through **PulseView**, the `AppLed` and `SysLed` signals mirror the earlier {[cu]BlinkerP} capture.
+
+        The additional activity on `DbgD` results from the {[cs]%%d+} and {[cs]%%d-} statements added to our {[cf]blinkFB} callback.
+
+        Zooming in on one cycle, the **PulseView** cursor reports 0.7&thinsp;&mu;s between the falling and rising edge of `DbgD`.
+
+        {[in]Recall that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
+
+        This measurement quantifies the overhead of switching threads within {[cu]FiberMgr} as indeed quite small.
 
   - cmds:
     focus: [1,1]
@@ -172,16 +204,14 @@ steps:
 
         {[bi,task_alt]} Trace execution {[cu]FiberMgr}.{[cf]dispatch} using {[cd]printf}.
 
-        {[bi,sentiment_satisfied]} Happy coding&thinsp;!!!
-
   - cmds: []
     focus: [1,1]
     text: |
 
         {[ht,$steps]Next steps}
 
-        {[cu]FiberP} remains active until it reaches {[cd]halt}; and the MCU never suspends execution via {[cu]Idle}.{[cf]exec}.
-
-        Moving on to **Tour&thinsp;04**, we'll now see the MCU entering sleep &ndash; awaiting an incoming button-press event.
+        The {[cu]FiberP} program plus the {[cu]FiberMgr} infrastructure codify a core **EMS** design pattern.
+        
+        As we pivot to peripherals awakening a sleeping pro&shy;gram, you'll further appreciate the power of {[cu]FiberMgr}.
 
         
