@@ -15,15 +15,14 @@ steps:
 
       This tour has two objectives which revolve around the **EM&bull;Builder Content** view seen in the **Primary Sidebar**:
 
-      {[bi,arrow_circle_right]} Understanding the elements comprising this view.
-
+      {[bi,arrow_circle_right]} Understanding the elements comprising this view.<br>
       {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
 
-      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements in the hiearchy.
+      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
 
-      The **Next** stops on this tour will provide more infor&shy;mation about  these **EM&bull;Script** [**EMS**] elements.
+      The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
  -  cmds:
       - mark 1 A 2
@@ -142,11 +141,18 @@ steps:
      - view 2
     text: |
 
-      {[ht,bucket_check]Odd and Ends}
+      {[ht,rebase]Source Control}
 
       Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
 
+      In general, you have multiple **Git** mechanisms at your disposal to manage workspace changes:
+
+      {[bi,arrow_circle_right]} *commit* the changes on your local `dev` branch<br>
+      {[bi,arrow_circle_right]} *push* your local `dev` branch content up to **GitHub**
+
       Best practice, you should regularly push any changes up to your personal `emporium` fork on **GitHub**.
+
+
 
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
 

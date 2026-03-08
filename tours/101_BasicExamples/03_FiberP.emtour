@@ -184,7 +184,7 @@ steps:
 
         The additional activity on `DbgD` results from the {[cs]%%d+} and {[cs]%%d-} statements added to our {[cf]blinkFB} callback.
 
-        Zooming in on one cycle, the **PulseView** cursor reports 0.7&thinsp;&mu;s between the falling and rising edge of `DbgD`.
+        Zooming in, the **PulseView** cursor at {[bm,T]} reports 0.7&thinsp;&mu;s between the falling and rising edge of `DbgD`.
 
         {[in]Recall that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
 
