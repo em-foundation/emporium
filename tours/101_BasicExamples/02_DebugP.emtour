@@ -157,7 +157,7 @@ steps:
 
         {[bi,task_alt]} Study the small {[cu]Console}.{[cf]print} implementation.
 
-        {[bi,task_alt]} Add some real-time analysis to your own {[cu]BlinkyP}.
+        {[bi,task_alt]} Add some RTA instrincs to your {[cu]Blinky} program.
 
 
 

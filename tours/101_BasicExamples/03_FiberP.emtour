@@ -196,13 +196,12 @@ steps:
 
         {[ht,$extra] Extra credit}
 
-        {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-03-threading-with-fibers]here}.
+        {[bi,task_alt]} hit **F1** and create a new branch with **Git: Checkout**
 
-        {[bi,task_alt]} Clone {[cu]FiberP} into your personal bundle.
+        {[bi,task_alt]} Trace the {[cu]FiberMgr}.{[cf]dispatch} flow using {[cd]printf}.
 
-        {[bi,task_alt]} Also clone {[cu]FiberMgr} into your personal bundle.
+        {[bi,task_alt]} Add a fiber-based version of your {[cu]Blinky} program.
 
-        {[bi,task_alt]} Trace execution {[cu]FiberMgr}.{[cf]dispatch} using {[cd]printf}.
 
   - cmds: []
     focus: [1,1]
@@ -213,5 +212,7 @@ steps:
         The {[cu]FiberP} program plus the {[cu]FiberMgr} infrastructure codify a core **EMS** design pattern.
         
         As we pivot to peripherals awakening a sleeping pro&shy;gram, you'll further appreciate the power of {[cu]FiberMgr}.
+
+        {[hc]}
 
         
