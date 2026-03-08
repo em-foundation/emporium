@@ -35,7 +35,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]%[cu]FiberP% &ndash; details}
+        {[ht,$details]%[cu]FiberP% &ndash; Details}
 
         <div class="em-bmlist">
 
@@ -64,7 +64,7 @@ steps:
     acts: ['$reveal']
     text: |
 
-        {[ht,$details]%[cu]FiberMgr% &ndash; details}
+        {[ht,$details]%[cu]FiberMgr% &ndash; Details}
 
         Several **EMS** data-types which support {[cu]FiberMgr} clients as well as the implementation of this **Module**.
 
@@ -90,7 +90,7 @@ steps:
     focus: [2,32]
     text: |
 
-        {[ht,$details]%[cu]FiberMgr% &ndash; more details}
+        {[ht,$details]%[cu]FiberMgr% &ndash; More Details}
 
         The implementation of {[cu]FiberMgr} declares a pair of private variables used to maintain internal state.
 
@@ -116,7 +116,7 @@ steps:
     focus: [2,43]
     text: |
 
-        {[ht,$details]%[cu]FiberMgr% &ndash; still more details}
+        {[ht,$details]%[cu]FiberMgr% &ndash; Still More Details}
 
         {[cu]FiberMgr} uses methods of the {[cn]GlobalInterrupts} proxy to enforce the consistency of its internal data.
 
@@ -138,7 +138,7 @@ steps:
     focus: [1,22]
     text: |
 
-        {[ht,$peek]%[cu]FiberP% &ndash; a look back}
+        {[ht,$peek]%[cu]FiberP% &ndash; Looking Back}
 
         Knowing how {[cu]FiberMgr} works, its internal {[cn]ready_list} will already contain {[cn]blinkF} when calling {[cf]run}.
 
@@ -155,7 +155,7 @@ steps:
     acts: [$build]
     text: |
 
-        {[ht,measuring_tape]&thinsp;%[cu]FiberP% &ndash; program size}
+        {[ht,measuring_tape]&thinsp;%[cu]FiberP% &ndash; Program Size}
 
         Before we turn to a run-time signal capture of {[cu]FiberP}, a few remarks about the *size* of its program image.
 
@@ -178,7 +178,7 @@ steps:
       - view 4
     text: |
 
-        {[ht,monitor_heart]&thinsp;%[cu]FiberP% &ndash; signal capture}
+        {[ht,monitor_heart]&thinsp;%[cu]FiberP% &ndash; Signal Capture}
 
         Looking at {[cu]FiberP} through **PulseView**, the `AppLed` and `SysLed` signals mirror the earlier {[cu]BlinkerP} capture.
 
@@ -194,7 +194,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$extra] Extra credit}
+        {[ht,$extra] Extra Credit}
 
         {[bi,task_alt]} hit **F1** and create a new branch with **Git: Checkout**
 
@@ -207,7 +207,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$steps]Next steps}
+        {[ht,$steps]Next Steps}
 
         The {[cu]FiberP} program plus the {[cu]FiberMgr} infrastructure codify a core **EMS** design pattern.
         

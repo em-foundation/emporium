@@ -1,7 +1,9 @@
-title: Timer Handlers
+title: One-Shot Timers
 files:
-  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
+  - em.prog:em.examples.basic/Ex09_OneShot2P.em.ts
   - em.core:em.hal/OneShotI.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
 
 steps:
 
@@ -10,9 +12,43 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$start]%[cu]OneShot1P% &ndash; Timer Handlers}
+        {[ht,$start]%[cu]OneShotP% &ndash; Timer Events}
 
-        {[uc]}
+        Once again, we'll blink `AppLed` &ndash; but now we'll employ a {[cu]OneShot} **Module** to sleep for a given period of time.
+
+        This tour actually covers two example programs:
+
+        {[bi,arrow_circle_right]} {[cu]OneShot1P}, which uses a primitive event loop<br>
+        {[bi,arrow_circle_right]} {[cu]OneShot2P}, which relies upon fiber dispatch
+
+        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2}.
+
+  - cmds:
+      - mark 1 A 9
+      - mark 1 B 34
+      - mark 1 C 39
+    focus: [1,8]
+    acts: [$reveal,$build]
+    text: |
+
+        {[ht,$details]%[cu]OneShot2P% &ndash; Details}
+
+        Like our earlier {[cu]FiberP} example, the {[cu]OneShot2} program defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
+
+        <div class="em-bmlist">
+
+        {[bm,A]} The {[cu]OneShot} **Module** exported by {[cu]BoardC} imple&shy;ments the {[cu]OneShotI} **Interface** (coming next).
+
+        {[bm,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
+
+        {[bm,C]} The {[cf]handler} function itself then calls {[cf]post} which in turn schedules the next cycle of {[cf]blinkFB}.
+
+        </div>
+
+        In this example, {[cu]FiberMgr} detects an *empty* internal {[cn]ready_list} after our {[cf]blinkFB} fiber body returns.
+
+        Recalling its implementation, {[cu]FiberMgr} then enters a HW sleep mode via the {[cu]Common}.{[cn]Idle} proxy.
+
 
 
 #         The {[cu]OneShot1P} program illustrates how to handle in&shy;coming timer events that awaken the MCU.
