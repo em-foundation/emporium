@@ -142,4 +142,7 @@ With our work done here, we'll meet up again *inside* the **EM&bull;porium** env
 <a id="contributing"></a>
 ## Contributing to the cause
 
+🚀 We've just opened the doors to the **EM&bull;porium**, so things may seem a little skeletal right now&thinsp;&hellip;
+
+💬 If you have any questions &middot; comments &middot; suggestions, speak your mind at our [Discussions](https://github.com/em-foundation/emporium/discussions) page.
 
