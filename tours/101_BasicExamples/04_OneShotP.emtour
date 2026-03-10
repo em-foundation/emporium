@@ -14,14 +14,14 @@ steps:
 
         {[ht,$start]%[cu]OneShotP% &ndash; Timer Events}
 
-        Once again, we'll blink `AppLed` &ndash; but now we'll employ a {[cu]OneShot} **Module** to sleep for a given period of time.
+        Once again, we'll blink `AppLed` &ndash; but now we'll use a {[cu]OneShot} {[cs]$delegate} to sleep for a given period of time.
 
         This tour actually covers two example programs:
 
         {[bi,arrow_circle_right]} {[cu]OneShot1P}, which uses a primitive event loop<br>
         {[bi,arrow_circle_right]} {[cu]OneShot2P}, which relies upon fiber dispatch
 
-        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2}.
+        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2P}.
 
   - cmds:
       - mark 1 A 9
@@ -33,21 +33,49 @@ steps:
 
         {[ht,$details]%[cu]OneShot2P% &ndash; Details}
 
-        Like our earlier {[cu]FiberP} example, the {[cu]OneShot2} program defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
+        Like our earlier {[cu]FiberP} example, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
 
         <div class="em-bmlist">
 
-        {[bm,A]} The {[cu]OneShot} **Module** exported by {[cu]BoardC} imple&shy;ments the {[cu]OneShotI} **Interface** (coming next).
+        {[bm,A]} The {[cu]OneShot} {[cs]$delegate} exported by {[cu]BoardC} imple&shy;ments the {[cu]OneShotI} **Interface** (coming next).
 
         {[bm,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
 
-        {[bm,C]} The {[cf]handler} function itself then calls {[cf]post} which in turn schedules the next cycle of {[cf]blinkFB}.
+        {[bm,C]} The {[cf]handler} function itself then calls {[cf]post}, which in turn schedules the next cycle of {[cf]blinkFB}.
 
         </div>
 
         In this example, {[cu]FiberMgr} detects an *empty* internal {[cn]ready_list} after our {[cf]blinkFB} fiber body returns.
 
         Recalling its implementation, {[cu]FiberMgr} then enters a HW sleep mode via the {[cu]Common}.{[cn]Idle} proxy.
+
+  - cmds:
+      - open 2
+      - mark 2 A 2
+      - mark 2 B 4
+      - mark 2 C 6
+    focus: [2,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$details]%[cu]OneShotI% &ndash; Details}
+
+        While you may have browsed to other `em.hal` inter&shy;faces, let's use {[cu]OneShotI} to explain this **EMS** pattern.
+
+        <div class="em-bmlist">
+
+        {[bm,A]} Similar to boilerplate found in every **EMS Unit**, we here {[cs]$declare} the "flavor" of {[cu]OneShotI}.
+
+        {[bm,B]} In general, an **EMS Interface** can define *constants* and *types* which support its published methods.
+
+        {[bm,C]} A **_TypeScript_** interface conventionally named {[cs]$I} specifies the signature of every client function.
+
+        </div>
+
+        In contrast to a **Module** (which has a _concrete_ imple&shy;mentation), an **EMS Interface** must remain _abstract_.
+
+        {[in]<b>Interfaces</b> can't expose %[cs]$config% or %[cs]$proxy% objects &ndash; only abstract methods which suppliers implement.} 
+
 
 
 
