@@ -76,6 +76,27 @@ steps:
 
         {[in]<b>Interfaces</b> can't expose %[cs]$config% or %[cs]$proxy% objects &ndash; only abstract methods which suppliers implement.} 
 
+  - cmds:
+      - open 3
+      - mark 3 I 18
+      - mark 3 E 24
+    focus: [3,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$peek]%[cu]BoardC% &ndash; A Quick Look}
+
+        The {[cs]'@$distro/BoardC.em'} **Composite** imported by client programs will define the {[cu]OneShot} binding.
+
+        {[cu]BoardC} imports {[bm,I]} a board-specific implementation of the abstract {[cu]OneShotI} **Interface**.
+
+        Note how {[cu]BoardC} uses {[cu]OneShot} as an _alias_ which refer&shy;ences a **Module** source file of a different name.
+
+        {[in]Click on the %[cu]OneShot% identifer and press <b>F12</b> to open the actual implementation file for &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp;.}
+
+        {[cu]Boards} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
+
+
 
 
 
