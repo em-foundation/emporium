@@ -8,6 +8,7 @@ files:
 steps:
 
   - cmds:
+      - open 4
       - open 1
     focus: [1,1]
     text: |
@@ -28,7 +29,7 @@ steps:
       - mark 1 B 34
       - mark 1 C 39
     focus: [1,8]
-    acts: [$reveal,$build]
+    acts: [$reveal]
     text: |
 
         {[ht,$details]%[cu]OneShot2P% &ndash; Details}
@@ -96,6 +97,38 @@ steps:
 
         {[cu]Boards} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
 
+  - cmds:
+      - mark 1 C 38
+      - mark 1 D 29
+    focus: [1,1]
+    acts: [$build]
+    text: |
+
+        {[ht,$build]%[cu]OneShot2P% &ndash; Build&thinsp;&middot;&thinsp;Load}
+
+        Click the {[cb,build]} action button to execute the {[cu]OneShot2P} program on our target {[em]%[ci,circuit-board]%&nbsp;Board}&thinsp;.
+
+        While similar to other programs we've seen exe&shy;cute, the {[cu]OneShot2P} signal capture paints a different picture.
+
+        Triggered by an underlying timer interrupt, {[cf]handler} uses `DbgC` {[bm,C]} to mark this point of awakening.
+
+        Dispatched by {[cu]FiberMgr} (after _re-enabling_ interrupts), the {[cf]blinkFB} fiber body marks its entry using `DbgD` {[bm,D]}.
+
+        The time between {[bm,C]} and {[bm,D]} corresponds to our pro&shy;gram's _interrupt latency_ &ndash; which we'll measure next.
+
+
+        
+
+  - cmds:
+      - mark 4 A 10
+      - mark 4 B 13
+      - mark 4 C 21
+      - mark 4 D 27
+    focus: [4,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$peek]%[cu]OneShot1P% &ndash; Details}
 
 
 

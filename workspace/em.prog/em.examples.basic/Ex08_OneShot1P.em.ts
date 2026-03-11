@@ -16,8 +16,8 @@ export function em$run() {
         AppLed.on()
         Common.BusyWait.wait(5_000)
         AppLed.off()
+        OneShot.uenable(1_000_000, $cb(handler), 0)
         active_flag = true
-        OneShot.enable(500, $cb(handler), 0)
         while (active_flag) Common.Idle.exec()
     }
 }
