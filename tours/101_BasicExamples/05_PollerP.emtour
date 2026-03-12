@@ -17,26 +17,56 @@ steps:
 
         {[ht,$start]Pausing Execution}
 
-        Once again, we'll blink `AppLed` &ndash; but now we'll use a {[cu]OneShot} {[cs]$delegate} to sleep for a given period of time.
+        Another variation on using the {[cu]OneShot} {[cs]$delegate} and {[cu]FiberMgr} &ndash; with a signal capture showing the impact.
 
-        This tour actually covers two example programs:
+        Almost identical to the {[cu]OneShot2P} program from the last tour, {[cu]OneShot3P} does _not_ use {[cu]Common}.{[cn]BusyWait}.
 
-        {[bi,arrow_circle_right]} {[cu]OneShot1P}, which uses a primitive event loop<br>
-        {[bi,arrow_circle_right]} {[cu]OneShot2P}, which relies upon fiber dispatch
+        Rather, {[cn]OneShot3P} imports {[cs]'@em.mcu/Poller.em'} at line {[bm,A]} and then calls its {[cf]upause} function at line {[bm,B]}.
 
-        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2P}.
+        Use the &nbsp;{[cb,build]}&nbsp; button to run the program:&nbsp;  `AppLed` still winks for 5&thinsp;ms [5000&thinsp;&mu;s]  per 1&thinsp;s [1,000,000&thinsp;&mu;s] cycle.
+
 
   - cmds:
       - open 2
       - mark 2 A 7
       - mark 2 B 11
-      - mark 2 C 13
+      - mark 2 C 17
       - mark 2 D 17
     focus: [2,1]
     acts: [$reveal]
     text: |
 
         {[ht,$details]%[cu]Poller% &ndash; Details}
+
+        <div class="bm-list">
+
+        {[bm,A]} The {[cu]Poller} implementation stays _portable_  by declaring a {[cs]$proxy} which conforms to {[cu]OneShotI}.
+
+        {[bm,B]} Like {[cu]OneShot1P} from the last tour, {[cu]Poller} also de&shy;clares a (volatile) {[cn]done_flag} for synchronization.
+
+        {[bm,C]} The client-visible {[cf]pause} function simply defers to {[cf]upause} &ndash; scaling its parameter from msecs to &mu;secs.
+
+        {[bm,D]} The {[cf]upause} implementation should remind you of the super-loop design employed by {[cu]OneShot1P}.
+
+        </div>
+
+        Unlike {[cu]OneShot1P}, however, {[cu]Poller} _localizes_ this pat&shy;tern to smoothly coexist with designs using {[cu]FiberMgr}.
+        
+  - cmds:
+      - view 4
+    text: |
+
+        {[ht,monitor_heart]&thinsp;Signal Captures}
+
+        The {[cu]OneShot3P} capture on the left reveals an important difference from {[cu]OneShot2P} on the right.
+
+        For orientation, labels {[bm,C]} and {[bm,D]} mark execution of the {[cd]%%c} and {[cd]%%d} statements at run-time.
+
+        Unlike {[cu]OneShot2P} &ndash; where the MCU stays _active_ while busy-waiting &ndash; {[cu]OneShot3P} quickly goes back to _sleep_.
+
+        {[in]Targeting "tiny chips" where every &mu;J of energy mat&shy;ters, prefer %[cu]Poller% for <i>short</i> (synchronous) delays.}
+
+
 
   - cmds:
      - open 3
@@ -47,40 +77,37 @@ steps:
 
         {[ht,$peek]%[cu]BoardC% &ndash; A Quick Look}
 
-        The {[cs]'@$distro/BoardC.em'} **Composite** imported by client programs will define the {[cu]OneShot} binding.
+        The {[cu]BoardC} **Composite** will bind a conformant {[cu]OneShot} **Module** to the {[cu]Poller} {[cs]$proxy}.
 
-        {[cu]BoardC} imports {[bm,I]} a board-specific implementation of the abstract {[cu]OneShotI} **Interface**.
+        By convention, {[cu]BoardC} will also {[ck]export} its {[cu]OneShot} {[cs]$delegate} for direct use by clients like {[cu]OneShot3P}.
 
-        Note how {[cu]BoardC} uses {[cu]OneShot} as an _alias_ which refer&shy;ences a **Module** source file of a different name.
+        {[in]Review the <b>One-Shot Timers</b> tour if needed.}
 
-        {[in]Click on the %[cu]OneShot% identifer and press <b>F12</b> to open the actual implementation file for &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp;.}
 
-        {[cu]Boards} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
+
 
   - cmds:
       - view 4
     text: |
 
-        {[ht,monitor_heart]&thinsp;Signal Captures}
+        {[ht,$extra]Extra Credit}
+
+        {[bi,task_alt]} Explore the {[cu]OneShot} for the current &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp;.
+
+        {[bi,task_alt]} Find {[cu]OneShot} **Modules** in _other_  &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp; distros.
+
+        {[bi,task_alt]} See how {[cu]Common}.{[cn]Idle} uses {[cd]%%b} for signaling.
 
   - cmds:
-    text: |
-
-        {[ht,$extra]%[cu]OneShot1P% &ndash; Extra Credit}
-
-        {[bi,task_alt]} Execute the program {[cb,build]} and view its signal capture.
-
-        {[bi,task_alt]} Measure the {[cd]%%c}&rarr;{[cd]%%d} wakeup overhead.
-
-        {[bi,task_alt]} Quantify (and rationalize) the cost of {[cu]FiberMgr}.
-
-  - cmds:
+      - view 4
     text: |
 
         {[ht,$steps]Next Steps}
 
-        The next tour examines use of the {[cu]OneShotI} **Interface** within a portable utility **Module**.
+        In practice, the {[cu]OneShot} timer works best for _short_ dur&shy;ations of &mu;secs up to a small number of msecs.
 
-        We'll also have more to say about scheduling the MCU when actively executing.
+        The next tour will cover a more efficient way to enter a _deeper_ sleep for much _longer_ period of time.
+
+        {[in]And we'll finally explain that single pulse you've likely noticed on the %[cu]OneShot3P% <code>DbgB</code> pin.}
 
         {[hc]}

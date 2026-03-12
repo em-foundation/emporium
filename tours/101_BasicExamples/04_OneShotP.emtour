@@ -96,7 +96,7 @@ steps:
 
         {[in]Click on the %[cu]OneShot% identifer and press <b>F12</b> to open the actual implementation file for &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp;.}
 
-        {[cu]Boards} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
+        {[cu]BoardC} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
 
   - cmds:
       - mark 1 C 38
