@@ -7,7 +7,7 @@ import * as Common from '@em.mcu/Common.em'
 export const AppLed = $delegate(BoardC.AppLed)
 export const OneShot = $delegate(BoardC.OneShot)
 
-var active_flag: volatile_t<bool_t> = false
+var done_flag: volatile_t<bool_t>
 
 export function em$run() {
     Common.GlobalInterrupts.enable()
@@ -17,12 +17,12 @@ export function em$run() {
         Common.BusyWait.wait(5_000)
         AppLed.off()
         OneShot.uenable(1_000_000, $cb(handler), 0)
-        active_flag = true
-        while (active_flag) Common.Idle.exec()
+        done_flag = false
+        while (!done_flag) Common.Idle.exec()
     }
 }
 
 function handler(arg: arg_t) {
     $['%%c']
-    active_flag = false
+    done_flag = true
 }

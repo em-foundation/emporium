@@ -196,7 +196,7 @@ steps:
 
         {[ht,$extra] Extra Credit}
 
-        {[bi,task_alt]} hit **F1** and create a new branch with **Git: Checkout**
+        {[bi,task_alt]} Hit **F1** and create a new branch with **Git: Checkout**
 
         {[bi,task_alt]} Trace the {[cu]FiberMgr}.{[cf]dispatch} flow using {[cd]printf}.
 
