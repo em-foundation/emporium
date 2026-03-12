@@ -1,0 +1,86 @@
+title: Pausing Execution
+files:
+  - em.prog:em.examples.basic/Ex10_OneShot3P.em.ts
+  - em.core:em.mcu/Poller.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - .assets/img-101-05-01.png
+
+steps:
+
+  - cmds:
+      - open 1
+      - mark 1 A 6
+      - mark 1 B 32
+    focus: [1,1]
+    acts: [$reveal,$build]
+    text: |
+
+        {[ht,$start]Pausing Execution}
+
+        Once again, we'll blink `AppLed` &ndash; but now we'll use a {[cu]OneShot} {[cs]$delegate} to sleep for a given period of time.
+
+        This tour actually covers two example programs:
+
+        {[bi,arrow_circle_right]} {[cu]OneShot1P}, which uses a primitive event loop<br>
+        {[bi,arrow_circle_right]} {[cu]OneShot2P}, which relies upon fiber dispatch
+
+        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2P}.
+
+  - cmds:
+      - open 2
+      - mark 2 A 7
+      - mark 2 B 11
+      - mark 2 C 13
+      - mark 2 D 17
+    focus: [2,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$details]%[cu]Poller% &ndash; Details}
+
+  - cmds:
+     - open 3
+     - mark 3 P 84
+    focus: [3,84]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$peek]%[cu]BoardC% &ndash; A Quick Look}
+
+        The {[cs]'@$distro/BoardC.em'} **Composite** imported by client programs will define the {[cu]OneShot} binding.
+
+        {[cu]BoardC} imports {[bm,I]} a board-specific implementation of the abstract {[cu]OneShotI} **Interface**.
+
+        Note how {[cu]BoardC} uses {[cu]OneShot} as an _alias_ which refer&shy;ences a **Module** source file of a different name.
+
+        {[in]Click on the %[cu]OneShot% identifer and press <b>F12</b> to open the actual implementation file for &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp;.}
+
+        {[cu]Boards} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
+
+  - cmds:
+      - view 4
+    text: |
+
+        {[ht,monitor_heart]&thinsp;Signal Captures}
+
+  - cmds:
+    text: |
+
+        {[ht,$extra]%[cu]OneShot1P% &ndash; Extra Credit}
+
+        {[bi,task_alt]} Execute the program {[cb,build]} and view its signal capture.
+
+        {[bi,task_alt]} Measure the {[cd]%%c}&rarr;{[cd]%%d} wakeup overhead.
+
+        {[bi,task_alt]} Quantify (and rationalize) the cost of {[cu]FiberMgr}.
+
+  - cmds:
+    text: |
+
+        {[ht,$steps]Next Steps}
+
+        The next tour examines use of the {[cu]OneShotI} **Interface** within a portable utility **Module**.
+
+        We'll also have more to say about scheduling the MCU when actively executing.
+
+        {[hc]}

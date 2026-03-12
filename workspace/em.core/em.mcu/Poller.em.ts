@@ -8,7 +8,7 @@ export const OneShot = $proxy<OneShotI.$I>()
 
 //>> ---- em$targ ---- <<//
 
-var active_flag: volatile_t<u32>
+var done_flag: volatile_t<bool_t>
 
 export function pause(time_ms: u32) {
     upause(time_ms * 1000)
@@ -16,13 +16,11 @@ export function pause(time_ms: u32) {
 
 export function upause(time_us: u32) {
     if (time_us == 0) return
-    active_flag = 1
     OneShot.uenable(time_us, $cb(handler), 0)
-    while (active_flag) {
-        Common.Idle.exec()
-    }
+    done_flag = false
+    while (!done_flag) Common.Idle.exec()
 }
 
 function handler(a: arg_t) {
-    active_flag = 0
+    done_flag = true
 }
