@@ -39,7 +39,7 @@ steps:
 
         <div class="em-bmlist">
 
-        {[bm,A]} The {[cu]FiberMgr} module exhibits an *object factory* design pattern used elsewhere in the **EMS** runtime.
+        {[bm,A]} The {[cu]FiberMgr} module exhibits an _object-factory_ design pattern used elsewhere in the **EMS** runtime.
 
         {[bm,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used in both domains [**`meta`**, **`targ`**].
 

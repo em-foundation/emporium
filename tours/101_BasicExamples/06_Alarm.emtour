@@ -43,7 +43,7 @@ steps:
 
       <div class="em-bmlist">
 
-      {[bm,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object factory_.
+      {[bm,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object-factory_.
 
       {[bm,B]} {[cu]Alarm1P} first declares {[cn]alarm} &ndash; a private {[cs]$config} parameter with a value of type {[ct]AlarmMgr}.{[ct]Obj}.
 

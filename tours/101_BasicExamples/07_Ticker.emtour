@@ -1,9 +1,96 @@
 title: Cyclic Tasks
 files:
-#  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
-#  - .assets/img-101-01-01.png
+  - em.prog:em.examples.basic/Ex13_TickerP.em.ts
+  - em.core:em.utils/TickerMgr.em.ts
+  - .assets/img-101-07-01.png
 
 steps:
+
+  - cmds:
+      - view 3
+    text: |
+
+      {[ht,$start] Home}
+
+      This tour examines the {[cu]TickerP} program, which winks `AppLed` [1.0&thinsp;s] _and_ `SysLed` [1.5&thinsp;s] at different rates.
+
+      Looking at the {[cu]TickerP} signal capture, aligned wakeups cause each wink to start at precise intervals from reset.
+
+      In cases where these intervals coincide (such as +3&thinsp;s mark), `AppLed`{[bm,A]} and `SysLed`{[bm,S]} wink in succession.
+
+      This tour also introduces {[cu]TickerMgr} &ndash; yet another instance of the **EMS** _object-factory_ design pattern
+
+
+
+  - cmds:
+      - open 1
+      - mark 1 A 10
+      - mark 1 B 13
+      - mark 1 C 18
+    focus: [1,1]
+    text: |
+
+      {[ht,$details]%[cu]TickerP% &ndash; Details}
+ 
+  - cmds:
+      - open 1
+      - mark 1 A 10
+      - mark 1 B 13
+      - mark 1 C 18
+      - mark 1 D 29
+      - mark 1 E 35
+      - mark 1 F 41
+      - mark 1 * 28
+    focus: [1,27]
+    text: |
+
+      {[ht,$details]%[cu]TickerP% &ndash; More Details}
+ 
+  - cmds:
+      - open 2
+      - mark 2 A 8
+      - mark 2 B 11
+      - mark 2 C 22
+      - mark 2 D 26
+      - mark 2 E 27
+    focus: [2,1]
+    text: |
+
+      {[ht,$details]%[cu]TickerMgr% &ndash; Details}
+ 
+  - cmds:
+      - open 2
+      - open 2
+      - mark 2 A 8
+      - mark 2 B 11
+      - mark 2 C 22
+      - mark 2 D 26
+      - mark 2 E 27
+      - mark 2 F 38
+      - mark 2 G 39
+      - mark 2 H 40
+      - mark 2 I 41
+
+    focus: [2,39]
+    text: |
+
+      {[ht,$details]%[cu]TickerMgr% &ndash; More Details}
+ 
+  - cmds:
+      - open 1
+    focus: [1,1]
+    text: |
+
+      {[ht,$extra] Extra Credit}
+
+  - cmds:
+      - open 2
+    focus: [2,1]
+    text: |
+
+      {[ht,$steps] Next Steps}
+
+      {[hc]}
 
   - cmds:
       - open 0

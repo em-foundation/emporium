@@ -20,7 +20,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var count = <u32>5
+var count = 5
 
 export function em$run() {
     blinkF.$$.post()

@@ -23,17 +23,19 @@ var ticker_tab = $table<Ticker>()
 
 export namespace em$meta {
     export function create(): Obj {
-        let ticker = ticker_tab.$$add()
-        let fiber = FiberMgr.em$meta.create($cb(alarmFB), ticker_tab.$len - 1)
-        let alarm = AlarmMgr.em$meta.create(fiber)
+        const ticker = ticker_tab.$$add()
+        const fiber = FiberMgr.em$meta.create($cb(alarmFB), ticker_tab.$len - 1)
+        const alarm = AlarmMgr.em$meta.create(fiber)
         ticker.$$._alarm = alarm
         ticker.$$._fiber = fiber
         return ticker
     }
 }
 
+//>> ---- em$targ ---- <<//
+
 function alarmFB(a: arg_t) {
-    let ticker = $ref(ticker_tab[<u16>a])
+    const ticker = $ref(ticker_tab[<u16>a])
     if (ticker.$$._tick_cb == $null) return
     ticker.$$._tick_cb()
     ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)

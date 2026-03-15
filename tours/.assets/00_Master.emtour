@@ -6,6 +6,21 @@ files:
 steps:
 
   - cmds:
+    text: |
+
+      {[ht,$start]} Home
+
+  - cmds:
+    text: |
+
+      {[ht,$extra]} Extra Credit
+
+  - cmds:
+    text: |
+
+      {[ht,$steps]} Next Steps
+
+  - cmds:
       - open 0
       - view 0
       - mark 0 A 4
