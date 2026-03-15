@@ -41,7 +41,7 @@ steps:
 
         {[bm,A]} The {[cu]FiberMgr} module exhibits an *object factory* design pattern used elsewhere in the **EMS** runtime.
 
-        {[bm,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used both domains [**`meta`**, **`targ`**].
+        {[bm,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used in both domains [**`meta`**, **`targ`**].
 
         {[bm,C]} {[cu]blinkF} will internally reference our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
 

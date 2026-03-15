@@ -46,7 +46,7 @@ function doSleep() {
     e$`SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk`
     e$`asm volatile ("wfi")`
     Debug.startup()
-    $['%%b']
+    $['%%b+']
     for (let cb of sleep_leave_tab) cb()
     IntrVec.PRIMASK_set(0)
 }
