@@ -76,39 +76,50 @@ steps:
       {[in]The %[cu]AppLed%.%[cf]wink% method seen here internally uses %[cu]Poller% &ndash; just as we did in the previous tour.}
 
   - cmds:
+      - view 3
       - view 4
     text: |
 
         {[ht,monitor_heart]%[cu]Alarm2P% &ndash; Signal Capture}
 
+        Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
+
+        By using {[cf]wakeupAligned}, the `AppLed` winks will start precisely after &lbrace;1500, 3000, 4500, &hellip;&thinsp;&rbrace;&thinsp;ms from reset.
+
+        {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
+
+        {[bm,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
+        {[bm,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
+
+        While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
+
+        {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[bm,L]% or <i>twice</i> %[bm,D]% when entering lite-sleep or deep-sleep mode.}
+
   - cmds:
-      - open 0
-      - view 0
-      - mark 0 A 4
-      - close 0
+      - open 2
     focus: [2,1]
-    acts: [$reveal,$build]
     text: |
 
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
+        {[ht,$extra] Extra Credit}
 
-        <div class="em-bmlist">
+        {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
 
-        {[bm,A]}
+        {[bi,task_alt]} Vary the durations (in msecs) used by {[cu]Alarm2P}
 
-        </div>
+        {[bi,task_alt]} Switch to {[cf]wakeup} and study the signal capture.
 
-        {[in]An insight}
 
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
+  - cmds:
+      - open 2
+    focus: [2,1]
+    text: |
 
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
+        {[ht,$steps] Next Steps}
 
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
+        Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
 
-        {[hc]}
+        To simplify this design, the next tour examines a port&shy;able solution building upon {[cu]AlarmMgr} and {[cu]FiberMgr}.
+
+        {[hc]} 
+
+

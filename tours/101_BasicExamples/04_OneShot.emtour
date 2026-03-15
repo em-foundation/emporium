@@ -182,30 +182,3 @@ steps:
         We'll also have more to say about scheduling the MCU when actively executing.
 
         {[hc]}
-
-
-
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$extra]⟪[cu]Ex08_OneShot1P⟫ &ndash; extra credit}
-# 
-#         {[bi,task_alt]} Study the logic capture(s) found {[le,https://docs.openem.org/using/using-02/#tour-07-timer-handlers]here}.
-# 
-#         {[bi,task_alt]} Clone {[cu]OneShot1P} into your personal bundle.
-# 
-#         {[bi,task_alt]} Refactor {[cf]em$run} to delay _before_ blinking {[cx]appLed}.
-# 
-#         {[bi,sentiment_satisfied]} Happy coding&thinsp;!!!
-# 
-#   - cmds: []
-#     focus: [1,1]
-#     text: |
-# 
-#         {[ht,$steps]⟪[cu]Ex08_OneShot1P⟫ &ndash; next steps}
-# 
-#         Like the {[cu]Button1P}&thinsp;&rarr;&thinsp;{[cu]Button2P} transformation seen ear&shy;lier, **Tour&thinsp;08** re-implements {[cu]OneShot1P} using fibers.
-#         
-# 
-# 
