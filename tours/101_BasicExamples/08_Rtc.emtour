@@ -1,9 +1,102 @@
 title: Real-Time Clock
 files:
-#  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
-#  - .assets/img-101-01-01.png
+  - em.core:em.hal/RtcI.em.ts
+  - em.core:em.utils/TimeTypes.em.ts
+  - em.core:em.utils/AlarmMgr.em.ts
+  - em.core:em.utils/UptimerRtc.em.ts
+  - .assets/img-101-08-01.png
 
 steps:
+
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,$start] Real-Time Clock} 
+
+  - cmds:
+      - open 1
+    focus: [1,1]
+    text: |
+
+      {[ht,$peek] %[cu]RtcI% &ndash; Quick Look } 
+
+  - cmds:
+      - open 2
+      - mark 2 A 11
+      - mark 2 B 24
+      - mark 2 C 28
+    focus: [2,1]
+    text: |
+
+      {[ht,$details] %[cu]TimeTypes% &ndash; Details } 
+
+  - cmds:
+      - open 3
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+    focus: [3,1]
+    text: |
+
+      {[ht,$details] %[cu]AlarmMgr% &ndash; Details } 
+
+  - cmds:
+      - open 3
+
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+
+      - mark 3 G 39
+      - mark 3 H 45
+      - mark 3 I 49
+      - mark 3 J 54
+      - mark 3 K 60
+
+    focus: [3,39]
+    text: |
+
+      {[ht,$details] %[cu]AlarmMgr% &ndash; More Details } 
+
+  - cmds:
+      - open 3
+
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+
+      - mark 3 G 39
+      - mark 3 H 45
+      - mark 3 I 49
+      - mark 3 J 54
+      - mark 3 K 60
+
+      - mark 3 J 66
+
+    focus: [3,69]
+    text: |
+
+      {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details } 
+
+  - cmds:
+    text: |
+
+      {[ht,$extra] Extra Credit}
+
+  - cmds:
+    text: |
+
+      {[ht,$steps] Next Steps}
 
   - cmds:
       - open 0
