@@ -48,6 +48,6 @@ Ticker.prototype.start = function (this: Ticker, rate_qs: T.Secs30p2, tick_cb: C
 }
 
 Ticker.prototype.stop = function (this: Ticker) {
-    this._alarm.$$.cancel()
     this._tick_cb = $null
+    this._alarm.$$.cancel()
 }
