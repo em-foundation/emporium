@@ -81,12 +81,22 @@ steps:
       - mark 3 J 54
       - mark 3 K 60
 
-      - mark 3 J 66
+      - mark 3 L 66
+      - mark 3 M 71
+      - mark 3 N 74
+      - mark 3 O 78
 
     focus: [3,69]
     text: |
 
       {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details } 
+
+  - cmds:
+      - open 4
+    focus: [4,1]
+    text: |
+
+      {[ht,$peek] %[cu]UptimerRtc% &ndash; Quick Look } 
 
   - cmds:
     text: |
