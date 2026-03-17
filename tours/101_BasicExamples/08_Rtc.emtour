@@ -12,14 +12,31 @@ steps:
       - view 5
     text: |
 
-      {[ht,$start] Real-Time Clock} 
+      {[ht,$start] Real-Time Clock}
+
+      The {[cu]AlarmMgr} implementation covered in this tour lev&shy;erages a {[cs]$proxy} conforming to the {[cu]RtcI} interface.
+
+      We'll initially visit {[cu]RtcI} before pivoting to {[cu]TimerTypes} definitions &ndash; used throughout this design.
+
+      After exploring {[cu]AlarmMgr}, we'll visit {[cu]UptimerRtc} &ndash; a bridge between the {[cu]UptimerI} and {[cu]RtcI} abstractions.
 
   - cmds:
       - open 1
     focus: [1,1]
+    acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]RtcI% &ndash; Quick Look } 
+      {[ht,$peek] %[cu]RtcI% &ndash; Quick Look }
+
+      The {[cu]RtcI} interface exposes methods reflecting differ&shy;ent aspects of MCU real-time clock [RTC] peripherals:
+
+      {[bi,arrow_circle_right]} {[cf]enable}&middot;{[cf]disable} capture timer-like RTC behavior<br>
+      {[bi,arrow_circle_right]} {[cf]getRawTime} captures clock-like RTC behavior<br>
+      {[bi,arrow_circle_right]} {[cf]toThresh} maps to an internal RTC timebase
+
+      All of these methods rely upon a set of _time types_ defined in our conventionally-named module {[cu]T}.
+
+      {[in]Unlike other <code>em.hal</code> interfaces we've seen, %[cu]RtcI% im&shy;plementations can vary considerably between MCUs.}
 
   - cmds:
       - open 2
@@ -27,9 +44,24 @@ steps:
       - mark 2 B 24
       - mark 2 C 28
     focus: [2,1]
+    acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]TimeTypes% &ndash; Details } 
+      {[ht,$details] %[cu]TimeTypes% &ndash; Details }
+
+      You've already seen many of these types and functions used by {[cu]RtcI} as well as by clients of {[cu]AlarmMgr}.
+
+      <div class="em-bmlist">
+      
+      {[bm,A]} {[ct]RawTime} represents the current time since reset as the fixed-point value {[cn]secs}.{[cn]subs} in Q32.32 format.
+
+      {[bm,B]} These three 32-bit types represent different _time deltas_ &ndash; each with their own range and precision.
+
+      {[bm,C]} A set of helper functions for converting between time types and for obtaining a type's zero value.
+
+      </div>
+
+      {[in]The <i>accuracy</i> of these time values depends upon the underlying RTC &ndash; quite different with every MCU.}
 
   - cmds:
       - open 3
@@ -40,6 +72,7 @@ steps:
       - mark 3 E 25
       - mark 3 F 28
     focus: [3,1]
+    acts: [$reveal]
     text: |
 
       {[ht,$details] %[cu]AlarmMgr% &ndash; Details } 
@@ -61,6 +94,7 @@ steps:
       - mark 3 K 60
 
     focus: [3,39]
+    acts: [$reveal]
     text: |
 
       {[ht,$details] %[cu]AlarmMgr% &ndash; More Details } 
@@ -87,6 +121,7 @@ steps:
       - mark 3 O 78
 
     focus: [3,69]
+    acts: [$reveal]
     text: |
 
       {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details } 
@@ -94,6 +129,7 @@ steps:
   - cmds:
       - open 4
     focus: [4,1]
+    acts: [$reveal]
     text: |
 
       {[ht,$peek] %[cu]UptimerRtc% &ndash; Quick Look } 
