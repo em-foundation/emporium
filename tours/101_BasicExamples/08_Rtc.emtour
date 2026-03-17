@@ -61,7 +61,9 @@ steps:
 
       </div>
 
-      {[in]The <i>accuracy</i> of these time values depends upon the underlying RTC &ndash; quite different with every MCU.}
+      The <i>accuracy</i> of these time values depends upon the underlying RTC HW &ndash; and can vary considerably.
+
+      {[in]If you have already guessed, the type %[ct]Secs30p2% re&shy;presents a 0.25&thinsp;second interval.}
 
   - cmds:
       - open 3
@@ -75,7 +77,17 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; Details } 
+      {[ht,$details] %[cu]AlarmMgr% &ndash; Details }
+
+      After declaring the all-important {[cu]RtcI}{[cs]$proxy} at {[bm,A]}, {[cu]AlarmMgr} follows the _object-factory_ design pattern:
+
+      {[bm,B]} We name the type of an {[ct]Alarm} reference.<br>
+      {[bm,C]} We define the private fields of an {[ct]Alarm}.<br>
+      {[bm,D]} We specify the public methods of an {[ct]Alarm}.<br>
+      {[bm,E]} We declare a {[cs]$table} to store {[ct]Alarm} instances.<br>
+      {[bm,F]} We fabricate new {[ct]Alarm} objects in {[cf]create} [**`meta`**].
+
+      You'll next see how {[cu]AlarmMgr} manipulates these {[ct]Alarm} objects at run-time [**`targ`**].
 
   - cmds:
       - open 3
