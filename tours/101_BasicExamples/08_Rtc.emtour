@@ -109,7 +109,19 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; More Details } 
+      {[ht,$details] %[cu]AlarmMgr% &ndash; More Details }
+
+      Central to its implementation, {[cu]AlarmMgr} enables mul&shy;tiple {[ct]Alarm} instances to _share_ the underlying {[cn]Rtc} HW.
+
+      To that end, its {[cf]dispatch} function continually searches for the "next" {[ct]Alarm} (if any) granted access to the RTC:
+
+      {[bm,G]} {[cn]nxt_alarm} tracks the result of the search.<br>
+      {[bm,H]} {[cn]max_wup_time} provides the search threshold.<br>
+      {[bm,I]} Invoke {[cf]post} on the fiber of any expired {[ct]Alarm}.<br>
+      {[bm,J]} Consider this {[ct]Alarm} as a potential candidate.<br>
+      {[bm,K]} Conditionally schedule the next {[cn]Rtc} wakeup event.
+
+      You'll see calls to the internal {[cf]dispatch} function, as we next implement the client-visible {[ct]Alarm} methods. 
 
   - cmds:
       - open 3
@@ -132,11 +144,19 @@ steps:
       - mark 3 N 74
       - mark 3 O 78
 
-    focus: [3,69]
+    focus: [3,64]
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details } 
+      {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details }
+
+      The {[cf]wakeup} and {[cf]wakeupAligned} methods call {[cf]setup}, which adds an {[ct]Alarm} object to the scheduling mix:
+
+      {[bm,L]} We convert current {[ct]RawTime} to a {[ct]Secs30p2} value.<br>
+      {[bm,M]} We calculate {[cn]wup_time} and convert to {[ct]RtcThresh}.<br>
+      {[bm,N]} We invoke {[cf]dispatch} with {[cn]cur_time} in {[ct]Secs30p2}.
+
+      In steady state, the {[cf]wakeupHandler} event prepared after line {[bm,K]} will start the next {[cf]dispatch} cycle at line {[bm,O]}.
 
   - cmds:
       - open 4
@@ -144,46 +164,39 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]UptimerRtc% &ndash; Quick Look } 
+      {[ht,$peek] %[cu]UptimerRtc% &ndash; Quick Look }
+
+      We previously saw a call to {[cu]Common}.{[cn]Uptimer}.{[cf]raw} in our {[cu]AlarmMgr} implementation.
+
+      Our current &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; uses this (portable) implemen&shy;tation of the {[cu]UptimerI} interface as the delegate.
+
+      {[cu]UptimerRtc} declares it own {[cu]RtcI}{[cs]$proxy} and simply forwards the prescribed {[cf]read} function accordingly.
+
+
 
   - cmds:
+      - open 3
+    focus: [3,39]
     text: |
 
       {[ht,$extra] Extra Credit}
 
+      {[bi,task_alt]} Enable {[cn]DBG_FLAG} and run {[cu]AlarmMgr} client programs.
+
+      {[bi,task_alt]} Push {[cf]dispatch} harder using more {[cu]TickerP} threads.
+
+      {[bi,task_alt]} Find {[cn]Rtc} delegates for different &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp; distros.
+
+
   - cmds:
+      - open 1
+    focus: [1,1]
     text: |
 
       {[ht,$steps] Next Steps}
 
-  - cmds:
-      - open 0
-      - view 0
-      - mark 0 A 4
-      - close 0
-    focus: [1,1]
-    acts: [$reveal,$build]
-    text: |
+      This tour completes our forary into _timed_ wakeup from deep-sleep using the [{[cu]RtcI}] abstraction.
 
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
+      From here we'll pivot to edge detection &ndash; _asynchronous_ wakeup from deep-sleep triggered by pressing `AppBut`.
 
-        <div class="em-bmlist">
-
-        {[bm,A]}
-
-        </div>
-
-        {[in]An insight}
-
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
-
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
-
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
-
-        {[hc]}
+      {[hc]}
