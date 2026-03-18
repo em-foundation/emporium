@@ -2,7 +2,6 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
-import * as Common from '@em.mcu/Common.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 
 export const AppButEdge = $delegate(BoardC.AppButEdge)
@@ -20,7 +19,6 @@ export namespace em$meta {
 export function em$startup() {
     AppButEdge.init(true)
     AppButEdge.setDetectFalling()
-    AppButEdge.clearDetect()
 }
 
 export function em$run() {
@@ -30,9 +28,7 @@ export function em$run() {
 
 function blinkFB(a: arg_t) {
     $['%%d']
-    AppLed.on()
-    Common.BusyWait.wait(5_000)
-    AppLed.off()
+    AppLed.wink(5)
     AppButEdge.enableDetect()
 }
 
