@@ -8,17 +8,21 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$start]} Home
+      {[ht,$start] Home}
 
   - cmds:
     text: |
 
-      {[ht,$extra]} Extra Credit
+      {[ht,$extra] Extra Credit}
+
+      {[bi,task_alt]}       
 
   - cmds:
     text: |
 
-      {[ht,$steps]} Next Steps
+      {[ht,$steps] Next Steps}
+
+      {[hc]}
 
   - cmds:
       - open 0

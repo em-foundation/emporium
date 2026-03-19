@@ -163,6 +163,6 @@ steps:
 
       Almost done with the **Basic Examples** tour bundle&thinsp;&hellip;
 
-      Its final tour introduces a higher-level {[cu]ButtonI} abstrac&shy;tion that leverages **interfaces** you've already studied.
+      Its final tour introduces a higher-level {[cu]ButtonI} **inter&shy;face** that leverages abstractions you've already studied.
 
       {[hc]}

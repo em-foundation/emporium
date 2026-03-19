@@ -1,9 +1,136 @@
-title: Debouncing Buttons
+title:  Pressing Buttons
 files:
-#  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
-#  - .assets/img-101-01-01.png
+  - em.prog:em.examples.basic/Ex07_Button3P.em.ts
+  - em.core:em.hal/ButtonI.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - em.core:em.utils/ButtonT.em.ts
+  - .assets/img-101-10-01.png
 
 steps:
+
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,$start] Pressing Buttons}
+
+      This tour examines {[cu]Button3P}, which uses a **del&shy;egate** implementing a higher-level {[cu]ButtonI} **interface**.
+
+      This program can discriminate between different kinds of button presses, based upon their duration:
+
+      {[bm,1]} a _glitch_ press, falling below a minimum duration<br>
+      {[bm,2]} a _short_ press, exceding a minimum duration<br>
+      {[bm,3]} a _long_ press, exceding a maximum duration
+
+      In the case of {[cu]Button3P}, short [100&thinsp;ms] and long [4&thinsp;s] presses will respectively wink `AppLed` and `SysLed`.
+
+  - cmds:
+      - open 1
+      - mark 1 A 7
+      - mark 1 B 14
+      - mark 1 C 20
+    focus: [1,1]
+    acts: [$reveal,$build]
+    text: |
+
+      {[ht,$details] %[cu]Button3P% &ndash; Details}
+
+      <div class="em-bmlist">
+
+      {[bm,A]} {[cu]Button3P} uses an {[cu]AppBut} **delegate** exported by the current {[cu]BoardC} &emsp; <span class="em codicon codicon-circuit-board"></span>&thinsp;**composite**.<br>
+
+      {[bm,B]} {[cu]AppBut}.{[cf]onPressed} [**`targ`**] binds a local event hand&shy;ler and specifies the [&thinsp;<b>t</b><sup>min</sup>, <b>t</b><sup>max</sup>&thinsp;] press durations.
+
+      {[bm,C]} {[cu]AppBut}.{[cf]isPressed} tests if this event corresponds to a _long_ press exceeding <b>t</b><sup>max</sup>.
+
+      </div>
+
+      {[cu]AppBut} will _not_ invoke the {[cf]onPressedH} hand&shy;ler if a 1&thinsp;&rarr;&thinsp;0&thinsp;&rarr;&thinsp;1 pulse on the `AppBut` pin doesn't cross  <b>t</b><sup>min</sup>.
+
+      The {[cu]AppBut} **delegate** does invoke {[cf]onPressedH} when the `AppBut` pin returns to 1 _or else_ remains 0 after <b>t</b><sup>max</sup>.
+
+
+  - cmds:
+      - open 2
+    focus: [2,1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$peek] %[cu]ButtonI% &ndash; Quick Look}
+
+      Reading the {[cu]ButtonI} **interface** should seem second nature to you by now.
+
+      As you'll see, our {[cu]AppBut} **delegate** &ndash; which imple&shy;ments this **interface** &ndash; originates as a {[cu]ButtonT} **template** clone.
+
+  - cmds:
+      - open 4
+      - mark 4 A 12
+      - mark 4 B 16
+      - mark 4 C 19
+      - mark 4 D 27
+      - mark 4 E 32
+      - mark 4 F 37
+    focus: [4,9]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details] %[cu]ButtonT% &ndash; Details}
+
+      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour:
+
+      {[bm,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
+      {[bm,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
+      {[bm,C]}We bind callback functions at build-time [**`meta`**].<br>
+      {[bm,D]}We track the "press" state at run-time [**`targ`**].<br>
+      {[bm,E]}We setup edge detection during {[cs]em$startup}.<br>
+      {[bm,F]}We (conditionally) {[cf]post} our {[ct]Fiber} upon detection.<br>
+
+      We further classify the kind of button press &ndash; _glitch_, _short_, _long_ &ndash; using the state variables declared at {[bm,D]}.
+
+  - cmds:
+      - open 4
+      - mark 4 A 12
+      - mark 4 B 16
+      - mark 4 C 19
+      - mark 4 D 27
+      - mark 4 E 32
+      - mark 4 F 37
+
+      - mark 4 G 45
+      - mark 4 H 54
+      - mark 4 I 65
+
+
+    focus: [4,45]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details] %[cu]ButtonT% &ndash; More Details}
+
+  - cmds:
+      - open 3
+      - mark 3 A 26
+      - mark 3 B 59
+    focus: [3,30]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details] %[cu]BoardC% &ndash; Details}
+
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,$extra] Extra Credit}
+
+      {[bi,task_alt]}       
+
+  - cmds:
+    text: |
+
+      {[ht,$steps] Next Steps}
+
+      {[hc]}
 
   - cmds:
       - open 0

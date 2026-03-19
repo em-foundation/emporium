@@ -22,10 +22,12 @@ export namespace em$template {
         }
     }
 
-    let cur_fxn = <Handler>$null
-    let cur_dur = 0
-    let cur_max = 0
-    let cur_min = 0
+    //>> ---- em$targ ---- <<//cr
+
+    var cur_fxn = <Handler>$null
+    var cur_dur = 0
+    var cur_max = 0
+    var cur_min = 0
 
     export function em$startup() {
         Edge.init(true)
