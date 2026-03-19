@@ -103,6 +103,18 @@ steps:
 
       {[ht,$details] %[cu]BoardC% &ndash; Details}
 
+      The {[cu]BoardC} **composite** instaniates {[cu]AppButEdge}{[bm,A]} and {[cu]AppButPin}{[bm,B]} using {[cs]$clone} with a **template**.
+
+      {[in]The next tour will add %[cu]AppBut% to the mix.}
+
+      {[cu]AppButEdge} itself exposes a {[cn]Pin} **proxy** &ndash; here bound {[bm,C]}to {[cu]AppButPin} for its **delegate**.
+
+      {[cu]AppButEdge} and {[cu]AppButPin} assign {[bm,D]} their {[cn]pin_num} **config** parameters a board-specific value for `AppBut`
+
+      The {[cu]AppButEdge} and {[cu]AppButPin} **delegates** repsectively implement {[cu]EdgeI} and {[cu]GpioI} **interfaces** &ndash; seen next.
+
+
+
   - cmds:
       - open 3
     focus: [3,1]
@@ -110,6 +122,10 @@ steps:
     text: |
 
       {[ht,$peek] %[cu]EdgeI% &ndash; Quick Look}
+
+      {[cu]Button1P} and {[cu]Button2P} each interact with {[cu]AppButEdge} using meth&shy;ods specified in the {[cu]EdgeI} **interface**.
+
+      Unlike most {[cu]EdgeI} methods, clients can only invoke {[cf]setDetectHandler} at _build-time_ [**`meta`**].
 
   - cmds:
       - open 4
@@ -119,46 +135,34 @@ steps:
 
       {[ht,$peek] %[cu]GpioI% &ndash; Quick Look}
 
+      {[cu]GpioI} provides a "low-level" HW **interface** often hid&shy;den beneath other abstractions &ndash; {[cu]EdgeI}, {[cu]LedI}, etc.
+
+      We first saw this **interface** within a **proxy** declared in&shy;side the (portable) {[cs]'@em.utils/SoftUart.em'} **module**.
+
+      Unlike other {[cu]GpioI} methods, note that clients can call {[cf]pinId} at _build-time_ [**`meta`**] as well as _run-time_ [**`targ`**].
+
+      {[in]In general, any <b>unit</b> can expose a common suite of getter&thinsp;&middot;&thinsp;setter methods for <i>both</i> <b>EMS</b> domains.} 
+
   - cmds:
+      - view 7
     text: |
 
       {[ht,$extra] Extra Credit}
 
+      {[bi,task_alt]} Measure HW&thinsp;&rarr;&thinsp;SW detection latency in **PulseView**.
+
+      {[bi,task_alt]} Capture programs using {[cf]setDetectFalling} instead.
+
+      {[bi,task_alt]} Explore board-specific implementations of {[cu]EdgeI}.
+
   - cmds:
+      - view 6
     text: |
 
       {[ht,$steps] Next Steps}
 
+      Almost done with the **Basic Examples** tour bundle&thinsp;&hellip;
 
+      Its final tour introduces a higher-level {[cu]ButtonI} abstrac&shy;tion that leverages **interfaces** you've already studied.
 
-  - cmds:
-      - open 0
-      - view 0
-      - mark 0 A 4
-      - close 0
-    focus: [1,1]
-    acts: [$reveal,$build]
-    text: |
-
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
-
-        <div class="em-bmlist">
-
-        {[bm,A]}
-
-        </div>
-
-        {[in]An insight}
-
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
-
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
-
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
-
-        {[hc]}
+      {[hc]}

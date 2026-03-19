@@ -1,11 +1,12 @@
 import '@$$emscript'
 export const $U = $declare('INTERFACE')
 
-export namespace em$meta {
-    export declare function pinId(): i16
+export interface em$meta {
+    pinId(): i16
 }
 
 export interface $I {
+    em$meta: em$meta
     clear(): void
     functionSelect(select: u8): void
     get(): bool_t
