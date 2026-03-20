@@ -1,4 +1,4 @@
-import '@$$emscr ipt'
+import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'

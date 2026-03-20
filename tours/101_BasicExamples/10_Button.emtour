@@ -107,6 +107,17 @@ steps:
 
       {[ht,$details] %[cu]ButtonT% &ndash; More Details}
 
+      When dispatched, {[cf]debounceFB} uses the {[cu]Poller} **module** at {[bm,G]} to iteratively await passage of {[cn]cur_min} msecs.
+
+      {[bi,arrow_circle_right]} If not pressed after the first pause, we have a _glitch_.<br>
+      {[bi,arrow_circle_right]} Update {[cn]cur_dur} and test for a _short_ or _long_ press.<br>
+      {[bi,arrow_circle_right]} Call {[cf]cur_fxn} [{[ct]Handler}] after exiting this loop.
+
+      The {[cf]isPressed} function at {[bm,H]} defers to the state of the {[cn]Edge} **proxy** &ndash; assuming `AppBut` tests active-low.
+
+      After initializing the tracking variables, the {[cf]onPressed} function at {[bm,I]} conditionally enables edge detection.
+
+
   - cmds:
       - open 3
       - mark 3 A 26
@@ -115,20 +126,36 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]BoardC% &ndash; Details}
+      {[ht,$peek] %[cu]BoardC% &ndash; A look back}
+
+      In case you don't notice on earlier visits, {[cu]BoardC} first clones {[cu]ButtonT} into the {[cu]AppBut} **delegate**  at {[bm,A]}.
+
+      {[cu]BoardC} at {[bm,B]} then binds the {[cu]AppButEdge} **delegate** (also cloned above) to the {[cu]AppBut}.{[cn]Edge} **proxy**.
+
+  - cmds:
+      - open 4
+    focus: [4,45]
+    text: |
+
+      {[ht,$extra] Extra Credit}
+
+      {[bi,task_alt]} Quantify the {[cf]debounceFB} overhead at _run-time_.
+
+      {[bi,task_alt]} Would a _build-time_ {[cf]onPressed} save time&thinsp;&middot;&thinsp;space.
+
+      {[bi,task_alt]} Generalize {[cu]ButtonT} to handle active-high buttons.
 
   - cmds:
       - view 5
     text: |
 
-      {[ht,$extra] Extra Credit}
-
-      {[bi,task_alt]}       
-
-  - cmds:
-    text: |
-
       {[ht,$steps] Next Steps}
+
+      Congratulations&thinsp;&hellip;&nbsp; You've completed the last tour with&shy;in the **Basic Examples** series 🎉.
+
+      You now have a working knowledge of **EMS** as well as exper&shy;ience using core **EM&bull;porium** content.
+
+      Check back regularly, as more tours come online cover&shy;ing high-level as well as low-level aspects of **EMS**.
 
       {[hc]}
 
