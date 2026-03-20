@@ -1,10 +1,41 @@
-import '@$$emscript'
-export const $U = $declare('COMPOSITE')
+import em from '@$$emscript'
+export const $U = em.$declare('COMPOSITE')
 
 export function em$generate() {
     let out = $outfile('nordic.distro.nrf54/REGS.hpp')
     out.addFile('../nordic.nrf54/nordic.distro.nrf54/REGS.hpp.txt')
     out.close()
+}
+
+// -------- CACHE_PROFILING -------- //
+
+export interface CACHE_PROFILING_t {
+    ENABLE: $Reg
+    CLEAR: $Reg
+    HIT: $Reg
+    MISS: $Reg
+    LMISS: $Reg
+    READS: $Reg
+    WRITES: $Reg
+}
+
+// -------- CACHE -------- //
+
+export interface CACHE_t {
+    RESERVED: dim_t<$Reg, 2>
+    TASKS_INVALIDATECACHE: $Reg
+    RESERVED1: dim_t<$Reg, 2>
+    TASKS_INVALIDATELINE: $Reg
+    RESERVED2: dim_t<$Reg, 2>
+    TASKS_ERASE: $Reg
+    RESERVED3: dim_t<$Reg, 247>
+    STATUS: $Reg
+    ENABLE: $Reg
+    RESERVED4: dim_t<$Reg, 2>
+    LINEADDR: $Reg
+    PROFILING: CACHE_PROFILING_t
+    DEBUGLOCK: $Reg
+    WRITELOCK: $Reg
 }
 
 // -------- CLOCK_XO -------- //
@@ -995,6 +1026,83 @@ export interface UARTE_t {
 
 // -------- CONSTANTS -------- //
 
+export const CACHE_PROFILING_ENABLE_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_ENABLE_ENABLE_Pos: any = '0UL'
+export const CACHE_PROFILING_ENABLE_ENABLE_Msk: any = '0x1UL << CACHE_PROFILING_ENABLE_ENABLE_Pos'
+export const CACHE_PROFILING_ENABLE_ENABLE_Min: any = '0x0UL'
+export const CACHE_PROFILING_ENABLE_ENABLE_Max: any = '0x1UL'
+export const CACHE_PROFILING_ENABLE_ENABLE_Disable: any = '0x0UL'
+export const CACHE_PROFILING_ENABLE_ENABLE_Enable: any = '0x1UL'
+export const CACHE_PROFILING_CLEAR_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_CLEAR_CLEAR_Pos: any = '0UL'
+export const CACHE_PROFILING_CLEAR_CLEAR_Msk: any = '0x1UL << CACHE_PROFILING_CLEAR_CLEAR_Pos'
+export const CACHE_PROFILING_CLEAR_CLEAR_Min: any = '0x1UL'
+export const CACHE_PROFILING_CLEAR_CLEAR_Max: any = '0x1UL'
+export const CACHE_PROFILING_CLEAR_CLEAR_Clear: any = '0x1UL'
+export const CACHE_PROFILING_HIT_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_HIT_HITS_Pos: any = '0UL'
+export const CACHE_PROFILING_HIT_HITS_Msk: any = '0xFFFFFFFFUL << CACHE_PROFILING_HIT_HITS_Pos'
+export const CACHE_PROFILING_MISS_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_MISS_MISSES_Pos: any = '0UL'
+export const CACHE_PROFILING_MISS_MISSES_Msk: any = '0xFFFFFFFFUL << CACHE_PROFILING_MISS_MISSES_Pos'
+export const CACHE_PROFILING_LMISS_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_LMISS_LMISSES_Pos: any = '0UL'
+export const CACHE_PROFILING_LMISS_LMISSES_Msk: any = '0xFFFFFFFFUL << CACHE_PROFILING_LMISS_LMISSES_Pos'
+export const CACHE_PROFILING_READS_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_READS_READS_Pos: any = '0UL'
+export const CACHE_PROFILING_READS_READS_Msk: any = '0xFFFFFFFFUL << CACHE_PROFILING_READS_READS_Pos'
+export const CACHE_PROFILING_WRITES_ResetValue: any = '0x00000000UL'
+export const CACHE_PROFILING_WRITES_WRITES_Pos: any = '0UL'
+export const CACHE_PROFILING_WRITES_WRITES_Msk: any = '0xFFFFFFFFUL << CACHE_PROFILING_WRITES_WRITES_Pos'
+export const CACHE_TASKS_INVALIDATECACHE_ResetValue: any = '0x00000000UL'
+export const CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Pos: any = '0UL'
+export const CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Msk: any = '0x1UL << CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Pos'
+export const CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Min: any = '0x1UL'
+export const CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Max: any = '0x1UL'
+export const CACHE_TASKS_INVALIDATECACHE_TASKS_INVALIDATECACHE_Trigger: any = '0x1UL'
+export const CACHE_TASKS_INVALIDATELINE_ResetValue: any = '0x00000000UL'
+export const CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Pos: any = '0UL'
+export const CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Msk: any = '0x1UL << CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Pos'
+export const CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Min: any = '0x1UL'
+export const CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Max: any = '0x1UL'
+export const CACHE_TASKS_INVALIDATELINE_TASKS_INVALIDATELINE_Trigger: any = '0x1UL'
+export const CACHE_TASKS_ERASE_ResetValue: any = '0x00000000UL'
+export const CACHE_TASKS_ERASE_TASKS_ERASE_Pos: any = '0UL'
+export const CACHE_TASKS_ERASE_TASKS_ERASE_Msk: any = '0x1UL << CACHE_TASKS_ERASE_TASKS_ERASE_Pos'
+export const CACHE_TASKS_ERASE_TASKS_ERASE_Min: any = '0x1UL'
+export const CACHE_TASKS_ERASE_TASKS_ERASE_Max: any = '0x1UL'
+export const CACHE_TASKS_ERASE_TASKS_ERASE_Trigger: any = '0x1UL'
+export const CACHE_STATUS_ResetValue: any = '0x00000000UL'
+export const CACHE_STATUS_READY_Pos: any = '0UL'
+export const CACHE_STATUS_READY_Msk: any = '0x1UL << CACHE_STATUS_READY_Pos'
+export const CACHE_STATUS_READY_Min: any = '0x0UL'
+export const CACHE_STATUS_READY_Max: any = '0x1UL'
+export const CACHE_STATUS_READY_Ready: any = '0x0UL'
+export const CACHE_STATUS_READY_Busy: any = '0x1UL'
+export const CACHE_ENABLE_ResetValue: any = '0x00000000UL'
+export const CACHE_ENABLE_ENABLE_Pos: any = '0UL'
+export const CACHE_ENABLE_ENABLE_Msk: any = '0x1UL << CACHE_ENABLE_ENABLE_Pos'
+export const CACHE_ENABLE_ENABLE_Min: any = '0x0UL'
+export const CACHE_ENABLE_ENABLE_Max: any = '0x1UL'
+export const CACHE_ENABLE_ENABLE_Disabled: any = '0x0UL'
+export const CACHE_ENABLE_ENABLE_Enabled: any = '0x1UL'
+export const CACHE_LINEADDR_ResetValue: any = '0x00000000UL'
+export const CACHE_LINEADDR_ADDR_Pos: any = '0UL'
+export const CACHE_LINEADDR_ADDR_Msk: any = '0xFFFFFFFFUL << CACHE_LINEADDR_ADDR_Pos'
+export const CACHE_DEBUGLOCK_ResetValue: any = '0x00000000UL'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Pos: any = '0UL'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Msk: any = '0x1UL << CACHE_DEBUGLOCK_DEBUGLOCK_Pos'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Min: any = '0x0UL'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Max: any = '0x1UL'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Unlocked: any = '0x0UL'
+export const CACHE_DEBUGLOCK_DEBUGLOCK_Locked: any = '0x1UL'
+export const CACHE_WRITELOCK_ResetValue: any = '0x00000000UL'
+export const CACHE_WRITELOCK_WRITELOCK_Pos: any = '0UL'
+export const CACHE_WRITELOCK_WRITELOCK_Msk: any = '0x1UL << CACHE_WRITELOCK_WRITELOCK_Pos'
+export const CACHE_WRITELOCK_WRITELOCK_Min: any = '0x0UL'
+export const CACHE_WRITELOCK_WRITELOCK_Max: any = '0x1UL'
+export const CACHE_WRITELOCK_WRITELOCK_Unlocked: any = '0x0UL'
+export const CACHE_WRITELOCK_WRITELOCK_Locked: any = '0x1UL'
 export const CLOCK_XO_RUN_ResetValue: any = '0x00000000UL'
 export const CLOCK_XO_RUN_STATUS_Pos: any = '0UL'
 export const CLOCK_XO_RUN_STATUS_Msk: any = '0x1UL << CLOCK_XO_RUN_STATUS_Pos'
@@ -10784,6 +10892,7 @@ export const UARTE_FRAMETIMEOUT_COUNTERTOP_Msk: any = '0x3FFUL << UARTE_FRAMETIM
 
 // -------- INSTANCES -------- //
 
+export const APPLICATION_ICACHE = {} as CACHE_t
 export const CLOCK = {} as CLOCK_t
 export const FICR = {} as FICR_t
 export const GPIOTE20 = {} as GPIOTE_t

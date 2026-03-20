@@ -4,6 +4,7 @@ import * as Fs from 'fs'
 import em from '../../em.core/em.lang/emscript'
 
 const TYPE_SET = new Set<string>([
+    'CACHE',
     'CLOCK',
     'FICR',
     'GPIO',
@@ -21,6 +22,7 @@ const TYPE_SET = new Set<string>([
     'UARTE',
 ])
 const INSTS = [
+    ['APPLICATION_ICACHE', 'CACHE'],
     ['CLOCK', 'CLOCK'],
     ['FICR', 'FICR'],
     ['GPIOTE20', 'GPIOTE'],

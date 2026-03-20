@@ -32,8 +32,8 @@ export function startup(): void {
     e$`SCB->NSACR |= (3UL << 10ul)`
     e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
     $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
+    e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
     if (!use_sram) {
-        e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
         $R.MEMCONF.POWER[0].CONTROL.$$ = 0x1 // retain 32K sram
         $R.MEMCONF.POWER[0].RET.$$ = 0x1
         $R.MEMCONF.POWER[0].RET2.$$ = 0x1
