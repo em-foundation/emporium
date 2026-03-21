@@ -15,7 +15,8 @@ export namespace em$meta {
 }
 
 export function startup(): void {
-    e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
+    // e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
+    e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
     unprotect()
     /// TODO fix
     // for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
@@ -34,9 +35,9 @@ export function startup(): void {
     $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
     e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
     if (!use_sram) {
-        $R.MEMCONF.POWER[0].CONTROL.$$ = 0x1 // retain 32K sram
-        $R.MEMCONF.POWER[0].RET.$$ = 0x1
-        $R.MEMCONF.POWER[0].RET2.$$ = 0x1
+        $R.MEMCONF.POWER[0].CONTROL.$$ = 0x80 // retain 16K sram
+        $R.MEMCONF.POWER[0].RET.$$ = 0x80
+        $R.MEMCONF.POWER[0].RET2.$$ = 0x00
 
     } else {
         $R.MEMCONF.POWER[0].CONTROL.$$ = 0x3 // retain 64K sram
