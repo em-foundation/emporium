@@ -16,7 +16,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-let count = 100
+var count = 10
 
 export function em$startup() {
     CoreBench.setup()

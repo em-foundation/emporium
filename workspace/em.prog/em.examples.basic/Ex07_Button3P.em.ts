@@ -2,12 +2,13 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
-import * as Common from '@em.mcu/Common.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 
 export const AppBut = $delegate(BoardC.AppBut)
 export const AppLed = $delegate(BoardC.AppLed)
 export const SysLed = $delegate(BoardC.SysLed)
+
+//>> ---- em$targ ---- <<//
 
 export function em$run() {
     AppBut.onPressed($cb(onPressedH), 100, 4000)
@@ -17,12 +18,8 @@ export function em$run() {
 function onPressedH() {
     $['%%c']
     if (AppBut.isPressed()) {
-        SysLed.on()
-        Common.BusyWait.wait(40_000)
-        SysLed.off()
+        SysLed.wink(40)
     } else {
-        AppLed.on()
-        Common.BusyWait.wait(5_000)
-        AppLed.off()
+        AppLed.wink(5)
     }
 }

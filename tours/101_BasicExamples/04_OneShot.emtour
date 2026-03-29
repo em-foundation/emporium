@@ -1,0 +1,184 @@
+title: One-Shot Timers
+files:
+  - em.prog:em.examples.basic/Ex09_OneShot2P.em.ts
+  - em.core:em.hal/OneShotI.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
+  - .assets/img-101-04-01.png
+
+steps:
+
+  - cmds:
+      - open 4
+      - open 1
+    focus: [1,1]
+    text: |
+
+        {[ht,$start]%[cu]OneShotP% &ndash; Timer Events}
+
+        Once again, we'll blink `AppLed` &ndash; but now we'll use a {[cu]OneShot} {[cs]$delegate} to sleep for a given period of time.
+
+        This tour actually covers two example programs:
+
+        {[bi,arrow_circle_right]} {[cu]OneShot1P}, which uses a primitive event loop<br>
+        {[bi,arrow_circle_right]} {[cu]OneShot2P}, which relies upon fiber dispatch
+
+        Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2P}.
+
+  - cmds:
+      - mark 1 A 9
+      - mark 1 B 34
+      - mark 1 C 39
+    focus: [1,8]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$details]%[cu]OneShot2P% &ndash; Details}
+
+        Like our earlier {[cu]FiberP} example, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
+
+        <div class="em-bmlist">
+
+        {[bm,A]} The {[cu]OneShot} {[cs]$delegate} exported by {[cu]BoardC} imple&shy;ments the {[cu]OneShotI} **Interface** (coming next).
+
+        {[bm,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
+
+        {[bm,C]} The {[cf]handler} function itself then calls {[cf]post}, which in turn schedules the next cycle of {[cf]blinkFB}.
+
+        </div>
+
+        In this example, {[cu]FiberMgr} detects an *empty* internal {[cn]ready_list} after our {[cf]blinkFB} fiber body returns.
+
+        Recalling its implementation, {[cu]FiberMgr} then enters a HW sleep mode via the {[cu]Common}.{[cn]Idle} proxy.
+
+  - cmds:
+      - open 2
+      - mark 2 A 2
+      - mark 2 B 4
+      - mark 2 C 6
+    focus: [2,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$details]%[cu]OneShotI% &ndash; Details}
+
+        While you may have browsed to other `em.hal` inter&shy;faces, let's use {[cu]OneShotI} to explain this **EMS** pattern.
+
+        <div class="em-bmlist">
+
+        {[bm,A]} Similar to boilerplate found in every **EMS Unit**, we here {[cs]$declare} the "flavor" of {[cu]OneShotI}.
+
+        {[bm,B]} In general, an **EMS Interface** can define *constants* and *types* which support its published methods.
+
+        {[bm,C]} A **_TypeScript_** interface conventionally named {[cs]$I} specifies the signature of every client function.
+
+        </div>
+
+        In contrast to a **Module** (which has a _concrete_ imple&shy;mentation), an **EMS Interface** must remain _abstract_.
+
+        {[in]<b>Interfaces</b> can't expose %[cs]$config% or %[cs]$proxy% objects &ndash; only abstract methods which suppliers implement.} 
+
+  - cmds:
+      - open 3
+      - mark 3 I 18
+      - mark 3 E 24
+    focus: [3,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$peek]%[cu]BoardC% &ndash; A Quick Look}
+
+        The {[cs]'@$distro/BoardC.em'} **Composite** imported by client programs will define the {[cu]OneShot} binding.
+
+        {[cu]BoardC} imports {[bm,I]} a board-specific implementation of the abstract {[cu]OneShotI} **Interface**.
+
+        Note how {[cu]BoardC} uses {[cu]OneShot} as an _alias_ which refer&shy;ences a **Module** source file of a different name.
+
+        {[in]Click on the %[cu]OneShot% identifer and press <b>F12</b> to open the actual implementation file for &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp;.}
+
+        {[cu]BoardC} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
+
+  - cmds:
+      - mark 1 C 38
+      - mark 1 D 29
+    focus: [1,1]
+    acts: [$build]
+    text: |
+
+        {[ht,$build]%[cu]OneShot2P% &ndash; Build&thinsp;&middot;&thinsp;Load}
+
+        Click the {[cb,build]} action button to execute the {[cu]OneShot2P} program on our target {[em]%[ci,circuit-board]%&nbsp;Board}&thinsp;.
+
+        While similar to other programs we've seen exe&shy;cute, the {[cu]OneShot2P} signal capture paints a different picture.
+
+        Triggered by an underlying timer interrupt, {[cf]handler} uses `DbgC` {[bm,C]} to mark this point of awakening.
+
+        Dispatched by {[cu]FiberMgr} (after _re-enabling_ interrupts), the {[cf]blinkFB} fiber body marks its entry using `DbgD` {[bm,D]}.
+
+        The time between {[bm,C]} and {[bm,D]} corresponds to our pro&shy;gram's _interrupt latency_ &ndash; which we'll measure next.
+
+
+  - cmds:
+      - view 5
+    text: |
+
+        {[ht,monitor_heart]&thinsp;%[cu]OneShot2P% &ndash; Signal Capture}
+
+        More activity on the `Dbg` liness&thinsp;&hellip;&thinsp;Recall that these sig&shy;nals assert active-low &ndash; {[cd]%%b+} would drive `DbgB` to 0.
+
+        By convention, {[cu]Common}.{[cn]Idle} delegates use `DbgB` to delineate the MCU's current active&thinsp;&middot;&thinsp;sleep mode.
+
+        `DbgB` at marker {[bm,A]} reflects an inactive MCU awaiting a timer interrupt &ndash; the dominant state of {[cu]OneShot2P}.
+
+        At marker {[bm,B]} `DbgB` now refects an active MCU &ndash; busy-waiting for 5&thinsp;ms after turning on `AppLed`.
+
+        Looking closer, we measure 5&thinsp;&mu;s between the {[cd]%%c} at label {[bm,C]} and {[cd]%%d} at {[bm,D]} &ndash; our wakeup overhead.
+
+  - cmds:
+      - mark 4 A 10
+      - mark 4 B 13
+      - mark 4 C 21
+      - mark 4 D 27
+    focus: [4,1]
+    acts: [$reveal]
+    text: |
+
+        {[ht,$peek]%[cu]OneShot1P% &ndash; Details}
+
+        The {[cu]OneShot1P} program behaves identically to our {[cu]OneShot2P} program &ndash; but without using the {[cu]FiberMgr}.
+
+        Instead, {[cu]OneShot1P} uses a _super-loop_ design &ndash; which relies on app-specific flags to gate program execution.
+
+        Here, {[cu]OneShot1P} uses its (volatile) {[cn]done_flag} {[bm,A]} to synchronize {[cf]handler} with the super-loop.
+
+        After clearing {[cn]done_flag}, {[cs]em$run} awaits {[bm,C]} a signal from the timer {[cf]handler} {[bm,D]} before the loop continues.
+
+        {[cu]OneShot1P} also explicitly manages {[cn]GlobalInterrupts} &ndash; a need otherwise managed implicitly by {[cu]FiberMgr}.
+
+        {[in] Prefer %[cu]FiberMgr% &ndash; but we will visit this pattern again. }
+
+  - cmds:
+      - open 4
+    focus: [4,1]
+    acts: [$build]
+    text: |
+
+        {[ht,$extra]%[cu]OneShot1P% &ndash; Extra Credit}
+
+        {[bi,task_alt]} Execute the program {[cb,build]} and view its signal capture.
+
+        {[bi,task_alt]} Measure the {[cd]%%c}&rarr;{[cd]%%d} wakeup overhead.
+
+        {[bi,task_alt]} Quantify (and rationalize) the cost of {[cu]FiberMgr}.
+
+  - cmds:
+    focus: [2,1]
+    text: |
+
+        {[ht,$steps]Next Steps}
+
+        The next tour examines use of the {[cu]OneShotI} **Interface** within a portable utility **Module**.
+
+        We'll also have more to say about scheduling the MCU when actively executing.
+
+        {[hc]}

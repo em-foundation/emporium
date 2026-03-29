@@ -26,7 +26,7 @@ var alarm_tab = $table<Alarm>()
 
 export namespace em$meta {
     export function create(fiber: FiberMgr.Obj): Obj {
-        let alarm = alarm_tab.$$add()
+        const alarm = alarm_tab.$$add()
         alarm.$$._fiber = fiber
         return alarm
     }
@@ -43,7 +43,7 @@ function dispatch(cur_time: T.Secs30p2) {
     Rtc.disable()
     nxt_alarm = <Obj>$null
     let max_wup_time = ~(<T.Secs30p2>0)
-    for (let a of alarm_tab) {
+    for (const a of alarm_tab) {
         // iterate through all alarms
         if (a.$$._wup_time == 0) continue // INACTIVE state
         if (cur_time >= a.$$._wup_time) { // EXPIRED state
@@ -62,12 +62,8 @@ function dispatch(cur_time: T.Secs30p2) {
     }
 }
 
-function readCurTime(): T.Secs30p2 {
-    return T.RawTimeToSecs30p2(Common.Uptimer.read())
-}
-
 function setup(alarm: Obj, delta: T.Secs30p2, aligned: bool_t) {
-    const cur_time = readCurTime()
+    const cur_time = T.RawTimeToSecs30p2(Common.Uptimer.read())
     let wup_time = cur_time + delta
     if (aligned) {
         wup_time -= wup_time % delta
@@ -79,7 +75,6 @@ function setup(alarm: Obj, delta: T.Secs30p2, aligned: bool_t) {
 }
 
 function wakeupHandler() {
-    // TODO: assert nxt_alarm
     dispatch(nxt_alarm.$$._wup_time)
 }
 

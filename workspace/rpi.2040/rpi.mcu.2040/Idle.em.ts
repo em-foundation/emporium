@@ -1,8 +1,6 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', IdleI)
 
-import * as $R from '@rpi.distro.2040/REGS.em'
-
 import * as Debug from '@em.lang/Debug.em'
 import * as IdleI from '@em.hal/IdleI.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
@@ -43,12 +41,12 @@ function doSleep() {
     for (let cb of sleep_enter_tab) cb()
     $['%%b:'](2)
     $['%%b-']
-    // Debug.reset()
+    Debug.reset()
     IntrVec.PRIMASK_set(1)
     e$`SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk`
     e$`asm volatile ("wfi")`
-    // Debug.startup()
-    $['%%b']
+    Debug.startup()
+    $['%%b+']
     for (let cb of sleep_leave_tab) cb()
     IntrVec.PRIMASK_set(0)
 }

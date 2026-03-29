@@ -3,37 +3,38 @@ export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
+import * as Poller from '@em.mcu/Poller.em'
 
-export const AppButEdge = $delegate(BoardC.AppButEdge)
 export const AppLed = $delegate(BoardC.AppLed)
+export const OneShot = $delegate(BoardC.OneShot)
 
 const blinkF = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
-        AppButEdge.em$meta.setDetectHandler($cb(handler))
         blinkF.$$val = FiberMgr.em$meta.create($cb(blinkFB))
     }
 }
 
-export function em$startup() {
-    AppButEdge.init(true)
-    AppButEdge.setDetectFalling()
-}
+//>> ---- em$targ ---- <<//
+
+var count = 5
 
 export function em$run() {
-    AppButEdge.enableDetect()
+    blinkF.$$.post()
     FiberMgr.run()
 }
 
 function blinkFB(a: arg_t) {
     $['%%d']
-    AppLed.wink(5)
-    AppButEdge.enableDetect()
+    if (count-- == 0) halt()
+    AppLed.on()
+    Poller.upause(5_000)
+    AppLed.off()
+    OneShot.uenable(1_000_000, $cb(handler), 0)
 }
 
-function handler() {
+function handler(arg: arg_t) {
     $['%%c']
-    AppButEdge.clearDetect()
     blinkF.$$.post()
 }

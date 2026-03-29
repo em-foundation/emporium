@@ -1,0 +1,150 @@
+title: Cyclic Tasks
+files:
+  - em.prog:em.examples.basic/Ex13_TickerP.em.ts
+  - em.core:em.utils/TickerMgr.em.ts
+  - .assets/img-101-07-01.png
+
+steps:
+
+  - cmds:
+      - view 3
+    text: |
+
+      {[ht,$start] Home}
+
+      This tour examines the {[cu]TickerP} program, which winks `AppLed` [1.0&thinsp;s] &thinsp;_and_ `SysLed` [1.5&thinsp;s] at different rates.
+
+      Looking at the {[cu]TickerP} signal capture, aligned wakeups cause each wink to start at precise intervals from reset.
+
+      In cases where these intervals coincide (such as the +3&thinsp;s mark), `AppLed`{[bm,A]} and `SysLed`{[bm,S]} wink in succession.
+
+      This tour also introduces {[cu]TickerMgr} &ndash; yet another in&shy;stance of the **EMS** _object-factory_ design pattern.
+
+
+
+  - cmds:
+      - open 1
+      - mark 1 A 10
+      - mark 1 B 13
+      - mark 1 C 18
+    focus: [1,1]
+    text: |
+
+      {[ht,$details]%[cu]TickerP% &ndash; Details}
+
+      The {[cu]TickerP} program winks `SysLed` as well as `AppLed` to illustrate use of multiple {[cu]TickerMgr} objects.
+
+      {[bm,A]} {[cu]TickerP} accesses each LED's {[cu]BoardC} {[cs]$delegate}.<br>
+      {[bm,B]} {[cu]TickerP} declares a {[cs]$config} param for each object.<br>
+      {[bm,C]} {[cu]TickerP} binds [**`meta`**] a pair of {[cu]TickerMgr} objects.
+
+      Every {[cu]TickerMgr}.{[ct]Obj} in fact holds references to simi&shy;larly created [**`meta`**] {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
+ 
+  - cmds:
+      - open 1
+      - mark 1 A 10
+      - mark 1 B 13
+      - mark 1 C 18
+      - mark 1 D 28
+    focus: [1,27]
+    text: |
+
+      {[ht,$details]%[cu]TickerP% &ndash; More Details}
+
+      Within its {[cs]em$run} intrinsic, the {[cu]TickerP} program calls the {[cf]start} method on each {[cu]TickerMgr} object.
+
+      Arguments to {[cf]start} not only specify the ticker's fre&shy;quency, but also designate a {[cs]$cb} invoked each cycle.
+
+      {[in]While these bindings could have occurred at build-time, %[cf]start%'s flexibility has very little run-time cost.}
+
+      The {[cf]appTickCb} and {[cf]sysTickCb} should look quite famil&shy;iar by now; use of the {[cu]Common}.{[cn]Mcu} proxy {[bm,D]} not so.
+
+      When awakening from deep-sleep, some MCUs may trigger a _warm restart_ &ndash; ultimately reaching {[cs]em$run}.
+
+      {[cu]TickerP} tests {[cn]Mcu}.{[cf]isWarm}{[bm,D]} to discriminate a _cold reset_ &ndash; ensuring we don't call {[cf]start} on every wakeup.
+ 
+  - cmds:
+      - open 2
+      - mark 2 A 11
+      - mark 2 B 17
+      - mark 2 C 22
+      - mark 2 D 26
+      - mark 2 E 27
+      - mark 2 F 28
+    focus: [2,1]
+    text: |
+
+      {[ht,$details]%[cu]TickerMgr% &ndash; Details}
+
+      <div class="em-bmlist">
+
+      {[bm,A]} The internal representation of a {[ct]Ticker} contains references to {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
+
+      {[bm,B]} The client-visible API of {[ct]Ticker} objects includes the {[cf]start} method used in our {[cu]TickerP} program.
+
+      {[bm,C]} An **EMS** {[cs]$table} (a key element of the _object-factory_ pattern) has traits similar to a {[cs]$config} param.
+
+      {[bm,D]} The [**`meta`**] {[cn]ticker_tab}.**`$$add`** method  expands the underlying {[cs]$table} and returns a {[ct]Ticker} reference.
+
+      {[bm,E]} {[cu]FiberMgr}.{[cf]create} receives the _index_ of our new {[ct]Ticker} as the arg value passed to this fiber's body.
+
+      {[bm,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
+
+      </div>
+ 
+  - cmds:
+      - open 2
+      - mark 2 A 11
+      - mark 2 B 17
+      - mark 2 C 22
+      - mark 2 D 26
+      - mark 2 E 27
+      - mark 2 F 28
+      - mark 2 G 38
+      - mark 2 H 39
+      - mark 2 I 40
+      - mark 2 J 41
+
+    focus: [2,26]
+    text: |
+
+      {[ht,$details]%[cu]TickerMgr% &ndash; More Details}
+
+      The {[cf]start} and {[cf]stop} methods will update {[ct]Ticker} fields before calling the appropriate {[cu]AlarmMgr} function.
+
+      {[cf]alarmFB} lies at the heart of {[cu]TickerMgr} &ndash; implementing the body of the {[ct]Fiber}{[bm,E]} bound to our {[ct]Alarm}{[bm,F]}.
+
+      {[bm,G]} We locate the {[ct]Ticker} object using its index {[bm,E]}.<br>
+      {[bm,H]} We test for a {[cs]$null} callback (set inside {[cf]stop}).<br>
+      {[bm,I]} We invoke the callback function at this point.<br>
+      {[bm,J]} We schedule the next wakeup at the current rate.
+
+
+
+  - cmds:
+      - open 2
+    focus: [2,26]
+    text: |
+
+      {[ht,$extra] Extra Credit}
+
+      {[bi,task_alt]} Add a {[cd]%%a} pulse to {[cf]alarmFB} and re-run {[cu]PollerP}.
+
+      {[bi,task_alt]} Do {[ct]Ticker} objects really need to retain a {[ct]Fiber}.
+
+      {[bi,task_alt]} Call {[cf]stop} and then invoke {[cf]start} with new args.
+
+  - cmds:
+      - open 2
+    focus: [2,1]
+    text: |
+
+      {[ht,$steps] Next Steps}
+
+      The {[cu]TickerMgr} reinforces the **EMS** _object-factory_ de&shy;sign pattern, and shows how factories use one another.
+
+      With {[cu]TickerMgr} and {[cu]FiberMgr} under our belt, the next tours covers the (complex) {[cu]AlarmMgr} implementation.
+
+      {[in]We'll finally see %[cs]'@em.utils/TimeTypes.em'%&ndash; aka %[cu]T%.}
+
+      {[hc]}

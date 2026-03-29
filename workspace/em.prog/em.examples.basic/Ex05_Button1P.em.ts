@@ -13,24 +13,27 @@ export namespace em$meta {
     }
 }
 
+//>> ---- em$targ ---- <<//
+
+var pressed_flag: volatile_t<bool_t>
+
 export function em$startup() {
     AppButEdge.init(true)
     AppButEdge.setDetectFalling()
-    AppButEdge.clearDetect()
 }
 
 export function em$run() {
     Common.GlobalInterrupts.enable()
     while (true) {
         AppButEdge.enableDetect()
-        Common.Idle.exec()
+        pressed_flag = false
+        while (!pressed_flag) Common.Idle.exec()
+        AppLed.wink(5)
     }
 }
 
 function handler() {
     $['%%c']
     AppButEdge.clearDetect()
-    AppLed.on()
-    Common.BusyWait.wait(5_000)
-    AppLed.off()
+    pressed_flag = true
 }

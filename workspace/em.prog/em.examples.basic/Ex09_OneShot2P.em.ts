@@ -16,7 +16,9 @@ export namespace em$meta {
     }
 }
 
-let count = 5
+//>> ---- em$targ ---- <<//
+
+var count = 5
 
 export function em$run() {
     blinkF.$$.post()
@@ -25,11 +27,11 @@ export function em$run() {
 
 function blinkFB(a: arg_t) {
     $['%%d']
-    if (--count == 0) halt()
+    if (count-- == 0) halt()
     AppLed.on()
     Common.BusyWait.wait(5_000)
     AppLed.off()
-    OneShot.enable(500, $cb(handler), 0)
+    OneShot.uenable(1_000_000, $cb(handler), 0)
 }
 
 function handler(arg: arg_t) {
