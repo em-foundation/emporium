@@ -44,9 +44,9 @@ export function startup(): void {
         $R.MEMCONF.POWER[0].RET.$$ = 0x3
         $R.MEMCONF.POWER[0].RET2.$$ = 0x3
     }
-    $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
-    $R.MEMCONF.POWER[1].RET.$$ = 0x0
-    $R.MEMCONF.POWER[1].RET2.$$ = 0x0
+    // $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
+    // $R.MEMCONF.POWER[1].RET.$$ = 0x0
+    // $R.MEMCONF.POWER[1].RET2.$$ = 0x0
     $R.CLOCK.LFCLK.SRC.$$ = $R.CLOCK_LFCLK_SRC_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
     Debug.startup()
