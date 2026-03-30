@@ -60,7 +60,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
         cd $HOME/EM
         mkdir data exts repo</code></pre>
 <p>&emsp;&emsp;<b>➜</b>&ensp;From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
-<pre><code>        code --install-extension the-em-foundation.embrowser --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
+<pre><code>        code --install-extension the-em-foundation.em-builder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
 <p>&emsp;&emsp;<b>➜</b>&ensp;Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
 <pre><code>        code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
