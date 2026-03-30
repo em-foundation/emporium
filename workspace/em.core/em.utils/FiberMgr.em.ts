@@ -27,8 +27,6 @@ interface List {
 
 var fiber_tab = $table<Fiber>()
 
-var ready_list = List.$make()
-
 export namespace em$meta {
     export function create(body: Body, arg: arg_t = 0): Obj {
         let fiber = fiber_tab.$$add()
@@ -37,6 +35,10 @@ export namespace em$meta {
         return fiber
     }
 }
+
+//>> ---- em$targ ---- <<//
+
+var ready_list = List.$make()
 
 function dispatch() {
     while (!ready_list.empty()) {

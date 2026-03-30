@@ -5,7 +5,7 @@ import * as BoardC from '@$distro/BoardC.em'
 import * as Common from '@em.mcu/Common.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
-import * as TimeTypes from '@em.utils/TimeTypes.em'
+import * as T from '@em.utils/TimeTypes.em'
 
 export const AppLed = $delegate(BoardC.AppLed)
 export const SysLed = $delegate(BoardC.SysLed)
@@ -20,20 +20,20 @@ export namespace em$meta {
     }
 }
 
-const DBG_FLG = false
+//>> ---- em$targ ---- <<//
 
 var count = 5
 
 export function em$run() {
     if (!Common.Mcu.isWarm()) {
-        app_ticker.$$.start(TimeTypes.Secs30p2_initMsecs(1_000), $cb(appTickCb))
+        app_ticker.$$.start(T.Secs30p2_initMsecs(1_500), $cb(appTickCb))
+        sys_ticker.$$.start(T.Secs30p2_initMsecs(1_000), $cb(sysTickCb))
     }
-    sys_ticker.$$.start(TimeTypes.Secs30p2_initMsecs(1_500), $cb(sysTickCb))
     FiberMgr.run()
 }
 
 function appTickCb() {
-    if (DBG_FLG && count-- == 0) halt()
+    if (count-- == 0) halt()
     $['%%c']
     AppLed.wink(100)
 }

@@ -25,7 +25,7 @@ steps:
     acts: ['$build']
     text: |
 
-        {[ht,$build]%[cu]DebugP% &ndash; build&middot;load}
+        {[ht,$build]%[cu]DebugP% &ndash; Build&middot;Load}
 
         {[in]Observe the LEDs when executing this program.}
 
@@ -46,7 +46,7 @@ steps:
     focus: [1,1]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; details}
+        {[ht,$details]%[cu]DebugP% &ndash; Details}
 
         <div class="em-bmlist">
 
@@ -67,7 +67,7 @@ steps:
     focus: [1,8]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; more details}
+        {[ht,$details]%[cu]DebugP% &ndash; More Details}
 
         <div class="em-bmlist">
 
@@ -85,7 +85,7 @@ steps:
       - view 2
     text: |
 
-        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; signal capture}
+        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; Signal Capture}
 
         <div class="em-bmlist">
 
@@ -110,7 +110,7 @@ steps:
     focus: [1,8]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; still more details}
+        {[ht,$details]%[cu]DebugP% &ndash; Still More Details}
 
         <div class="em-bmlist">
 
@@ -157,7 +157,7 @@ steps:
 
         {[bi,task_alt]} Study the small {[cu]Console}.{[cf]print} implementation.
 
-        {[bi,task_alt]} Add some real-time analysis to your own {[cu]BlinkyP}.
+        {[bi,task_alt]} Add some RTA instrincs to your {[cu]Blinky} program.
 
 
 

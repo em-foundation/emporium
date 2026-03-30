@@ -48,6 +48,7 @@ export namespace em$template {
     export function init(pullup: bool_t) {
         Pin.makeInput()
         Pin.setInternalPullup(pullup)
+        clearDetect()
     }
 
     export function setDetectFalling() {
