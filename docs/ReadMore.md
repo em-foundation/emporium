@@ -55,7 +55,6 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-
 <p>&emsp;&emsp;<b>➜</b>&ensp;We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
 <pre><code>mkdir $HOME/EM
 cd $HOME/EM
@@ -63,7 +62,7 @@ mkdir data exts repo</code></pre>
 <p>&emsp;&emsp;<b>➜</b>&ensp;From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
 <pre><code>code --install-extension the-em-foundation.em-builder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
 <p>&emsp;&emsp;<b>➜</b>&ensp;Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
-<pre><code>        code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
+<pre><code>code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
 </details>
 
 <details><summary>&ensp;✅&ensp;prepare to interact with <b>GitHub</b></summary><br>
