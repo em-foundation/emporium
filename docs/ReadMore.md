@@ -55,6 +55,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 </details>
 
 <details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
+
 <p>&emsp;&emsp;<b>➜</b>&ensp;We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
 <pre><code>mkdir $HOME/EM
 cd $HOME/EM
