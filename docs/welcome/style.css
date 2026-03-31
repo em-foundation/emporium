@@ -9,7 +9,7 @@ body {
 .frame {
     position: relative;
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
     margin: 0;
     padding-left: 48px;
     height: 500px;
@@ -22,14 +22,14 @@ body {
 
 .action {
     display: block;
-    margin-left: -18px;
+    margin-left: -36px;
     margin-top: 18px;
 }
 
 .cmd-wc {
     display: flex;
     align-items: center;
-    width: 315px;
+    width: 400px;
 }
 
 .cmd-wc .icon {
