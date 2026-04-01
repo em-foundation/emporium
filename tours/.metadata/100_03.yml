@@ -1,0 +1,147 @@
+tour_id: '100_03'
+series: 100_Orientation
+title: Language Overview
+source_file: 100_Orientation/03_Language_Overview.emtour
+screenshot_pattern: 100_03_{stop:02d}.png
+status: generated_from_emtour_and_stop_screenshots
+overall_assessment: Strong capstone tour for Orientation. Introduces the EMS execution model, core build-time constructs, major unit flavors, and the role of composition and cloning. This tour is conceptually denser than the first two but remains digestible because it stays grounded in real code and visible annotations.
+learning_objectives:
+- Establish the relationship between EMS and TypeScript
+- Explain meta vs target domains
+- Introduce lifecycle intrinsics
+- Teach client/supplier relationships via imports, exports, interfaces, and modules
+- Introduce $config and $proxy as core build-time constructs
+- Show composites and templates as system assembly mechanisms
+- Close with grammar and exploration tools
+concepts_introduced:
+- meta domain
+- target domain
+- em$construct
+- em$startup
+- Interface
+- Module
+- $config
+- $proxy
+- client/supplier relationship
+- Common as pluggable backplane
+- Composite
+- em$configure
+- $clone
+- Template
+- language grammar
+concepts_reinforced:
+- .em.ts as TS-like source
+- BlinkerP as a running example
+- build-time specialization for efficient target code
+- real embedded behavior rather than toy-only examples
+prerequisites:
+- '100_01'
+- '100_02'
+stop_count: 12
+stops:
+- stop: 1
+  focus: EMS ≡ TS framing
+  teaching_intent: Anchor the language in TypeScript before introducing the EMS-specific execution model
+  concepts:
+  - TypeScript host language
+  - generated C/C++
+  user_takeaway: EMS uses TypeScript as its surface language and tooling host.
+- stop: 2
+  focus: one unit, two domains
+  teaching_intent: Introduce the split between meta code and target code inside a single unit
+  concepts:
+  - meta domain
+  - target domain
+  - special target comment
+  user_takeaway: One EMS unit can participate in both build-time and run-time domains.
+- stop: 3
+  focus: lifecycle functions
+  teaching_intent: Show that some intrinsic functions belong to one domain and are sequenced by the translator
+  concepts:
+  - em$construct
+  - em$startup
+  - em$run
+  - lifecycle
+  user_takeaway: The translator orchestrates domain-specific intrinsic functions across the program lifecycle.
+- stop: 4
+  focus: client/supplier relationship
+  teaching_intent: Explain imports, exports, modules, and interfaces as a programmatic contract
+  concepts:
+  - import
+  - export
+  - Interface
+  - Module
+  user_takeaway: Interfaces define contracts; modules provide implementations visible to clients.
+- stop: 5
+  focus: $config
+  teaching_intent: Explain build-time parameterization and its run-time payoff
+  concepts:
+  - $config
+  - u32
+  - build-time constants
+  user_takeaway: Configuration is assigned during meta time and becomes static target-time data.
+- stop: 6
+  focus: $proxy
+  teaching_intent: Introduce abstract delegate binding with no run-time overhead
+  concepts:
+  - $proxy
+  - delegate
+  - GpioI
+  user_takeaway: A proxy names an abstract supplier slot that the translator can resolve away.
+- stop: 7
+  focus: SoftUart put implementation
+  teaching_intent: Ground earlier abstractions in real target code
+  concepts:
+  - bit banging
+  - for loop
+  - GPIO set/clear
+  - spin delay
+  user_takeaway: EMS target code remains familiar and close to the hardware.
+- stop: 8
+  focus: Common
+  teaching_intent: Present Common as a broad proxy-based hardware backplane
+  concepts:
+  - Common
+  - pluggable backplane
+  user_takeaway: EMS can expose portable low-level services through proxy-based structure.
+- stop: 9
+  focus: Composite / BoardC
+  teaching_intent: Show where wiring and specialization happen
+  concepts:
+  - Composite
+  - em$configure
+  - $clone
+  - $proxy bindings
+  - $config bindings
+  user_takeaway: Composites assemble programs by binding proxies and configs at build-time.
+- stop: 10
+  focus: Template / LedT
+  teaching_intent: Explain the origin and role of clones
+  concepts:
+  - Template
+  - em$template
+  - prototype module
+  - $clone
+  user_takeaway: Templates exist to be cloned into concrete modules during build-time.
+- stop: 11
+  focus: grammar
+  teaching_intent: Reveal the formal language reference as a navigable aid
+  concepts:
+  - grammar diagrams
+  - non-terminal
+  - terminal
+  user_takeaway: There is a formal grammar I can browse when I want deeper syntax reference.
+- stop: 12
+  focus: next steps
+  teaching_intent: Return to BlinkerP and position the learner for the Basic Examples series
+  concepts:
+  - BlinkerP revisited
+  - search
+  - Intellisense
+  - translator output
+  user_takeaway: I now understand enough of EMS to explore real examples with purpose.
+issues_and_notes:
+- Conceptual load is higher than tours 1–2, but appropriate for a capstone orientation tour
+- Visual M/T and other markers do substantial instructional work
+- 'Minor wording/typo cleanup worth considering in source text: "programming", "reinforced", and "publicly"'
+- No blocking flow issues observed

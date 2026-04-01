@@ -1,0 +1,354 @@
+schema_version: 1
+series: 100_Orientation
+tours:
+- tour_id: '100_01'
+  series: 100_Orientation
+  title: Introduction
+  source_file: 100_Orientation/01_Introduction.emtour
+  screenshot_pattern: 100_01_{stop:02d}.png
+  status: generated_from_emtour_and_stop_screenshots
+  overall_assessment: Strong first-contact tour. Establishes the EM•Builder workspace, the Tour Guide interaction model, the existence of .em.ts source files, and the build→load→run loop. It intentionally optimizes for confidence and environment familiarity rather than language semantics.
+  learning_objectives:
+  - Orient the user inside the curated VS Code workspace
+  - Teach Tour Guide controls and navigation
+  - Show that EMS programs are stored in .em.ts files
+  - Demonstrate the build+load pipeline using simple examples
+  - Establish Wokwi/Pico simulation as an execution path
+  concepts_introduced:
+  - Tour Guide
+  - EM•Builder workspace
+  - EM•Script source tree
+  - .em.ts unit files
+  - em$run
+  - build+load workflow
+  - Wokwi simulation
+  - HelloP
+  - BlinkerP
+  concepts_reinforced:
+  - VS Code as the host environment
+  - small embedded examples as teaching vehicles
+  prerequisites: []
+  stop_count: 8
+  stops:
+  - stop: 1
+    focus: workspace orientation
+    teaching_intent: Introduce the EM•Builder workspace and the Tour Guide itself
+    concepts:
+    - Tour Guide
+    - EM•Builder workspace
+    - EM•Home
+    user_takeaway: I am inside a guided, opinionated EMS workspace.
+  - stop: 2
+    focus: activity bar
+    teaching_intent: Show that the workspace can be decluttered and curated
+    concepts:
+    - activity bar
+    - workspace customization
+    user_takeaway: This environment is intentionally streamlined for EMS work.
+  - stop: 3
+    focus: outline view
+    teaching_intent: Plant the idea that structural navigation will matter later
+    concepts:
+    - Outline view
+    - code structure navigation
+    user_takeaway: There are editor aids that will become useful once I read real code.
+  - stop: 4
+    focus: HelloP code
+    teaching_intent: Make first contact with a tiny .em.ts program
+    concepts:
+    - HelloP
+    - .em.ts
+    - em$run
+    - printf
+    user_takeaway: EMS code looks TypeScript-like and can be very small.
+  - stop: 5
+    focus: HelloP details
+    teaching_intent: Signal that EMS adds boilerplate and syntax beyond ordinary TS
+    concepts:
+    - $declare
+    - MODULE flavor
+    - printf formatting
+    user_takeaway: This is TS-like, but not plain TypeScript.
+  - stop: 6
+    focus: build and load HelloP
+    teaching_intent: Close the loop from source to execution
+    concepts:
+    - build+load
+    - terminal output
+    - PICO-sim
+    user_takeaway: A single action builds and runs an EMS program.
+  - stop: 7
+    focus: BlinkerP code
+    teaching_intent: Show a slightly richer embedded example using imported units and EMS constructs
+    concepts:
+    - BlinkerP
+    - imports
+    - $delegate
+    - $range
+    - hardware interaction
+    user_takeaway: EMS can drive hardware-oriented behavior, not just print text.
+  - stop: 8
+    focus: wrap-up
+    teaching_intent: Position the next tours as deeper steps into content structure and language semantics
+    concepts:
+    - tour sequence
+    - next steps
+    user_takeaway: I now know how to navigate, run examples, and continue onboarding.
+  issues_and_notes:
+  - No blocking flow issues observed
+  - Good use of active editor context and annotated markers
+  - This tour is intentionally low on semantics; that is appropriate for stop-zero onboarding
+- tour_id: '100_02'
+  series: 100_Orientation
+  title: Content Hierarchy
+  source_file: 100_Orientation/02_Content_Hierarchy.emtour
+  screenshot_pattern: 100_02_{stop:02d}.png
+  status: generated_from_emtour_and_stop_screenshots
+  overall_assessment: Strong second tour. Introduces Unit, Bucket, and Package as a coherent hierarchy, maps those abstractions to files and folders, and then immediately turns that understanding into action by having the user create their own package/bucket/program and run it.
+  learning_objectives:
+  - Explain EMS Unit, Bucket, and Package roles
+  - Map the content hierarchy onto real files and folders
+  - Show how imports refer to bucket/unit identities
+  - Teach the user how to add new EMS content
+  - Connect content creation to source control awareness
+  concepts_introduced:
+  - Unit
+  - Bucket
+  - Package
+  - content hierarchy
+  - fully-qualified bucket/unit naming
+  - Reveal in Explorer
+  - New Package
+  - New Bucket
+  - New Program
+  - Source Control workflow
+  concepts_reinforced:
+  - .em.ts as the canonical source file form
+  - BlinkerP as a reusable reference example
+  - build+load workflow
+  prerequisites:
+  - '100_01'
+  stop_count: 9
+  stops:
+  - stop: 1
+    focus: Content view entry point
+    teaching_intent: Frame the hierarchy as the main subject of the tour
+    concepts:
+    - Content view
+    - Package
+    - Bucket
+    - Unit
+    user_takeaway: EMS source is organized into a formal hierarchy.
+  - stop: 2
+    focus: Unit
+    teaching_intent: Explain that a Unit corresponds to a source file and has a flavor
+    concepts:
+    - Unit
+    - .em.ts
+    - MODULE flavor
+    user_takeaway: A Unit is the file-level program artifact.
+  - stop: 3
+    focus: Bucket
+    teaching_intent: Explain bucket as namespace and folder
+    concepts:
+    - Bucket
+    - namespace
+    - global uniqueness
+    user_takeaway: A Bucket gives logical namespace identity to units.
+  - stop: 4
+    focus: Package
+    teaching_intent: Separate package identity from bucket/unit content identity
+    concepts:
+    - Package
+    - content supplier
+    - imports
+    user_takeaway: Packages contain content but usually stay out of source-level naming.
+  - stop: 5
+    focus: Files and folders
+    teaching_intent: Ground the abstraction in the repo layout
+    concepts:
+    - filesystem mapping
+    - Reveal in Explorer
+    user_takeaway: The hierarchy mirrors real files and directories.
+  - stop: 6
+    focus: Adding content
+    teaching_intent: Walk the user through creating their own package, bucket, and program
+    concepts:
+    - New Package
+    - New Bucket
+    - New Program
+    user_takeaway: I can create my own EMS content inside the hierarchy.
+  - stop: 7
+    focus: Implementing Blinky
+    teaching_intent: Connect user-owned content to edit/build/run iteration
+    concepts:
+    - Blinky
+    - copy/edit/save/build
+    user_takeaway: I can clone a working example into my own namespace and modify it.
+  - stop: 8
+    focus: Source Control
+    teaching_intent: Make workspace edits feel safe and manageable
+    concepts:
+    - Git integration
+    - commit
+    - push
+    - discard changes
+    user_takeaway: New content creation fits naturally into Git workflow.
+  - stop: 9
+    focus: Next steps
+    teaching_intent: Point the user toward scavenging and exploration of starter examples
+    concepts:
+    - basic examples
+    - exploration
+    user_takeaway: I am now ready to explore and modify additional examples.
+  issues_and_notes:
+  - Flow from abstraction → concrete creation is especially strong
+  - No blocking clarity issues observed in the screenshots
+  - Good reuse of BlinkerP avoids unnecessary novelty
+- tour_id: '100_03'
+  series: 100_Orientation
+  title: Language Overview
+  source_file: 100_Orientation/03_Language_Overview.emtour
+  screenshot_pattern: 100_03_{stop:02d}.png
+  status: generated_from_emtour_and_stop_screenshots
+  overall_assessment: Strong capstone tour for Orientation. Introduces the EMS execution model, core build-time constructs, major unit flavors, and the role of composition and cloning. This tour is conceptually denser than the first two but remains digestible because it stays grounded in real code and visible annotations.
+  learning_objectives:
+  - Establish the relationship between EMS and TypeScript
+  - Explain meta vs target domains
+  - Introduce lifecycle intrinsics
+  - Teach client/supplier relationships via imports, exports, interfaces, and modules
+  - Introduce $config and $proxy as core build-time constructs
+  - Show composites and templates as system assembly mechanisms
+  - Close with grammar and exploration tools
+  concepts_introduced:
+  - meta domain
+  - target domain
+  - em$construct
+  - em$startup
+  - Interface
+  - Module
+  - $config
+  - $proxy
+  - client/supplier relationship
+  - Common as pluggable backplane
+  - Composite
+  - em$configure
+  - $clone
+  - Template
+  - language grammar
+  concepts_reinforced:
+  - .em.ts as TS-like source
+  - BlinkerP as a running example
+  - build-time specialization for efficient target code
+  - real embedded behavior rather than toy-only examples
+  prerequisites:
+  - '100_01'
+  - '100_02'
+  stop_count: 12
+  stops:
+  - stop: 1
+    focus: EMS ≡ TS framing
+    teaching_intent: Anchor the language in TypeScript before introducing the EMS-specific execution model
+    concepts:
+    - TypeScript host language
+    - generated C/C++
+    user_takeaway: EMS uses TypeScript as its surface language and tooling host.
+  - stop: 2
+    focus: one unit, two domains
+    teaching_intent: Introduce the split between meta code and target code inside a single unit
+    concepts:
+    - meta domain
+    - target domain
+    - special target comment
+    user_takeaway: One EMS unit can participate in both build-time and run-time domains.
+  - stop: 3
+    focus: lifecycle functions
+    teaching_intent: Show that some intrinsic functions belong to one domain and are sequenced by the translator
+    concepts:
+    - em$construct
+    - em$startup
+    - em$run
+    - lifecycle
+    user_takeaway: The translator orchestrates domain-specific intrinsic functions across the program lifecycle.
+  - stop: 4
+    focus: client/supplier relationship
+    teaching_intent: Explain imports, exports, modules, and interfaces as a programmatic contract
+    concepts:
+    - import
+    - export
+    - Interface
+    - Module
+    user_takeaway: Interfaces define contracts; modules provide implementations visible to clients.
+  - stop: 5
+    focus: $config
+    teaching_intent: Explain build-time parameterization and its run-time payoff
+    concepts:
+    - $config
+    - u32
+    - build-time constants
+    user_takeaway: Configuration is assigned during meta time and becomes static target-time data.
+  - stop: 6
+    focus: $proxy
+    teaching_intent: Introduce abstract delegate binding with no run-time overhead
+    concepts:
+    - $proxy
+    - delegate
+    - GpioI
+    user_takeaway: A proxy names an abstract supplier slot that the translator can resolve away.
+  - stop: 7
+    focus: SoftUart put implementation
+    teaching_intent: Ground earlier abstractions in real target code
+    concepts:
+    - bit banging
+    - for loop
+    - GPIO set/clear
+    - spin delay
+    user_takeaway: EMS target code remains familiar and close to the hardware.
+  - stop: 8
+    focus: Common
+    teaching_intent: Present Common as a broad proxy-based hardware backplane
+    concepts:
+    - Common
+    - pluggable backplane
+    user_takeaway: EMS can expose portable low-level services through proxy-based structure.
+  - stop: 9
+    focus: Composite / BoardC
+    teaching_intent: Show where wiring and specialization happen
+    concepts:
+    - Composite
+    - em$configure
+    - $clone
+    - $proxy bindings
+    - $config bindings
+    user_takeaway: Composites assemble programs by binding proxies and configs at build-time.
+  - stop: 10
+    focus: Template / LedT
+    teaching_intent: Explain the origin and role of clones
+    concepts:
+    - Template
+    - em$template
+    - prototype module
+    - $clone
+    user_takeaway: Templates exist to be cloned into concrete modules during build-time.
+  - stop: 11
+    focus: grammar
+    teaching_intent: Reveal the formal language reference as a navigable aid
+    concepts:
+    - grammar diagrams
+    - non-terminal
+    - terminal
+    user_takeaway: There is a formal grammar I can browse when I want deeper syntax reference.
+  - stop: 12
+    focus: next steps
+    teaching_intent: Return to BlinkerP and position the learner for the Basic Examples series
+    concepts:
+    - BlinkerP revisited
+    - search
+    - Intellisense
+    - translator output
+    user_takeaway: I now understand enough of EMS to explore real examples with purpose.
+  issues_and_notes:
+  - Conceptual load is higher than tours 1–2, but appropriate for a capstone orientation tour
+  - Visual M/T and other markers do substantial instructional work
+  - 'Minor wording/typo cleanup worth considering in source text: "programming", "reinforced", and "publicly"'
+  - No blocking flow issues observed

@@ -1,0 +1,97 @@
+tour_id: '100_01'
+series: 100_Orientation
+title: Introduction
+source_file: 100_Orientation/01_Introduction.emtour
+screenshot_pattern: 100_01_{stop:02d}.png
+status: generated_from_emtour_and_stop_screenshots
+overall_assessment: Strong first-contact tour. Establishes the EM•Builder workspace, the Tour Guide interaction model, the existence of .em.ts source files, and the build→load→run loop. It intentionally optimizes for confidence and environment familiarity rather than language semantics.
+learning_objectives:
+- Orient the user inside the curated VS Code workspace
+- Teach Tour Guide controls and navigation
+- Show that EMS programs are stored in .em.ts files
+- Demonstrate the build+load pipeline using simple examples
+- Establish Wokwi/Pico simulation as an execution path
+concepts_introduced:
+- Tour Guide
+- EM•Builder workspace
+- EM•Script source tree
+- .em.ts unit files
+- em$run
+- build+load workflow
+- Wokwi simulation
+- HelloP
+- BlinkerP
+concepts_reinforced:
+- VS Code as the host environment
+- small embedded examples as teaching vehicles
+prerequisites: []
+stop_count: 8
+stops:
+- stop: 1
+  focus: workspace orientation
+  teaching_intent: Introduce the EM•Builder workspace and the Tour Guide itself
+  concepts:
+  - Tour Guide
+  - EM•Builder workspace
+  - EM•Home
+  user_takeaway: I am inside a guided, opinionated EMS workspace.
+- stop: 2
+  focus: activity bar
+  teaching_intent: Show that the workspace can be decluttered and curated
+  concepts:
+  - activity bar
+  - workspace customization
+  user_takeaway: This environment is intentionally streamlined for EMS work.
+- stop: 3
+  focus: outline view
+  teaching_intent: Plant the idea that structural navigation will matter later
+  concepts:
+  - Outline view
+  - code structure navigation
+  user_takeaway: There are editor aids that will become useful once I read real code.
+- stop: 4
+  focus: HelloP code
+  teaching_intent: Make first contact with a tiny .em.ts program
+  concepts:
+  - HelloP
+  - .em.ts
+  - em$run
+  - printf
+  user_takeaway: EMS code looks TypeScript-like and can be very small.
+- stop: 5
+  focus: HelloP details
+  teaching_intent: Signal that EMS adds boilerplate and syntax beyond ordinary TS
+  concepts:
+  - $declare
+  - MODULE flavor
+  - printf formatting
+  user_takeaway: This is TS-like, but not plain TypeScript.
+- stop: 6
+  focus: build and load HelloP
+  teaching_intent: Close the loop from source to execution
+  concepts:
+  - build+load
+  - terminal output
+  - PICO-sim
+  user_takeaway: A single action builds and runs an EMS program.
+- stop: 7
+  focus: BlinkerP code
+  teaching_intent: Show a slightly richer embedded example using imported units and EMS constructs
+  concepts:
+  - BlinkerP
+  - imports
+  - $delegate
+  - $range
+  - hardware interaction
+  user_takeaway: EMS can drive hardware-oriented behavior, not just print text.
+- stop: 8
+  focus: wrap-up
+  teaching_intent: Position the next tours as deeper steps into content structure and language semantics
+  concepts:
+  - tour sequence
+  - next steps
+  user_takeaway: I now know how to navigate, run examples, and continue onboarding.
+issues_and_notes:
+- No blocking flow issues observed
+- Good use of active editor context and annotated markers
+- This tour is intentionally low on semantics; that is appropriate for stop-zero onboarding

@@ -1,0 +1,107 @@
+tour_id: '100_02'
+series: 100_Orientation
+title: Content Hierarchy
+source_file: 100_Orientation/02_Content_Hierarchy.emtour
+screenshot_pattern: 100_02_{stop:02d}.png
+status: generated_from_emtour_and_stop_screenshots
+overall_assessment: Strong second tour. Introduces Unit, Bucket, and Package as a coherent hierarchy, maps those abstractions to files and folders, and then immediately turns that understanding into action by having the user create their own package/bucket/program and run it.
+learning_objectives:
+- Explain EMS Unit, Bucket, and Package roles
+- Map the content hierarchy onto real files and folders
+- Show how imports refer to bucket/unit identities
+- Teach the user how to add new EMS content
+- Connect content creation to source control awareness
+concepts_introduced:
+- Unit
+- Bucket
+- Package
+- content hierarchy
+- fully-qualified bucket/unit naming
+- Reveal in Explorer
+- New Package
+- New Bucket
+- New Program
+- Source Control workflow
+concepts_reinforced:
+- .em.ts as the canonical source file form
+- BlinkerP as a reusable reference example
+- build+load workflow
+prerequisites:
+- '100_01'
+stop_count: 9
+stops:
+- stop: 1
+  focus: Content view entry point
+  teaching_intent: Frame the hierarchy as the main subject of the tour
+  concepts:
+  - Content view
+  - Package
+  - Bucket
+  - Unit
+  user_takeaway: EMS source is organized into a formal hierarchy.
+- stop: 2
+  focus: Unit
+  teaching_intent: Explain that a Unit corresponds to a source file and has a flavor
+  concepts:
+  - Unit
+  - .em.ts
+  - MODULE flavor
+  user_takeaway: A Unit is the file-level program artifact.
+- stop: 3
+  focus: Bucket
+  teaching_intent: Explain bucket as namespace and folder
+  concepts:
+  - Bucket
+  - namespace
+  - global uniqueness
+  user_takeaway: A Bucket gives logical namespace identity to units.
+- stop: 4
+  focus: Package
+  teaching_intent: Separate package identity from bucket/unit content identity
+  concepts:
+  - Package
+  - content supplier
+  - imports
+  user_takeaway: Packages contain content but usually stay out of source-level naming.
+- stop: 5
+  focus: Files and folders
+  teaching_intent: Ground the abstraction in the repo layout
+  concepts:
+  - filesystem mapping
+  - Reveal in Explorer
+  user_takeaway: The hierarchy mirrors real files and directories.
+- stop: 6
+  focus: Adding content
+  teaching_intent: Walk the user through creating their own package, bucket, and program
+  concepts:
+  - New Package
+  - New Bucket
+  - New Program
+  user_takeaway: I can create my own EMS content inside the hierarchy.
+- stop: 7
+  focus: Implementing Blinky
+  teaching_intent: Connect user-owned content to edit/build/run iteration
+  concepts:
+  - Blinky
+  - copy/edit/save/build
+  user_takeaway: I can clone a working example into my own namespace and modify it.
+- stop: 8
+  focus: Source Control
+  teaching_intent: Make workspace edits feel safe and manageable
+  concepts:
+  - Git integration
+  - commit
+  - push
+  - discard changes
+  user_takeaway: New content creation fits naturally into Git workflow.
+- stop: 9
+  focus: Next steps
+  teaching_intent: Point the user toward scavenging and exploration of starter examples
+  concepts:
+  - basic examples
+  - exploration
+  user_takeaway: I am now ready to explore and modify additional examples.
+issues_and_notes:
+- Flow from abstraction → concrete creation is especially strong
+- No blocking clarity issues observed in the screenshots
+- Good reuse of BlinkerP avoids unnecessary novelty
