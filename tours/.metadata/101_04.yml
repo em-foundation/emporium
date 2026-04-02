@@ -1,12 +1,9 @@
 tour_id: 101_04
-series: 101_BasicExamples
-title: Alarm
-source_file: tours/101_BasicExamples/04_Alarm.emtour
-screenshot_pattern: tours/.screens/101_04_{stop:02d}.png
-status: generated_from_repo_emtour_and_stop_screenshots
+title: One-Shot Timers
+source_file: tours/101_BasicExamples/04_OneShot.emtour
 
-ground_truth_artifacts:
-  emtour_file: tours/101_BasicExamples/04_Alarm.emtour
+ground_truth:
+  stop_count: 9
   screenshots:
     - tours/.screens/101_04_01.png
     - tours/.screens/101_04_02.png
@@ -16,90 +13,114 @@ ground_truth_artifacts:
     - tours/.screens/101_04_06.png
     - tours/.screens/101_04_07.png
     - tours/.screens/101_04_08.png
+    - tours/.screens/101_04_09.png
 
-overall_assessment: >
-  This tour introduces time-based scheduling via alarms. It shifts the model
-  from explicit delay loops to event-driven wakeups. The key learning is that
-  execution is now driven by time thresholds rather than linear waits, which
-  is clearly reflected in the waveform.
+overall_assessment:
+  summary: Demonstrates OneShot delegate for timed sleep and interrupt-driven wakeup, contrasting fiber-based and super-loop implementations.
+  difficulty: intermediate
+  key_takeaway: Timer-driven callbacks enable efficient sleep/wakeup without busy-waiting.
 
 learning_objectives:
-  - Introduce alarm-based scheduling
-  - Show difference between delay loops and timed wakeups
-  - Understand how wakeups appear in waveform
-  - Build intuition for time-triggered execution
+  - understand OneShot delegate usage
+  - distinguish fiber vs super-loop execution
+  - interpret interrupt-driven wakeup behavior
+  - observe and measure latency via debug signals
 
 concepts_introduced:
-  - AlarmMgr
-  - wakeup
-  - time-based scheduling
-  - event-driven execution
-  - threshold-based timing
+  - OneShot delegate
+  - OneShotI interface
+  - timer interrupt callback
+  - interrupt latency
+  - done_flag synchronization
 
 concepts_reinforced:
-  - PulseView
-  - wokwi.vcd
-  - BoardC
-  - timing interpretation
-  - code ↔ waveform mapping
+  - FiberMgr scheduling
+  - Idle sleep behavior
+  - Composite binding (BoardC)
+  - debug signal measurement
 
 prerequisites:
   - 101_01
   - 101_02
   - 101_03
 
-stop_count: 8
+stop_count: 9
 
 stops:
-  - stop: 1
-    focus: framing
-    teaching_intent: Introduce alarm-based example vs delay loops
-    concepts: [alarm scheduling]
-    user_takeaway: This example is driven by time events
+  - id: 1
+    title: OneShotP – Timer Events
+    focus: introduce timer-based sleep
+    teaching_intent: replace busy wait with OneShot delay
+    concepts:
+      - OneShot delegate
+    user_takeaway: can sleep for fixed time without spinning
 
-  - stop: 2
-    focus: source structure
-    teaching_intent: Show use of AlarmMgr and wakeup calls
-    concepts: [AlarmMgr, wakeup]
-    user_takeaway: Execution is scheduled, not loop-delayed
+  - id: 2
+    title: OneShot2P – Details
+    focus: fiber-based implementation
+    teaching_intent: show callback rescheduling via FiberMgr
+    concepts:
+      - FiberMgr
+      - callback repost
+    user_takeaway: execution resumes via timer callback
 
-  - stop: 3
-    focus: timing model
-    teaching_intent: Explain delta-based wakeups
-    concepts: [delta time]
-    user_takeaway: Events occur relative to current time
+  - id: 3
+    title: OneShotI – Details
+    focus: interface abstraction
+    teaching_intent: explain OneShot interface contract
+    concepts:
+      - $declare('INTERFACE')
+    user_takeaway: behavior defined abstractly
 
-  - stop: 4
-    focus: capture
-    teaching_intent: Run and capture waveform
-    concepts: [capture workflow]
-    user_takeaway: Same tools, new behavior
+  - id: 4
+    title: BoardC – A Quick Look
+    focus: concrete binding
+    teaching_intent: show board-provided implementation
+    concepts:
+      - Composite binding
+    user_takeaway: platform supplies implementation
 
-  - stop: 5
-    focus: waveform observation
-    teaching_intent: Identify discrete wakeup events
-    concepts: [event pulses]
-    user_takeaway: Execution appears as time-triggered events
+  - id: 5
+    title: OneShot2P – Build · Load
+    focus: runtime behavior
+    teaching_intent: observe interrupt-driven execution
+    concepts:
+      - interrupt handler
+    user_takeaway: wakeup triggered by timer interrupt
 
-  - stop: 6
-    focus: mapping
-    teaching_intent: Map events to wakeup calls
-    concepts: [event ↔ code]
-    user_takeaway: Each pulse corresponds to a scheduled wakeup
+  - id: 6
+    title: OneShot2P – Signal Capture
+    focus: timing analysis
+    teaching_intent: measure latency using debug pins
+    concepts:
+      - latency measurement
+    user_takeaway: wakeup delay is observable
 
-  - stop: 7
-    focus: comparison
-    teaching_intent: Contrast with BusyWait loops
-    concepts: [loop vs event]
-    user_takeaway: Alarm-based code is more structured
+  - id: 7
+    title: OneShot1P – Details
+    focus: super-loop model
+    teaching_intent: contrast with fiber approach
+    concepts:
+      - done_flag
+      - polling loop
+    user_takeaway: requires explicit synchronization
 
-  - stop: 8
-    focus: consolidation
-    teaching_intent: Reinforce event-driven model
-    concepts: [event-driven mindset]
-    user_takeaway: EMS supports precise time-based scheduling
+  - id: 8
+    title: OneShot1P – Extra Credit
+    focus: experimentation
+    teaching_intent: compare implementations
+    concepts:
+      - performance comparison
+    user_takeaway: tradeoffs can be measured
+
+  - id: 9
+    title: Next Steps
+    focus: continuation
+    teaching_intent: prepare for next tour
+    concepts:
+      - interface reuse
+    user_takeaway: OneShot will be reused later
 
 issues_and_notes:
-  - Clear conceptual shift from delays to scheduling
-  - Screenshots important for identifying discrete events
-  - No structural issues
+  - relies on screenshots for latency visualization
+  - emphasizes energy-efficient sleep over busy-wait

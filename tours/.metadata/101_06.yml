@@ -1,0 +1,107 @@
+tour_id: 101_06
+series: 101_BasicExamples
+title: Alarm
+source_file: tours/101_BasicExamples/06_Alarm.emtour
+screenshot_pattern: tours/.screens/101_06_{stop:02d}.png
+status: generated_from_repo_emtour_and_stop_screenshots
+
+ground_truth_artifacts:
+  emtour_file: tours/101_BasicExamples/06_Alarm.emtour
+  screenshots:
+    - tours/.screens/101_06_01.png
+    - tours/.screens/101_06_02.png
+    - tours/.screens/101_06_03.png
+    - tours/.screens/101_06_04.png
+    - tours/.screens/101_06_05.png
+    - tours/.screens/101_06_06.png
+    - tours/.screens/101_06_07.png
+    - tours/.screens/101_06_08.png
+
+overall_assessment: >
+  This tour introduces AlarmMgr as a more precise and structured alternative
+  to BusyWait-based timing. The key shift is from blocking delays to scheduled
+  wakeups, which results in cleaner, more predictable timing visible in the
+  waveform.
+
+learning_objectives:
+  - Introduce AlarmMgr as a scheduling mechanism
+  - Replace BusyWait delays with wakeup-based timing
+  - Understand delta-based wakeup semantics
+  - Observe periodic behavior driven by alarms
+
+concepts_introduced:
+  - AlarmMgr
+  - wakeup(delta)
+  - scheduled execution
+  - time thresholds
+  - periodic wakeups
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - timing interpretation
+  - code ↔ waveform mapping
+  - event-based reasoning
+
+prerequisites:
+  - 101_01
+  - 101_02
+  - 101_03
+  - 101_04
+  - 101_05
+
+stop_count: 8
+
+stops:
+  - stop: 1
+    focus: framing
+    teaching_intent: Introduce alarm-based timing vs BusyWait
+    concepts: [AlarmMgr]
+    user_takeaway: Timing can be scheduled, not blocked
+
+  - stop: 2
+    focus: source structure
+    teaching_intent: Show AlarmMgr usage and wakeup calls
+    concepts: [wakeup(delta)]
+    user_takeaway: Execution resumes at scheduled times
+
+  - stop: 3
+    focus: timing model
+    teaching_intent: Explain relative (delta) scheduling
+    concepts: [delta time]
+    user_takeaway: Wakeups are relative to current time
+
+  - stop: 4
+    focus: capture
+    teaching_intent: Run and capture waveform
+    concepts: [capture workflow]
+    user_takeaway: Same tools, different timing model
+
+  - stop: 5
+    focus: waveform observation
+    teaching_intent: Identify periodic wakeup-driven transitions
+    concepts: [periodicity]
+    user_takeaway: Events occur at regular intervals
+
+  - stop: 6
+    focus: mapping
+    teaching_intent: Map waveform edges to wakeup calls
+    concepts: [event ↔ code]
+    user_takeaway: Each transition is scheduled
+
+  - stop: 7
+    focus: comparison
+    teaching_intent: Contrast with BusyWait timing
+    concepts: [blocking vs scheduled]
+    user_takeaway: AlarmMgr yields cleaner structure
+
+  - stop: 8
+    focus: consolidation
+    teaching_intent: Reinforce event-driven timing model
+    concepts: [event-driven execution]
+    user_takeaway: EMS supports precise scheduling primitives
+
+issues_and_notes:
+  - Clear conceptual upgrade from BusyWait to AlarmMgr
+  - Screenshots important for observing periodicity
+  - No structural issues

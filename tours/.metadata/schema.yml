@@ -1,0 +1,51 @@
+version: 1
+
+tour_schema:
+    required:
+        - tour_id
+        - title
+        - source_file
+        - ground_truth
+        - overall_assessment
+        - learning_objectives
+        - concepts_introduced
+        - concepts_reinforced
+        - prerequisites
+        - stop_count
+        - stops
+
+    ground_truth:
+        required:
+            - stop_count
+            - screenshots
+
+    overall_assessment:
+        required:
+            - summary
+            - difficulty
+            - key_takeaway
+
+    stops:
+        required:
+            - id
+            - title
+            - focus
+            - teaching_intent
+            - concepts
+            - user_takeaway
+
+group_schema:
+    required:
+        - group_id
+        - title
+        - tours
+
+    optional:
+        - summary
+        - concepts_progression
+
+rules:
+    - tour.stop_count == len(tour.stops)
+    - len(tour.ground_truth.screenshots) == tour.stop_count
+    - tour.source_file must be exact (no wildcards)
+    - group.tours must be ordered

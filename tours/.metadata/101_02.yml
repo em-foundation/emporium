@@ -1,132 +1,143 @@
-tour_id: '101_02'
+tour_id: 101_02
 series: 101_BasicExamples
-title: Real-time Debug
+title: Debug
 source_file: tours/101_BasicExamples/02_Debug.emtour
 screenshot_pattern: tours/.screens/101_02_{stop:02d}.png
 status: generated_from_repo_emtour_and_stop_screenshots
-ground_truth_artifacts:
+
+ground_truth:
   emtour_file: tours/101_BasicExamples/02_Debug.emtour
-  screenshots:
-  - tours/.screens/101_02_01.png
-  - tours/.screens/101_02_02.png
-  - tours/.screens/101_02_03.png
-  - tours/.screens/101_02_04.png
-  - tours/.screens/101_02_05.png
-  - tours/.screens/101_02_06.png
-  - tours/.screens/101_02_07.png
-  - tours/.screens/101_02_08.png
-  - tours/.screens/101_02_09.png
-overall_assessment: Strong second tour in the Basic Examples series. It keeps the waveform-analysis workflow from 101_01 but introduces EMS debugging and real-time-analysis features with much lower overhead than printf alone. The tour balances source-level constructs, signal-level interpretation in PulseView, and the portable runtime implementation behind the debug intrinsics.
+  screenshot_files:
+    - tours/.screens/101_02_01.png
+    - tours/.screens/101_02_02.png
+    - tours/.screens/101_02_03.png
+    - tours/.screens/101_02_04.png
+    - tours/.screens/101_02_05.png
+    - tours/.screens/101_02_06.png
+    - tours/.screens/101_02_07.png
+    - tours/.screens/101_02_08.png
+    - tours/.screens/101_02_09.png
+  verified_stop_count: 9
+
+overall_assessment: >
+  Introduces EMS debug/RTA in a concrete way. The tour ties source constructs
+  directly to observable signals (pins + UART) and makes failure behavior
+  visible. Strong bridge from simple waveform viewing to purposeful
+  instrumentation.
+
 learning_objectives:
-- Introduce EMS real-time debug capabilities through DebugP
-- Show how fail and halt become observable board-level behavior
-- Explain lightweight debug statements that drive pins and UART output
-- Use PulseView to correlate DebugP source with captured runtime signals
-- Reveal the portable Debug module that implements %%[p...] statements
-- Position EMS debug/RTA features as practical even in deployed code
+  - Understand DebugP as a vehicle for EMS debug features
+  - Observe fail/halt behavior in hardware signals
+  - Use '%%[p...]' and '%%>' for low-overhead instrumentation
+  - Correlate UART output and debug pins with execution
+  - Recognize portability via the Debug module
+
 concepts_introduced:
-- DebugP
-- fail statement
-- halt statement
-- '%%[p...] debug statements'
-- '%%> UART binary output'
-- dbgFlag config parameter
-- DbgA/DbgB/DbgC/DbgD pins
-- real-time analysis (RTA)
-- portable Debug module
-concepts_reinforced:
-- PulseView
-- wokwi.vcd
-- AppLed
-- SysLed
-- BoardC
-- Common.BusyWait.wait
-- printf as practical subset
-- code-to-waveform mapping
-prerequisites:
-- '101_01'
-stop_count: 9
-stops:
-- stop: 1
-  focus: DebugP overview
-  teaching_intent: Introduce DebugP as a program that demonstrates EMS debug features beyond printf
-  concepts:
   - DebugP
-  - printf
-  - embedded debug capabilities
-  user_takeaway: EMS provides lightweight debugging mechanisms that can remain in deployed applications.
-- stop: 2
-  focus: Build·Load expectations
-  teaching_intent: Prepare the user to observe mixed LED behavior and an abrupt failure before examining the signal capture
-  concepts:
+  - fail
+  - halt
+  - "%%[p...] pin instrumentation"
+  - "%%> UART binary output"
+  - dbgFlag
+  - DbgA
+  - DbgB
+  - DbgC
+  - DbgD
+  - real-time analysis (RTA)
+  - Debug module (portable implementation)
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - BoardC signal mapping
   - AppLed
   - SysLed
-  - fail
-  - PulseView motivation
-  user_takeaway: DebugP starts like a blinker, then fails in a visibly distinct way that is best understood in PulseView.
-- stop: 3
-  focus: DebugP details
-  teaching_intent: Explain four debug-related statements in the main loop, especially pin assertion, timing measurement, config-gated debug code, and fail
-  concepts:
-  - DbgD assert
-  - DbgA de-assert
-  - dbgFlag config
-  - fail statement
-  user_takeaway: Specific EMS statements can mark timing, gate debug code, and explicitly abort the program.
-- stop: 4
-  focus: More details
-  teaching_intent: Explain efficient binary output and pin-toggling debug statements driven by cnt and bits11
-  concepts:
-  - '%%> cnt binary output'
-  - '%%> bits11 binary output'
-  - '%%c: pin toggling'
-  - expression e+1 semantics
-  user_takeaway: EMS supports very small, deterministic debug outputs to UART and pins.
-- stop: 5
-  focus: Signal capture
-  teaching_intent: Correlate PulseView signals with DebugP runtime events, including fail, UART payloads, and active-low debug pins
-  concepts:
-  - 2 MHz AppLed toggling
-  - 200 MHz SysLed fail marker
-  - UART values for cnt and bits11
-  - DbgC quick toggles
-  - active-low logic
-  user_takeaway: The waveform makes the fail event and all debug outputs directly visible in time.
-- stop: 6
-  focus: Still more details
-  teaching_intent: Contrast printf, fail/halt, %%> and %%[p...] in terms of practicality and run-time overhead
-  concepts:
-  - printf subset
-  - halt statement
-  - deterministic overhead
-  - factory/field testing
-  user_takeaway: EMS debug intrinsics are intentionally lightweight enough for practical run-time use.
-- stop: 7
-  focus: Portable implementation
-  teaching_intent: Show the portable Debug module that the translator targets when replacing %%[p...] statements
-  concepts:
-  - Debug module
-  - translator replacement
-  - runtime helper functions
-  - Console peer module
-  user_takeaway: The special debug statements compile down to ordinary runtime functions in a portable module.
-- stop: 8
-  focus: Extra credit
-  teaching_intent: Encourage exploration of timings, Console.print, and adding RTA intrinsics to user code
-  concepts:
-  - PulseView cursors
-  - Console.print
-  - user experimentation
-  user_takeaway: I can now measure, inspect, and add these debug features to my own programs.
-- stop: 9
-  focus: Next steps
-  teaching_intent: Frame the remaining Basic Examples tours as using %%[p] for low-overhead RTA and %%> for efficient UART output
-  concepts:
-  - RTA
-  - production-friendly instrumentation
-  - test what you fly
-  user_takeaway: These EMS debug features are meant for real embedded workflows, not just temporary scaffolding.
+  - BusyWait timing
+  - code ↔ waveform mapping
+
+prerequisites:
+  - 101_01
+
+stop_count: 9
+
+stops:
+  - stop: 1
+    focus: DebugP overview
+    teaching_intent: Introduce DebugP and position it beyond printf-style debug
+    concepts:
+      - DebugP
+      - printf subset
+    user_takeaway: EMS provides lightweight, deployable debug mechanisms
+
+  - stop: 2
+    focus: build·load expectations
+    teaching_intent: Set expectations for LED behavior and eventual failure
+    concepts:
+      - AppLed
+      - SysLed
+      - fail
+    user_takeaway: Behavior changes over time and ends with a visible failure
+
+  - stop: 3
+    focus: core debug statements
+    teaching_intent: Explain pin assertions, timing marks, config gating, and fail
+    concepts:
+      - Dbg pins
+      - dbgFlag
+      - fail
+    user_takeaway: Code can mark timing and conditionally enable debug
+
+  - stop: 4
+    focus: binary output + pin toggling
+    teaching_intent: Show '%%>' UART output and '%%[p...]' pin activity
+    concepts:
+      - "%%>"
+      - "%%[p...]"
+      - cnt
+      - bits11
+    user_takeaway: EMS supports compact, deterministic debug outputs
+
+  - stop: 5
+    focus: signal capture
+    teaching_intent: Map waveform features to runtime events and debug activity
+    concepts:
+      - UART traces
+      - active-low pins
+      - fail marker
+    user_takeaway: All debug activity is visible in the waveform
+
+  - stop: 6
+    focus: debug model comparison
+    teaching_intent: Contrast printf, fail/halt, and RTA primitives
+    concepts:
+      - overhead
+      - determinism
+    user_takeaway: EMS debug is designed for real embedded use
+
+  - stop: 7
+    focus: portable implementation
+    teaching_intent: Show how debug intrinsics map to the Debug module
+    concepts:
+      - translator replacement
+      - runtime functions
+    user_takeaway: Special syntax compiles to normal portable code
+
+  - stop: 8
+    focus: extra credit
+    teaching_intent: Encourage exploration with PulseView and Console.print
+    concepts:
+      - cursors
+      - Console
+    user_takeaway: I can extend and experiment with debug features
+
+  - stop: 9
+    focus: next steps
+    teaching_intent: Position RTA and UART output for upcoming tours
+    concepts:
+      - RTA workflow
+    user_takeaway: These tools will be used throughout the series
+
 issues_and_notes:
-- This corrected metadata was generated from the actual file tours/101_BasicExamples/02_Debug.emtour and screenshots 101_02_01..09.png.
-- The signal-capture stop is central; its screenshot carries essential meaning that the .emtour text alone does not preserve.
-- 'Minor wording cleanup visible in source text: "deterministic" is misspelled in the .emtour raw text.'
+  - Signal capture step is central to understanding
+  - Strong alignment between source, waveform, and runtime model
+  - No structural issues

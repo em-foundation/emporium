@@ -3,6 +3,7 @@
 node_modules/
 /tools/
 .vscode/settings.json
+tours.zip
 tsconfig.json
 wokwi.vcd
 workspace/.emscript

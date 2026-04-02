@@ -1,13 +1,13 @@
 tour_id: 101_03
 series: 101_BasicExamples
-title: Fiber
+title: Threading with Fibers
 source_file: tours/101_BasicExamples/03_Fiber.emtour
 screenshot_pattern: tours/.screens/101_03_{stop:02d}.png
 status: generated_from_repo_emtour_and_stop_screenshots
 
-ground_truth_artifacts:
+ground_truth:
   emtour_file: tours/101_BasicExamples/03_Fiber.emtour
-  screenshots:
+  screenshot_files:
     - tours/.screens/101_03_01.png
     - tours/.screens/101_03_02.png
     - tours/.screens/101_03_03.png
@@ -18,117 +18,160 @@ ground_truth_artifacts:
     - tours/.screens/101_03_08.png
     - tours/.screens/101_03_09.png
     - tours/.screens/101_03_10.png
-    - tours/.screens/101_03_11.png
-    - tours/.screens/101_03_12.png
+  verified_stop_count: 10
 
 overall_assessment: >
-  This tour introduces fibers as a core EMS execution mechanism. It shifts the
-  focus from simple timing patterns to structured, cooperative execution. The
-  screenshots and code together demonstrate how multiple logical flows are
-  interleaved without traditional threading, and how that behavior appears in
-  the waveform.
+  This tour introduces fibers as a core EMS runtime pattern. It starts with
+  FiberP, then opens up FiberMgr to explain the underlying factory objects,
+  callback bodies, ready-list scheduler, and low-power idle behavior. It then
+  returns to FiberP to connect that machinery back to program behavior, code
+  size, and measured dispatch overhead.
 
 learning_objectives:
-  - Introduce the concept of fibers in EMS
-  - Show how fibers enable cooperative concurrency
-  - Relate fiber execution to observable waveform behavior
-  - Contrast fiber-based flow with simple linear blinking loops
-  - Build intuition for interleaved execution
+  - Introduce fibers as a lightweight threading model in EMS
+  - Show how FiberP uses FiberMgr rather than a simple for loop
+  - Explain FiberMgr object creation and scheduling at both meta and targ time
+  - Introduce EMS data structures such as '$struct', '$table', '$make', '$null', and '$ref'
+  - Show how fiber callbacks re-schedule themselves through post
+  - Quantify scheduler overhead through PulseView measurement
+  - Position FiberMgr as a core EMS design pattern
 
 concepts_introduced:
   - fiber
-  - cooperative concurrency
-  - interleaved execution
-  - yield points (implicit via waits)
-  - multiple logical flows in a single thread
+  - FiberMgr
+  - fiber body
+  - fiber object
+  - ready_list
+  - cooperative scheduling
+  - create
+  - post
+  - dispatch
+  - run
+  - "$struct"
+  - "$table"
+  - "$make"
+  - "$null"
+  - "$ref"
+  - low-power idle
+  - dispatch overhead
 
 concepts_reinforced:
   - PulseView
   - wokwi.vcd
-  - BusyWait timing
-  - BoardC signal mapping
-  - code ↔ waveform correlation
+  - AppLed
+  - SysLed
+  - DbgD
+  - code ↔ waveform mapping
+  - build-time vs run-time roles
 
 prerequisites:
   - 101_01
   - 101_02
 
-stop_count: 12
+stop_count: 10
 
 stops:
   - stop: 1
-    focus: introduction
-    teaching_intent: Introduce Fiber example and its purpose
-    concepts: [fiber]
-    user_takeaway: This example is about execution flow, not just timing
+    focus: FiberP introduction
+    teaching_intent: Introduce FiberP and present fibers as a lightweight threading model
+    concepts:
+      - FiberP
+      - fiber
+      - FiberMgr
+    user_takeaway: FiberP achieves the familiar blinking behavior without the earlier for-loop structure
 
   - stop: 2
-    focus: basic structure
-    teaching_intent: Show how multiple activities are defined
-    concepts: [multiple flows]
-    user_takeaway: There are multiple logical paths executing
+    focus: FiberP details
+    teaching_intent: Explain FiberMgr as an object factory and show how FiberP binds a fiber object and callback body
+    concepts:
+      - object factory
+      - "$config"
+      - FiberMgr.Obj
+      - blinkFB
+      - create
+      - post
+    user_takeaway: FiberP owns a fiber object whose callback body is scheduled through FiberMgr
 
   - stop: 3
-    focus: fiber behavior
-    teaching_intent: Explain how execution switches between flows
-    concepts: [cooperative scheduling]
-    user_takeaway: Execution alternates without preemption
+    focus: FiberMgr details
+    teaching_intent: Introduce the data types used by FiberMgr and the EMS idioms used to define them
+    concepts:
+      - fiber body type
+      - fiber object type
+      - "$$"
+      - "$struct"
+    user_takeaway: FiberMgr exposes typed callback and object abstractions built from EMS data-structure intrinsics
 
   - stop: 4
-    focus: waits as yield
-    teaching_intent: Show how waits create natural yield points
-    concepts: [yield via wait]
-    user_takeaway: Waiting allows other work to run
+    focus: FiberMgr more details
+    teaching_intent: Explain FiberMgr internal state and how fibers are stored and scheduled
+    concepts:
+      - "$table"
+      - fiber_tab
+      - arg defaulting
+      - "$make"
+      - ready_list
+      - dispatch
+    user_takeaway: FiberMgr maintains a static fiber table and a ready-list scheduler
 
   - stop: 5
-    focus: capture
-    teaching_intent: Run and capture waveform
-    concepts: [capture workflow]
-    user_takeaway: Fiber behavior is visible in signals
+    focus: FiberMgr still more details
+    teaching_intent: Show how FiberMgr uses proxies and atomic sections to keep its internal state consistent
+    concepts:
+      - GlobalInterrupts proxy
+      - run
+      - Idle proxy
+      - Fiber.post
+    user_takeaway: FiberMgr repeatedly dispatches ready fibers and sleeps only when the ready list empties
 
   - stop: 6
-    focus: waveform structure
-    teaching_intent: Identify interleaved signal patterns
-    concepts: [interleaving]
-    user_takeaway: Signals from different flows appear interwoven
+    focus: looking back at FiberP
+    teaching_intent: Return to FiberP and explain why the system never sleeps once blinkF keeps re-posting itself
+    concepts:
+      - blinkF
+      - dispatch flow
+      - self re-scheduling
+      - never-empty ready_list
+    user_takeaway: The fiber body keeps the system alive by continually posting itself again
 
   - stop: 7
-    focus: mapping
-    teaching_intent: Map waveform segments to specific fibers
-    concepts: [flow mapping]
-    user_takeaway: Each pattern corresponds to a logical flow
+    focus: program size
+    teaching_intent: Compare FiberP image size against BlinkerP and quantify the extra cost of FiberMgr
+    concepts:
+      - translator stats
+      - readonly memory
+      - readwrite memory
+      - scheduler footprint
+    user_takeaway: FiberMgr adds a small but measurable memory cost, roughly a 400-byte scheduler
 
   - stop: 8
-    focus: comparison
-    teaching_intent: Contrast with single-loop blinking
-    concepts: [single vs multi-flow]
-    user_takeaway: Fiber-based execution is richer than simple loops
+    focus: signal capture
+    teaching_intent: Measure thread-switch overhead in PulseView using added '%%d+' and '%%d-' markers on DbgD
+    concepts:
+      - DbgD
+      - active-low pins
+      - dispatch overhead
+      - PulseView cursor measurement
+    user_takeaway: Fiber dispatch overhead is directly measurable and very small, about 0.7 microseconds
 
   - stop: 9
-    focus: timing interaction
-    teaching_intent: Show how flows interact via timing
-    concepts: [timing interaction]
-    user_takeaway: Timing defines interaction between flows
+    focus: extra credit
+    teaching_intent: Encourage the user to experiment with tracing dispatch flow and creating a fiber-based Blinky
+    concepts:
+      - Git checkout
+      - printf tracing
+      - Blinky extension
+    user_takeaway: I can now explore FiberMgr behavior in my own code
 
   - stop: 10
-    focus: deeper interpretation
-    teaching_intent: Encourage reasoning from waveform
-    concepts: [execution reasoning]
-    user_takeaway: I can infer flow structure from signals
-
-  - stop: 11
-    focus: consolidation
-    teaching_intent: Reinforce fiber mental model
-    concepts: [fiber model]
-    user_takeaway: Fibers provide structured concurrency
-
-  - stop: 12
     focus: next steps
-    teaching_intent: Prepare for further examples using fibers
-    concepts: [next examples]
-    user_takeaway: Fibers will appear in future tours
+    teaching_intent: Position FiberMgr as a core EMS pattern before moving on to peripherals that awaken a sleeping program
+    concepts:
+      - core EMS design pattern
+      - sleeping program
+    user_takeaway: FiberMgr is foundational and will matter even more in upcoming tours
 
 issues_and_notes:
-  - Core concept (fiber) is correctly central to the tour
-  - Waveform screenshots are essential to understanding interleaving
-  - No structural issues observed
+  - Earlier drafts for this tour were unreliable and should be discarded
+  - The actual tour has 10 stops, not 12
+  - The Signal Capture stop depends heavily on the screenshot because the timing measurement is visual
