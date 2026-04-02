@@ -1,4 +1,4 @@
-title:  Pressing Buttons
+title: Pressing Buttons
 files:
   - em.prog:em.examples.basic/Ex07_Button3P.em.ts
   - em.core:em.hal/ButtonI.em.ts
@@ -7,7 +7,6 @@ files:
   - .assets/img-101-10-01.png
 
 steps:
-
   - cmds:
       - view 5
     text: |
@@ -29,8 +28,8 @@ steps:
       - mark 1 A 7
       - mark 1 B 14
       - mark 1 C 20
-    focus: [1,1]
-    acts: [$reveal,$build]
+    focus: [1, 1]
+    acts: [$reveal, $build]
     text: |
 
       {[ht,$details] %[cu]Button3P% &ndash; Details}
@@ -49,10 +48,9 @@ steps:
 
       The {[cu]AppBut} **delegate** does invoke {[cf]onPressedH} when the `AppBut` pin returns to 1 _or else_ remains 0 after <b>t</b><sup>max</sup>.
 
-
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     acts: [$reveal]
     text: |
 
@@ -70,7 +68,7 @@ steps:
       - mark 4 D 27
       - mark 4 E 32
       - mark 4 F 37
-    focus: [4,9]
+    focus: [4, 9]
     acts: [$reveal]
     text: |
 
@@ -100,8 +98,7 @@ steps:
       - mark 4 H 54
       - mark 4 I 65
 
-
-    focus: [4,45]
+    focus: [4, 45]
     acts: [$reveal]
     text: |
 
@@ -117,12 +114,11 @@ steps:
 
       After initializing the tracking variables, the {[cf]onPressed} function at {[bm,I]} conditionally enables edge detection.
 
-
   - cmds:
       - open 3
       - mark 3 A 26
       - mark 3 B 59
-    focus: [3,30]
+    focus: [3, 30]
     acts: [$reveal]
     text: |
 
@@ -134,7 +130,7 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4,45]
+    focus: [4, 45]
     text: |
 
       {[ht,$extra] Extra Credit}
@@ -158,35 +154,3 @@ steps:
       Check back regularly, as more tours come online cover&shy;ing high-level as well as low-level aspects of **EMS**.
 
       {[hc]}
-
-  - cmds:
-      - open 0
-      - view 0
-      - mark 0 A 4
-      - close 0
-    focus: [1,1]
-    acts: [$reveal,$build]
-    text: |
-
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
-
-        <div class="em-bmlist">
-
-        {[bm,A]}
-
-        </div>
-
-        {[in]An insight}
-
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
-
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
-
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
-
-        {[hc]}
