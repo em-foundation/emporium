@@ -1,12 +1,9 @@
 tour_id: 101_05
-series: 101_BasicExamples
-title: Pause
+title: Pausing Execution
 source_file: tours/101_BasicExamples/05_Pause.emtour
-screenshot_pattern: tours/.screens/101_05_{stop:02d}.png
-status: generated_from_repo_emtour_and_stop_screenshots
 
-ground_truth_artifacts:
-  emtour_file: tours/101_BasicExamples/05_Pause.emtour
+ground_truth:
+  stop_count: 6
   screenshots:
     - tours/.screens/101_05_01.png
     - tours/.screens/101_05_02.png
@@ -14,33 +11,29 @@ ground_truth_artifacts:
     - tours/.screens/101_05_04.png
     - tours/.screens/101_05_05.png
     - tours/.screens/101_05_06.png
-    - tours/.screens/101_05_07.png
-    - tours/.screens/101_05_08.png
 
-overall_assessment: >
-  This tour introduces the notion of an explicit pause in execution flow,
-  contrasting continuous activity with deliberate gaps. The key insight is
-  recognizing absence of activity in the waveform as meaningful behavior,
-  not just “nothing happening.”
+overall_assessment:
+  summary: Introduces pausing execution using polling and board-level mechanisms, showing how EMS code can block or idle while waiting for external conditions.
+  difficulty: intermediate
+  key_takeaway: EMS supports controlled pausing through polling and board abstractions, with observable effects in signal traces.
 
 learning_objectives:
-  - Introduce pause as a first-class behavioral element
-  - Recognize inactivity regions in waveform
-  - Understand how pauses are encoded in EMS code
-  - Relate absence of transitions to execution intent
+  - understand pausing via polling constructs
+  - examine Poller behavior and implementation
+  - relate pause mechanisms to hardware state
+  - observe effects in signal captures
 
 concepts_introduced:
-  - pause behavior
-  - inactivity windows
-  - gaps in waveform
-  - temporal spacing of events
+  - Poller
+  - pause semantics
+  - polling loop
+  - board interaction
 
 concepts_reinforced:
-  - PulseView
-  - wokwi.vcd
-  - BusyWait timing
-  - BoardC signal mapping
-  - code ↔ waveform mapping
+  - BoardC
+  - signal capture
+  - build and load workflow
+  - code-to-signal mapping
 
 prerequisites:
   - 101_01
@@ -48,58 +41,58 @@ prerequisites:
   - 101_03
   - 101_04
 
-stop_count: 8
+stop_count: 6
 
 stops:
-  - stop: 1
-    focus: framing
-    teaching_intent: Introduce pause behavior vs continuous blinking
-    concepts: [pause]
-    user_takeaway: Lack of activity can be intentional
+  - id: 1
+    title: 'Pausing Execution'
+    focus: pause overview
+    teaching_intent: introduce the idea of pausing execution while waiting for a condition
+    concepts:
+      - pause
+      - polling
+    user_takeaway: execution can be intentionally paused while waiting for events
 
-  - stop: 2
-    focus: source inspection
-    teaching_intent: Show where pauses are introduced in code
-    concepts: [delay, wait]
-    user_takeaway: Pauses are encoded explicitly
+  - id: 2
+    title: '%[cu]Poller% &ndash; Details'
+    focus: poller implementation
+    teaching_intent: explain how Poller repeatedly checks for a condition
+    concepts:
+      - Poller
+      - loop
+    user_takeaway: Poller implements a simple polling-based wait
 
-  - stop: 3
-    focus: capture
-    teaching_intent: Run and capture waveform
-    concepts: [capture workflow]
-    user_takeaway: Same tools apply
+  - id: 3
+    title: '&thinsp;Signal Captures'
+    focus: waveform behavior
+    teaching_intent: show how paused execution appears in captured signals
+    concepts:
+      - signal capture
+    user_takeaway: pauses are visible as timing gaps in traces
 
-  - stop: 4
-    focus: waveform observation
-    teaching_intent: Identify inactive regions
-    concepts: [gaps]
-    user_takeaway: Flat regions correspond to pauses
+  - id: 4
+    title: '%[cu]BoardC% &ndash; A Quick Look'
+    focus: board abstraction
+    teaching_intent: show how board-level features support pause behavior
+    concepts:
+      - BoardC
+    user_takeaway: board abstractions influence how pauses are implemented
 
-  - stop: 5
-    focus: timing analysis
-    teaching_intent: Measure duration of pauses
-    concepts: [time measurement]
-    user_takeaway: Pauses have measurable length
+  - id: 5
+    title: 'Extra Credit'
+    focus: experimentation
+    teaching_intent: encourage extending pause behavior
+    concepts:
+      - experimentation
+    user_takeaway: can modify and explore pause mechanisms
 
-  - stop: 6
-    focus: mapping
-    teaching_intent: Link gaps back to code structure
-    concepts: [code ↔ gap]
-    user_takeaway: Each gap is intentional behavior
-
-  - stop: 7
-    focus: interpretation
-    teaching_intent: Reason about system behavior including inactivity
-    concepts: [temporal reasoning]
-    user_takeaway: Silence in signals carries meaning
-
-  - stop: 8
-    focus: consolidation
-    teaching_intent: Reinforce pause as part of execution vocabulary
-    concepts: [pause model]
-    user_takeaway: I can read both activity and inactivity in waveforms
+  - id: 6
+    title: 'Next Steps'
+    focus: continuation
+    teaching_intent: transition to next tour
+    concepts:
+      - progression
+    user_takeaway: ready to continue
 
 issues_and_notes:
-  - Correct file used (05_Pause.emtour)
-  - Screenshots critical for identifying gaps
-  - No structural issues
+  - stop titles preserved exactly from .emtour

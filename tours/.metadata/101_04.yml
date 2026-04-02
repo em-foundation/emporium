@@ -16,28 +16,36 @@ ground_truth:
     - tours/.screens/101_04_09.png
 
 overall_assessment:
-  summary: Demonstrates OneShot delegate for timed sleep and interrupt-driven wakeup, contrasting fiber-based and super-loop implementations.
+  summary: Introduces OneShot timer events through two programs, contrasting a fiber-based design with a super-loop design while tying timer interrupts, sleep states, and wakeup latency to observable signals.
   difficulty: intermediate
-  key_takeaway: Timer-driven callbacks enable efficient sleep/wakeup without busy-waiting.
+  key_takeaway: OneShot delegates let EMS code sleep until a timer interrupt fires, and the resulting wakeup behavior can be measured directly in PulseView.
 
 learning_objectives:
-  - understand OneShot delegate usage
-  - distinguish fiber vs super-loop execution
-  - interpret interrupt-driven wakeup behavior
-  - observe and measure latency via debug signals
+  - understand the role of the OneShot delegate in timed sleep and wakeup
+  - see how OneShot2P combines OneShot with FiberMgr
+  - understand the abstract role of the OneShotI interface
+  - see how BoardC binds the abstract interface to a board-specific implementation
+  - measure wakeup overhead from interrupt to resumed execution
+  - compare a fiber-based design with a super-loop alternative
 
 concepts_introduced:
-  - OneShot delegate
-  - OneShotI interface
+  - OneShot
+  - OneShotI
+  - OneShot1P
+  - OneShot2P
   - timer interrupt callback
-  - interrupt latency
+  - wakeup overhead
   - done_flag synchronization
+  - super-loop design
 
 concepts_reinforced:
-  - FiberMgr scheduling
-  - Idle sleep behavior
-  - Composite binding (BoardC)
-  - debug signal measurement
+  - FiberMgr
+  - BoardC composite binding
+  - build and load workflow
+  - PulseView
+  - active-low debug pins
+  - code-to-signal mapping
+  - low-power sleep
 
 prerequisites:
   - 101_01
@@ -48,79 +56,113 @@ stop_count: 9
 
 stops:
   - id: 1
-    title: OneShotP – Timer Events
-    focus: introduce timer-based sleep
-    teaching_intent: replace busy wait with OneShot delay
+    title: '%[cu]OneShotP% &ndash; Timer Events'
+    focus: one-shot timer overview
+    teaching_intent: introduce the OneShot delegate and frame the tour around two timer-driven example programs
     concepts:
-      - OneShot delegate
-    user_takeaway: can sleep for fixed time without spinning
+      - OneShot
+      - '$delegate'
+      - OneShot1P
+      - OneShot2P
+      - timed sleep
+    user_takeaway: OneShot is used to sleep for a fixed time, and the tour will compare a primitive event loop against a fiber-based design
 
   - id: 2
-    title: OneShot2P – Details
-    focus: fiber-based implementation
-    teaching_intent: show callback rescheduling via FiberMgr
+    title: '%[cu]OneShot2P% &ndash; Details'
+    focus: fiber-based timer flow
+    teaching_intent: explain how OneShot2P combines FiberMgr with a timer-backed OneShot delegate and a handler callback
     concepts:
+      - OneShot2P
+      - blinkFB
+      - uenable
+      - handler
       - FiberMgr
-      - callback repost
-    user_takeaway: execution resumes via timer callback
+      - post
+      - ready_list
+      - Idle proxy
+    user_takeaway: OneShot2P arms a hardware timer, sleeps, and then uses a handler callback to repost the next fiber-dispatched blink cycle
 
   - id: 3
-    title: OneShotI – Details
-    focus: interface abstraction
-    teaching_intent: explain OneShot interface contract
+    title: '%[cu]OneShotI% &ndash; Details'
+    focus: interface pattern
+    teaching_intent: explain how an EMS interface declares flavor, supporting types and constants, and the abstract $I contract
     concepts:
-      - $declare('INTERFACE')
-    user_takeaway: behavior defined abstractly
+      - OneShotI
+      - interface flavor
+      - '$declare'
+      - '$I'
+      - abstract methods
+    user_takeaway: OneShotI defines the abstract client contract, while concrete suppliers implement the behavior behind that interface
 
   - id: 4
-    title: BoardC – A Quick Look
-    focus: concrete binding
-    teaching_intent: show board-provided implementation
+    title: '%[cu]BoardC% &ndash; A Quick Look'
+    focus: board binding
+    teaching_intent: show how BoardC imports a board-specific OneShot implementation, aliases it, and exports that binding to clients
     concepts:
-      - Composite binding
-    user_takeaway: platform supplies implementation
+      - BoardC
+      - composite
+      - alias binding
+      - export
+      - board-specific implementation
+    user_takeaway: BoardC bridges the abstract OneShot interface to the actual implementation for the current board
 
   - id: 5
-    title: OneShot2P – Build · Load
-    focus: runtime behavior
-    teaching_intent: observe interrupt-driven execution
+    title: '%[cu]OneShot2P% &ndash; Build&thinsp;&middot;&thinsp;Load'
+    focus: wakeup behavior
+    teaching_intent: prepare the user to observe interrupt-driven wakeup by marking the timer handler and resumed fiber body with debug pins
     concepts:
-      - interrupt handler
-    user_takeaway: wakeup triggered by timer interrupt
+      - build and load
+      - timer interrupt
+      - handler
+      - DbgC
+      - DbgD
+      - interrupt latency
+    user_takeaway: The time between the handler marker and the resumed fiber marker is the program's wakeup overhead
 
   - id: 6
-    title: OneShot2P – Signal Capture
-    focus: timing analysis
-    teaching_intent: measure latency using debug pins
+    title: '&thinsp;%[cu]OneShot2P% &ndash; Signal Capture'
+    focus: sleep and latency measurement
+    teaching_intent: interpret the Dbg signals to distinguish sleeping versus active MCU states and measure the c-to-d wakeup delay
     concepts:
-      - latency measurement
-    user_takeaway: wakeup delay is observable
+      - signal capture
+      - DbgB
+      - active-low logic
+      - sleep state
+      - active state
+      - wakeup overhead
+    user_takeaway: PulseView shows that OneShot2P spends most of its time asleep and wakes with only about 5 microseconds of overhead
 
   - id: 7
-    title: OneShot1P – Details
-    focus: super-loop model
-    teaching_intent: contrast with fiber approach
+    title: '%[cu]OneShot1P% &ndash; Details'
+    focus: super-loop alternative
+    teaching_intent: explain the equivalent super-loop version that uses a volatile done_flag and explicit interrupt management instead of FiberMgr
     concepts:
+      - OneShot1P
+      - super-loop
       - done_flag
-      - polling loop
-    user_takeaway: requires explicit synchronization
+      - handler synchronization
+      - GlobalInterrupts
+    user_takeaway: OneShot1P behaves like OneShot2P but uses application-managed flags and interrupts rather than FiberMgr infrastructure
 
   - id: 8
-    title: OneShot1P – Extra Credit
-    focus: experimentation
-    teaching_intent: compare implementations
+    title: '%[cu]OneShot1P% &ndash; Extra Credit'
+    focus: comparison exercise
+    teaching_intent: encourage running the super-loop version, measuring its wakeup overhead, and comparing the cost of FiberMgr
     concepts:
-      - performance comparison
-    user_takeaway: tradeoffs can be measured
+      - wakeup measurement
+      - FiberMgr cost
+      - comparative analysis
+    user_takeaway: The two designs can be compared quantitatively, not just conceptually
 
   - id: 9
-    title: Next Steps
-    focus: continuation
-    teaching_intent: prepare for next tour
+    title: 'Next Steps'
+    focus: tour continuation
+    teaching_intent: point forward to the next tour, which reuses OneShotI inside a portable utility module
     concepts:
-      - interface reuse
-    user_takeaway: OneShot will be reused later
+      - portable utility module
+      - OneShotI reuse
+    user_takeaway: The OneShotI interface will next be used in a more portable module-level design
 
 issues_and_notes:
-  - relies on screenshots for latency visualization
-  - emphasizes energy-efficient sleep over busy-wait
+  - stop titles intentionally preserve the exact .emtour text
+  - the signal-capture stop depends heavily on the screenshot because wakeup timing is primarily visual

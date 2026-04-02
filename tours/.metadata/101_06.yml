@@ -1,12 +1,9 @@
 tour_id: 101_06
-series: 101_BasicExamples
-title: Alarm
+title: Wakeup Alarms
 source_file: tours/101_BasicExamples/06_Alarm.emtour
-screenshot_pattern: tours/.screens/101_06_{stop:02d}.png
-status: generated_from_repo_emtour_and_stop_screenshots
 
-ground_truth_artifacts:
-  emtour_file: tours/101_BasicExamples/06_Alarm.emtour
+ground_truth:
+  stop_count: 6
   screenshots:
     - tours/.screens/101_06_01.png
     - tours/.screens/101_06_02.png
@@ -14,94 +11,120 @@ ground_truth_artifacts:
     - tours/.screens/101_06_04.png
     - tours/.screens/101_06_05.png
     - tours/.screens/101_06_06.png
-    - tours/.screens/101_06_07.png
-    - tours/.screens/101_06_08.png
 
-overall_assessment: >
-  This tour introduces AlarmMgr as a more precise and structured alternative
-  to BusyWait-based timing. The key shift is from blocking delays to scheduled
-  wakeups, which results in cleaner, more predictable timing visible in the
-  waveform.
+overall_assessment:
+  summary: Introduces AlarmMgr through two related programs, contrasting relative wakeups with aligned wakeups and tying those scheduling choices to observable sleep modes and wakeup timing.
+  difficulty: intermediate
+  key_takeaway: AlarmMgr lets EMS code schedule future wakeups against a real-time clock, and the choice between wakeup and wakeupAligned has visible behavioral consequences.
 
 learning_objectives:
-  - Introduce AlarmMgr as a scheduling mechanism
-  - Replace BusyWait delays with wakeup-based timing
-  - Understand delta-based wakeup semantics
-  - Observe periodic behavior driven by alarms
+  - understand AlarmMgr as a portable wakeup scheduler built on a real-time clock
+  - see how Alarm1P uses wakeup to schedule future callbacks relative to now
+  - see how Alarm2P uses wakeupAligned to align wakeups to fixed time boundaries
+  - relate aligned wakeups to observable timing in signal captures
+  - understand the distinction between lite-sleep and deep-sleep behavior
 
 concepts_introduced:
   - AlarmMgr
-  - wakeup(delta)
-  - scheduled execution
-  - time thresholds
-  - periodic wakeups
+  - Alarm1P
+  - Alarm2P
+  - wakeup
+  - wakeupAligned
+  - real-time clock precision
+  - aligned wakeup scheduling
+  - deep sleep
+  - lite sleep
 
 concepts_reinforced:
+  - object-factory pattern
+  - "$config"
+  - FiberMgr
+  - AppLed.wink
+  - Poller
   - PulseView
-  - wokwi.vcd
-  - timing interpretation
-  - code ↔ waveform mapping
-  - event-based reasoning
+  - DbgB sleep markers
+  - code-to-signal mapping
 
 prerequisites:
-  - 101_01
-  - 101_02
   - 101_03
   - 101_04
   - 101_05
 
-stop_count: 8
+stop_count: 6
 
 stops:
-  - stop: 1
-    focus: framing
-    teaching_intent: Introduce alarm-based timing vs BusyWait
-    concepts: [AlarmMgr]
-    user_takeaway: Timing can be scheduled, not blocked
+  - id: 1
+    title: "Wakeup Alarms"
+    focus: alarm overview
+    teaching_intent: introduce AlarmMgr through two similar blinking programs and frame the tour around their different wakeup behavior
+    concepts:
+      - AlarmMgr
+      - Alarm1P
+      - Alarm2P
+      - real-time clock
+      - wakeup events
+    user_takeaway: Both programs use AlarmMgr to schedule future wakeups, but they do so with different timing semantics
 
-  - stop: 2
-    focus: source structure
-    teaching_intent: Show AlarmMgr usage and wakeup calls
-    concepts: [wakeup(delta)]
-    user_takeaway: Execution resumes at scheduled times
+  - id: 2
+    title: "%[cu]Alarm1P% &ndash; Details"
+    focus: relative wakeup scheduling
+    teaching_intent: explain Alarm1P as an AlarmMgr client that allocates an alarm object at build-time and calls wakeup at run-time
+    concepts:
+      - object-factory pattern
+      - "$config"
+      - AlarmMgr.Obj
+      - create
+      - wakeup
+      - blinkF.post
+    user_takeaway: Alarm1P creates a private alarm object and uses wakeup to schedule a future dispatch relative to the current time
 
-  - stop: 3
-    focus: timing model
-    teaching_intent: Explain relative (delta) scheduling
-    concepts: [delta time]
-    user_takeaway: Wakeups are relative to current time
+  - id: 3
+    title: "%[cu]Alarm2P% &ndash; Details"
+    focus: aligned wakeup scheduling
+    teaching_intent: contrast wakeup with wakeupAligned and explain how Alarm2P aligns future wakeups to fixed time boundaries
+    concepts:
+      - wakeupAligned
+      - aligned scheduling
+      - dt
+      - now
+      - ceil(now / dt) * dt
+      - Poller
+    user_takeaway: Alarm2P differs mainly in using wakeupAligned, which snaps future wakeups to aligned time intervals from reset
 
-  - stop: 4
-    focus: capture
-    teaching_intent: Run and capture waveform
-    concepts: [capture workflow]
-    user_takeaway: Same tools, different timing model
+  - id: 4
+    title: "%[cu]Alarm2P% &ndash; Signal Capture"
+    focus: aligned timing and sleep modes
+    teaching_intent: use PulseView to show precise aligned wakeups and distinguish lite-sleep from deep-sleep through DbgB patterns
+    concepts:
+      - signal capture
+      - aligned wakeups
+      - deep sleep
+      - lite sleep
+      - DbgB
+      - energy savings
+      - wakeup speed
+    user_takeaway: Alarm2P wakes exactly on aligned boundaries and exhibits two distinct sleep modes, each with different energy and latency tradeoffs
 
-  - stop: 5
-    focus: waveform observation
-    teaching_intent: Identify periodic wakeup-driven transitions
-    concepts: [periodicity]
-    user_takeaway: Events occur at regular intervals
+  - id: 5
+    title: " Extra Credit"
+    focus: experimentation
+    teaching_intent: encourage the user to inspect helper code, vary durations, and compare wakeupAligned against wakeup
+    concepts:
+      - Secs30p2_initMsecs
+      - duration variation
+      - comparative analysis
+    user_takeaway: I can explore how changing timing parameters affects aligned wakeups and captured behavior
 
-  - stop: 6
-    focus: mapping
-    teaching_intent: Map waveform edges to wakeup calls
-    concepts: [event ↔ code]
-    user_takeaway: Each transition is scheduled
-
-  - stop: 7
-    focus: comparison
-    teaching_intent: Contrast with BusyWait timing
-    concepts: [blocking vs scheduled]
-    user_takeaway: AlarmMgr yields cleaner structure
-
-  - stop: 8
-    focus: consolidation
-    teaching_intent: Reinforce event-driven timing model
-    concepts: [event-driven execution]
-    user_takeaway: EMS supports precise scheduling primitives
+  - id: 6
+    title: " Next Steps"
+    focus: series continuation
+    teaching_intent: prepare the user for the next tour by extending the AlarmMgr model to programs with multiple fibers at different rates
+    concepts:
+      - multiple fibers
+      - different rates
+      - AlarmMgr and FiberMgr composition
+    user_takeaway: The next step is using AlarmMgr and FiberMgr together to coordinate more than one periodic activity
 
 issues_and_notes:
-  - Clear conceptual upgrade from BusyWait to AlarmMgr
-  - Screenshots important for observing periodicity
-  - No structural issues
+  - stop titles intentionally preserve the exact .emtour text
+  - the signal-capture stop depends heavily on the screenshot because the aligned wakeups and DbgB sleep patterns are primarily visual

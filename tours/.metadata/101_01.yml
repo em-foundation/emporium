@@ -1,119 +1,114 @@
-tour_id: '101_01'
-series: 101_BasicExamples
-title: Blinking LEDs
-source_file: 101_BasicExamples/01_Blink.emtour
-screenshot_pattern: 101_01_{stop:02d}.png
-status: generated_from_repo_emtour_and_stop_screenshots
-overall_assessment: Strong first tour in the Basic Examples series. It reuses the already-familiar BlinkerP program, adds a few language details, and then pivots to real-time analysis with PulseView. The tour works as a bridge from orientation-level code reading to waveform-based execution analysis.
+tour_id: 101_01
+title: %[cu]BlinkerP% &ndash; Blinking LEDs
+source_file: tours/101_BasicExamples/01_Blink.emtour
+
+ground_truth:
+  stop_count: 8
+  screenshots:
+    - tours/.screens/101_01_01.png
+    - tours/.screens/101_01_02.png
+    - tours/.screens/101_01_03.png
+    - tours/.screens/101_01_04.png
+    - tours/.screens/101_01_05.png
+    - tours/.screens/101_01_06.png
+    - tours/.screens/101_01_07.png
+    - tours/.screens/101_01_08.png
+
+
+overall_assessment:
+  summary: Introduces a simple blinking application to demonstrate timing, hardware interaction, and the EMS execution model.
+  difficulty: introductory
+  key_takeaway: Understand how EMS code drives periodic hardware behavior.
+
 learning_objectives:
-- Reconnect the user with BlinkerP as the baseline example
-- Reinforce a handful of EMS/TS syntax and naming details already encountered
-- Introduce PulseView as the main real-time analysis tool for the Basic Examples series
-- Show how Wokwi captures signals and how PulseView imports and displays them
-- Tie observed D0–D7 waveforms back to BoardC and runtime behavior
-- Position the rest of the Basic Examples series as waveform-driven variants on BlinkerP
+  - understand basic EMS program structure
+  - observe timing behavior using BusyWait
+  - connect code execution to hardware output
+  - build and run EMS applications
+
 concepts_introduced:
-- PulseView
-- real-time analysis
-- wokwi.vcd
-- Wokwi LOGIC capture
-- signal capture of D0–D7
-- halt-visible shutdown signaling
-concepts_reinforced:
-- BlinkerP
-- BoardC
-- Common
-- AppLed
-- current-board bucket naming via '@$distro'
-- $delegate
-- em$run
-- leading underscore convention
-- numeric separators in TS/EMS
-- $clone
-- em$configure
-- $board
-prerequisites:
-- '100_01'
-- '100_02'
-- '100_03'
-stop_count: 8
-stops:
-- stop: 1
-  focus: BlinkerP baseline
-  teaching_intent: Re-anchor the learner in a known program before introducing new analysis tooling
-  concepts:
   - BlinkerP
-  - BoardC
-  - Common
-  - AppLed
-  - real-time analysis
-  user_takeaway: This series will use familiar examples but study them through timing and signals.
-- stop: 2
-  focus: BlinkerP details
-  teaching_intent: Call out a few small EMS/TS details visible in the source
-  concepts:
-  - '@$distro'
-  - $delegate
-  - em$run
-  - underscore naming convention
-  - numeric separators
-  user_takeaway: BlinkerP still contains useful language details worth noticing in the source.
-- stop: 3
-  focus: Introducing PulseView
-  teaching_intent: Explain the end-to-end capture flow from Wokwi logic analyzer to PulseView display
-  concepts:
-  - PulseView
-  - Wokwi LOGIC
-  - wokwi.vcd
-  - signal refresh workflow
-  user_takeaway: PulseView will be the main tool for examining EMS execution behavior in these tours.
-- stop: 4
-  focus: PulseView setup
-  teaching_intent: Give the concrete import/setup steps needed to view captured traces
-  concepts:
-  - Import Value Change Dump
-  - downsampling
-  - UART signal placement
-  user_takeaway: I know how to import wokwi.vcd into PulseView and make the display usable.
-- stop: 5
-  focus: BoardC closer look
-  teaching_intent: Trace the captured signals back to the composite that synthesizes and binds the backing modules
-  concepts:
-  - BoardC
-  - $clone
-  - GpioT clones
-  - pin_num config
-  - $board
-  - em-boards
-  user_takeaway: The visible PulseView channels originate in BoardC wiring and board-specific binding.
-- stop: 6
-  focus: BlinkerP signal capture
-  teaching_intent: Interpret the actual waveform produced by BlinkerP over several seconds
-  concepts:
-  - SysLed startup wink
-  - BusyWait timing
-  - halt signaling
-  - AppOut
-  - program shutdown
-  user_takeaway: The waveform makes startup, steady blinking, and shutdown behavior directly observable.
-- stop: 7
-  focus: Extra credit
-  teaching_intent: Encourage independent use of PulseView beyond the scripted walkthrough
-  concepts:
-  - PulseView exploration
-  - HelloP UART capture
-  - zgit.* program captures
-  user_takeaway: I can start using PulseView on other EMS programs, not just the tutorial example.
-- stop: 8
-  focus: Next steps
-  teaching_intent: Frame the rest of the Basic Examples tours as waveform-focused variants of BlinkerP
-  concepts:
-  - Basic Examples series
-  - portable units
-  - PulseView as analysis lens
-  user_takeaway: The novelty of the next tours lies in execution analysis, not just surface code changes.
+  - BusyWait
+  - periodic execution
+  - hardware control
+
+concepts_reinforced:
+  - build and load workflow
+  - code-to-signal mapping
+  - EMS hierarchy
+
+prerequisites:
+  - 100_01
+  - 100_02
+  - 100_03
+
+stop_count: 8
+
+stops:
+  - id: 1
+    title: %[cu]BlinkerP% &ndash; Blinking LEDs
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 2
+    title: %[cu]BlinkerP% &ndash; A Few Details
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 3
+    title: &thinsp;Introducing PulseView
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 4
+    title: &thinsp;PulseView Setup
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 5
+    title: &thinsp;%[cu]BoardC% &ndash; Closer Look
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 6
+    title: &thinsp;%[cu]BlinkerP% &ndash; Signal Capture
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 7
+    title: Extra Credit
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 8
+    title: Next steps
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
 issues_and_notes:
-- 'Tour flow is strong: source refresher → tooling setup → signal interpretation.'
-- The screenshots carry substantial instructional value for stops 3–6; retaining them remains important.
-- 'Minor wording cleanup worth considering in source text: "quite a bit" or similar in stop 1, "explicitly" in PulseView setup, and "shows" instead of "show" in the signal-capture stop.'
-- No blocking flow issues observed.
+  - first practical EMS example
+  - establishes timing and observation foundation

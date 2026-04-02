@@ -1,0 +1,177 @@
+tour_id: 101_09
+title: Detecting Edges
+source_file: tours/101_BasicExamples/09_Edge.emtour
+
+ground_truth:
+  stop_count: 9
+  screenshots:
+    - tours/.screens/101_09_01.png
+    - tours/.screens/101_09_02.png
+    - tours/.screens/101_09_03.png
+    - tours/.screens/101_09_04.png
+    - tours/.screens/101_09_05.png
+    - tours/.screens/101_09_06.png
+    - tours/.screens/101_09_07.png
+    - tours/.screens/101_09_08.png
+    - tours/.screens/101_09_09.png
+
+overall_assessment:
+  summary: Introduces asynchronous edge detection through two button-driven programs, contrasting a super-loop design with a fiber-dispatch design while connecting edge events, latency, and board-level bindings to observable signals.
+  difficulty: intermediate
+  key_takeaway: EMS can react to asynchronous GPIO edges through abstract delegates, and both the detection path and its latency can be studied directly in PulseView.
+
+learning_objectives:
+  - understand edge-triggered behavior through button-driven examples
+  - compare a super-loop design with a fiber-based design for reacting to button edges
+  - see how AppButEdge is bound through BoardC to board-specific implementations
+  - understand the role of EdgeI and GpioI in the abstraction stack
+  - observe hardware-to-software detection latency in signal captures
+
+concepts_introduced:
+  - edge detection
+  - Button1P
+  - Button2P
+  - AppButEdge
+  - AppButPin
+  - pressed_flag
+  - setDetectHandler
+  - setDetectFalling
+  - hardware-to-software latency
+
+concepts_reinforced:
+  - FiberMgr
+  - super-loop design
+  - "$delegate"
+  - "$config"
+  - BoardC composite binding
+  - "$clone"
+  - "$proxy"
+  - EdgeI
+  - GpioI
+  - PulseView
+  - deep-sleep
+  - lite-sleep
+  - code-to-signal mapping
+
+prerequisites:
+  - 101_03
+  - 101_04
+  - 101_06
+  - 101_07
+  - 101_08
+
+stop_count: 9
+
+stops:
+  - id: 1
+    title: " Edge Detection"
+    focus: edge-detection overview
+    teaching_intent: introduce two button-driven programs and frame the tour around reacting to asynchronous AppBut edges
+    concepts:
+      - edge detection
+      - Button1P
+      - Button2P
+      - AppBut
+      - asynchronous input
+    user_takeaway: Both programs wink AppLed when AppBut falls, but they implement that response using different application structures
+
+  - id: 2
+    title: " %[cu]Button1P% &ndash; Details"
+    focus: super-loop edge handling
+    teaching_intent: explain how Button1P uses AppButEdge in a portable super-loop design with a pressed_flag set by a detection handler
+    concepts:
+      - Button1P
+      - AppButEdge
+      - "$delegate"
+      - setDetectHandler
+      - em$startup
+      - super-loop
+      - pressed_flag
+    user_takeaway: Button1P binds a detection handler at build-time, configures hardware at startup, and uses a flag-driven super-loop to react to button edges
+
+  - id: 3
+    title: " %[cu]Button2P% &ndash; Details"
+    focus: fiber-based edge handling
+    teaching_intent: show how Button2P replaces the super-loop with a conventional FiberMgr design in which the handler posts a fiber callback
+    concepts:
+      - Button2P
+      - FiberMgr
+      - "$config"
+      - Fiber
+      - post
+      - blinkFB
+      - handler
+    user_takeaway: Button2P uses a fiber callback to handle the button event, making fiber dispatch the preferred design over the super-loop alternative
+
+  - id: 4
+    title: " %[cu]Button2P% &ndash; Signal Capture"
+    focus: event latency and sleep behavior
+    teaching_intent: use PulseView to show the exact falling edge of AppBut, the subsequent handler and fiber activity, and the distinction between lite-sleep and deep-sleep
+    concepts:
+      - signal capture
+      - AppBut falling edge
+      - DbgB
+      - lite-sleep
+      - deep-sleep
+      - handler latency
+      - blinkFB latency
+    user_takeaway: PulseView reveals both the precise button edge and the latency from hardware detection to software response
+
+  - id: 5
+    title: " %[cu]BoardC% &ndash; Details"
+    focus: board-level edge binding
+    teaching_intent: explain how BoardC instantiates AppButEdge and AppButPin with templates and binds their proxy and config relationships
+    concepts:
+      - BoardC
+      - "$clone"
+      - AppButEdge
+      - AppButPin
+      - Pin proxy
+      - delegate binding
+      - pin_num config
+    user_takeaway: BoardC supplies the board-specific edge and pin implementations, wiring them together through clone, proxy, and config bindings
+
+  - id: 6
+    title: " %[cu]EdgeI% &ndash; Quick Look"
+    focus: edge interface contract
+    teaching_intent: show that Button1P and Button2P interact with AppButEdge through the EdgeI interface and highlight its build-time-only handler binding
+    concepts:
+      - EdgeI
+      - abstract interface
+      - setDetectHandler
+      - build-time method
+    user_takeaway: EdgeI defines the abstract contract for edge detection, with some methods restricted to the meta domain
+
+  - id: 7
+    title: " %[cu]GpioI% &ndash; Quick Look"
+    focus: low-level GPIO interface
+    teaching_intent: position GpioI as a low-level interface hidden beneath higher abstractions and highlight methods usable in both domains
+    concepts:
+      - GpioI
+      - low-level interface
+      - pinId
+      - meta and targ getters
+    user_takeaway: GpioI underlies higher-level abstractions like EdgeI and can expose some methods across both EMS domains
+
+  - id: 8
+    title: " Extra Credit"
+    focus: experimentation
+    teaching_intent: encourage measuring detection latency, trying falling-edge detection variants, and exploring board-specific EdgeI implementations
+    concepts:
+      - latency measurement
+      - setDetectFalling
+      - board-specific implementation
+    user_takeaway: I can experimentally compare edge-detection latency and inspect how different edge implementations are supplied on the board
+
+  - id: 9
+    title: " Next Steps"
+    focus: series continuation
+    teaching_intent: prepare the user for the final Basic Examples tour, which introduces a higher-level ButtonI interface
+    concepts:
+      - ButtonI
+      - higher-level abstraction
+    user_takeaway: The next tour will build on the current edge-detection abstractions to introduce a more user-friendly button interface
+
+issues_and_notes:
+  - stop titles intentionally preserve the exact .emtour text
+  - the signal-capture stop depends heavily on the screenshot because the exact button edge and detection latency are visual
