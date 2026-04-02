@@ -1,0 +1,105 @@
+tour_id: 101_05
+series: 101_BasicExamples
+title: Pause
+source_file: tours/101_BasicExamples/05_Pause.emtour
+screenshot_pattern: tours/.screens/101_05_{stop:02d}.png
+status: generated_from_repo_emtour_and_stop_screenshots
+
+ground_truth_artifacts:
+  emtour_file: tours/101_BasicExamples/05_Pause.emtour
+  screenshots:
+    - tours/.screens/101_05_01.png
+    - tours/.screens/101_05_02.png
+    - tours/.screens/101_05_03.png
+    - tours/.screens/101_05_04.png
+    - tours/.screens/101_05_05.png
+    - tours/.screens/101_05_06.png
+    - tours/.screens/101_05_07.png
+    - tours/.screens/101_05_08.png
+
+overall_assessment: >
+  This tour introduces the notion of an explicit pause in execution flow,
+  contrasting continuous activity with deliberate gaps. The key insight is
+  recognizing absence of activity in the waveform as meaningful behavior,
+  not just “nothing happening.”
+
+learning_objectives:
+  - Introduce pause as a first-class behavioral element
+  - Recognize inactivity regions in waveform
+  - Understand how pauses are encoded in EMS code
+  - Relate absence of transitions to execution intent
+
+concepts_introduced:
+  - pause behavior
+  - inactivity windows
+  - gaps in waveform
+  - temporal spacing of events
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - BusyWait timing
+  - BoardC signal mapping
+  - code ↔ waveform mapping
+
+prerequisites:
+  - 101_01
+  - 101_02
+  - 101_03
+  - 101_04
+
+stop_count: 8
+
+stops:
+  - stop: 1
+    focus: framing
+    teaching_intent: Introduce pause behavior vs continuous blinking
+    concepts: [pause]
+    user_takeaway: Lack of activity can be intentional
+
+  - stop: 2
+    focus: source inspection
+    teaching_intent: Show where pauses are introduced in code
+    concepts: [delay, wait]
+    user_takeaway: Pauses are encoded explicitly
+
+  - stop: 3
+    focus: capture
+    teaching_intent: Run and capture waveform
+    concepts: [capture workflow]
+    user_takeaway: Same tools apply
+
+  - stop: 4
+    focus: waveform observation
+    teaching_intent: Identify inactive regions
+    concepts: [gaps]
+    user_takeaway: Flat regions correspond to pauses
+
+  - stop: 5
+    focus: timing analysis
+    teaching_intent: Measure duration of pauses
+    concepts: [time measurement]
+    user_takeaway: Pauses have measurable length
+
+  - stop: 6
+    focus: mapping
+    teaching_intent: Link gaps back to code structure
+    concepts: [code ↔ gap]
+    user_takeaway: Each gap is intentional behavior
+
+  - stop: 7
+    focus: interpretation
+    teaching_intent: Reason about system behavior including inactivity
+    concepts: [temporal reasoning]
+    user_takeaway: Silence in signals carries meaning
+
+  - stop: 8
+    focus: consolidation
+    teaching_intent: Reinforce pause as part of execution vocabulary
+    concepts: [pause model]
+    user_takeaway: I can read both activity and inactivity in waveforms
+
+issues_and_notes:
+  - Correct file used (05_Pause.emtour)
+  - Screenshots critical for identifying gaps
+  - No structural issues

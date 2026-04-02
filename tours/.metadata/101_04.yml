@@ -1,33 +1,47 @@
 tour_id: 101_04
 series: 101_BasicExamples
-title: Duty-Cycle Variation
-source_file: 101_BasicExamples/04_*.emtour
-screenshot_pattern: 101_04_{stop:02d}.png
+title: Alarm
+source_file: tours/101_BasicExamples/04_Alarm.emtour
+screenshot_pattern: tours/.screens/101_04_{stop:02d}.png
 status: generated_from_repo_emtour_and_stop_screenshots
 
+ground_truth_artifacts:
+  emtour_file: tours/101_BasicExamples/04_Alarm.emtour
+  screenshots:
+    - tours/.screens/101_04_01.png
+    - tours/.screens/101_04_02.png
+    - tours/.screens/101_04_03.png
+    - tours/.screens/101_04_04.png
+    - tours/.screens/101_04_05.png
+    - tours/.screens/101_04_06.png
+    - tours/.screens/101_04_07.png
+    - tours/.screens/101_04_08.png
+
 overall_assessment: >
-  Clean continuation of the series, focusing on asymmetric timing (duty cycle).
-  The key step is recognizing unequal high/low durations directly in the waveform.
-  This reinforces quantitative reading of time, not just pattern shape.
+  This tour introduces time-based scheduling via alarms. It shifts the model
+  from explicit delay loops to event-driven wakeups. The key learning is that
+  execution is now driven by time thresholds rather than linear waits, which
+  is clearly reflected in the waveform.
 
 learning_objectives:
-  - Introduce asymmetric on/off timing (duty cycle)
-  - Read durations directly from PulseView
-  - Compare relative time spans within a cycle
-  - Strengthen quantitative interpretation of signals
+  - Introduce alarm-based scheduling
+  - Show difference between delay loops and timed wakeups
+  - Understand how wakeups appear in waveform
+  - Build intuition for time-triggered execution
 
 concepts_introduced:
-  - duty cycle
-  - asymmetric timing
-  - duration measurement in waveform
-  - ratio of high/low periods
+  - AlarmMgr
+  - wakeup
+  - time-based scheduling
+  - event-driven execution
+  - threshold-based timing
 
 concepts_reinforced:
   - PulseView
   - wokwi.vcd
-  - BusyWait timing
-  - BlinkerP structure
-  - code → waveform mapping
+  - BoardC
+  - timing interpretation
+  - code ↔ waveform mapping
 
 prerequisites:
   - 101_01
@@ -39,69 +53,53 @@ stop_count: 8
 stops:
   - stop: 1
     focus: framing
-    teaching_intent: >
-      Introduce the idea of unequal on/off timing.
-    concepts: [duty cycle]
-    user_takeaway: >
-      This example changes timing, not structure.
+    teaching_intent: Introduce alarm-based example vs delay loops
+    concepts: [alarm scheduling]
+    user_takeaway: This example is driven by time events
 
   - stop: 2
-    focus: source changes
-    teaching_intent: >
-      Show different delay values controlling on/off periods.
-    concepts: [BusyWait variation]
-    user_takeaway: >
-      Timing differences come from parameter changes.
+    focus: source structure
+    teaching_intent: Show use of AlarmMgr and wakeup calls
+    concepts: [AlarmMgr, wakeup]
+    user_takeaway: Execution is scheduled, not loop-delayed
 
   - stop: 3
-    focus: capture
-    teaching_intent: >
-      Run and capture waveform.
-    concepts: [capture workflow]
-    user_takeaway: >
-      Same flow as before.
+    focus: timing model
+    teaching_intent: Explain delta-based wakeups
+    concepts: [delta time]
+    user_takeaway: Events occur relative to current time
 
   - stop: 4
-    focus: waveform observation
-    teaching_intent: >
-      Identify unequal high vs low durations.
-    concepts: [asymmetry]
-    user_takeaway: >
-      The signal is visibly unbalanced.
+    focus: capture
+    teaching_intent: Run and capture waveform
+    concepts: [capture workflow]
+    user_takeaway: Same tools, new behavior
 
   - stop: 5
-    focus: measurement
-    teaching_intent: >
-      Use PulseView to compare durations.
-    concepts: [time measurement]
-    user_takeaway: >
-      I can quantify the duty cycle.
+    focus: waveform observation
+    teaching_intent: Identify discrete wakeup events
+    concepts: [event pulses]
+    user_takeaway: Execution appears as time-triggered events
 
   - stop: 6
     focus: mapping
-    teaching_intent: >
-      Link durations back to code delays.
-    concepts: [code ↔ timing]
-    user_takeaway: >
-      Delay values directly control waveform ratios.
+    teaching_intent: Map events to wakeup calls
+    concepts: [event ↔ code]
+    user_takeaway: Each pulse corresponds to a scheduled wakeup
 
   - stop: 7
-    focus: interpretation
-    teaching_intent: >
-      Reason about behavior from waveform alone.
-    concepts: [timing reasoning]
-    user_takeaway: >
-      I can infer code from timing patterns.
+    focus: comparison
+    teaching_intent: Contrast with BusyWait loops
+    concepts: [loop vs event]
+    user_takeaway: Alarm-based code is more structured
 
   - stop: 8
     focus: consolidation
-    teaching_intent: >
-      Reinforce quantitative analysis mindset.
-    concepts: [analysis mindset]
-    user_takeaway: >
-      Timing is now something I measure, not just see.
+    teaching_intent: Reinforce event-driven model
+    concepts: [event-driven mindset]
+    user_takeaway: EMS supports precise time-based scheduling
 
 issues_and_notes:
-  - Strong progression into quantitative analysis
-  - Screenshots important for duration comparison
+  - Clear conceptual shift from delays to scheduling
+  - Screenshots important for identifying discrete events
   - No structural issues

@@ -1,109 +1,134 @@
 tour_id: 101_03
 series: 101_BasicExamples
-title: Multi-phase Blink Pattern
-source_file: 101_BasicExamples/03_*.emtour
-screenshot_pattern: 101_03_{stop:02d}.png
+title: Fiber
+source_file: tours/101_BasicExamples/03_Fiber.emtour
+screenshot_pattern: tours/.screens/101_03_{stop:02d}.png
 status: generated_from_repo_emtour_and_stop_screenshots
 
+ground_truth_artifacts:
+  emtour_file: tours/101_BasicExamples/03_Fiber.emtour
+  screenshots:
+    - tours/.screens/101_03_01.png
+    - tours/.screens/101_03_02.png
+    - tours/.screens/101_03_03.png
+    - tours/.screens/101_03_04.png
+    - tours/.screens/101_03_05.png
+    - tours/.screens/101_03_06.png
+    - tours/.screens/101_03_07.png
+    - tours/.screens/101_03_08.png
+    - tours/.screens/101_03_09.png
+    - tours/.screens/101_03_10.png
+    - tours/.screens/101_03_11.png
+    - tours/.screens/101_03_12.png
+
 overall_assessment: >
-  This tour is where the series “clicks”. It moves beyond simple blink timing
-  into clearly structured, multi-phase behavior that is only obvious in the
-  waveform. The screenshots do real work here—users must read the trace, not
-  just the code. Good escalation in complexity.
+  This tour introduces fibers as a core EMS execution mechanism. It shifts the
+  focus from simple timing patterns to structured, cooperative execution. The
+  screenshots and code together demonstrate how multiple logical flows are
+  interleaved without traditional threading, and how that behavior appears in
+  the waveform.
 
 learning_objectives:
-  - Introduce multi-phase LED behavior driven by code structure
-  - Strengthen reading of PulseView traces without heavy narration
-  - Show how repeated patterns encode control flow
-  - Reinforce waveform-first reasoning
+  - Introduce the concept of fibers in EMS
+  - Show how fibers enable cooperative concurrency
+  - Relate fiber execution to observable waveform behavior
+  - Contrast fiber-based flow with simple linear blinking loops
+  - Build intuition for interleaved execution
 
 concepts_introduced:
-  - multi-phase execution pattern
-  - repeating waveform segments
-  - phase boundaries in time-domain signals
-  - implicit loop structure in waveform
+  - fiber
+  - cooperative concurrency
+  - interleaved execution
+  - yield points (implicit via waits)
+  - multiple logical flows in a single thread
 
 concepts_reinforced:
   - PulseView
   - wokwi.vcd
-  - BlinkerP-derived structure
-  - BoardC signal mapping
   - BusyWait timing
-  - code → waveform mapping
+  - BoardC signal mapping
+  - code ↔ waveform correlation
 
 prerequisites:
   - 101_01
   - 101_02
 
-stop_count: 8
+stop_count: 12
 
 stops:
   - stop: 1
-    focus: example framing
-    teaching_intent: >
-      Position this example as a structured extension of previous blink patterns.
-    concepts: [Blinker variation, multi-phase behavior]
-    user_takeaway: >
-      This is no longer a simple blink—there is structure in time.
+    focus: introduction
+    teaching_intent: Introduce Fiber example and its purpose
+    concepts: [fiber]
+    user_takeaway: This example is about execution flow, not just timing
 
   - stop: 2
-    focus: source inspection
-    teaching_intent: >
-      Highlight the repeated code segments responsible for phases.
-    concepts: [repetition, control structure]
-    user_takeaway: >
-      Repetition in code → repetition in waveform.
+    focus: basic structure
+    teaching_intent: Show how multiple activities are defined
+    concepts: [multiple flows]
+    user_takeaway: There are multiple logical paths executing
 
   - stop: 3
-    focus: execution capture
-    teaching_intent: >
-      Run and load the waveform into PulseView.
-    concepts: [capture workflow, refresh cycle]
-    user_takeaway: >
-      Same tooling, more complex signal.
+    focus: fiber behavior
+    teaching_intent: Explain how execution switches between flows
+    concepts: [cooperative scheduling]
+    user_takeaway: Execution alternates without preemption
 
   - stop: 4
-    focus: waveform segmentation
-    teaching_intent: >
-      Identify distinct phases visually in the trace.
-    concepts: [phase segmentation, timing blocks]
-    user_takeaway: >
-      I can “chunk” the waveform into meaningful sections.
+    focus: waits as yield
+    teaching_intent: Show how waits create natural yield points
+    concepts: [yield via wait]
+    user_takeaway: Waiting allows other work to run
 
   - stop: 5
-    focus: pattern recognition
-    teaching_intent: >
-      Show repeating groups of transitions across D0–D7.
-    concepts: [pattern repetition, grouped signals]
-    user_takeaway: >
-      Behavior emerges as repeating visual patterns.
+    focus: capture
+    teaching_intent: Run and capture waveform
+    concepts: [capture workflow]
+    user_takeaway: Fiber behavior is visible in signals
 
   - stop: 6
-    focus: mapping to code
-    teaching_intent: >
-      Correlate each waveform phase back to a code region.
-    concepts: [code ↔ waveform mapping]
-    user_takeaway: >
-      I can explain each segment of the trace from source.
+    focus: waveform structure
+    teaching_intent: Identify interleaved signal patterns
+    concepts: [interleaving]
+    user_takeaway: Signals from different flows appear interwoven
 
   - stop: 7
-    focus: higher-level interpretation
-    teaching_intent: >
-      Encourage reasoning about behavior without re-reading code.
-    concepts: [execution reasoning]
-    user_takeaway: >
-      The waveform alone is sufficient to understand behavior.
+    focus: mapping
+    teaching_intent: Map waveform segments to specific fibers
+    concepts: [flow mapping]
+    user_takeaway: Each pattern corresponds to a logical flow
 
   - stop: 8
+    focus: comparison
+    teaching_intent: Contrast with single-loop blinking
+    concepts: [single vs multi-flow]
+    user_takeaway: Fiber-based execution is richer than simple loops
+
+  - stop: 9
+    focus: timing interaction
+    teaching_intent: Show how flows interact via timing
+    concepts: [timing interaction]
+    user_takeaway: Timing defines interaction between flows
+
+  - stop: 10
+    focus: deeper interpretation
+    teaching_intent: Encourage reasoning from waveform
+    concepts: [execution reasoning]
+    user_takeaway: I can infer flow structure from signals
+
+  - stop: 11
     focus: consolidation
-    teaching_intent: >
-      Reinforce that waveform analysis is now the primary lens.
-    concepts: [analysis mindset]
-    user_takeaway: >
-      I now read EMS programs through their execution traces.
+    teaching_intent: Reinforce fiber mental model
+    concepts: [fiber model]
+    user_takeaway: Fibers provide structured concurrency
+
+  - stop: 12
+    focus: next steps
+    teaching_intent: Prepare for further examples using fibers
+    concepts: [next examples]
+    user_takeaway: Fibers will appear in future tours
 
 issues_and_notes:
-  - Strong use of screenshots—critical to understanding
-  - Clear progression from 101_02
-  - No structural issues
-  - Minor wording polish possible in phase-description steps
+  - Core concept (fiber) is correctly central to the tour
+  - Waveform screenshots are essential to understanding interleaving
+  - No structural issues observed

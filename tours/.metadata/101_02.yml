@@ -1,93 +1,132 @@
-tour_id: 101_02
+tour_id: '101_02'
 series: 101_BasicExamples
-title: (derived from 02_*.emtour)
-source_file: 101_BasicExamples/02_*.emtour
-screenshot_pattern: 101_02_{stop:02d}.png
+title: Real-time Debug
+source_file: tours/101_BasicExamples/02_Debug.emtour
+screenshot_pattern: tours/.screens/101_02_{stop:02d}.png
 status: generated_from_repo_emtour_and_stop_screenshots
-
-overall_assessment: >
-  Strong continuation of the Basic Examples series. This tour builds directly
-  on the waveform-analysis model introduced in 101_01 and introduces a new
-  behavioral variation of BlinkerP. The focus remains on correlating small
-  code changes with observable signal differences, reinforcing EMS as a
-  system where behavior is best understood through execution traces.
-
+ground_truth_artifacts:
+  emtour_file: tours/101_BasicExamples/02_Debug.emtour
+  screenshots:
+  - tours/.screens/101_02_01.png
+  - tours/.screens/101_02_02.png
+  - tours/.screens/101_02_03.png
+  - tours/.screens/101_02_04.png
+  - tours/.screens/101_02_05.png
+  - tours/.screens/101_02_06.png
+  - tours/.screens/101_02_07.png
+  - tours/.screens/101_02_08.png
+  - tours/.screens/101_02_09.png
+overall_assessment: Strong second tour in the Basic Examples series. It keeps the waveform-analysis workflow from 101_01 but introduces EMS debugging and real-time-analysis features with much lower overhead than printf alone. The tour balances source-level constructs, signal-level interpretation in PulseView, and the portable runtime implementation behind the debug intrinsics.
 learning_objectives:
-  - Introduce a variation of the baseline BlinkerP behavior
-  - Reinforce use of PulseView for analyzing execution
-  - Correlate code changes with waveform differences
-  - Deepen understanding of timing and control flow in EMS programs
-  - Continue building intuition for BoardC-mediated behavior
-
+- Introduce EMS real-time debug capabilities through DebugP
+- Show how fail and halt become observable board-level behavior
+- Explain lightweight debug statements that drive pins and UART output
+- Use PulseView to correlate DebugP source with captured runtime signals
+- Reveal the portable Debug module that implements %%[p...] statements
+- Position EMS debug/RTA features as practical even in deployed code
 concepts_introduced:
-  - pattern variation
-  - timing differences in waveform
-  - signal interpretation refinement
-
+- DebugP
+- fail statement
+- halt statement
+- '%%[p...] debug statements'
+- '%%> UART binary output'
+- dbgFlag config parameter
+- DbgA/DbgB/DbgC/DbgD pins
+- real-time analysis (RTA)
+- portable Debug module
 concepts_reinforced:
-  - PulseView
-  - wokwi.vcd
-  - BlinkerP structure
-  - BoardC
-  - BusyWait timing
-  - AppLed control
-
+- PulseView
+- wokwi.vcd
+- AppLed
+- SysLed
+- BoardC
+- Common.BusyWait.wait
+- printf as practical subset
+- code-to-waveform mapping
 prerequisites:
-  - 101_01
-
-stop_count: (derived)
-
+- '101_01'
+stop_count: 9
 stops:
-  - stop: 1
-    focus: example introduction
-    teaching_intent: >
-      Introduce the new Blinker variant and frame it as a modification of
-      the baseline example.
-    concepts: [Blinker variant, pattern change]
-    user_takeaway: >
-      This example differs from the baseline in a specific behavioral way.
-
-  - stop: 2
-    focus: code inspection
-    teaching_intent: >
-      Highlight the specific code differences responsible for the new behavior.
-    concepts: [code delta, timing change]
-    user_takeaway: >
-      Small source changes can produce visible behavioral differences.
-
-  - stop: 3
-    focus: build and capture
-    teaching_intent: >
-      Run the modified program and capture its waveform.
-    concepts: [build+load, capture]
-    user_takeaway: >
-      I can observe the new behavior through captured signals.
-
-  - stop: 4
-    focus: waveform analysis
-    teaching_intent: >
-      Compare the waveform to the baseline example.
-    concepts: [waveform comparison]
-    user_takeaway: >
-      Differences in timing and pattern are clearly visible.
-
-  - stop: 5
-    focus: deeper interpretation
-    teaching_intent: >
-      Explain how the waveform reflects program logic.
-    concepts: [timing interpretation]
-    user_takeaway: >
-      I can map waveform features back to source behavior.
-
-  - stop: 6
-    focus: reinforcement
-    teaching_intent: >
-      Reinforce the pattern of code → waveform → understanding.
-    concepts: [execution analysis loop]
-    user_takeaway: >
-      EMS behavior is best understood through this cycle.
-
+- stop: 1
+  focus: DebugP overview
+  teaching_intent: Introduce DebugP as a program that demonstrates EMS debug features beyond printf
+  concepts:
+  - DebugP
+  - printf
+  - embedded debug capabilities
+  user_takeaway: EMS provides lightweight debugging mechanisms that can remain in deployed applications.
+- stop: 2
+  focus: Build·Load expectations
+  teaching_intent: Prepare the user to observe mixed LED behavior and an abrupt failure before examining the signal capture
+  concepts:
+  - AppLed
+  - SysLed
+  - fail
+  - PulseView motivation
+  user_takeaway: DebugP starts like a blinker, then fails in a visibly distinct way that is best understood in PulseView.
+- stop: 3
+  focus: DebugP details
+  teaching_intent: Explain four debug-related statements in the main loop, especially pin assertion, timing measurement, config-gated debug code, and fail
+  concepts:
+  - DbgD assert
+  - DbgA de-assert
+  - dbgFlag config
+  - fail statement
+  user_takeaway: Specific EMS statements can mark timing, gate debug code, and explicitly abort the program.
+- stop: 4
+  focus: More details
+  teaching_intent: Explain efficient binary output and pin-toggling debug statements driven by cnt and bits11
+  concepts:
+  - '%%> cnt binary output'
+  - '%%> bits11 binary output'
+  - '%%c: pin toggling'
+  - expression e+1 semantics
+  user_takeaway: EMS supports very small, deterministic debug outputs to UART and pins.
+- stop: 5
+  focus: Signal capture
+  teaching_intent: Correlate PulseView signals with DebugP runtime events, including fail, UART payloads, and active-low debug pins
+  concepts:
+  - 2 MHz AppLed toggling
+  - 200 MHz SysLed fail marker
+  - UART values for cnt and bits11
+  - DbgC quick toggles
+  - active-low logic
+  user_takeaway: The waveform makes the fail event and all debug outputs directly visible in time.
+- stop: 6
+  focus: Still more details
+  teaching_intent: Contrast printf, fail/halt, %%> and %%[p...] in terms of practicality and run-time overhead
+  concepts:
+  - printf subset
+  - halt statement
+  - deterministic overhead
+  - factory/field testing
+  user_takeaway: EMS debug intrinsics are intentionally lightweight enough for practical run-time use.
+- stop: 7
+  focus: Portable implementation
+  teaching_intent: Show the portable Debug module that the translator targets when replacing %%[p...] statements
+  concepts:
+  - Debug module
+  - translator replacement
+  - runtime helper functions
+  - Console peer module
+  user_takeaway: The special debug statements compile down to ordinary runtime functions in a portable module.
+- stop: 8
+  focus: Extra credit
+  teaching_intent: Encourage exploration of timings, Console.print, and adding RTA intrinsics to user code
+  concepts:
+  - PulseView cursors
+  - Console.print
+  - user experimentation
+  user_takeaway: I can now measure, inspect, and add these debug features to my own programs.
+- stop: 9
+  focus: Next steps
+  teaching_intent: Frame the remaining Basic Examples tours as using %%[p] for low-overhead RTA and %%> for efficient UART output
+  concepts:
+  - RTA
+  - production-friendly instrumentation
+  - test what you fly
+  user_takeaway: These EMS debug features are meant for real embedded workflows, not just temporary scaffolding.
 issues_and_notes:
-  - Continues the strong pattern established in 101_01
-  - No structural issues observed
-  - Minor wording tweaks may be possible
+- This corrected metadata was generated from the actual file tours/101_BasicExamples/02_Debug.emtour and screenshots 101_02_01..09.png.
+- The signal-capture stop is central; its screenshot carries essential meaning that the .emtour text alone does not preserve.
+- 'Minor wording cleanup visible in source text: "deterministic" is misspelled in the .emtour raw text.'
