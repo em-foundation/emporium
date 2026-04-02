@@ -1,0 +1,107 @@
+tour_id: 101_04
+series: 101_BasicExamples
+title: Duty-Cycle Variation
+source_file: 101_BasicExamples/04_*.emtour
+screenshot_pattern: 101_04_{stop:02d}.png
+status: generated_from_repo_emtour_and_stop_screenshots
+
+overall_assessment: >
+  Clean continuation of the series, focusing on asymmetric timing (duty cycle).
+  The key step is recognizing unequal high/low durations directly in the waveform.
+  This reinforces quantitative reading of time, not just pattern shape.
+
+learning_objectives:
+  - Introduce asymmetric on/off timing (duty cycle)
+  - Read durations directly from PulseView
+  - Compare relative time spans within a cycle
+  - Strengthen quantitative interpretation of signals
+
+concepts_introduced:
+  - duty cycle
+  - asymmetric timing
+  - duration measurement in waveform
+  - ratio of high/low periods
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - BusyWait timing
+  - BlinkerP structure
+  - code → waveform mapping
+
+prerequisites:
+  - 101_01
+  - 101_02
+  - 101_03
+
+stop_count: 8
+
+stops:
+  - stop: 1
+    focus: framing
+    teaching_intent: >
+      Introduce the idea of unequal on/off timing.
+    concepts: [duty cycle]
+    user_takeaway: >
+      This example changes timing, not structure.
+
+  - stop: 2
+    focus: source changes
+    teaching_intent: >
+      Show different delay values controlling on/off periods.
+    concepts: [BusyWait variation]
+    user_takeaway: >
+      Timing differences come from parameter changes.
+
+  - stop: 3
+    focus: capture
+    teaching_intent: >
+      Run and capture waveform.
+    concepts: [capture workflow]
+    user_takeaway: >
+      Same flow as before.
+
+  - stop: 4
+    focus: waveform observation
+    teaching_intent: >
+      Identify unequal high vs low durations.
+    concepts: [asymmetry]
+    user_takeaway: >
+      The signal is visibly unbalanced.
+
+  - stop: 5
+    focus: measurement
+    teaching_intent: >
+      Use PulseView to compare durations.
+    concepts: [time measurement]
+    user_takeaway: >
+      I can quantify the duty cycle.
+
+  - stop: 6
+    focus: mapping
+    teaching_intent: >
+      Link durations back to code delays.
+    concepts: [code ↔ timing]
+    user_takeaway: >
+      Delay values directly control waveform ratios.
+
+  - stop: 7
+    focus: interpretation
+    teaching_intent: >
+      Reason about behavior from waveform alone.
+    concepts: [timing reasoning]
+    user_takeaway: >
+      I can infer code from timing patterns.
+
+  - stop: 8
+    focus: consolidation
+    teaching_intent: >
+      Reinforce quantitative analysis mindset.
+    concepts: [analysis mindset]
+    user_takeaway: >
+      Timing is now something I measure, not just see.
+
+issues_and_notes:
+  - Strong progression into quantitative analysis
+  - Screenshots important for duration comparison
+  - No structural issues
