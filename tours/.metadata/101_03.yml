@@ -1,0 +1,109 @@
+tour_id: 101_03
+series: 101_BasicExamples
+title: Multi-phase Blink Pattern
+source_file: 101_BasicExamples/03_*.emtour
+screenshot_pattern: 101_03_{stop:02d}.png
+status: generated_from_repo_emtour_and_stop_screenshots
+
+overall_assessment: >
+  This tour is where the series “clicks”. It moves beyond simple blink timing
+  into clearly structured, multi-phase behavior that is only obvious in the
+  waveform. The screenshots do real work here—users must read the trace, not
+  just the code. Good escalation in complexity.
+
+learning_objectives:
+  - Introduce multi-phase LED behavior driven by code structure
+  - Strengthen reading of PulseView traces without heavy narration
+  - Show how repeated patterns encode control flow
+  - Reinforce waveform-first reasoning
+
+concepts_introduced:
+  - multi-phase execution pattern
+  - repeating waveform segments
+  - phase boundaries in time-domain signals
+  - implicit loop structure in waveform
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - BlinkerP-derived structure
+  - BoardC signal mapping
+  - BusyWait timing
+  - code → waveform mapping
+
+prerequisites:
+  - 101_01
+  - 101_02
+
+stop_count: 8
+
+stops:
+  - stop: 1
+    focus: example framing
+    teaching_intent: >
+      Position this example as a structured extension of previous blink patterns.
+    concepts: [Blinker variation, multi-phase behavior]
+    user_takeaway: >
+      This is no longer a simple blink—there is structure in time.
+
+  - stop: 2
+    focus: source inspection
+    teaching_intent: >
+      Highlight the repeated code segments responsible for phases.
+    concepts: [repetition, control structure]
+    user_takeaway: >
+      Repetition in code → repetition in waveform.
+
+  - stop: 3
+    focus: execution capture
+    teaching_intent: >
+      Run and load the waveform into PulseView.
+    concepts: [capture workflow, refresh cycle]
+    user_takeaway: >
+      Same tooling, more complex signal.
+
+  - stop: 4
+    focus: waveform segmentation
+    teaching_intent: >
+      Identify distinct phases visually in the trace.
+    concepts: [phase segmentation, timing blocks]
+    user_takeaway: >
+      I can “chunk” the waveform into meaningful sections.
+
+  - stop: 5
+    focus: pattern recognition
+    teaching_intent: >
+      Show repeating groups of transitions across D0–D7.
+    concepts: [pattern repetition, grouped signals]
+    user_takeaway: >
+      Behavior emerges as repeating visual patterns.
+
+  - stop: 6
+    focus: mapping to code
+    teaching_intent: >
+      Correlate each waveform phase back to a code region.
+    concepts: [code ↔ waveform mapping]
+    user_takeaway: >
+      I can explain each segment of the trace from source.
+
+  - stop: 7
+    focus: higher-level interpretation
+    teaching_intent: >
+      Encourage reasoning about behavior without re-reading code.
+    concepts: [execution reasoning]
+    user_takeaway: >
+      The waveform alone is sufficient to understand behavior.
+
+  - stop: 8
+    focus: consolidation
+    teaching_intent: >
+      Reinforce that waveform analysis is now the primary lens.
+    concepts: [analysis mindset]
+    user_takeaway: >
+      I now read EMS programs through their execution traces.
+
+issues_and_notes:
+  - Strong use of screenshots—critical to understanding
+  - Clear progression from 101_02
+  - No structural issues
+  - Minor wording polish possible in phase-description steps
