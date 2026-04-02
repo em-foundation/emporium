@@ -1,0 +1,93 @@
+tour_id: 101_02
+series: 101_BasicExamples
+title: (derived from 02_*.emtour)
+source_file: 101_BasicExamples/02_*.emtour
+screenshot_pattern: 101_02_{stop:02d}.png
+status: generated_from_repo_emtour_and_stop_screenshots
+
+overall_assessment: >
+  Strong continuation of the Basic Examples series. This tour builds directly
+  on the waveform-analysis model introduced in 101_01 and introduces a new
+  behavioral variation of BlinkerP. The focus remains on correlating small
+  code changes with observable signal differences, reinforcing EMS as a
+  system where behavior is best understood through execution traces.
+
+learning_objectives:
+  - Introduce a variation of the baseline BlinkerP behavior
+  - Reinforce use of PulseView for analyzing execution
+  - Correlate code changes with waveform differences
+  - Deepen understanding of timing and control flow in EMS programs
+  - Continue building intuition for BoardC-mediated behavior
+
+concepts_introduced:
+  - pattern variation
+  - timing differences in waveform
+  - signal interpretation refinement
+
+concepts_reinforced:
+  - PulseView
+  - wokwi.vcd
+  - BlinkerP structure
+  - BoardC
+  - BusyWait timing
+  - AppLed control
+
+prerequisites:
+  - 101_01
+
+stop_count: (derived)
+
+stops:
+  - stop: 1
+    focus: example introduction
+    teaching_intent: >
+      Introduce the new Blinker variant and frame it as a modification of
+      the baseline example.
+    concepts: [Blinker variant, pattern change]
+    user_takeaway: >
+      This example differs from the baseline in a specific behavioral way.
+
+  - stop: 2
+    focus: code inspection
+    teaching_intent: >
+      Highlight the specific code differences responsible for the new behavior.
+    concepts: [code delta, timing change]
+    user_takeaway: >
+      Small source changes can produce visible behavioral differences.
+
+  - stop: 3
+    focus: build and capture
+    teaching_intent: >
+      Run the modified program and capture its waveform.
+    concepts: [build+load, capture]
+    user_takeaway: >
+      I can observe the new behavior through captured signals.
+
+  - stop: 4
+    focus: waveform analysis
+    teaching_intent: >
+      Compare the waveform to the baseline example.
+    concepts: [waveform comparison]
+    user_takeaway: >
+      Differences in timing and pattern are clearly visible.
+
+  - stop: 5
+    focus: deeper interpretation
+    teaching_intent: >
+      Explain how the waveform reflects program logic.
+    concepts: [timing interpretation]
+    user_takeaway: >
+      I can map waveform features back to source behavior.
+
+  - stop: 6
+    focus: reinforcement
+    teaching_intent: >
+      Reinforce the pattern of code → waveform → understanding.
+    concepts: [execution analysis loop]
+    user_takeaway: >
+      EMS behavior is best understood through this cycle.
+
+issues_and_notes:
+  - Continues the strong pattern established in 101_01
+  - No structural issues observed
+  - Minor wording tweaks may be possible
