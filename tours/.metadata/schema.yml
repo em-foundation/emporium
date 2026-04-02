@@ -1,5 +1,20 @@
 version: 1
 
+process_rules:
+    - process one tour at a time unless the user explicitly requests a group summary
+    - use only files present in the uploaded zip
+    - never infer or guess filenames
+    - never use repo lookup
+    - extract stop titles exactly from the .emtour file
+    - preserve stop titles exactly in metadata
+    - quote YAML scalars when needed for validity
+    - if any required field cannot be grounded in the .emtour or screenshots, fail instead of inventing content
+    - stop_count must equal the number of extracted stops
+    - screenshot count must equal stop_count
+    - no empty placeholders
+    - no generic filler text
+    - metadata must be fully populated
+
 tour_schema:
     required:
         - tour_id
@@ -13,6 +28,7 @@ tour_schema:
         - prerequisites
         - stop_count
         - stops
+        - issues_and_notes
 
     ground_truth:
         required:
@@ -39,13 +55,25 @@ group_schema:
         - group_id
         - title
         - tours
-
-    optional:
         - summary
         - concepts_progression
+        - concepts_introduced
+        - prerequisites
+        - issues_and_notes
 
-rules:
+validation_rules:
     - tour.stop_count == len(tour.stops)
     - len(tour.ground_truth.screenshots) == tour.stop_count
-    - tour.source_file must be exact (no wildcards)
-    - group.tours must be ordered
+    - stop titles must exactly match the .emtour
+    - source_file must be exact
+    - no empty strings in required scalar fields
+    - no empty arrays for learning_objectives, concepts_introduced, concepts_reinforced
+
+group_rules:
+    - group metadata must be derived from member tour metadata
+    - tours list must match actual tour_ids present in the group
+    - summary must describe progression across tours (not repeat tour text)
+    - concepts_progression must reflect ordering of ideas across tours
+    - concepts_introduced must be union of concepts_introduced across tours
+    - no concepts in group that do not appear in at least one tour
+    - no empty fields
