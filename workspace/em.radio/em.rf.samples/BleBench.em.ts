@@ -2,7 +2,6 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
-import * as Common from '@em.mcu/Common.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as RadioConfig from '@em.rf.driver/Config.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
@@ -12,7 +11,7 @@ export const RadioDriver = $delegate(BoardC.RadioDriver)
 
 const ticker = $config<TickerMgr.Obj>()
 
-let adv_pkt = $table<u8>()
+var adv_pkt = $table<u8>()
 
 export namespace em$meta {
     export function em$configure() {
@@ -20,7 +19,11 @@ export namespace em$meta {
     }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
-        let bytes = [0x22, 14, 0xCC, 0xCC, 0xBB, 0xBB, 0xAA, 0xAA, 4, 0x08, c$`E`, c$`M`, c$`S`, 2, 0x01, 0x06]
+        let bytes = [
+            0x22, 25, 0xCC, 0xCC, 0xBB, 0xBB, 0xAA, 0xAA,
+            0x2, 0x01, 0x06,
+            0xA, 0x08, c$`B`, c$`l`, c$`u`, c$`3`, c$`J`, c$`o`, c$`u`, c$`l`, c$`e`,
+            0x4, 0xFF, 0xD3, 0x08, 0xFF]
         for (const b of bytes) {
             adv_pkt.$$add(b)
         }
