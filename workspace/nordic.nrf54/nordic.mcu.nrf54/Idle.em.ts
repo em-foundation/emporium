@@ -46,7 +46,9 @@ function doSleep() {
     $['%%b-']
     Debug.reset()
     IntrVec.PRIMASK_set(1)
+    e$`NRF_APPLICATION_ICACHE_S->ENABLE = 0`
     e$`asm volatile ("wfi")`
+    e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
     Debug.startup()
     $['%%b']
     for (let cb of sleep_leave_tab) cb()
