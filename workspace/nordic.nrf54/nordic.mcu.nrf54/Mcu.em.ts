@@ -17,22 +17,28 @@ export namespace em$meta {
 export function startup(): void {
     e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
     // e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
+    $reg32[0x5005340C] = 1  // errata 37
     unprotect()
-    /// TODO fix
-    // for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
-    //     const addr = $R.FICR.TRIMCNF[i].ADDR.$$
-    //     if (addr == 0xFFFFFFFF || addr == 0) break
-    //     $R.FICR.TRIMCNF[i].ADDR.$$ = $R.FICR.TRIMCNF[i].DATA.$$
-    // }
+    e$`SCB->NSACR |= (3UL << 10ul)`  // FPU
+    for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
+        const addr = $R.FICR.TRIMCNF[i].ADDR.$$
+        if (addr == 0xFFFFFFFF || addr == 0) break
+        $reg32[addr] = $R.FICR.TRIMCNF[i].DATA.$$
+    }
     if ($reg32[0x50120440] == 0x00) { // ES PDK
         $reg32[0x50120440] = 0xC8
     }
     if ($reg32[0x00FFC334] <= 0x180A1D00) { // errata 32
         $reg32[0x50120640] = 0x1EA9E040
     }
-    e$`SCB->NSACR |= (3UL << 10ul)`
-    e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
+    $reg32[0x5008A7AC] = 0x040A0078  // errata 40
+    $reg32[0x50120624] = (20 | (1 << 5)) // errata 31
+    $reg32[0x5012063C] &= ~(1 << 19) // errata 31
+    if ($R.RESET.RESETREAS.$$ & $R.RESET_RESETREAS_RESETPIN_Msk) {
+        $R.RESET.RESETREAS.$$ = ~$R.RESET_RESETREAS_RESETPIN_Msk
+    }
     $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
+    e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
     e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
     if (!use_sram) {
         $R.MEMCONF.POWER[0].CONTROL.$$ = 0x80 // retain 16K sram
