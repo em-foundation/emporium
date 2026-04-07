@@ -20,6 +20,7 @@ export namespace em$meta {
 var cur_hlr = <Handler>$null
 
 export function em$startup() {
+    $R.GRTC.CLKCFG.$$ = $R.GRTC_CLKCFG_CLKSEL_LFXO | 1
     $R.GRTC.MODE.$$ = $R.GRTC_MODE_SYSCOUNTEREN_Msk
     $R.GRTC.TASKS_START.$$ = 1
     IntrVec.NVIC_enable(e$`GRTC_0_IRQn`)
@@ -65,14 +66,15 @@ function readHiLo(): u64 {
     let lo: u32
     let hi: u32
     while (true) {
-        lo = $R.GRTC.SYSCOUNTER[1].SYSCOUNTERL.$$
-        const hi_reg = $R.GRTC.SYSCOUNTER[1].SYSCOUNTERH.$$
+        lo = $R.GRTC.SYSCOUNTER[0].SYSCOUNTERL.$$
+        const hi_reg = $R.GRTC.SYSCOUNTER[0].SYSCOUNTERH.$$
         hi = hi_reg & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_VALUE_Msk
         if ((hi & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_OVERFLOW_Msk) != 0) {
             hi -= 1
         }
         if ((hi_reg & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_BUSY_Msk) == 0) break
     }
+    $R.GRTC.SYSCOUNTER[0].ACTIVE.$$ = 0
     const hi_lo: u64 = (<u64>hi << 32) | lo
     return hi_lo
 }
