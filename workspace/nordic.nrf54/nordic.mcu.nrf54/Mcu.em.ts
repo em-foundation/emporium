@@ -46,9 +46,9 @@ export function startup(): void {
         $R.MEMCONF.POWER[0].RET2.$$ = 0x00
 
     } else {
-        $R.MEMCONF.POWER[0].CONTROL.$$ = 0x3 // retain 64K sram
-        $R.MEMCONF.POWER[0].RET.$$ = 0x3
-        $R.MEMCONF.POWER[0].RET2.$$ = 0x3
+        $R.MEMCONF.POWER[0].CONTROL.$$ = 0x82 // retain 64K sram
+        $R.MEMCONF.POWER[0].RET.$$ = 0x82
+        $R.MEMCONF.POWER[0].RET2.$$ = 0x0
     }
     $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
     $R.MEMCONF.POWER[1].RET.$$ = 0x0
