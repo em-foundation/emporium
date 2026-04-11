@@ -47,7 +47,7 @@ export function stop() {
 export function wait() {
     $['%%c+']
     while (!ready) {
-        // Poller.upause(100)
+        Poller.upause(100)
         ready = $R.CLOCK.EVENTS_XOTUNED.$$ != 0
     }
     $['%%c-']
