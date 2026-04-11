@@ -44,5 +44,4 @@ function tickCb() {
         RadioDriver.waitReady()
     }
     RadioDriver.disable()
-    $['%%d']
 }
