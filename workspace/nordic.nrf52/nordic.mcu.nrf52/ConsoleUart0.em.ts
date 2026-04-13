@@ -34,6 +34,7 @@ export function put(data: u8) {
 
 function sleepEnter() {
     $R.UART0.ENABLE.$$ = $R.UART_ENABLE_ENABLE_Disabled
+    $R.UART0.PSELTXD.$$ = ~0
     TxPin.reset()
 }
 

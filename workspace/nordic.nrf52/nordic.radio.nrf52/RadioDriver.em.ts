@@ -31,7 +31,11 @@ export function em$startup() {
 
 export function disable() {
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
+    while ($R.RADIO.EVENTS_DISABLED.$$ == 0) { }
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
+    $R.RADIO.SHORTS.$$ = 0
     HfXtal.stop()
     setState(State.IDLE)
 }

@@ -74,9 +74,9 @@ export function startup(): void {
     e$`NRF_APPROTECT->DISABLE = NRF_UICR->APPROTECT`
     if (!use_sram) {
         $R.NVMC.ICACHECNF.$$ = 1
+        $R.POWER.RAM[2].POWER.$$ = 0
+        $R.POWER.RAM[3].POWER.$$ = 0
     }
-    $R.POWER.RAM[2].POWER.$$ = 0
-    $R.POWER.RAM[3].POWER.$$ = 0
     $R.POWER.RAM[4].POWER.$$ = 0
     $R.POWER.RAM[5].POWER.$$ = 0
     $R.POWER.RAM[6].POWER.$$ = 0
