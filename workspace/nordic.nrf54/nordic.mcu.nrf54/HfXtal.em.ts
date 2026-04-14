@@ -30,6 +30,8 @@ export function start() {
     e$`asm volatile ("dsb sy")`
     $R.CLOCK.TASKS_XOSTART.$$ = 1
     e$`asm volatile ("dsb sy")`
+    while ($R.CLOCK.EVENTS_XOSTARTED.$$ == 0) { }
+    // $R.CLOCK.EVENTS_XOSTARTED.$$ = 0
     $R.CLOCK.TASKS_XOTUNE.$$ = 1
 }
 
