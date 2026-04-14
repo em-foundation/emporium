@@ -9,7 +9,6 @@ import * as Poller from '@em.mcu/Poller.em'
 
 export namespace em$meta {
     export function em$construct() {
-        Idle.em$meta.addSleepLeave($cb(start))
         IntrVec.em$meta.useIntr('CLOCK_POWER')
     }
 }

@@ -15,6 +15,7 @@ enum State {
 
 export namespace em$meta {
     export function em$construct() {
+        Idle.em$meta.addSleepLeave($cb(em$startup))
         IntrVec.em$meta.useIntr('RADIO_0')
     }
 }
