@@ -22,7 +22,7 @@ export namespace em$meta {
         let bytes = [
             0x22, 25, 0xCC, 0xCC, 0xBB, 0xBB, 0xAA, 0xAA,
             0x2, 0x01, 0x06,
-            0xA, 0x08, c$`B`, c$`l`, c$`u`, c$`3`, c$`J`, c$`o`, c$`u`, c$`l`, c$`e`,
+            0xA, 0x08, c$`B`, c$`l`, c$`u`, c$`e`, c$`J`, c$`o`, c$`u`, c$`l`, c$`e`,
             0x4, 0xFF, 0xD3, 0x08, 0xFF]
         for (const b of bytes) {
             adv_pkt.$$add(b)

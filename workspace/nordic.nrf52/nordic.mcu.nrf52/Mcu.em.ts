@@ -68,6 +68,9 @@ export function isWarm(): bool_t {
 
 export function startup(): void {
     resetConfig()
+    if ($R.POWER.RESETREAS.$$ & $R.POWER_RESETREAS_RESETPIN_Msk) {
+        $R.POWER.RESETREAS.$$ = ~$R.POWER_RESETREAS_RESETPIN_Msk
+    }
     Debug.startup()
     $['%%a:'](2)
     errata()
@@ -82,6 +85,9 @@ export function startup(): void {
     $R.POWER.RAM[6].POWER.$$ = 0
     $R.POWER.RAM[7].POWER.$$ = 0
     $R.POWER.DCDCEN.$$ = 1
+    $R.POWER.TASKS_LOWPWR.$$ = 1
     $R.CLOCK.LFCLKSRC.$$ = $R.CLOCK_LFCLKSRCCOPY_SRC_Xtal
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
+    while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
+    $R.CLOCK.EVENTS_LFCLKSTARTED.$$ = 0
 }
