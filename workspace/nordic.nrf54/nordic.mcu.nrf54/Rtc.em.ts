@@ -17,7 +17,11 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const CHAN_PUB = 0
+const CHAN_AUX = 1
+
 var cur_hlr = <Handler>$null
+var cur_hlr_aux = <Handler>$null
 
 export function em$startup() {
     $R.GRTC.CLKCFG.$$ = $R.GRTC_CLKCFG_CLKSEL_LFXO | 1
@@ -28,19 +32,33 @@ export function em$startup() {
 
 export function disable() {
     cur_hlr = $null
-    $R.GRTC.INTENCLR0.$$ = 1
+    $R.GRTC.INTENCLR0.$$ = 1 << CHAN_PUB
+}
+
+export function disableAux() {
+    cur_hlr_aux = $null
+    $R.GRTC.INTENCLR0.$$ = 1 << CHAN_AUX
 }
 
 export function enable(thresh: T.RtcThresh, handler: Handler) {
     cur_hlr = handler
+    enableChan(CHAN_PUB, thresh)
+}
+
+export function enableAux(thresh: T.RtcThresh, handler: Handler) {
+    cur_hlr_aux = handler
+    enableChan(CHAN_AUX, thresh)
+}
+
+function enableChan(chan: u8, thresh: T.RtcThresh) {
     const hi_lo = readHiLo()
     const lo_cc = thresh
     const hi_cc = 0
-    $R.GRTC.EVENTS_COMPARE[0].$$ = 0
-    $R.GRTC.CC[0].CCL.$$ = lo_cc
-    $R.GRTC.CC[0].CCH.$$ = hi_cc
-    $R.GRTC.CC[0].CCEN.$$ = 1
-    $R.GRTC.INTENSET0.$$ = 1
+    $R.GRTC.EVENTS_COMPARE[chan].$$ = 0
+    $R.GRTC.CC[chan].CCL.$$ = lo_cc
+    $R.GRTC.CC[chan].CCH.$$ = hi_cc
+    $R.GRTC.CC[chan].CCEN.$$ = 1
+    $R.GRTC.INTENSET0.$$ = 1 << chan
 }
 
 export function getRawTime(): T.RawTime {
@@ -51,18 +69,31 @@ export function getRawTime(): T.RawTime {
     return res
 }
 
+export function getRawUsecs(): u32 {
+    const hi_low: u64 = readHiLo()
+    return <u32>(hi_low)
+}
+
 export function toThresh(secs: T.Secs30p2): T.RtcThresh {
     return T.Secs30p2ToUsecs(secs)
 }
 
 export function GRTC_0_isr$$() {
     IntrVec.NVIC_clear(e$`GRTC_0_IRQn`)
-    const hlr = cur_hlr
-    disable()
-    if (hlr != $null) hlr()
+    const pend = $R.GRTC.INTPEND0.$$
+    if (pend & (1 << CHAN_PUB)) {
+        const hlr = cur_hlr
+        disable()
+        if (hlr != $null) hlr()
+    }
+    if (pend & (1 << CHAN_AUX)) {
+        const hlr = cur_hlr_aux
+        disableAux()
+        if (hlr != $null) hlr()
+    }
 }
 
-function readHiLo(): u64 {
+export function readHiLo(): u64 {
     let lo: u32
     let hi: u32
     while (true) {
