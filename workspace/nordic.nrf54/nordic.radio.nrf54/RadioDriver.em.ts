@@ -95,12 +95,12 @@ export function startTx(pkt: frame_t<u8>, chan: u8) {
     $R.RADIO.FREQUENCY.$$ = BleChan.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.TXADDRESS.$$ = 0
-    $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
-    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
 export function waitReady() {
+    $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
+    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     Idle.setPauseOnly(true)
     while (cur_state != State.READY) {
         Idle.exec()
