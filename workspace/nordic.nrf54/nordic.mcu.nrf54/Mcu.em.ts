@@ -55,6 +55,7 @@ export function startup(): void {
     $R.MEMCONF.POWER[1].RET2.$$ = 0x0
     $R.CLOCK.LFCLK.SRC.$$ = $R.CLOCK_LFCLK_SRC_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
+    while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
     $R.REGULATORS.VREGMAIN.DCDCEN.$$ = 1
     Debug.startup()
     $['%%a:'](2)

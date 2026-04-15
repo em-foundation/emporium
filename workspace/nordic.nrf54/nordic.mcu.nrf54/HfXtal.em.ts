@@ -30,7 +30,6 @@ export function start() {
     $R.CLOCK.TASKS_XOSTART.$$ = 1
     e$`asm volatile ("dsb sy")`
     while ($R.CLOCK.EVENTS_XOSTARTED.$$ == 0) { }
-    // $R.CLOCK.EVENTS_XOSTARTED.$$ = 0
     $R.CLOCK.TASKS_XOTUNE.$$ = 1
 }
 
@@ -48,7 +47,6 @@ export function stop() {
 export function wait() {
     $['%%c+']
     while (!ready) {
-        Poller.upause(100)
         ready = $R.CLOCK.EVENTS_XOTUNED.$$ != 0
     }
     $['%%c-']
