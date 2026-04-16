@@ -17,7 +17,7 @@ export namespace em$meta {
 export function startup(): void {
     e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
     // e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
-    $reg32[0x5005340C] = 1  // errata 37
+    // $reg32[0x5005340C] = 1  // errata 37
     unprotect()
     e$`SCB->NSACR |= (3UL << 10ul)`  // FPU
     for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
@@ -25,15 +25,15 @@ export function startup(): void {
         if (addr == 0xFFFFFFFF || addr == 0) break
         $reg32[addr] = $R.FICR.TRIMCNF[i].DATA.$$
     }
-    if ($reg32[0x50120440] == 0x00) { // ES PDK
-        $reg32[0x50120440] = 0xC8
-    }
-    if ($reg32[0x00FFC334] <= 0x180A1D00) { // errata 32
-        $reg32[0x50120640] = 0x1EA9E040
-    }
-    $reg32[0x5008A7AC] = 0x040A0078  // errata 40
-    $reg32[0x50120624] = (20 | (1 << 5)) // errata 31
-    $reg32[0x5012063C] &= ~(1 << 19) // errata 31
+    // if ($reg32[0x50120440] == 0x00) { // ES PDK
+    //     $reg32[0x50120440] = 0xC8
+    // }
+    // if ($reg32[0x00FFC334] <= 0x180A1D00) { // errata 32
+    //     $reg32[0x50120640] = 0x1EA9E040
+    // }
+    // $reg32[0x5008A7AC] = 0x040A0078  // errata 40
+    // $reg32[0x50120624] = (20 | (1 << 5)) // errata 31
+    // $reg32[0x5012063C] &= ~(1 << 19) // errata 31
     if ($R.RESET.RESETREAS.$$ & $R.RESET_RESETREAS_RESETPIN_Msk) {
         $R.RESET.RESETREAS.$$ = ~$R.RESET_RESETREAS_RESETPIN_Msk
     }
