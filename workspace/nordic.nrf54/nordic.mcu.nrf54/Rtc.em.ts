@@ -24,7 +24,7 @@ var cur_hlr = <Handler>$null
 var cur_hlr_aux = <Handler>$null
 
 export function em$startup() {
-    $R.GRTC.CLKCFG.$$ = $R.GRTC_CLKCFG_CLKSEL_LFXO | 1
+    $R.GRTC.CLKCFG.$$ = ($R.GRTC_CLKCFG_CLKSEL_LFXO << $R.GRTC_CLKCFG_CLKSEL_Pos) | 1
     $R.GRTC.MODE.$$ = $R.GRTC_MODE_SYSCOUNTEREN_Msk
     $R.GRTC.TASKS_START.$$ = 1
     IntrVec.NVIC_enable(e$`GRTC_0_IRQn`)
