@@ -3,11 +3,17 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
+import * as Idle from '@nordic.mcu.nrf54/Idle.em'
+import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
+
 export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
+var ready: volatile_t<bool_t> = false
+
 export function start() {
+    ready = false
     $R.CLOCK.EVENTS_XOTUNED.$$ = 0
     e$`asm volatile ("dsb sy")`
     $R.CLOCK.TASKS_PLLSTART.$$ = 1
@@ -30,7 +36,19 @@ export function stop() {
 }
 
 export function wait() {
+    const usecs = Rtc.getRawUsecs()
+    Rtc.enableAux(usecs + 500, $cb(rtcHandler))
+    while (!ready) {
+        Idle.exec()
+    }
     $['%%c+']
     while ($R.CLOCK.EVENTS_XOTUNED.$$ == 0) { }
     $['%%c-']
 }
+
+function rtcHandler() {
+    ready = true
+    Rtc.disableAux()
+}
+
+
