@@ -66,4 +66,14 @@ export function setPauseOnly(pause_only: bool_t) {
     cur_pause_only = pause_only
 }
 
+export function shutdown() {
+    // for (let cb of sleep_enter_tab) cb()
+    $['%%b:'](3)
+    $['%%b-']
+    $R.RESET.RESETREAS.$$ = 0
+    $R.REGULATORS.SYSTEMOFF.$$ = 1
+    e$`__DSB()`
+
+}
+
 export function wakeup() { }

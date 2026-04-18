@@ -14,11 +14,15 @@ export namespace em$meta {
     }
 }
 
+//>> ---- em$targ ---- <<//
+
+var reset_flags: u32
+
 export function startup(): void {
     e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
     // e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
     // $reg32[0x5005340C] = 1  // errata 37
-    unprotect()
+    // unprotect()
     e$`SCB->NSACR |= (3UL << 10ul)`  // FPU
     for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
         const addr = $R.FICR.TRIMCNF[i].ADDR.$$
@@ -34,17 +38,18 @@ export function startup(): void {
     // $reg32[0x5008A7AC] = 0x040A0078  // errata 40
     // $reg32[0x50120624] = (20 | (1 << 5)) // errata 31
     // $reg32[0x5012063C] &= ~(1 << 19) // errata 31
+    reset_flags = $R.RESET.RESETREAS.$$
     if ($R.RESET.RESETREAS.$$ & $R.RESET_RESETREAS_RESETPIN_Msk) {
         $R.RESET.RESETREAS.$$ = ~$R.RESET_RESETREAS_RESETPIN_Msk
     }
     $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
     e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
     e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
+
     if (!use_sram) {
         $R.MEMCONF.POWER[0].CONTROL.$$ = 0x80 // retain 16K sram
         $R.MEMCONF.POWER[0].RET.$$ = 0x80
         $R.MEMCONF.POWER[0].RET2.$$ = 0x00
-
     } else {
         $R.MEMCONF.POWER[0].CONTROL.$$ = 0x82 // retain 64K sram
         $R.MEMCONF.POWER[0].RET.$$ = 0x82
@@ -53,16 +58,37 @@ export function startup(): void {
     $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
     $R.MEMCONF.POWER[1].RET.$$ = 0x0
     $R.MEMCONF.POWER[1].RET2.$$ = 0x0
+
+    // $R.MEMCONF.POWER[0].CONTROL.$$ = 0x000000ff
+    // $R.MEMCONF.POWER[0].RET.$$ = 0xffffffff
+    // $R.MEMCONF.POWER[0].RET2.$$ = 0xffffff80
+    // $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0000000e
+    // $R.MEMCONF.POWER[1].RET.$$ = 0xfffffffe
+    // $R.MEMCONF.POWER[1].RET2.$$ = 0xfffffff0
+
+
+    // CTRL[0] = 000000ff
+    // RET1[0] = ffffffff
+    // RET2[0] = ffffff80
+    // CTRL[1] = 0000000e
+    // RET1[1] = fffffffe
+    // RET2[1] = fffffff0
+
+
     $R.CLOCK.LFCLK.SRC.$$ = $R.CLOCK_LFCLK_SRC_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
     while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
     $R.REGULATORS.VREGMAIN.DCDCEN.$$ = 1
     Debug.startup()
-    $['%%a:'](2)
+    $['%%a:'](isWarm() ? 2 : 3)
 }
 
 export function isWarm(): bool_t {
-    return false
+    return reset_flags > 1
+}
+
+export function getResetFlags(): u32 {
+    return reset_flags
 }
 
 function unprotect() {
