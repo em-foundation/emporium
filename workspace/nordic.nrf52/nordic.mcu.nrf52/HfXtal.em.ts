@@ -26,7 +26,7 @@ export function stop() {
 
 export function wait() {
     const ctr = Rtc.getCounter()
-    Rtc.enableAux(ctr + 13, $cb(rtcHandler))
+    Rtc.enableAux(ctr + 13, $cb(rtcHandler)) // ~400us
     while (!ready) {
         Idle.exec()
     }
