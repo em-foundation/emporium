@@ -15,6 +15,7 @@ enum State {
 
 export namespace em$meta {
     export function em$construct() {
+        Idle.em$meta.addSleepLeave($cb(em$startup))
         IntrVec.em$meta.useIntr('RADIO_0')
     }
 }
@@ -22,6 +23,10 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 var cur_state: volatile_t<State> = State.IDLE
+
+export function em$startup() {
+    HfXtal.start()
+}
 
 export function disable() {
     HfXtal.stop()
@@ -32,7 +37,6 @@ export function disable() {
 }
 
 export function enable() {
-    HfXtal.start()
     switch (Config.getPhy()) {
         case Config.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit

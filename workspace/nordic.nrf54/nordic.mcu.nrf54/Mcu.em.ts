@@ -20,7 +20,7 @@ var reset_flags: u32
 
 export function startup(): void {
     e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
-    e$`NRF_OSCILLATORS_S->XOSC32M.CONFIG.INTCAP = 0x29`
+    e$`NRF_OSCILLATORS_S->XOSC32M.CONFIG.INTCAP = 0x22`
     e$`NRF_OSCILLATORS_S->XOSC32KI.INTCAP = 0x15`
 
     // e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
