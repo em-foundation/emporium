@@ -27,11 +27,12 @@ export function stop() {
     $R.CLOCK.TASKS_PLLSTOP.$$ = 1
     $R.CLOCK.EVENTS_XOTUNED.$$ = 0
     while ($R.CLOCK.PLL.STAT.$$ != 0) { }
+
 }
 
 export function wait() {
     const usecs = Rtc.getRawUsecs()
-    Rtc.enableAux(usecs + 375, $cb(rtcHandler))
+    Rtc.enableAux(usecs + 400, $cb(rtcHandler))
     while (!ready) {
         Idle.exec()
     }

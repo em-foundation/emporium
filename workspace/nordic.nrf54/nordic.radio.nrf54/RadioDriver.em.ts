@@ -25,6 +25,7 @@ export namespace em$meta {
 var cur_state: volatile_t<State> = State.IDLE
 
 export function em$startup() {
+    if (cur_state != State.IDLE) return
     HfXtal.start()
 }
 
@@ -37,6 +38,7 @@ export function disable() {
 }
 
 export function enable() {
+    setState(State.SETUP)
     switch (Config.getPhy()) {
         case Config.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
@@ -100,11 +102,11 @@ export function startTx(pkt: frame_t<u8>, chan: u8) {
 export function waitReady() {
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
-    Idle.setPauseOnly(true)
+    // Idle.setPauseOnly(true)
     while (cur_state != State.READY) {
         Idle.exec()
     }
-    Idle.setPauseOnly(false)
+    // Idle.setPauseOnly(false)
 }
 
 export function RADIO_0_isr$$() {
