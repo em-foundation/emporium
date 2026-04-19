@@ -37,7 +37,7 @@ export function stop() {
 
 export function wait() {
     const usecs = Rtc.getRawUsecs()
-    Rtc.enableAux(usecs + 500, $cb(rtcHandler))
+    Rtc.enableAux(usecs + 400, $cb(rtcHandler))
     while (!ready) {
         Idle.exec()
     }
