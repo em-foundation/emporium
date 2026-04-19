@@ -57,23 +57,7 @@ export function startup(): void {
     }
     $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
     $R.MEMCONF.POWER[1].RET.$$ = 0x0
-    $R.MEMCONF.POWER[1].RET2.$$ = 0x0
-
-    // $R.MEMCONF.POWER[0].CONTROL.$$ = 0x000000ff
-    // $R.MEMCONF.POWER[0].RET.$$ = 0xffffffff
-    // $R.MEMCONF.POWER[0].RET2.$$ = 0xffffff80
-    // $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0000000e
-    // $R.MEMCONF.POWER[1].RET.$$ = 0xfffffffe
-    // $R.MEMCONF.POWER[1].RET2.$$ = 0xfffffff0
-
-
-    // CTRL[0] = 000000ff
-    // RET1[0] = ffffffff
-    // RET2[0] = ffffff80
-    // CTRL[1] = 0000000e
-    // RET1[1] = fffffffe
-    // RET2[1] = fffffff0
-
+    $R.MEMCONF.POWER[1].RET2.$$ = 0
 
     $R.CLOCK.LFCLK.SRC.$$ = $R.CLOCK_LFCLK_SRC_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
