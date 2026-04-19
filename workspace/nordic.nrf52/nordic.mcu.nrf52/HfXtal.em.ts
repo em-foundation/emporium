@@ -4,22 +4,16 @@ export const $U = $declare('MODULE')
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as Rtc from '@nordic.mcu.nrf52/Rtc.em'
 
-export namespace em$meta {
-    export function em$construct() {
-        Idle.em$meta.addSleepLeave($cb(start))
-        IntrVec.em$meta.useIntr('POWER_CLOCK')
-    }
-}
+export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-export function em$startup() {
-    IntrVec.NVIC_enable(e$`POWER_CLOCK_IRQn`)
-}
+var ready: volatile_t<bool_t> = false
 
 export function start() {
+    ready = false
     $R.CLOCK.INTENSET.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
     $R.CLOCK.EVENTS_HFCLKSTARTED.$$ = 0
     $R.CLOCK.TASKS_HFCLKSTART.$$ = 1
@@ -31,14 +25,18 @@ export function stop() {
 }
 
 export function wait() {
-    Idle.setPauseOnly(true)
-    while ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) {
+    const ctr = Rtc.getCounter()
+    Rtc.enableAux(ctr + 13, $cb(rtcHandler))
+    while (!ready) {
         Idle.exec()
     }
-    Idle.setPauseOnly(false)
+    $['%%c+']
+    while ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) {
+    }
+    $['%%c-']
 }
 
-export function POWER_CLOCK_isr$$() {
-    $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENCLR_HFCLKSTARTED_Clear
-    IntrVec.NVIC_clear(e$`POWER_CLOCK_IRQn`)
+function rtcHandler() {
+    ready = true
+    Rtc.disableAux()
 }

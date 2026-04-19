@@ -41,6 +41,7 @@ export function disable() {
 }
 
 export function enable() {
+    HfXtal.start()
     switch (Config.getPhy()) {
         case Config.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit

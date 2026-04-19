@@ -26,6 +26,7 @@ const SUBS_Cnt = 15  // 32kHz
 const SUBS_Msk = (1 << SUBS_Cnt) - 1
 
 var cur_hlr = <Handler>$null
+var cur_hlr_aux = <Handler>$null
 
 export function em$startup() {
     // $R.RTC0.PRESCALER.$$ = 0     // 32kHz
@@ -41,12 +42,25 @@ export function disable() {
     $R.RTC0.EVENTS_COMPARE[0].$$ = 0
 }
 
+export function disableAux() {
+    cur_hlr_aux = $null
+    $R.RTC0.INTENCLR.$$ = $R.RTC_INTENCLR_COMPARE1_Msk
+    $R.RTC0.EVENTS_COMPARE[1].$$ = 0
+}
+
+
 export function enable(thresh: T.RtcThresh, handler: Handler) {
     const ctr = $R.RTC0.COUNTER.$$
     if (DEBUG) printf`ena: ctr = %08x, thr = %08x\n`(ctr, thresh)
     cur_hlr = handler
     $R.RTC0.CC[0].$$ = thresh
     $R.RTC0.INTENSET.$$ = $R.RTC_INTENSET_COMPARE0_Msk
+}
+
+export function enableAux(thresh: T.RtcThresh, handler: Handler) {
+    cur_hlr_aux = handler
+    $R.RTC0.CC[1].$$ = thresh
+    $R.RTC0.INTENSET.$$ = $R.RTC_INTENSET_COMPARE1_Msk
 }
 
 export function getRawTime(): T.RawTime {
@@ -56,6 +70,10 @@ export function getRawTime(): T.RawTime {
     res.subs = (ctr & SUBS_Msk) << (32 - SUBS_Cnt)
     if (DEBUG) printf`raw: ovr = %08x, ctr = %08x, secs = %08x, subs = %08x\n`(ovr_cnt, ctr, res.secs, res.subs)
     return res
+}
+
+export function getCounter(): u32 {
+    return $R.RTC0.COUNTER.$$
 }
 
 export function toThresh(qsecs: T.Secs30p2): T.RtcThresh {
@@ -70,7 +88,14 @@ export function RTC0_isr$$() {
         $['%%>']($R.RTC0.COUNTER.$$)
         return
     }
-    const hlr = cur_hlr
-    disable()
-    if (hlr != $null) hlr()
+    if ($R.RTC0.EVENTS_COMPARE[0].$$) {
+        const hlr = cur_hlr
+        disable()
+        if (hlr != $null) hlr()
+    }
+    if ($R.RTC0.EVENTS_COMPARE[1].$$) {
+        const hlr = cur_hlr_aux
+        disableAux()
+        if (hlr != $null) hlr()
+    }
 }
