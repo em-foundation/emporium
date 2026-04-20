@@ -42,7 +42,7 @@ export function disable() {
 
 export function enable() {
     setState(State.SETUP)
-    RfXtal.enable() // TODO: scheme to enable earlier at wakeup
+    RfXtal.enable()
     RfCtrl.enableClocks()
     RfPatch.loadAll()
     RfXtal.waitReady() // latest possible sync point
