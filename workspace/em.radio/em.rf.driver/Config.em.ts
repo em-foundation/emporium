@@ -6,7 +6,7 @@ export enum Phy {
 }
 
 export const phy = $config<Phy>(Phy.NONE)
-export const tx_pwr = $config<i8>(0)
+export const tx_pwr_db = $config<i8>(0)
 
 //>> ---- em$targ ---- <<//
 
@@ -15,5 +15,5 @@ export function getPhy(): Phy {
 }
 
 export function getTxPwr(): i8 {
-    return tx_pwr
+    return tx_pwr_db
 }

@@ -16,6 +16,7 @@ var adv_pkt = $table<u8>()
 export namespace em$meta {
     export function em$configure() {
         RadioConfig.phy.$$val = RadioConfig.Phy.BLE_1M
+        RadioConfig.tx_pwr_db.$$val = 0
     }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
