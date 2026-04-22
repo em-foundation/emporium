@@ -3,6 +3,7 @@ export const $U = $declare('MODULE', RadioDriverI)
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
+import * as Channel from '@em.link.ble/Channel.em'
 import * as Config from '@em.link.ble/Config.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
@@ -75,17 +76,6 @@ export function enable() {
     setState(State.READY)
 }
 
-function freqFromChan(chan: u32): u32 {
-    const BASE = 2_404_000_000
-    const SPACE = 2_000_000
-    return (chan >= 0 && chan <= 10) ? BASE + (chan * SPACE) :
-        (chan >= 11 && chan <= 36) ? BASE + (chan * SPACE) + SPACE :
-            (chan == 37) ? 2_402_000_000 :
-                (chan == 38) ? 2_426_000_000 :
-                    (chan == 39) ? 2_480_000_000 :
-                        0
-}
-
 export function readPkt(pkt: frame_t<u8>): u8 {
     if (rx_timeout) return 0
     const sz = RfFifo.readPkt(pkt);
@@ -117,7 +107,7 @@ export function startCs(chan: u8, timeout: u16) {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_MAXLEN] = 32 // TODO
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_RXTIMEOUT] = timeout * 4
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_FIRSTRXTIMEOUT] = timeout * 4
-    RfFreq.program(freqFromChan(chan))
+    RfFreq.program(Channel.getFrequency(chan))
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
@@ -145,7 +135,7 @@ export function startCw(chan: u8, power: i8) {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = ($R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF)
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_PATTERN] = 0
     $R.LRFDMDM.MODCTRL.$$ |= $R.LRFDMDM_MODCTRL_TONEINSERT_M
-    RfFreq.program(freqFromChan(chan))
+    RfFreq.program(Channel.getFrequency(chan))
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
     $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
@@ -209,7 +199,7 @@ export function startRx(chan: u8, timeout: u16) {
             op = $R.PBE_GENERIC_REGDEF_API_OP_RX
             break
     }
-    RfFreq.program(freqFromChan(chan))
+    RfFreq.program(Channel.getFrequency(chan))
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpError | LRF.EventRxNok | LRF.EventRxOk | LRF.EventSystim1
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
@@ -254,7 +244,7 @@ export function startTx(pkt: frame_t<u8>, chan: u8) {
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = $R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF
             break
     }
-    RfFreq.program(freqFromChan(chan))
+    RfFreq.program(Channel.getFrequency(chan))
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }

@@ -3,7 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
-import * as Config from '@em.rf.driver/Config.em'
+import * as Config from '@em.link.ble/Config.em'
 
 const LRF_MCE_patch_genfsk = $table<u32>()
 const LRF_PBE_patch_generic = $table<u32>()

@@ -3,7 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
-import * as Config from '@em.rf.driver/Config.em'
+import * as Config from '@em.link.ble/Config.em'
 
 class Shape extends $struct {
     scale: u32

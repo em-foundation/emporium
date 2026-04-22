@@ -21,3 +21,7 @@ export namespace em$meta {
 export function getFreqOff(chan: u8): u8 {
     return chan_off_map[chan]
 }
+
+export function getFrequency(chan: u8): u32 {
+    return 2_400_000_000 + (getFreqOff(chan) * 1_000_000)
+}

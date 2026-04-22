@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Config from '@em.rf.driver/Config.em'
+import * as Config from '@em.link.ble/Config.em'
 
 class Desc extends $struct {
     off: u16
