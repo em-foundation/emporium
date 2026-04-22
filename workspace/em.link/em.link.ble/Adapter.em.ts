@@ -1,11 +1,11 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Dev from '@em.rf.core/Dev.em'
+import * as BLE from '@em.link.ble/Types.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as RadioDriverI from '@em.rf.core/RadioDriverI.em'
-import * as Registry from '@em.rf.core/Registry.em'
-import * as Types from '@em.rf.ble/Types.em'
+import * as RadioDriverI from '@em.link/RadioDriverI.em'
+import * as Registry from '@em.link/Registry.em'
+import * as T from '@em.link/Types.em'
 
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
@@ -43,9 +43,9 @@ var adv_mask: u8
 var adv_power: i8
 var cur_adv_chan: u8
 var cur_state: State = State.IDLE
-var recv_done: Dev.RecvDoneFxn
+var recv_done: T.RecvDoneFxn
 
-export function recvMsg(on_done: Dev.RecvDoneFxn) {
+export function recvMsg(on_done: T.RecvDoneFxn) {
     recv_done = on_done
     if (cur_state == State.IDLE) {
         const params = Registry.getParams()
@@ -79,7 +79,7 @@ function controller() {
                 }
                 const idx = cur_adv_chan++
                 if (!(adv_mask & (1 << idx))) continue
-                doAdvScan(Types.ADV_CHAN + idx)
+                doAdvScan(BLE.ADV_CHAN + idx)
                 return
             }
         }

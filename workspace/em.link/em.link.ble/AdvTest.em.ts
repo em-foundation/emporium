@@ -2,8 +2,8 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
+import * as Config from '@em.link.ble/Config.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
-import * as RadioConfig from '@em.rf.driver/Config.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
 import * as TimeTypes from '@em.utils/TimeTypes.em'
 
@@ -16,7 +16,7 @@ let adv_pkt = $table<u8>()
 
 export namespace em$meta {
     export function em$configure() {
-        RadioConfig.phy.$$val = RadioConfig.Phy.BLE_1M
+        Config.phy.$$val = Config.Phy.BLE_1M
     }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()

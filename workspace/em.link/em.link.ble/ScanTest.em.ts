@@ -3,7 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardC from '@$distro/BoardC.em'
-import * as Config from '@em.rf.driver/Config.em'
+import * as Config from '@em.link.ble/Config.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as TimeTypes from '@em.utils/TimeTypes.em'
 

@@ -1,14 +1,14 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Dev from '@em.rf.core/Dev.em'
+import * as T from '@em.link/Types.em'
 
 export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-var params = Dev.Params.$make()
+var params = T.Params.$make()
 
-export function getParams(): $$<Dev.Params> {
+export function getParams(): $$<T.Params> {
     return $ref(params)
 }

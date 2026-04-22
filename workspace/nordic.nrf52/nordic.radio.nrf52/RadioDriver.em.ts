@@ -3,13 +3,12 @@ export const $U = $declare('MODULE', RadioDriverI)
 
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
-import * as BleChan from '@em.rf.driver/BleChan.em'
-import * as Common from '@em.mcu/Common.em'
-import * as Config from '@em.rf.driver/Config.em'
+import * as Channel from '@em.link.ble/Channel.em'
+import * as Config from '@em.link.ble/Config.em'
 import * as HfXtal from '@nordic.mcu.nrf52/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
-import * as RadioDriverI from '@em.rf.core/RadioDriverI.em'
+import * as RadioDriverI from '@em.link/RadioDriverI.em'
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -88,7 +87,7 @@ export function startCw(chan: u8, power: i8) {
 export function startRx(pkt: frame_t<u8>, chan: u8) {
     setState(State.RX)
     $R.RADIO.PACKETPTR.$$ = <u32>(e$`&pkt[0]`)
-    $R.RADIO.FREQUENCY.$$ = BleChan.getFreqOff(chan)
+    $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITEIV.$$ = chan
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
@@ -100,7 +99,7 @@ export function startTx(pkt: frame_t<u8>, chan: u8) {
     setState(State.TX)
     $R.RADIO.PACKETPTR.$$ = <u32>(e$`&pkt[0]`)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
-    $R.RADIO.FREQUENCY.$$ = BleChan.getFreqOff(chan)
+    $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITEIV.$$ = chan
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk

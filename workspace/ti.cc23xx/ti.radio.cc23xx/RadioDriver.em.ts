@@ -1,11 +1,12 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', RadioDriverI)
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
-import * as Config from '@em.rf.driver/Config.em'
+import * as Config from '@em.link.ble/Config.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as RfCtrl from '@ti.radio.cc23xx/RfCtrl.em'
 import * as RfFifo from '@ti.radio.cc23xx/RfFifo.em'
 import * as RfFreq from '@ti.radio.cc23xx/RfFreq.em'
