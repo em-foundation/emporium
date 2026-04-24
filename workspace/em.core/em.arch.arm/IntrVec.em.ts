@@ -45,7 +45,7 @@ export namespace em$meta {
                         |-> typedef void( *intfunc )( void );
                         |-> typedef union { intfunc fxn; void* ptr; } intvec_elem;
                         |-> 
-                        |-> extern uint32_t __stack_top__;
+                        |-> extern "C" uint32_t __stack_top__;
                         |-> extern "C" void em__start( void );
                         |-> 
                         |-> extern "C" void DEFAULT_isr$$( void );
