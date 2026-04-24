@@ -1,12 +1,16 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', AdapterI)
 
+import * as AdapterI from '@em.link/AdapterI.em'
 import * as BLE from '@em.link.ble/Types.em'
-import * as Poller from '@em.mcu/Poller.em'
+import * as LedI from '@em.hal/LedI.em'
+import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as T from '@em.link/Types.em'
 
+export const Led = $proxy<LedI.$I>()
+export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 export namespace em$meta {
@@ -58,18 +62,20 @@ export function recvMsg(on_done: T.RecvDoneFxn) {
         setState(State.ADV_PAUSE)
         controller()
     }
-
 }
 
 function controller() {
     while (true) {
         switch (cur_state) {
             case State.ADV_PAUSE: {
+                if (--adv_count == 0) {
+                    recv_done(T.ConnectionStatus.TIMEOUT)
+                    return
+                }
                 radioOff()
-                Poller.pause(adv_inter)
-                radioOn()
                 setState(State.ADV_SCAN)
-                break
+                setTimeout(adv_inter)
+                return
             }
             case State.ADV_SCAN: {
                 if (cur_adv_chan == NUM_ADV_CHANS) {
@@ -95,12 +101,21 @@ function radioHandler() {
 
 function radioOff() {
     RadioDriver.disable()
+    Led.off()
+    $['%%a-']
 }
 
 function radioOn() {
     RadioDriver.enable()
+    Led.on()
+    $['%%a+']
 }
 
 function setState(s: State) {
     cur_state = s
+}
+
+function setTimeout(msecs: u32) {
+    OneShot.disable()
+    OneShot.enable(msecs, $cb(controller), 0)
 }
