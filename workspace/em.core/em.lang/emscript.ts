@@ -384,6 +384,10 @@ namespace em {
         return prx
     }
 
+    export function $addr2<T>(addr: addr_t): T {
+        return <unknown>addr as T
+    }
+
     // #endregion
 
     const __REG__ = null
@@ -528,6 +532,7 @@ namespace em {
     const __SCALAR__ = null
     // #region
 
+    export type addr_t = number & { __addr?: never }
     export type bool_t = boolean & { __bool?: never }
     export type f32 = number & { __f32?: never }
     export type i8 = number & { __i8?: never }
@@ -540,6 +545,7 @@ namespace em {
     export type u64 = number & { __u64?: never }
 
     export type arg_t =
+        | addr_t
         | bool_t
         | f32
         | i8
@@ -990,6 +996,7 @@ namespace em {
 }
 
 declare global {
+    type addr_t = em.addr_t
     type arg_t = em.arg_t
     type bool_t = em.bool_t
     type cb_t<A extends any[] = []> = em.cb_t<A>
@@ -1014,6 +1021,7 @@ declare global {
     type $$<T> = em.$$<T>
     type $Reg = em.$Reg
     const $: typeof em.$
+    const $addr2: typeof em.$addr2
     const $bkpt: typeof em.$bkpt
     const $board: typeof em.$board
     const $cb: typeof em.$cb
@@ -1053,6 +1061,7 @@ declare global {
 
 Object.assign(globalThis, {
     $: em.$,
+    $addr2: em.$addr2,
     $bkpt: em.$bkpt,
     $board: em.$board,
     $cb: em.$cb,
