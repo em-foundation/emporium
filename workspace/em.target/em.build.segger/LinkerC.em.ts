@@ -98,6 +98,7 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
             |->     __data_size__ = SIZEOF(.data) / 4;
             |->     __code_load__ = ~0;
             |->     __code_size__ = ~0;
+            |->     __heap_addr__ = ADDR(.bss) + SIZEOF(.bss);
             |->     __stack_top__ = ${stack_top};
             |-> }
         `)

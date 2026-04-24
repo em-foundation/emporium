@@ -11,6 +11,8 @@ namespace std {
 }
 using ::std::nullptr_t;
 
+extern "C" uint32_t __heap_addr__;
+
 static void em__fail();
 static void em__halt();
 
@@ -38,7 +40,9 @@ namespace em {
     auto $null = nullptr;
     typedef decltype(nullptr) null_t;
 
-    template <typename T> T $addr2(addr_t a) { return (T)a; }
+    template <typename T> T $addr2(addr_t a) {
+        return (T)(a + (uint32_t)&__heap_addr__);
+    }
 
     template <typename T> struct ref_t {
         T *$$;
