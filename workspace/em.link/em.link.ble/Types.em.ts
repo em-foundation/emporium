@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Dev from '@em.rf.core/Dev.em'
+import * as T from '@em.link/Types.em'
 
 export const ADV_CHAN = 37
 export const ADV_CHAN_MAX = 39
@@ -21,7 +21,7 @@ export const MAN_ID_HI = 0x0B
 export class AdvHdr extends $struct {
     advType: u8
     pduLen: u8
-    advA: Dev.Addr
+    advA: T.Addr
     flagsLen: u8
     flagsCode: u8
     flagsVal: u8
@@ -29,7 +29,7 @@ export class AdvHdr extends $struct {
     manCode: u8
     manIdLo: u8
     manIdHi: u8
-    // addData: (ptr: ptr_t<u8>, len: u8) => void
+    addData: (src: opaq_t, len: u16) => void
     init: (advType: u8) => void
     // isMine: () => bool_t
 }
@@ -56,15 +56,15 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-function AdvHdr__init(self: $$<AdvHdr>, adv_type: u8): void {
-    const src = $ref(ADV_LEG_INIT)
-    e$`memcpy(self, src, sizeof (AdvHdr))`
-    self.$$.advType = adv_type
+function AdvHdr__addData(self: $$<AdvHdr>, src: opaq_t, len: u16): void {
+    const bp = $cast2<T.BufPtr>(self)
+    const off = self.$$.pduLen + 2
+    e$`memcpy(bp + off, src, len)`
+    self.$$.pduLen += len
+    self.$$.manLen += len
 }
 
-var adv_hdr: AdvHdr
-
-export function em$run() {
-    adv_hdr.init(ADV_IND)
-    printf`%x\n`(adv_hdr.advA[2])
+function AdvHdr__init(self: $$<AdvHdr>, adv_type: u8): void {
+    e$`memcpy(self, src, sizeof (AdvHdr))`
+    self.$$.advType = adv_type
 }

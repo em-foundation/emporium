@@ -3,6 +3,7 @@ export const $U = $declare('MODULE', AdapterI)
 
 import * as AdapterI from '@em.link/AdapterI.em'
 import * as BLE from '@em.link.ble/Types.em'
+import * as HeapStatic from '@em.utils/HeapStatic.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
@@ -13,9 +14,14 @@ export const Led = $proxy<LedI.$I>()
 export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
+const rx_adr = $config<addr_t>()
+const tx_adr = $config<addr_t>()
+
 export namespace em$meta {
     export function em$construct() {
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
+        rx_adr.$$val = HeapStatic.em$meta.alloc(40)
+        tx_adr.$$val = HeapStatic.em$meta.alloc(40)
     }
 }
 
@@ -24,20 +30,13 @@ export namespace em$meta {
 const ALL_ADV_CHANS = 0x7
 const NUM_ADV_CHANS = 3
 
+const rx_buf = $addr2<T.BufPtr>(rx_adr)
+const tx_buf = $addr2<T.BufPtr>(tx_adr)
+
+const adv_hdr = $addr2<ref_t<BLE.AdvHdr>>(tx_adr)
+
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
-}
-
-var rx_buf = $table<u8>()
-var tx_buf = $table<u8>()
-
-export namespace em$meta {
-    export function em$init() {
-        for (const _ of $range(40)) {
-            rx_buf.$$add(0)
-            tx_buf.$$add(0)
-        }
-    }
 }
 
 var adv_con_flag: bool_t
@@ -93,6 +92,21 @@ function controller() {
 }
 
 function doAdvScan(chan: u8) {
+    adv_hdr.$$.init(adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND)
+    adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<T.SchemaHash>())
+
+    /*
+        auto hdr = <Types.AdvHdr&>(txPtr)
+        hdr.init(advConFlag ? Types.ADV_IND : Types.ADV_NONCONN_IND)
+        hdr.addData(SysSupport.getSchemaHash(), sizeof<Dev.SchemaHash>)
+        auto nodeId = SysSupport.getNodeId()    
+        hdr.addData(&nodeId.devAddr, sizeof<Dev.Addr>)
+        SysSupport.setupParams(mix_SCAN)
+        radioOn()
+        RadioDriver.setup(RadioDriver.Mode.TX, chan)
+        RadioDriver.startTx(txPtr, *(txPtr + 1) + 2, false)
+    */
+
 }
 
 function radioHandler() {

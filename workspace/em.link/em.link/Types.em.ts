@@ -2,6 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 export const ADDR_SIZE = 6
+export const HASH_SIZE = 6
 
 export class Addr extends $vector<u8> { $len = ADDR_SIZE }
 
@@ -15,17 +16,17 @@ export enum Modulation {
 
 export type BufPtr = ptr_t<u8>
 export type Profile = cb_t<[$$<Params>]>
-export type Train = cb_t<[BufPtr, $$<BufPtr>]>
+export type Chain = cb_t<[BufPtr, $$<BufPtr>]>
 
 export class Params extends $struct {
     // bleAccAdr: u32
     ble_adv_chan_mask: u8
+    // bleCrain: Crain
     ble_connectible: bool_t
     // bleCrcInit: u32
     // bleEnable: bool_t
     // bleExchBuf: BufPtr
     // bleExchEndMs: u16
-    // bleTrain: Train
     // radioAckProf: Profile
     // radioAlign256: u16
     // radioChannel: u8
@@ -45,6 +46,8 @@ export class Params extends $struct {
     // sendStartMs: u16
     // sendStartWindowMs: u16
 }
+
+export class SchemaHash extends $vector<u8> { $len = HASH_SIZE }
 
 export type RecvDoneFxn = cb_t<[ConnectionStatus]>
 export type SendDoneFxn = cb_t<[]>
