@@ -388,6 +388,10 @@ namespace em {
         return <unknown>addr as T
     }
 
+    export function $cast2<T>(val: any): T {
+        return <unknown>val as T
+    }
+
     // #endregion
 
     const __REG__ = null
@@ -560,6 +564,8 @@ namespace em {
         | ref_t<any>
 
     export type volatile_t<T> = T
+
+    export type opaq_t = ptr_t<any> | ref_t<any>
 
     // #endregion
 
@@ -990,6 +996,9 @@ namespace em {
         $ptr(): ptr_t<T> {
             return new em$ptr<T>(this.items)
         }
+        $$(): ptr_t<T> {
+            return new em$ptr<T>(this.items)
+        }
     }
 
     // #endregion
@@ -1008,6 +1017,7 @@ declare global {
     type i16 = em.i16
     type i32 = em.i32
     type i64 = em.i64
+    type opaq_t = em.opaq_t
     type ptr_t<T> = em.ptr_t<T>
     type ref_t<T> = em.ref_t<T>
     type ref2_t<T> = T & { $obj: T }
@@ -1024,6 +1034,7 @@ declare global {
     const $addr2: typeof em.$addr2
     const $bkpt: typeof em.$bkpt
     const $board: typeof em.$board
+    const $cast2: typeof em.$cast2
     const $cb: typeof em.$cb
     const $cb$null: typeof em.$cb$null
     const $clone: typeof em.$clone
@@ -1064,6 +1075,7 @@ Object.assign(globalThis, {
     $addr2: em.$addr2,
     $bkpt: em.$bkpt,
     $board: em.$board,
+    $cast2: em.$cast2,
     $cb: em.$cb,
     $cb$null: em.$cb$null,
     $clone: em.$clone,

@@ -40,6 +40,8 @@ namespace em {
     auto $null = nullptr;
     typedef decltype(nullptr) null_t;
 
+    typedef void *opaq_t;
+
     template <typename T> T $addr2(addr_t a) {
         return (T)(a + (uint32_t)&__heap_addr__);
     }
