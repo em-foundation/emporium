@@ -19,15 +19,18 @@ import * as RfXtal from '@ti.radio.cc23xx/RfXtal.em'
 
 import * as LRF from '@ti.radio.cc23xx/LRF.em'
 
-export type Handler = cb_t<[]>
-
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
 }
 
+const handler = $config<RadioDriverI.Handler>()
+
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('LRFD_IRQ0')
+    }
+    export function bindHandler(h: RadioDriverI.Handler) {
+        handler.$$val = h
     }
 }
 
@@ -277,6 +280,7 @@ export function LRFD_IRQ0_isr$$() {
     // }
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     setState(State.READY)
+    if (handler != $null) handler()
 }
 
 export function em$run() {

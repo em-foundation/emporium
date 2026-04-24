@@ -14,10 +14,15 @@ enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
 }
 
+const handler = $config<RadioDriverI.Handler>()
+
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('RADIO')
         Idle.em$meta.addSleepLeave($cb(em$startup))
+    }
+    export function bindHandler(h: RadioDriverI.Handler) {
+        handler.$$val = h
     }
 }
 
@@ -123,4 +128,5 @@ export function RADIO_isr$$() {
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
     setState(State.READY)
+    if (handler != $null) handler()
 }
