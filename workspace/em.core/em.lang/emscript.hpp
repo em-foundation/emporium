@@ -248,6 +248,7 @@ namespace em {
     };
     text_t text(const char *str, u16 len) { return text_t(str, len); }
 
+    template <typename T> using const_t = const T;
     template <typename T> using volatile_t = volatile T;
 
     static inline volatile u16 *$reg16(u32 addr) {

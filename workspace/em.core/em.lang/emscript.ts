@@ -563,6 +563,7 @@ namespace em {
         | ptr_t<any>
         | ref_t<any>
 
+    export type const_t<T> = T
     export type volatile_t<T> = T
 
     export type opaq_t = ptr_t<any> | ref_t<any>
@@ -1009,6 +1010,7 @@ declare global {
     type arg_t = em.arg_t
     type bool_t = em.bool_t
     type cb_t<A extends any[] = []> = em.cb_t<A>
+    type const_t<T> = em.const_t<T>
     type dim_t<T, N extends number> = em.dim_t<T, N>
     type frame_t<T> = em.frame_t<T>
     type f32 = em.f32
