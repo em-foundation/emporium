@@ -22,3 +22,23 @@ export function print(label: text_t, p32: ptr_t<u32>, size: u32) {
     }
     printf`%s\n`(nl)
 }
+
+export function print8(label: text_t, ptr: arg_t, size: u32) {
+    printf`%s:\n`(label)
+    let p8 = <ptr_t<u8>>(ptr)
+    const cnt = size
+    const wid = 16
+    let nl: text_t = t$``
+    for (const i of $range(cnt)) {
+        if ((i % wid) == 0) {
+            printf`%s  %08x: `(nl, p8);
+            nl = t$``;
+        } else {
+            nl = t$`\n`;
+        }
+        printf`%02x `(p8.$$)
+        p8.$inc()
+    }
+    printf`%s\n`(nl)
+}
+
