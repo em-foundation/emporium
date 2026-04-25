@@ -220,6 +220,8 @@ namespace em {
         }
         operator frame_t<T>() { return $frame(0, 0); }
         operator index_t<T>() { return index_t<T>(&$$[0]); }
+        operator arg_t() const { return (arg_t)(&$$[0]); }
+
         ptr_t<T> $ptr() { return ptr_t<T>(&$$[0]); }
         static vec_t $make() { return vec_t(); }
     };
