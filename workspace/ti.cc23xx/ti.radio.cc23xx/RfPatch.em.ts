@@ -3,7 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
-import * as Config from '@em.link.ble/Config.em'
+import * as T from '@em.link/Types.em'
 
 const LRF_MCE_patch_genfsk = $table<u32>()
 const LRF_PBE_patch_generic = $table<u32>()
@@ -601,26 +601,26 @@ export namespace em$meta {
 
 var loaded = false
 
-export function loadAll() {
+export function loadAll(phy: T.Phy) {
     if (loaded) return
     loaded = true
-    switch (Config.getPhy()) {
-        case Config.Phy.BLE_1M:
+    switch (phy) {
+        case T.Phy.BLE_1M:
             loadPatch($R.LRFD_MCERAM_BASE, LRF_MCE_patch_ble5.$frame(0))
             loadPatch($R.LRFD_PBERAM_BASE, LRF_PBE_patch_ble5.$frame(0))
             loadPatch($R.LRFD_RFERAM_BASE, LRF_RFE_patch_ble5.$frame(0))
             break
-        case Config.Phy.PROP_1M:
+        case T.Phy.PROP_1M:
             loadPatch($R.LRFD_MCERAM_BASE, LRF_MCE_patch_ble5.$frame(0))
             loadPatch($R.LRFD_PBERAM_BASE, LRF_PBE_patch_generic.$frame(0))
             loadPatch($R.LRFD_RFERAM_BASE, LRF_RFE_patch_ble5.$frame(0))
             break
-        case Config.Phy.PROP_250K:
+        case T.Phy.PROP_250K:
             loadPatch($R.LRFD_MCERAM_BASE, LRF_MCE_patch_genfsk.$frame(0))
             loadPatch($R.LRFD_PBERAM_BASE, LRF_PBE_patch_generic.$frame(0))
             loadPatch($R.LRFD_RFERAM_BASE, LRF_RFE_patch_genfsk.$frame(0))
             break
-        case Config.Phy.NONE:
+        case T.Phy.NONE:
             break
     }
 }

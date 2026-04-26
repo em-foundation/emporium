@@ -2,10 +2,11 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@$distro/BoardC.em'
-import * as Config from '@em.link.ble/Config.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
+import * as Registry from '@em.link/Registry.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
-import * as TimeTypes from '@em.utils/TimeTypes.em'
+import * as TL from '@em.link/Types.em'
+import * as TT from '@em.utils/TimeTypes.em'
 
 export const RadioDriver = $delegate(BoardC.RadioDriver)
 
@@ -14,10 +15,6 @@ const ticker = $config<TickerMgr.Obj>()
 var adv_pkt = $table<u8>()
 
 export namespace em$meta {
-    export function em$configure() {
-        Config.phy.$$val = Config.Phy.BLE_1M
-        Config.tx_pwr_db.$$val = 0
-    }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
         let bytes = [
@@ -34,12 +31,18 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 export function em$run() {
-    ticker.$$.start(TimeTypes.Secs30p2_initMsecs(1000), $cb(tickCb))
+    Registry.setupParams($cb(setup))
+    ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
 }
 
+function setup(params: $$<TL.Params>) {
+    params.$$.radio_phy = TL.Phy.BLE_1M
+    params.$$.radio_power = 0
+}
+
 function tickCb() {
-    RadioDriver.enable()
+    RadioDriver.enable(Registry.getParams())
     for (const chan of $range(37, 40)) {
         RadioDriver.startTx(adv_pkt.$frame(0), chan)
         RadioDriver.waitReady()

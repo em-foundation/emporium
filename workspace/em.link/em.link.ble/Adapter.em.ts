@@ -94,6 +94,11 @@ function controller() {
 function doAdvScan(chan: u8) {
     adv_hdr.$$.init(adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND)
     adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<T.SchemaHash>())
+    const nid = Registry.getNodeId()
+    adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
+    Registry.setupParams($cb(mix_SCAN))
+    radioOn()
+    RadioDriver.startTx(adv_hdr.$$.frame(), chan)
 
     /*
         auto hdr = <Types.AdvHdr&>(txPtr)
@@ -109,6 +114,22 @@ function doAdvScan(chan: u8) {
 
 }
 
+function mix_SCAN(params: $$<T.Params>) {
+    params.$$.ble_enable = true
+    params.$$.radio_power = adv_power
+    /*
+    def mix_SCAN(params)
+        params.bleEnable = true
+        params.radioPower = advPower
+        return if !advConFlag
+        params.bleExchBuf = rxPtr
+        params.bleExchEndMs = 20
+        params.bleTrain = train_SCAN
+    end
+    */
+
+}
+
 function radioHandler() {
     controller()
 }
@@ -120,7 +141,7 @@ function radioOff() {
 }
 
 function radioOn() {
-    RadioDriver.enable()
+    RadioDriver.enable(Registry.getParams())
     Led.on()
     $['%%a+']
 }

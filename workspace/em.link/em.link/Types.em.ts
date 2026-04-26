@@ -11,27 +11,28 @@ export enum ConnectionStatus {
     ACTIVE, CLOSED, HANGUP, OPENING, RESTART, TIMEOUT
 }
 
-export enum Modulation {
+export enum Phy {
     NONE, BLE_1M, PROP_1M, PROP_250K,
 }
 
 export type BufPtr = ptr_t<u8>
+export type BufFrame = frame_t<u8>
 export type Profile = cb_t<[$$<Params>]>
 export type Chain = cb_t<[BufPtr, $$<BufPtr>]>
 
 export class Params extends $struct {
     // bleAccAdr: u32
     ble_adv_chan_mask: u8
-    // bleCrain: Crain
+    ble_chain: Chain
     ble_connectible: bool_t
     // bleCrcInit: u32
-    // bleEnable: bool_t
+    ble_enable: bool_t
     // bleExchBuf: BufPtr
     // bleExchEndMs: u16
     // radioAckProf: Profile
     // radioAlign256: u16
     // radioChannel: u8
-    // radioModulation: Modulation
+    radio_phy: Phy
     // radioNextProf: Profile
     radio_power: i8
     // radioRssiFloor: i8

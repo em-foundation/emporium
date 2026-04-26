@@ -3,7 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
-import * as Config from '@em.link.ble/Config.em'
+import * as T from '@em.link/Types.em'
 
 class Shape extends $struct {
     scale: u32
@@ -93,7 +93,7 @@ function findPllMBase(frequency: u32): u32 {
     return pllMBase
 }
 
-export function program(frequency: u32) {
+export function program(frequency: u32, phy: T.Phy) {
     const synthFrequency = frequency - 1_000_000 // TODO: generalize for different PHYs & RX/TX
     const synthFrequencyCompensated = scaleFreqWithHFXTOffset(synthFrequency)
     const frequencyDiv2_16 = (synthFrequency + (1 << 15)) >> 16
@@ -119,9 +119,9 @@ export function program(frequency: u32) {
     $reg16[$R.LRFD_RFERAM_BASE + $R.RFE_COMMON_RAM_O_RXIF] = <u16>findFoff(0, invSynthFreq) // rxFreqOff
     $reg16[$R.LRFD_RFERAM_BASE + $R.RFE_COMMON_RAM_O_TXIF] = <u16>findFoff(1_000_000, invSynthFreq) // txFreqOff
     programCMixN(1_000_000, invSynthFreq) // rxIntFreq
-    switch (Config.getPhy()) {
-        case Config.Phy.BLE_1M:
-        case Config.Phy.PROP_1M:
+    switch (phy) {
+        case T.Phy.BLE_1M:
+        case T.Phy.PROP_1M:
             programShape(BLE_1M_SHAPE, invSynthFreq << 4)
             break
     }

@@ -4,9 +4,9 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
-import * as Config from '@em.link.ble/Config.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as LRF from '@ti.radio.cc23xx/LRF.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as RfCtrl from '@ti.radio.cc23xx/RfCtrl.em'
 import * as RfFifo from '@ti.radio.cc23xx/RfFifo.em'
@@ -16,8 +16,7 @@ import * as RfPower from '@ti.radio.cc23xx/RfPower.em'
 import * as RfRegs from '@ti.radio.cc23xx/RfRegs.em'
 import * as RfTrim from '@ti.radio.cc23xx/RfTrim.em'
 import * as RfXtal from '@ti.radio.cc23xx/RfXtal.em'
-
-import * as LRF from '@ti.radio.cc23xx/LRF.em'
+import * as T from '@em.link/Types.em'
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -36,6 +35,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+var cur_params: $$<const_t<T.Params>>
+var cur_phy: T.Phy
 var cur_state: volatile_t<State> = State.IDLE
 var rx_timeout = false
 
@@ -45,18 +46,20 @@ export function disable() {
     RfXtal.disable()
 }
 
-export function enable() {
+export function enable(params: $$<const_t<T.Params>>) {
+    cur_params = params
+    cur_phy = params.$$.radio_phy
     setState(State.SETUP)
     RfXtal.enable()
     RfCtrl.enableClocks()
-    RfPatch.loadAll()
+    RfPatch.loadAll(cur_phy)
     RfXtal.waitReady() // latest possible sync point
     RfRegs.setup()
     $reg32[$R.LRFDRFE_BASE + $R.LRFDRFE_O_RSSI] = 127
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD] = <u16>(($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD) & 0x0FFF) >> 2
     RfTrim.apply()
-    switch (Config.getPhy()) {
-        case Config.Phy.BLE_1M:
+    switch (cur_phy) {
+        case T.Phy.BLE_1M:
             $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8E89_BED6
             $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_CRCINITL] = (0x555555 << 8)
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_EXTRABYTES] = 6 // stat + rssi + timestamp
@@ -71,8 +74,8 @@ export function enable() {
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_FL2MASK] = 0
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 0
             break
-        case Config.Phy.PROP_1M:
-        case Config.Phy.PROP_250K:
+        case T.Phy.PROP_1M:
+        case T.Phy.PROP_250K:
             $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x7B8A_D0C9 // scramble(0x930B_51DE)
             break
     }
@@ -110,7 +113,7 @@ export function startCs(chan: u8, timeout: u16) {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_MAXLEN] = 32 // TODO
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_RXTIMEOUT] = timeout * 4
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_FIRSTRXTIMEOUT] = timeout * 4
-    RfFreq.program(Channel.getFrequency(chan))
+    RfFreq.program(Channel.getFrequency(chan), cur_phy)
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
@@ -138,7 +141,7 @@ export function startCw(chan: u8, power: i8) {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = ($R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF)
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_PATTERN] = 0
     $R.LRFDMDM.MODCTRL.$$ |= $R.LRFDMDM_MODCTRL_TONEINSERT_M
-    RfFreq.program(Channel.getFrequency(chan))
+    RfFreq.program(Channel.getFrequency(chan), cur_phy)
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
     $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
@@ -152,8 +155,8 @@ export function startRx(chan: u8, timeout: u16) {
     rx_timeout = false
     const whiten_init = chan | 0x40
     let op = 0
-    switch (Config.getPhy()) {
-        case Config.Phy.BLE_1M:
+    switch (cur_phy) {
+        case T.Phy.BLE_1M:
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_MAXLEN] = 37
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 1 << $R.PBE_BLE5_RAM_OPCFG_REPEAT_S
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = whiten_init
@@ -177,8 +180,8 @@ export function startRx(chan: u8, timeout: u16) {
             // reg($R.LRFDMDM_BASE + $R.LRFDMDM_O_DEMC1BE2).* = demc1be2
             op = $R.PBE_BLE5_REGDEF_API_OP_RXRAW
             break
-        case Config.Phy.PROP_1M:
-        case Config.Phy.PROP_250K:
+        case T.Phy.PROP_1M:
+        case T.Phy.PROP_250K:
             const cfg_val: u32 =
                 (0 << $R.PBE_GENERIC_RAM_OPCFG_RXFILTEROP_S) |
                 (1 << $R.PBE_GENERIC_RAM_OPCFG_RXINCLUDEHDR_S) |
@@ -202,7 +205,7 @@ export function startRx(chan: u8, timeout: u16) {
             op = $R.PBE_GENERIC_REGDEF_API_OP_RX
             break
     }
-    RfFreq.program(Channel.getFrequency(chan))
+    RfFreq.program(Channel.getFrequency(chan), cur_phy)
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpError | LRF.EventRxNok | LRF.EventRxOk | LRF.EventSystim1
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
@@ -214,22 +217,22 @@ export function startRx(chan: u8, timeout: u16) {
     $R.LRFDPBE.API.$$ = op
 }
 
-export function startTx(pkt: frame_t<u8>, chan: u8) {
+export function startTx(buf: T.BufFrame, chan: u8) {
     setState(State.TX)
     // _ = pkt
-    RfFifo.writePkt(pkt)
+    RfFifo.writePkt(buf)
     // reg($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD).* = ($R.LRFDPBE_FCMD_DATA_TXFIFO_RETRY >> $R.LRFDPBE_FCMD_DATA_S)
-    RfPower.program(Config.getTxPwr())
+    RfPower.program(cur_params.$$.radio_power)
     RfCtrl.enableImages()
     let op = 0
-    switch (Config.getPhy()) {
-        case Config.Phy.BLE_1M:
+    switch (cur_phy) {
+        case T.Phy.BLE_1M:
             op = $R.PBE_BLE5_REGDEF_API_OP_TXRAW
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 0
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = chan | 0x40
             break
-        case Config.Phy.PROP_1M:
-        case Config.Phy.PROP_250K:
+        case T.Phy.PROP_1M:
+        case T.Phy.PROP_250K:
             op = $R.PBE_GENERIC_REGDEF_API_OP_TX
             const cfg_val =
                 (0 << $R.PBE_GENERIC_RAM_OPCFG_TXINFINITE_S) |
@@ -247,7 +250,7 @@ export function startTx(pkt: frame_t<u8>, chan: u8) {
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = $R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF
             break
     }
-    RfFreq.program(Channel.getFrequency(chan))
+    RfFreq.program(Channel.getFrequency(chan), cur_phy)
     $R.LRFDDBELL.IMASK0.$$ |= LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
@@ -281,8 +284,4 @@ export function LRFD_IRQ0_isr$$() {
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     setState(State.READY)
     if (handler != $null) handler()
-}
-
-export function em$run() {
-    enable()
 }

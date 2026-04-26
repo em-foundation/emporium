@@ -30,6 +30,7 @@ export class AdvHdr extends $struct {
     manIdLo: u8
     manIdHi: u8
     addData: (src: opaq_t, len: u16) => void
+    frame: () => T.BufFrame
     init: (advType: u8) => void
     // isMine: () => bool_t
 }
@@ -62,6 +63,11 @@ function AdvHdr__addData(self: $$<AdvHdr>, src: opaq_t, len: u16): void {
     e$`memcpy(bp + off, src, len)`
     self.$$.pduLen += len
     self.$$.manLen += len
+}
+
+function AdvHdr__frame(self: $$<AdvHdr>): T.BufFrame {
+    const bp = $cast2<T.BufPtr>(self)
+    return bp.$frame(self.$$.pduLen + 2)
 }
 
 function AdvHdr__init(self: $$<AdvHdr>, adv_type: u8): void {
