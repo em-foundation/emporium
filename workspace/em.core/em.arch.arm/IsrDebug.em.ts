@@ -10,7 +10,7 @@ export function exec() {
     let vnum = <u32>e$`__get_IPSR()`
     $['%%>'](vnum)
     let fp = <ptr_t<u32>>e$`__get_MSP()`
-    $['%%>'](fp.$cur())
+    $['%%>'](fp.$$)
     for (const _ of $range(8)) {
         $['%%b']
         $['%%>'](fp.$$)

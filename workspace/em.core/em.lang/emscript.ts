@@ -277,9 +277,9 @@ namespace em {
     export type index_t<T> = { [index: number]: T }
 
     export interface ptr_t<T> extends ref_t<T>, index_t<T> {
-        $cur(): u32
         $dec(): void
         $inc(): void
+        $frame(len: u16): frame_t<T>
     }
 
     class em$oref<T> implements ref_t<T> {
@@ -339,14 +339,14 @@ namespace em {
         set $$(v: T) {
             this.arr[this.idx] = v
         }
-        $cur() {
-            return this.idx
-        }
         $dec() {
             this.idx -= 1
         }
         $inc() {
             this.idx += 1
+        }
+        $frame(len: u16) {
+            return frame$create<T>(this.arr, 0, this.idx, len)
         }
     }
 

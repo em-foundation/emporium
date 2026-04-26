@@ -131,14 +131,18 @@ namespace em {
         T *p_;
         constexpr ptr_t(T *v = null) : p_(v) {}
         constexpr ptr_t(u32 a) : p_((T *)a) {}
+        T &operator*() { return *p_; }
         T &operator*() const { return *p_; }
+        T *operator->() { return p_; }
         T *operator->() const { return p_; }
         T &operator[](u16 index) { return *(p_ + index); }
-        const T &operator[](u16 index) const { return *(p_ + index); }
+        T &operator[](u16 index) const { return *(p_ + index); }
         operator arg_t() const { return (arg_t)(p_); }
-        arg_t $cur() const { return (arg_t)(p_); }
         void $dec() { p_ -= 1; }
         void $inc() { p_ += 1; }
+        frame_t<T> $frame(u16 len) const {
+            return frame_t<T>::create(p_, len, 0, len);
+        }
     };
 
     template <typename T> struct range_t {
