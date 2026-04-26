@@ -1,15 +1,17 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-const top = $config<u16>(0)
+export type Adr = u16
+
+const top = $config<Adr>(0)
 
 export namespace em$meta {
-    export function alloc(size: u16): addr_t {
-        const addr = top.$$val
+    export function alloc(size: u16): Adr {
+        const adr = top.$$val
         top.$$val += size
-        return addr
+        return adr
     }
-    export function size(): u16 {
+    export function size(): Adr {
         return top.$$val
     }
 }
@@ -18,15 +20,15 @@ export namespace em$meta {
 
 e$`extern "C" uint32_t __heap_addr__`
 
-export function base(): addr_t {
-    return <u32>(e$`&__heap_addr__`)
+export function base(): opaq_t {
+    return <opaq_t>(e$`&__heap_addr__`)
 }
 
-export function opaq(a: addr_t): opaq_t {
+export function opaq(a: Adr): opaq_t {
     return <opaq_t>(e$`a + (uint8_t *)(&__heap_addr__)`)
 
 }
 
-export function size(): u16 {
+export function size(): Adr {
     return top
 }
