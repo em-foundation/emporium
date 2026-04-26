@@ -40,15 +40,21 @@ namespace em {
     auto $null = nullptr;
     typedef decltype(nullptr) null_t;
 
-    typedef void *opaq_t;
-
     template <typename T> T $addr2(addr_t a) {
         return (T)(a + (uint32_t)&__heap_addr__);
     }
 
+    struct opaq_t {
+        void *p_;
+        constexpr opaq_t(void *p) : p_(p) {}
+        operator void *() const { return p_; }
+        operator arg_t() const { return (arg_t)(p_); }
+    };
+
     template <typename T> struct ref_t {
         T *$$;
         constexpr ref_t(T *lval = null) : $$(lval) {}
+        constexpr ref_t(u32 a) : $$((T *)a) {}
         T &operator*() const { return *$$; }
         T *operator->() const { return $$; }
         operator arg_t() const { return (arg_t)($$); }
