@@ -5,6 +5,7 @@ export const ADDR_SIZE = 6
 export const HASH_SIZE = 6
 
 export class Addr extends $vector<u8> { $len = ADDR_SIZE }
+export class SchemaHash extends $vector<u8> { $len = HASH_SIZE }
 
 export enum ConnectionStatus {
     ACTIVE, CLOSED, HANGUP, OPENING, RESTART, TIMEOUT
@@ -47,7 +48,10 @@ export class Params extends $struct {
     // sendStartWindowMs: u16
 }
 
-export class SchemaHash extends $vector<u8> { $len = HASH_SIZE }
+export class NodeId extends $struct {
+    schemaNumber: u16
+    devAddr: Addr
+}
 
 export type RecvDoneFxn = cb_t<[ConnectionStatus]>
 export type SendDoneFxn = cb_t<[]>

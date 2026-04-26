@@ -362,6 +362,8 @@ namespace em {
         return new em$ref<T>(lval)
     }
 
+    export const $$ = $ref
+
     type eref_t<T> = T & { $test: bool_t }
 
     function em$eref<T>(arr: T[], idx: i16, cn: string): eref_t<T> {
@@ -1026,6 +1028,7 @@ declare global {
     type $$<T> = em.$$<T>
     type $Reg = em.$Reg
     const $: typeof em.$
+    const $$: typeof em.$$
     const $bkpt: typeof em.$bkpt
     const $board: typeof em.$board
     const $cast2: typeof em.$cast2
@@ -1066,6 +1069,7 @@ declare global {
 
 Object.assign(globalThis, {
     $: em.$,
+    $$: em.$$,
     $bkpt: em.$bkpt,
     $board: em.$board,
     $cast2: em.$cast2,

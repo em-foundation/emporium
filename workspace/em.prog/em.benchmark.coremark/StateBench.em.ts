@@ -250,7 +250,7 @@ function scan(finalCnt: index_t<u32>, transCnt: index_t<u32>) {
     let str = membuf.$ptr()
     let cnt = <u32>0
     while (str.$$) {
-        let state = nextState($ref(str), transCnt)
+        let state = nextState($$(str), transCnt)
         cnt += 1
         finalCnt[ord(state)] += 1
     }

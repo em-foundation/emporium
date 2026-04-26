@@ -65,7 +65,7 @@ export function run(arg: i16): Utils.sum_t {
     data.idx = finderIdx
     for (let i of $range(findCnt)) {
         data.val = <i16>(i & 0xff)
-        let elem = find(list, $ref(data))
+        let elem = find(list, $$(data))
         list = reverse(list)
         if (!elem) {
             missed += 1
@@ -87,7 +87,7 @@ export function run(arg: i16): Utils.sum_t {
     retval += found * 4 - missed
     if (finderIdx > 0) list = sort(list, valCompare)
     let remover = remove(list.$$.next)
-    let finder = find(list, $ref(data))
+    let finder = find(list, $$(data))
     if (!finder) finder = list.$$.next
     while (finder) {
         retval = Crc.add16(list.$$.data.$$.val, retval)
@@ -295,7 +295,7 @@ function valCalc(pval: $$<i16>): i16 {
 }
 
 function valCompare(a: $$<Data>, b: $$<Data>): i32 {
-    let val1 = valCalc($ref(a.$$.val))
-    let val2 = valCalc($ref(b.$$.val))
+    let val1 = valCalc($$(a.$$.val))
+    let val2 = valCalc($$(b.$$.val))
     return val1 - val2
 }

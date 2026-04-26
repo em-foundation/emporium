@@ -87,9 +87,9 @@ Alarm.prototype.isActive = function (this: Alarm): bool_t {
 }
 
 Alarm.prototype.wakeup = function (this: Alarm, delta_qs: T.Secs30p2) {
-    setup($ref(this), delta_qs, false)
+    setup($$(this), delta_qs, false)
 }
 
 Alarm.prototype.wakeupAligned = function (this: Alarm, delta_qs: T.Secs30p2) {
-    setup($ref(this), delta_qs, true)
+    setup($$(this), delta_qs, true)
 }

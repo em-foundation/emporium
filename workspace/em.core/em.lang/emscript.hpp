@@ -64,6 +64,24 @@ namespace em {
         return ref_t<T>(&lval);
     }
 
+    template <typename T>
+    constexpr ref_t<T>
+    $ref(T *val) { // Template the factory function and pass by reference
+        return ref_t<T>(val);
+    }
+
+    template <typename T>
+    constexpr ref_t<T>
+    $$(T &lval) { // Template the factory function and pass by reference
+        return ref_t<T>(&lval);
+    }
+
+    template <typename T>
+    constexpr ref_t<T>
+    $$(T *val) { // Template the factory function and pass by reference
+        return ref_t<T>(val);
+    }
+
     template <typename T> struct frame_t {
         static frame_t<T> create(T arr[], u16 dim, i16 beg, u16 len) {
             auto idx = (u16)((beg < 0) ? dim + beg : beg);
@@ -150,12 +168,6 @@ namespace em {
     }
 
     template <typename T> u16 $sizeof() { return sizeof(T); }
-
-    template <typename T>
-    constexpr ref_t<T>
-    $ref(T *val) { // Template the factory function and pass by reference
-        return ref_t<T>(val);
-    }
 
     template <typename T, u16 N> struct table_ro {
         T $$[N];

@@ -35,7 +35,7 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 function alarmFB(a: arg_t) {
-    const ticker = $ref(ticker_tab[<u16>a])
+    const ticker = $$(ticker_tab[<u16>a])
     if (ticker.$$._tick_cb == $null) return
     ticker.$$._tick_cb()
     ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)

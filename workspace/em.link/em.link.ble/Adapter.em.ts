@@ -3,7 +3,7 @@ export const $U = $declare('MODULE', AdapterI)
 
 import * as AdapterI from '@em.link/AdapterI.em'
 import * as BLE from '@em.link.ble/Types.em'
-import * as HeapStatic from '@em.utils/HeapStatic.em'
+import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
@@ -14,14 +14,14 @@ export const Led = $proxy<LedI.$I>()
 export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
-const rx_adr = $config<addr_t>()
-const tx_adr = $config<addr_t>()
+const rx_adr = $config<Heap.Adr>()
+const tx_adr = $config<Heap.Adr>()
 
 export namespace em$meta {
     export function em$construct() {
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
-        rx_adr.$$val = HeapStatic.em$meta.alloc(40)
-        tx_adr.$$val = HeapStatic.em$meta.alloc(40)
+        rx_adr.$$val = Heap.em$meta.alloc(40)
+        tx_adr.$$val = Heap.em$meta.alloc(40)
     }
 }
 
@@ -30,10 +30,10 @@ export namespace em$meta {
 const ALL_ADV_CHANS = 0x7
 const NUM_ADV_CHANS = 3
 
-const rx_buf = $addr2<T.BufPtr>(rx_adr)
-const tx_buf = $addr2<T.BufPtr>(tx_adr)
+const rx_buf = <T.BufPtr>Heap.opaq(rx_adr)
+const tx_buf = <T.BufPtr>Heap.opaq(tx_adr)
 
-const adv_hdr = $addr2<ref_t<BLE.AdvHdr>>(tx_adr)
+const adv_hdr = <$$<BLE.AdvHdr>>Heap.opaq(tx_adr)
 
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE

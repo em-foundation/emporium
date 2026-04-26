@@ -60,7 +60,7 @@ export function run() {
 
 Fiber.prototype.post = function (this: Fiber): void {
     let key = Common.GlobalInterrupts.disable()
-    if (this.link == $null) ready_list.give($ref(this))
+    if (this.link == $null) ready_list.give($$(this))
     Common.GlobalInterrupts.restore(key)
 }
 
