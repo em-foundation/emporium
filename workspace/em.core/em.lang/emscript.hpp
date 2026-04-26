@@ -30,8 +30,6 @@ namespace em {
     using u32 = uint32_t;
     using u64 = uint64_t;
 
-    using addr_t = uint32_t;
-
     using arg_t = uint32_t;
 
     using bool_t = bool;
@@ -39,10 +37,6 @@ namespace em {
     auto null = nullptr;
     auto $null = nullptr;
     typedef decltype(nullptr) null_t;
-
-    template <typename T> T $addr2(addr_t a) {
-        return (T)(a + (uint32_t)&__heap_addr__);
-    }
 
     struct opaq_t {
         void *p_;
