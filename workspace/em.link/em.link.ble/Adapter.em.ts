@@ -3,6 +3,7 @@ export const $U = $declare('MODULE', AdapterI)
 
 import * as AdapterI from '@em.link/AdapterI.em'
 import * as BLE from '@em.link.ble/Types.em'
+import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
@@ -14,11 +15,14 @@ export const Led = $proxy<LedI.$I>()
 export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
+const controllerF = $config<FiberMgr.Obj>()
+
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
 
 export namespace em$meta {
     export function em$construct() {
+        controllerF.$$val = FiberMgr.em$meta.create($cb(controllerFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
@@ -64,14 +68,15 @@ export function recvMsg(on_done: T.RecvDoneFxn) {
 }
 
 function controller() {
+    $['%%c:'](cur_state)
     while (true) {
         switch (cur_state) {
             case State.ADV_PAUSE: {
-                if (--adv_count == 0) {
+                radioOff()
+                if (adv_count-- == 0) {
                     recv_done(T.ConnectionStatus.TIMEOUT)
                     return
                 }
-                radioOff()
                 setState(State.ADV_SCAN)
                 setTimeout(adv_inter)
                 return
@@ -89,6 +94,10 @@ function controller() {
             }
         }
     }
+}
+
+function controllerFB(_: arg_t) {
+    controller()
 }
 
 function doAdvScan(chan: u8) {
@@ -119,7 +128,7 @@ function mix_SCAN(params: $$<T.Params>) {
 }
 
 function radioHandler() {
-    controller()
+    controllerF.$$.post()
 }
 
 function radioOff() {
@@ -139,10 +148,11 @@ function setState(s: State) {
 }
 
 function setTimeout(msecs: u32) {
+    $['%%>'](msecs)
     OneShot.disable()
     OneShot.enable(msecs, $cb(timerHandler), 0)
 }
 
 function timerHandler(_: arg_t) {
-    controller()
+    controllerF.$$.post()
 }

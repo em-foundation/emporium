@@ -3,6 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as LinkC from '@em.link.ble/LinkC.em'
+import * as Registry from '@em.link/Registry.em'
 import * as T from '@em.link/Types.em'
 
 const Adapter = $delegate(LinkC.Adapter)
@@ -10,6 +11,10 @@ const Adapter = $delegate(LinkC.Adapter)
 const recvF = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
+    export function em$configure() {
+        Registry.DEFAULT_PARAMS.$$val.send_count = 2
+        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 100
+    }
     export function em$construct() {
         recvF.$$val = FiberMgr.em$meta.create($cb(recvFB))
     }

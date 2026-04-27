@@ -42,6 +42,7 @@ var cur_state: volatile_t<State> = State.IDLE
 var rx_timeout = false
 
 export function disable() {
+    Idle.setPauseOnly(false)
     setState(State.IDLE)
     RfCtrl.disable()
     RfXtal.disable()
@@ -80,6 +81,7 @@ export function enable() {
             $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x7B8A_D0C9 // scramble(0x930B_51DE)
             break
     }
+    Idle.setPauseOnly(true)
     setState(State.READY)
 }
 
@@ -260,11 +262,9 @@ export function startTx(buf: T.BufFrame, chan: u8) {
 }
 
 export function waitReady() {
-    Idle.setPauseOnly(true)
     while (cur_state != State.READY) {
         Idle.exec()
     }
-    Idle.setPauseOnly(false)
 }
 
 export function LRFD_IRQ0_isr$$() {
