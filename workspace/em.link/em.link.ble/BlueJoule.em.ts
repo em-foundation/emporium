@@ -15,6 +15,10 @@ const ticker = $config<TickerMgr.Obj>()
 var adv_pkt = $table<u8>()
 
 export namespace em$meta {
+    export function em$configure() {
+        Registry.DEFAULT_PARAMS.$$val.radio_phy = TL.Phy.BLE_1M
+        Registry.DEFAULT_PARAMS.$$val.radio_power = 0
+    }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
         let bytes = [
@@ -31,18 +35,12 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 export function em$run() {
-    Registry.setupParams($cb(setup))
     ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
 }
 
-function setup(params: $$<TL.Params>) {
-    params.$$.radio_phy = TL.Phy.BLE_1M
-    params.$$.radio_power = 0
-}
-
 function tickCb() {
-    RadioDriver.enable(Registry.getParams())
+    RadioDriver.enable()
     for (const chan of $range(37, 40)) {
         RadioDriver.startTx(adv_pkt.$frame(0), chan)
         RadioDriver.waitReady()
