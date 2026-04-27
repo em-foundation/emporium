@@ -4,10 +4,10 @@ export const $U = $declare('MODULE')
 import * as Mem from '@em.utils/Mem.em'
 import * as T from '@em.link/Types.em'
 
+export const DEFAULT_PARAMS = $config<T.Params>()
+
 const node_id = $config<T.NodeId>()
 const sch_hash = $config<T.SchemaHash>()
-
-const DEFAULT_PARAMS = $config<T.Params>()
 
 export namespace em$meta {
     export function bindNodeId(nid: T.NodeId) {

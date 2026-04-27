@@ -12,6 +12,6 @@ export interface em$meta {
 export interface $I {
     em$meta: em$meta
     disable(): void
-    enable(params: $$<T.Params>): void
+    enable(): void
     startTx(buf: T.BufFrame, chan: u8): void
 }

@@ -8,6 +8,7 @@ import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LRF from '@ti.radio.cc23xx/LRF.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
+import * as Registry from '@em.link/Registry.em'
 import * as RfCtrl from '@ti.radio.cc23xx/RfCtrl.em'
 import * as RfFifo from '@ti.radio.cc23xx/RfFifo.em'
 import * as RfFreq from '@ti.radio.cc23xx/RfFreq.em'
@@ -46,9 +47,9 @@ export function disable() {
     RfXtal.disable()
 }
 
-export function enable(params: $$<const_t<T.Params>>) {
-    cur_params = params
-    cur_phy = params.$$.radio_phy
+export function enable() {
+    cur_params = Registry.getParams()
+    cur_phy = cur_params.$$.radio_phy
     setState(State.SETUP)
     RfXtal.enable()
     RfCtrl.enableClocks()
