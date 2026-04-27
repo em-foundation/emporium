@@ -99,23 +99,11 @@ function doAdvScan(chan: u8) {
     Registry.setupParams($cb(mix_SCAN))
     radioOn()
     RadioDriver.startTx(adv_hdr.$$.frame(), chan)
-
-    /*
-        auto hdr = <Types.AdvHdr&>(txPtr)
-        hdr.init(advConFlag ? Types.ADV_IND : Types.ADV_NONCONN_IND)
-        hdr.addData(SysSupport.getSchemaHash(), sizeof<Dev.SchemaHash>)
-        auto nodeId = SysSupport.getNodeId()    
-        hdr.addData(&nodeId.devAddr, sizeof<Dev.Addr>)
-        SysSupport.setupParams(mix_SCAN)
-        radioOn()
-        RadioDriver.setup(RadioDriver.Mode.TX, chan)
-        RadioDriver.startTx(txPtr, *(txPtr + 1) + 2, false)
-    */
-
 }
 
 function mix_SCAN(params: $$<T.Params>) {
     params.$$.ble_enable = true
+    params.$$.radio_phy = T.Phy.BLE_1M
     params.$$.radio_power = adv_power
     /*
     def mix_SCAN(params)
@@ -141,7 +129,7 @@ function radioOff() {
 }
 
 function radioOn() {
-    RadioDriver.enable(Registry.getParams())
+    RadioDriver.enable()
     Led.on()
     $['%%a+']
 }
@@ -152,5 +140,9 @@ function setState(s: State) {
 
 function setTimeout(msecs: u32) {
     OneShot.disable()
-    OneShot.enable(msecs, $cb(controller), 0)
+    OneShot.enable(msecs, $cb(timerHandler), 0)
+}
+
+function timerHandler(_: arg_t) {
+    controller()
 }

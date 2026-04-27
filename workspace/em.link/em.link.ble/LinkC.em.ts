@@ -12,6 +12,8 @@ export function em$configure() {
     Adapter.RadioDriver.$$dlg = $delegate(BoardC.RadioDriver)
 }
 
+export { Adapter }
+
 export function em$construct() {
     //
     let sh = TL.SchemaHash.$make()

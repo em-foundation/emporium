@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Mem from '@em.utils/Mem.em'
 import * as T from '@em.link/Types.em'
 
 export const ADV_CHAN = 37
@@ -29,9 +30,11 @@ export class AdvHdr extends $struct {
     manCode: u8
     manIdLo: u8
     manIdHi: u8
-    addData: (src: opaq_t, len: u16) => void
-    frame: () => T.BufFrame
-    init: (advType: u8) => void
+}
+export interface AdvHdr {
+    addData(this: AdvHdr, src: opaq_t, len: u16): void
+    frame(this: AdvHdr): T.BufFrame
+    init(this: AdvHdr, advType: u8): void
     // isMine: () => bool_t
 }
 
@@ -57,20 +60,21 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-function AdvHdr__addData(self: $$<AdvHdr>, src: opaq_t, len: u16): void {
-    const bp = $cast2<T.BufPtr>(self)
-    const off = self.$$.pduLen + 2
-    e$`memcpy(bp + off, src, len)`
-    self.$$.pduLen += len
-    self.$$.manLen += len
+
+AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void {
+    const bp = $cast2<T.BufPtr>($$(this))
+    const off = this.pduLen + 2
+    Mem.cpy($$(bp[off]), src, len)
+    this.pduLen += len
+    this.manLen += len
 }
 
-function AdvHdr__frame(self: $$<AdvHdr>): T.BufFrame {
-    const bp = $cast2<T.BufPtr>(self)
-    return bp.$frame(self.$$.pduLen + 2)
+AdvHdr.prototype.frame = function (this: AdvHdr): T.BufFrame {
+    const bp = $cast2<T.BufPtr>($$(this))
+    return bp.$frame(this.pduLen + 2)
 }
 
-function AdvHdr__init(self: $$<AdvHdr>, adv_type: u8): void {
-    e$`memcpy(self, src, sizeof (AdvHdr))`
-    self.$$.advType = adv_type
+AdvHdr.prototype.init = function (this: AdvHdr, adv_type: u8): void {
+    Mem.cpy($$(this), $$(ADV_LEG_INIT), $sizeof<AdvHdr>())
+    this.advType = adv_type
 }

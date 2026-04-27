@@ -39,9 +39,10 @@ namespace em {
     typedef decltype(nullptr) null_t;
 
     struct opaq_t {
-        void *p_;
+        const void *p_;
         constexpr opaq_t(void *p) : p_(p) {}
-        operator void *() const { return p_; }
+        constexpr opaq_t(const void *p) : p_(p) {}
+        operator const void *() const { return p_; }
         operator arg_t() const { return (arg_t)(p_); }
     };
 
@@ -234,9 +235,10 @@ namespace em {
         frame_t<T> $frame(i16 beg, u16 len = 0) {
             return frame_t<T>::create($$, $len, beg, len);
         }
+        operator arg_t() const { return (arg_t)(&$$[0]); }
         operator frame_t<T>() { return $frame(0, 0); }
         operator index_t<T>() { return index_t<T>(&$$[0]); }
-        operator arg_t() const { return (arg_t)(&$$[0]); }
+        operator opaq_t() const { return (opaq_t)(&$$[0]); }
 
         ptr_t<T> $ptr() { return ptr_t<T>(&$$[0]); }
         static vec_t $make() { return vec_t(); }
