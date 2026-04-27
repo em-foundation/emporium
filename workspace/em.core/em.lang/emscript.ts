@@ -152,6 +152,36 @@ namespace em {
 
     // #endregion
 
+    const __ENUM__ = null
+    // #region
+
+    export type enum_t<E> = E[keyof E]
+
+    export function $enum<Name extends string>(
+        name: Name,
+        names: string[]
+    ): any {
+        const e: any = {}
+
+        names.forEach((sym, value) => {
+            const v: any = {
+                __em$class: 'em$enum',
+                $enum: name,
+                $name: sym,
+                $value: value,
+                valueOf() { return value },
+                toString() { return String(value) },
+            }
+
+            e[sym] = v
+            e[value] = sym
+        })
+
+        return e
+    }
+
+    // #endregion
+
     const __FRAME__ = null
     // #region
 
@@ -1007,6 +1037,7 @@ declare global {
     type cb_t<A extends any[] = []> = em.cb_t<A>
     type const_t<T> = em.const_t<T>
     type dim_t<T, N extends number> = em.dim_t<T, N>
+    type enum_t<T> = em.enum_t<T>
     type frame_t<T> = em.frame_t<T>
     type f32 = em.f32
     type index_t<T> = em.index_t<T>
@@ -1027,6 +1058,7 @@ declare global {
     type volatile_t<T> = em.volatile_t<T>
     type $$<T> = em.$$<T>
     type $Reg = em.$Reg
+
     const $: typeof em.$
     const $$: typeof em.$$
     const $bkpt: typeof em.$bkpt
@@ -1039,6 +1071,7 @@ declare global {
     const $declare: typeof em.$declare
     const $default: typeof em.$default
     const $delegate: typeof em.$delegate
+    const $enum: typeof em.$enum
     const $frame: typeof em.$frame
     const $implements: typeof em.$implements
     const $isbare: typeof em.$isbare
@@ -1065,6 +1098,7 @@ declare global {
     const $$tdefs: Map<string, string>
     const $$units: Map<string, any>
     const __$declare: typeof em.__$declare
+
 }
 
 Object.assign(globalThis, {
@@ -1080,6 +1114,7 @@ Object.assign(globalThis, {
     $declare: em.$declare,
     $default: em.$default,
     $delegate: em.$delegate,
+    $enum: em.$enum,
     $frame: em.$frame,
     $implements: em.$implements,
     $isbare: em.$isbare,
