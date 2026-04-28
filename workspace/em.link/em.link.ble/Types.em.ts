@@ -35,6 +35,7 @@ export interface AdvHdr {
     addData(this: AdvHdr, src: opaq_t, len: u16): void
     frame(this: AdvHdr): T.BufFrame
     init(this: AdvHdr, advType: u8): void
+    print(this: AdvHdr): void
     // isMine: () => bool_t
 }
 
@@ -42,6 +43,13 @@ const ADV_LEG_INIT = $config<AdvHdr>()
 
 export namespace em$meta {
     export function em$construct() {
+        ADV_LEG_INIT.$$val.pduLen = $sizeof<AdvHdr>() - 2
+        ADV_LEG_INIT.$$val.advA[0] = 0xaa
+        ADV_LEG_INIT.$$val.advA[1] = 0xaa
+        ADV_LEG_INIT.$$val.advA[2] = 0xaa
+        ADV_LEG_INIT.$$val.advA[3] = 0xaa
+        ADV_LEG_INIT.$$val.advA[4] = 0xaa
+        ADV_LEG_INIT.$$val.advA[5] = 0xaa
         ADV_LEG_INIT.$$val.flagsLen = 2
         ADV_LEG_INIT.$$val.flagsCode = 0x1
         ADV_LEG_INIT.$$val.flagsVal = 0x6 // BR_EDR_NOT_SUPPORTED | LE_GENERAL_DISC_MODE
@@ -49,12 +57,6 @@ export namespace em$meta {
         ADV_LEG_INIT.$$val.manCode = 0xff
         ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
         ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
-        ADV_LEG_INIT.$$val.advA[0] = 0xaa
-        ADV_LEG_INIT.$$val.advA[1] = 0xaa
-        ADV_LEG_INIT.$$val.advA[2] = 0xbb
-        ADV_LEG_INIT.$$val.advA[3] = 0xbb
-        ADV_LEG_INIT.$$val.advA[4] = 0xcc
-        ADV_LEG_INIT.$$val.advA[5] = 0xcc
     }
 }
 
@@ -77,4 +79,11 @@ AdvHdr.prototype.frame = function (this: AdvHdr): T.BufFrame {
 AdvHdr.prototype.init = function (this: AdvHdr, adv_type: u8): void {
     Mem.cpy($$(this), $$(ADV_LEG_INIT), $sizeof<AdvHdr>())
     this.advType = adv_type
+}
+
+AdvHdr.prototype.print = function (this: AdvHdr): void {
+    for (const b of this.frame()) {
+        printf`%02x `(b.$$)
+    }
+    printf`\n`()
 }

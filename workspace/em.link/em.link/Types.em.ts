@@ -27,8 +27,8 @@ export class Params extends $struct {
     ble_connectible: bool_t
     // bleCrcInit: u32
     ble_enable: bool_t
-    // bleExchBuf: BufPtr
-    // bleExchEndMs: u16
+    ble_exch_buf: BufPtr
+    ble_exch_end_ms: u16
     // radioAckProf: Profile
     // radioAlign256: u16
     // radioChannel: u8

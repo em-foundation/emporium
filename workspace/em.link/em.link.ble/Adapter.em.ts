@@ -101,30 +101,14 @@ function controllerFB(_: arg_t) {
 }
 
 function doAdvScan(chan: u8) {
-    adv_hdr.$$.init(adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND)
+    adv_hdr.$$.init((adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND))
     adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<T.SchemaHash>())
-    const nid = Registry.getNodeId()
-    adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
-    Registry.setupParams($cb(mix_SCAN))
+    // const nid = Registry.getNodeId()
+    // adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
+    // adv_hdr.$$.print()
+    Registry.setupParams($cb(scanProf))
     radioOn()
     RadioDriver.startTx(adv_hdr.$$.frame(), chan)
-}
-
-function mix_SCAN(params: $$<T.Params>) {
-    params.$$.ble_enable = true
-    params.$$.radio_phy = T.Phy.BLE_1M
-    params.$$.radio_power = adv_power
-    /*
-    def mix_SCAN(params)
-        params.bleEnable = true
-        params.radioPower = advPower
-        return if !advConFlag
-        params.bleExchBuf = rxPtr
-        params.bleExchEndMs = 20
-        params.bleTrain = train_SCAN
-    end
-    */
-
 }
 
 function radioHandler() {
@@ -143,12 +127,36 @@ function radioOn() {
     $['%%a+']
 }
 
+function scanChain(in_buf: T.BufPtr, out_buf: $$<T.BufPtr>) {
+    halt()
+}
+
+function scanProf(params: $$<T.Params>) {
+    params.$$.ble_enable = true
+    params.$$.radio_phy = T.Phy.BLE_1M
+    params.$$.radio_power = adv_power
+    if (!adv_con_flag) return
+    params.$$.ble_chain = $cb(scanChain)
+    params.$$.ble_exch_buf = rx_buf
+    params.$$.ble_exch_end_ms = 20
+    /*
+    def mix_SCAN(params)
+        params.bleEnable = true
+        params.radioPower = advPower
+        return if !advConFlag
+        params.bleExchBuf = rxPtr
+        params.bleExchEndMs = 20
+        params.bleTrain = train_SCAN
+    end
+    */
+
+}
+
 function setState(s: State) {
     cur_state = s
 }
 
 function setTimeout(msecs: u32) {
-    $['%%>'](msecs)
     OneShot.disable()
     OneShot.enable(msecs, $cb(timerHandler), 0)
 }

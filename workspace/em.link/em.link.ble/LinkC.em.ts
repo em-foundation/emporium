@@ -24,8 +24,5 @@ export function em$construct() {
     //
     let nid = TL.NodeId.$make()
     nid.schemaNumber = 0x1122
-    for (const i of $range(sh.$len)) {
-        nid.devAddr[i] = 0xaa + i
-    }
     Registry.em$meta.bindNodeId(nid)
 }

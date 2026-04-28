@@ -151,6 +151,8 @@ export function startCw(chan: u8, power: i8) {
     $R.LRFDPBE.API.$$ = $R.PBE_GENERIC_REGDEF_API_OP_TX
 }
 
+/// TODO: re-work RX
+
 export function startRx(chan: u8, timeout: u16) {
     setState(State.RX)
     RfFifo.prepareRX()
@@ -283,6 +285,10 @@ export function LRFD_IRQ0_isr$$() {
     //     em.print("peek {x}\n", .{RfFifo.peek(0)})
     // }
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
+    if (cur_params.$$.ble_chain != $null) {
+        printf`chain`()
+        halt()
+    }
     setState(State.READY)
     if (handler != $null) handler()
 }
