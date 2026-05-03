@@ -13,5 +13,7 @@ export interface $I {
     em$meta: em$meta
     disable(): void
     enable(): void
+    startRx(buf: T.BufFrame, chan: u8, timeout: u16): void
     startTx(buf: T.BufFrame, chan: u8): void
+
 }
