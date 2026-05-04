@@ -91,7 +91,7 @@ namespace em {
 
     type em$config_t<T> = T & { $$val: T }
 
-    export function $config<T>(initval?: T, $type?: never, $uid?: never): em$config_t<T> {
+    export function $config<T>(initval: T | undefined = undefined, $acc?: never, $type?: never, $uid?: never): em$config_t<T> {
         const has_uid = $uid !== undefined
         const t = has_uid ? ($type as unknown as string) : (initval as string)
         const u = has_uid ? ($uid as unknown as string) : ($type as unknown as string)
@@ -104,6 +104,7 @@ namespace em {
                 if (prop === Symbol.toPrimitive) return () => curval
                 if (prop === 'valueOf') return () => curval
                 if (prop === 'toString') return () => String(curval)
+                if (prop === '__acc') return $acc
                 return (curval as any)[prop]
             },
             set(_, prop, val) {
