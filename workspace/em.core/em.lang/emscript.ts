@@ -46,15 +46,13 @@ namespace em {
     const __CB__ = null
     // #region
 
-    export interface cb_t<A extends any[] = []> {
-        (...args: A): void
-    }
+    export type cb_t<A extends unknown[] = [], R = void> = (...args: A) => R
 
-    export function $cb<A extends any[]>(
-        fxn: (...args: A) => void,
+    export function $cb<A extends unknown[] = [], R = void>(
+        fxn: (...args: A) => R,
         cname?: string
-    ): cb_t<A> {
-        return new em$cb(fxn, cname!) as unknown as cb_t<A>
+    ): cb_t<A, R> {
+        return new em$cb(fxn, cname!) as unknown as cb_t<A, R>
     }
 
     export function $cb$null() {
@@ -1035,7 +1033,7 @@ namespace em {
 declare global {
     type arg_t = em.arg_t
     type bool_t = em.bool_t
-    type cb_t<A extends any[] = []> = em.cb_t<A>
+    type cb_t<A extends unknown[] = [], R = void> = em.cb_t<A, R>
     type const_t<T> = em.const_t<T>
     type dim_t<T, N extends number> = em.dim_t<T, N>
     type enum_t<T> = em.enum_t<T>
