@@ -238,7 +238,7 @@ namespace em {
         }
     }
 
-    export function $frame<T>(arr: T[], $type?: never): frame_t<T> {
+    export function $frame<T>(arr: T[] = [], $type?: never): frame_t<T> {
         return new em$frame<T>(arr, 0, 0, <string>($type as unknown))
     }
 

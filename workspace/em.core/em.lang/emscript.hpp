@@ -93,8 +93,20 @@ namespace em {
         u16 $len;
         constexpr frame_t(T *start, u16 len) : $start(start), $len(len) {}
         constexpr frame_t() : $start(null), $len(0) {}
+        constexpr frame_t(std::nullptr_t) : $start(null), $len(0) {}
         T &operator[](u16 index) { return *($start + index); }
         const T &operator[](u16 index) const { return *($start + index); }
+        frame_t<T> &operator=(std::nullptr_t) {
+            $start = null;
+            $len = 0;
+            return *this;
+        }
+        constexpr bool operator==(std::nullptr_t) const {
+            return $start == null;
+        }
+        constexpr bool operator!=(std::nullptr_t) const {
+            return $start != null;
+        }
         frame_t<T> $frame(i16 beg, u16 len = 0) {
             return create($start, $len, beg, len);
         }
