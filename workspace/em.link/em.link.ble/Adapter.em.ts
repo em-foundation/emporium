@@ -118,17 +118,15 @@ function radioHandler() {
 function radioOff() {
     RadioDriver.disable()
     Led.off()
-    $['%%a-']
 }
 
 function radioOn() {
     RadioDriver.enable()
     Led.on()
-    $['%%a+']
 }
 
-function scanChain(in_buf: T.BufPtr, out_buf: $$<T.BufPtr>) {
-    halt()
+function scanChain(in_buf: T.BufPtr): T.BufFrame {
+    return $null
 }
 
 function scanProf(params: $$<T.Params>) {
@@ -139,17 +137,6 @@ function scanProf(params: $$<T.Params>) {
     params.$$.ble_chain = $cb(scanChain)
     params.$$.ble_exch_buf = rx_buf
     params.$$.ble_exch_end_ms = 20
-    /*
-    def mix_SCAN(params)
-        params.bleEnable = true
-        params.radioPower = advPower
-        return if !advConFlag
-        params.bleExchBuf = rxPtr
-        params.bleExchEndMs = 20
-        params.bleTrain = train_SCAN
-    end
-    */
-
 }
 
 function setState(s: State) {

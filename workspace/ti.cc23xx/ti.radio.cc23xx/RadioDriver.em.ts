@@ -36,8 +36,10 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var cur_params: $$<const_t<T.Params>>
+var cur_chan: u8
+var cur_params: $$<T.Params>
 var cur_phy: T.Phy
+var cur_rx_buf: T.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
 var rx_timeout = false
 
@@ -92,7 +94,8 @@ export function readPkt(pkt: frame_t<u8>): u8 {
 }
 
 function setState(s: State) {
-    // $['%%c:'](s)
+    $['%%a']
+    $['%%>'](s)
     cur_state = s
 }
 
@@ -153,8 +156,10 @@ export function startCw(chan: u8, power: i8) {
 
 /// TODO: re-work RX
 
-export function startRx(chan: u8, timeout: u16) {
+export function startRx(buf: T.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
+    cur_rx_buf = buf
+    cur_chan = chan
     RfFifo.prepareRX()
     RfCtrl.enableImages()
     rx_timeout = false
@@ -224,6 +229,7 @@ export function startRx(chan: u8, timeout: u16) {
 
 export function startTx(buf: T.BufFrame, chan: u8) {
     setState(State.TX)
+    cur_chan = chan
     // _ = pkt
     RfFifo.writePkt(buf)
     // reg($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD).* = ($R.LRFDPBE_FCMD_DATA_TXFIFO_RETRY >> $R.LRFDPBE_FCMD_DATA_S)
@@ -272,23 +278,39 @@ export function waitReady() {
 export function LRFD_IRQ0_isr$$() {
     const mis = $R.LRFDDBELL.MIS0.$$
     $R.LRFDDBELL.ICLR0.$$ = mis
+    IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
+    const is_done = !!(mis & LRF.EventOpDone)
+    // $['%%>'](cur_state)
     // $['%%a']
-    // $['%%>'](mis)
+    $['%%>'](<u32>mis)
     if ((mis & LRF.EventOpError) != 0) {
         $['%%>']($reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE])
         fail()
     }
     if ((mis & LRF.EventSystim1) != 0) {
         rx_timeout = true
+        return
+    }
+    if (!is_done) {
+        return
+    }
+    if (cur_state == State.TX && cur_params.$$.ble_exch_buf != $null) {
+        startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
+        return
+    } else if (cur_state == State.RX && cur_params.$$.ble_chain != $null) {
+        $['%%d']
+        // const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
+        // cur_params.$$.ble_chain = $null
+        // cur_params.$$.ble_exch_buf = $null
+        // cur_params.$$.ble_exch_end_ms = 0
+        // if (tx_buf == $null) return
+        // startTx(tx_buf, cur_chan)
     }
     // if ((mis & $R.LRF_EventRxOk) != 0) {
     //     em.print("peek {x}\n", .{RfFifo.peek(0)})
     // }
-    IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
-    if (cur_params.$$.ble_chain != $null) {
-        printf`chain`()
-        halt()
+    if (is_done) {
+        setState(State.READY)
+        if (handler != $null) handler()
     }
-    setState(State.READY)
-    if (handler != $null) handler()
 }

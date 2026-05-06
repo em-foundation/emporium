@@ -20,25 +20,25 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var cur_prof: T.Profile = $null
-var params = T.Params.$make()
+var cur_params = T.Params.$make()
+
+export function em$startup() {  /// TODO: initialize in meta-domain
+    setupParams($null)
+}
 
 export function getNodeId(): $$<const_t<T.NodeId>> {
     return $ref(node_id)
 }
 
-export function getParams(): $$<const_t<T.Params>> {
-    return $ref(cur_prof != $null ? params : DEFAULT_PARAMS)
+export function getParams(): $$<T.Params> {
+    return $ref(cur_params)
 }
 
 export function getSchemaHash(): T.SchemaHash {
     return sch_hash
 }
 export function setupParams(prof: T.Profile) {
-    if (cur_prof == prof) return
-    cur_prof = prof
-    if (prof == $null) return
-    Mem.cpy($ref(params), $ref(DEFAULT_PARAMS), $sizeof<T.Params>())
-    prof($ref(params))
+    Mem.cpy($ref(cur_params), $ref(DEFAULT_PARAMS), $sizeof<T.Params>())
+    if (prof != $null) prof($ref(cur_params))
 }
 

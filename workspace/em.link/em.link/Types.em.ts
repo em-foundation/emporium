@@ -18,7 +18,7 @@ export enum Phy {
 export type BufPtr = ptr_t<u8>
 export type BufFrame = frame_t<u8>
 export type Profile = cb_t<[$$<Params>]>
-export type Chain = cb_t<[BufPtr, $$<BufPtr>]>
+export type Chain = cb_t<[BufPtr], BufFrame>
 
 export class Params extends $struct {
     // bleAccAdr: u32
