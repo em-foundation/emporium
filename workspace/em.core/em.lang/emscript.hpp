@@ -150,6 +150,8 @@ namespace em {
         T *operator->() const { return p_; }
         T &operator[](u16 index) { return *(p_ + index); }
         T &operator[](u16 index) const { return *(p_ + index); }
+        constexpr bool operator==(std::nullptr_t) const { return p_ == null; }
+        constexpr bool operator!=(std::nullptr_t) const { return p_ != null; }
         operator arg_t() const { return (arg_t)(p_); }
         void $dec() { p_ -= 1; }
         void $inc() { p_ += 1; }
