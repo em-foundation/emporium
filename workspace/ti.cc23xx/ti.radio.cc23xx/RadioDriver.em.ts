@@ -276,6 +276,9 @@ export function waitReady() {
 }
 
 export function LRFD_IRQ0_isr$$() {
+
+    /// TODO: handle RX CRC errors
+
     const mis = $R.LRFDDBELL.MIS0.$$
     $R.LRFDDBELL.ICLR0.$$ = mis
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
