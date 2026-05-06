@@ -4,11 +4,12 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
-import * as Config from '@em.link.ble/Config.em'
 import * as HfXtal from '@nordic.mcu.nrf52/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
+import * as Registry from '@em.link/Registry.em'
+import * as T from '@em.link/Types.em'
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -28,6 +29,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+var cur_params: $$<T.Params>
+var cur_phy: T.Phy
 var cur_state: volatile_t<State> = State.IDLE
 
 export function em$startup() {
@@ -47,9 +50,11 @@ export function disable() {
 }
 
 export function enable() {
+    cur_params = Registry.getParams()
+    cur_phy = cur_params.$$.radio_phy
     setState(State.SETUP)
-    switch (Config.getPhy()) {
-        case Config.Phy.PROP_1M: {
+    switch (cur_phy) {
+        case T.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos)
             $R.RADIO.PCNF1.$$ = (240 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
@@ -57,7 +62,7 @@ export function enable() {
             $R.RADIO.PREFIX0.$$ = 0xCC
             break
         }
-        case Config.Phy.BLE_1M: {
+        case T.Phy.BLE_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
             // $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | $R.RADIO_PCNF0_S1INCL_Msk
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos)
