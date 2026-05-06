@@ -4,7 +4,6 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
-// import * as Config from '@em.link.ble/Config.em'
 import * as HfXtal from '@nordic.mcu.nrf54/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf54/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
