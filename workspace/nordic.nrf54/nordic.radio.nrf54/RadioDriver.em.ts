@@ -76,8 +76,8 @@ export function enable() {
 }
 
 function setState(s: State) {
-    $['%%a']
-    $['%%>'](s)
+    // $['%%a']
+    // $['%%>'](s)
     cur_state = s
 }
 
@@ -129,6 +129,11 @@ export function RADIO_0_isr$$() {
     if (cur_state == State.TX && cur_params.$$.ble_exch_buf != $null) {
         startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
         return
+    }
+    if (cur_state == State.RX && cur_params.$$.ble_chain != $null) {
+        cur_params.$$.ble_chain(cur_rx_buf)
+        // if ($R.RADIO.EVENTS_CRCOK.$$) $['%%d:'](1)
+        // if ($R.RADIO.EVENTS_CRCERROR.$$) $['%%d:'](2)
     }
     setState(State.READY)
     if (handler != $null) handler()

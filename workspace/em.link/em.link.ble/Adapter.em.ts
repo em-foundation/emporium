@@ -38,6 +38,7 @@ const rx_buf = <T.BufPtr>Heap.opaq(rx_adr)
 const tx_buf = <T.BufPtr>Heap.opaq(tx_adr)
 
 const adv_hdr = <$$<BLE.AdvHdr>>Heap.opaq(tx_adr)
+const adv_req = <$$<BLE.AdvReqHdr>>Heap.opaq(rx_adr)
 
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
@@ -126,6 +127,12 @@ function radioOn() {
 }
 
 function scanChain(in_buf: T.BufPtr): T.BufFrame {
+    // printf`%02x %02x\n`(in_buf[0], in_buf[1])
+    // printf`%02x %02x\n`(adv_req.$$.advType, adv_req.$$.pduLen)
+    // adv_req.$$.print()
+    if (adv_req.$$.isScan()) {
+        printf`scanReq`()
+    }
     return $null
 }
 

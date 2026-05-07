@@ -39,7 +39,20 @@ export interface AdvHdr {
     // isMine: () => bool_t
 }
 
+export class AdvReqHdr extends $struct {
+    advType: u8
+    pduLen: u8
+    reqA: T.Addr
+    advA: T.Addr
+}
+export interface AdvReqHdr {
+    isConn(): bool_t
+    isMine(): bool_t
+    isScan(): bool_t
+}
+
 const ADV_LEG_INIT = $config<AdvHdr>()
+const TYPE_MASK = 0x07
 
 export namespace em$meta {
     export function em$construct() {
@@ -87,3 +100,32 @@ AdvHdr.prototype.print = function (this: AdvHdr): void {
     }
     printf`\n`()
 }
+
+AdvReqHdr.prototype.isConn = function (this: AdvReqHdr): bool_t {
+    return false
+}
+
+AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
+    return false
+}
+
+AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
+    return (this.advType & TYPE_MASK) == ADV_SCAN_REQ
+}
+
+/*
+
+def AdvReqHdr.isConn()
+    return (this.advType & TYPE_MASK) == ADV_CONNECT_IND
+end
+
+def AdvReqHdr.isMine()
+    return this && Dev.compareAddr(&this.advA, <Dev.Addr&>&myAddr) == 0
+end
+
+def AdvReqHdr.isScan()
+    return this.isMine() && (this.advType & TYPE_MASK) == ADV_SCAN_REQ
+end
+
+
+*/
