@@ -38,6 +38,8 @@ namespace em {
     auto $null = nullptr;
     typedef decltype(nullptr) null_t;
 
+    template <typename T, u16 N> using dim_t = T[N];
+
     struct opaq_t {
         const void *p_;
         constexpr opaq_t(void *p) : p_(p) {}
