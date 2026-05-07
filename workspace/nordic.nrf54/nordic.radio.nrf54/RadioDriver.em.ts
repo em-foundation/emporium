@@ -19,7 +19,6 @@ const handler = $config<RadioDriverI.Handler>()
 
 export namespace em$meta {
     export function em$construct() {
-        Idle.em$meta.addSleepLeave($cb(em$startup))
         IntrVec.em$meta.useIntr('RADIO_0')
     }
     export function bindHandler(h: RadioDriverI.Handler) {
@@ -29,14 +28,9 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var cur_params: $$<const_t<T.Params>>
+var cur_params: $$<T.Params>
 var cur_phy: T.Phy
 var cur_state: volatile_t<State> = State.IDLE
-
-export function em$startup() {
-    if (cur_state != State.IDLE) return
-    HfXtal.start()
-}
 
 export function disable() {
     HfXtal.stop()
@@ -47,6 +41,7 @@ export function disable() {
 }
 
 export function enable() {
+    HfXtal.start()
     cur_params = Registry.getParams()
     cur_phy = cur_params.$$.radio_phy
     setState(State.SETUP)
@@ -107,12 +102,12 @@ export function startTx(buf: T.BufFrame, chan: u8) {
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.TXADDRESS.$$ = 0
+    $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
+    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
 export function waitReady() {
-    $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
-    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     // Idle.setPauseOnly(true)
     while (cur_state != State.READY) {
         Idle.exec()

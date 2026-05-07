@@ -20,7 +20,6 @@ const handler = $config<RadioDriverI.Handler>()
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('RADIO')
-        Idle.em$meta.addSleepLeave($cb(em$startup))
     }
     export function bindHandler(h: RadioDriverI.Handler) {
         handler.$$val = h
@@ -32,11 +31,6 @@ export namespace em$meta {
 var cur_params: $$<T.Params>
 var cur_phy: T.Phy
 var cur_state: volatile_t<State> = State.IDLE
-
-export function em$startup() {
-    if (cur_state != State.IDLE) return
-    HfXtal.start()
-}
 
 export function disable() {
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
@@ -50,6 +44,7 @@ export function disable() {
 }
 
 export function enable() {
+    HfXtal.start()
     cur_params = Registry.getParams()
     cur_phy = cur_params.$$.radio_phy
     setState(State.SETUP)
