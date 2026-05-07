@@ -12,7 +12,7 @@ const recvF = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$configure() {
-        Registry.DEFAULT_PARAMS.$$val.ble_connectible = false
+        Registry.DEFAULT_PARAMS.$$val.ble_connectible = true
         Registry.DEFAULT_PARAMS.$$val.ble_adv_chan_mask = 0x1
         Registry.DEFAULT_PARAMS.$$val.send_count = 100
         Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 500

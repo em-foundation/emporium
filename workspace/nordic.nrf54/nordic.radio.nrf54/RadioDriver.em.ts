@@ -28,9 +28,12 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+var cur_chan: u8
 var cur_params: $$<T.Params>
 var cur_phy: T.Phy
+var cur_rx_buf: T.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
+var rx_timeout = false
 
 export function disable() {
     HfXtal.stop()
@@ -73,7 +76,8 @@ export function enable() {
 }
 
 function setState(s: State) {
-    // $['%%c:'](s)
+    $['%%a']
+    $['%%>'](s)
     cur_state = s
 }
 
@@ -84,9 +88,11 @@ export function startCw(chan: u8, power: i8) {
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
-export function startRx(buf: T.BufFrame, chan: u8, timeout: u16) {
+export function startRx(buf: T.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
-    $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
+    cur_rx_buf = buf
+    cur_chan = chan
+    $R.RADIO.PACKETPTR.$$ = $cast2<u32>(buf)
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
@@ -97,6 +103,7 @@ export function startRx(buf: T.BufFrame, chan: u8, timeout: u16) {
 
 export function startTx(buf: T.BufFrame, chan: u8) {
     setState(State.TX)
+    cur_chan = chan
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
@@ -108,11 +115,9 @@ export function startTx(buf: T.BufFrame, chan: u8) {
 }
 
 export function waitReady() {
-    // Idle.setPauseOnly(true)
     while (cur_state != State.READY) {
         Idle.exec()
     }
-    // Idle.setPauseOnly(false)
 }
 
 export function RADIO_0_isr$$() {
@@ -121,6 +126,10 @@ export function RADIO_0_isr$$() {
     IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
+    if (cur_state == State.TX && cur_params.$$.ble_exch_buf != $null) {
+        startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
+        return
+    }
     setState(State.READY)
     if (handler != $null) handler()
 }
