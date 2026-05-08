@@ -2,7 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Mem from '@em.utils/Mem.em'
-import * as T from '@em.link/Types.em'
+import * as TL from '@em.link/Types.em'
 
 export const ADV_CHAN = 37
 export const ADV_CHAN_MAX = 39
@@ -22,7 +22,7 @@ export const MAN_ID_HI = 0x0B
 export class AdvHdr extends $struct {
     advType: u8
     pduLen: u8
-    advA: T.Addr
+    advA: TL.Addr
     flagsLen: u8
     flagsCode: u8
     flagsVal: u8
@@ -33,7 +33,7 @@ export class AdvHdr extends $struct {
 }
 export interface AdvHdr {
     addData(this: AdvHdr, src: opaq_t, len: u16): void
-    frame(this: AdvHdr): T.BufFrame
+    frame(this: AdvHdr): TL.BufFrame
     init(this: AdvHdr, advType: u8): void
     print(this: AdvHdr): void
     // isMine: () => bool_t
@@ -42,8 +42,8 @@ export interface AdvHdr {
 export class AdvReqHdr extends $struct {
     advType: u8
     pduLen: u8
-    reqA: T.Addr
-    advA: T.Addr
+    reqA: TL.Addr
+    advA: TL.Addr
 }
 export interface AdvReqHdr {
     isConn(): bool_t
@@ -52,17 +52,12 @@ export interface AdvReqHdr {
 }
 
 const ADV_LEG_INIT = $config<AdvHdr>()
+const MY_ADDR = $config<TL.Addr>()
 const TYPE_MASK = 0x07
 
 export namespace em$meta {
     export function em$construct() {
         ADV_LEG_INIT.$$val.pduLen = $sizeof<AdvHdr>() - 2
-        ADV_LEG_INIT.$$val.advA[0] = 0xaa
-        ADV_LEG_INIT.$$val.advA[1] = 0xaa
-        ADV_LEG_INIT.$$val.advA[2] = 0xaa
-        ADV_LEG_INIT.$$val.advA[3] = 0xaa
-        ADV_LEG_INIT.$$val.advA[4] = 0xaa
-        ADV_LEG_INIT.$$val.advA[5] = 0xaa
         ADV_LEG_INIT.$$val.flagsLen = 2
         ADV_LEG_INIT.$$val.flagsCode = 0x1
         ADV_LEG_INIT.$$val.flagsVal = 0x6 // BR_EDR_NOT_SUPPORTED | LE_GENERAL_DISC_MODE
@@ -70,6 +65,10 @@ export namespace em$meta {
         ADV_LEG_INIT.$$val.manCode = 0xff
         ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
         ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
+        for (const i of $range(TL.ADDR_SIZE)) {
+            ADV_LEG_INIT.$$val.advA[i] = 0xaa
+            MY_ADDR.$$val[i] = 0xaa
+        }
     }
 }
 
@@ -77,15 +76,15 @@ export namespace em$meta {
 
 
 AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void {
-    const bp = $cast2<T.BufPtr>($$(this))
+    const bp = $cast2<TL.BufPtr>($$(this))
     const off = this.pduLen + 2
     Mem.cpy($$(bp[off]), src, len)
     this.pduLen += len
     this.manLen += len
 }
 
-AdvHdr.prototype.frame = function (this: AdvHdr): T.BufFrame {
-    const bp = $cast2<T.BufPtr>($$(this))
+AdvHdr.prototype.frame = function (this: AdvHdr): TL.BufFrame {
+    const bp = $cast2<TL.BufPtr>($$(this))
     return bp.$frame(this.pduLen + 2)
 }
 
@@ -110,7 +109,8 @@ AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
 }
 
 AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
-    return (this.advType & TYPE_MASK) == ADV_SCAN_REQ
+    return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && TL.equalAddr(MY_ADDR, this.advA)
+    // return (this.advType & TYPE_MASK) == ADV_SCAN_REQ
 }
 
 /*

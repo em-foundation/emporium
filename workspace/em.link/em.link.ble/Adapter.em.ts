@@ -9,7 +9,7 @@ import * as LedI from '@em.hal/LedI.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
-import * as T from '@em.link/Types.em'
+import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
 export const OneShot = $proxy<OneShotI.$I>()
@@ -34,8 +34,8 @@ export namespace em$meta {
 const ALL_ADV_CHANS = 0x7
 const NUM_ADV_CHANS = 3
 
-const rx_buf = <T.BufPtr>Heap.opaq(rx_adr)
-const tx_buf = <T.BufPtr>Heap.opaq(tx_adr)
+const rx_buf = <TL.BufPtr>Heap.opaq(rx_adr)
+const tx_buf = <TL.BufPtr>Heap.opaq(tx_adr)
 
 const adv_hdr = <$$<BLE.AdvHdr>>Heap.opaq(tx_adr)
 const adv_req = <$$<BLE.AdvReqHdr>>Heap.opaq(rx_adr)
@@ -51,9 +51,9 @@ var adv_mask: u8
 var adv_power: i8
 var cur_adv_chan: u8
 var cur_state: State = State.IDLE
-var recv_done: T.RecvDoneFxn
+var recv_done: TL.RecvDoneFxn
 
-export function recvMsg(on_done: T.RecvDoneFxn) {
+export function recvMsg(on_done: TL.RecvDoneFxn) {
     recv_done = on_done
     if (cur_state == State.IDLE) {
         const params = Registry.getParams()
@@ -75,7 +75,7 @@ function controller() {
             case State.ADV_PAUSE: {
                 radioOff()
                 if (adv_count-- == 0) {
-                    recv_done(T.ConnectionStatus.TIMEOUT)
+                    recv_done(TL.ConnectionStatus.TIMEOUT)
                     return
                 }
                 setState(State.ADV_SCAN)
@@ -103,7 +103,7 @@ function controllerFB(_: arg_t) {
 
 function doAdvScan(chan: u8) {
     adv_hdr.$$.init((adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND))
-    adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<T.SchemaHash>())
+    adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
     // const nid = Registry.getNodeId()
     // adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
     // adv_hdr.$$.print()
@@ -126,19 +126,20 @@ function radioOn() {
     Led.on()
 }
 
-function scanChain(in_buf: T.BufPtr): T.BufFrame {
+function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
     // printf`%02x %02x\n`(in_buf[0], in_buf[1])
     // printf`%02x %02x\n`(adv_req.$$.advType, adv_req.$$.pduLen)
     // adv_req.$$.print()
     if (adv_req.$$.isScan()) {
-        printf`scanReq`()
+        printf`scanReq: `()
+        TL.printAddr(adv_req.$$.advA)
     }
     return $null
 }
 
-function scanProf(params: $$<T.Params>) {
+function scanProf(params: $$<TL.Params>) {
     params.$$.ble_enable = true
-    params.$$.radio_phy = T.Phy.BLE_1M
+    params.$$.radio_phy = TL.Phy.BLE_1M
     params.$$.radio_power = adv_power
     if (!adv_con_flag) return
     params.$$.ble_chain = $cb(scanChain)

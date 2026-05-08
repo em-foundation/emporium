@@ -58,6 +58,29 @@ export type RecvDoneFxn = cb_t<[ConnectionStatus]>
 export type SendDoneFxn = cb_t<[]>
 
 
-export namespace em$meta { }
+export namespace em$meta {
+    export function setAddr(addr: Addr, val: string) {
+        const barr = val.split('.').map(bs => Number.parseInt(bs, 16))
+        for (const i of $range(addr.$len)) {
+            addr[i] = barr[i] ?? 0
+        }
+    }
+}
 
 //>> ---- em$targ ---- <<//
+
+export function equalAddr(addrA: Addr, addrB: Addr): bool_t {
+    for (const i of $range(ADDR_SIZE)) {
+        if (addrA[i] != addrB[i]) return false
+    }
+    return true
+}
+
+export function printAddr(addr: Addr): void {
+    let sep = t$``
+    for (const b of addr.$frame(0)) {
+        printf`%s%02x`(sep, b)
+        sep = t$`.`
+    }
+    printf`\n`()
+}
