@@ -101,16 +101,15 @@ AdvHdr.prototype.print = function (this: AdvHdr): void {
 }
 
 AdvReqHdr.prototype.isConn = function (this: AdvReqHdr): bool_t {
-    return false
+    return (this.advType & TYPE_MASK) == ADV_CONNECT_IND && this.isMine()
 }
 
 AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
-    return false
+    return TL.equalAddr(MY_ADDR, this.advA)
 }
 
 AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
-    return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && TL.equalAddr(MY_ADDR, this.advA)
-    // return (this.advType & TYPE_MASK) == ADV_SCAN_REQ
+    return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && this.isMine()
 }
 
 /*
