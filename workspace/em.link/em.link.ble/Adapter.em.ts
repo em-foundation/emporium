@@ -40,6 +40,8 @@ const tx_buf = <TL.BufPtr>Heap.opaq(tx_adr)
 const adv_hdr = <$$<BLE.AdvHdr>>Heap.opaq(tx_adr)
 const adv_req = <$$<BLE.AdvReqHdr>>Heap.opaq(rx_adr)
 
+const conn_pkt = <$$<BLE.ConnPkt>>Heap.opaq(rx_adr)
+
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
 }
@@ -93,6 +95,12 @@ function controller() {
                 doAdvScan(BLE.ADV_CHAN + idx)
                 return
             }
+            case State.CONN: {
+                printf`connect: `()
+                TL.printAddr(conn_pkt.$$.initA)
+                recv_done(TL.ConnectionStatus.OPENING)
+                return
+            }
         }
     }
 }
@@ -128,13 +136,12 @@ function radioOn() {
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (adv_req.$$.isScan()) {
-        printf`scanReq: `()
-        TL.printAddr(adv_req.$$.reqA)
+        // printf`scanReq: `()
+        // TL.printAddr(adv_req.$$.reqA)
         return $null
     }
     if (adv_req.$$.isConn()) {
-        printf`connect: `()
-        TL.printAddr(adv_req.$$.reqA)
+        setState(State.CONN)
     }
     return $null
 }

@@ -51,6 +51,22 @@ export interface AdvReqHdr {
     isScan(): bool_t
 }
 
+export class ConnPkt extends $struct {
+    advType: u8
+    pduLen: u8
+    initA: TL.Addr
+    advA: TL.Addr
+    accAdr: vec_t<u8, 4>
+    crcInit: vec_t<u8, 3>
+    winSize: u8
+    winOff: vec_t<u8, 2>
+    interval: vec_t<u8, 2>
+    latency: vec_t<u8, 2>
+    timeout: vec_t<u8, 2>
+    chMap: vec_t<u8, 5>
+    hopSca: u8
+}
+
 const ADV_LEG_INIT = $config<AdvHdr>()
 const MY_ADDR = $config<TL.Addr>()
 const TYPE_MASK = 0x07
@@ -111,20 +127,3 @@ AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
 AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
     return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && this.isMine()
 }
-
-/*
-
-def AdvReqHdr.isConn()
-    return (this.advType & TYPE_MASK) == ADV_CONNECT_IND
-end
-
-def AdvReqHdr.isMine()
-    return this && Dev.compareAddr(&this.advA, <Dev.Addr&>&myAddr) == 0
-end
-
-def AdvReqHdr.isScan()
-    return this.isMine() && (this.advType & TYPE_MASK) == ADV_SCAN_REQ
-end
-
-
-*/
