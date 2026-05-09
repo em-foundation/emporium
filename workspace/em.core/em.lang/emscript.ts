@@ -968,6 +968,8 @@ namespace em {
 
     export type dim_t<T, N extends number> = T[]
 
+    export type vec_t<T, N extends number> = frame_t<T>
+
     export class $vector<T> implements frame_t<T> {
         __em$class = 'em$vector'
         $len: u16
@@ -1054,6 +1056,7 @@ declare global {
     type u32 = em.u32
     type u64 = em.u64
     type text_t = em.text_t
+    type vec_t<T, N extends number> = em.vec_t<T, N>
     type volatile_t<T> = em.volatile_t<T>
     type $$<T> = em.$$<T>
     type $Reg = em.$Reg
