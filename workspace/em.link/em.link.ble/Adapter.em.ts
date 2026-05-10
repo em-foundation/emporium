@@ -2,13 +2,14 @@ import '@$$emscript'
 export const $U = $declare('MODULE', AdapterI)
 
 import * as AdapterI from '@em.link/AdapterI.em'
-import * as BLE from '@em.link.ble/Types.em'
+import * as Connection from '@em.link.ble/Connection.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
+import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
@@ -37,10 +38,10 @@ const NUM_ADV_CHANS = 3
 const rx_buf = <TL.BufPtr>Heap.opaq(rx_adr)
 const tx_buf = <TL.BufPtr>Heap.opaq(tx_adr)
 
-const adv_hdr = <$$<BLE.AdvHdr>>Heap.opaq(tx_adr)
-const adv_req = <$$<BLE.AdvReqHdr>>Heap.opaq(rx_adr)
+const adv_hdr = <$$<TB.AdvHdr>>Heap.opaq(tx_adr)
+const adv_req = <$$<TB.AdvReqHdr>>Heap.opaq(rx_adr)
 
-const conn_pkt = <$$<BLE.ConnPkt>>Heap.opaq(rx_adr)
+const conn_pkt = <$$<TB.ConnPkt>>Heap.opaq(rx_adr)
 
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
@@ -92,12 +93,11 @@ function controller() {
                 }
                 const idx = cur_adv_chan++
                 if (!(adv_mask & (1 << idx))) continue
-                doAdvScan(BLE.ADV_CHAN + idx)
+                doAdvScan(TB.ADV_CHAN + idx)
                 return
             }
             case State.CONN: {
-                printf`connect: `()
-                TL.printAddr(conn_pkt.$$.initA)
+                Connection.open(conn_pkt)
                 recv_done(TL.ConnectionStatus.OPENING)
                 return
             }
@@ -110,7 +110,7 @@ function controllerFB(_: arg_t) {
 }
 
 function doAdvScan(chan: u8) {
-    adv_hdr.$$.init((adv_con_flag ? BLE.ADV_IND : BLE.ADV_NONCONN_IND))
+    adv_hdr.$$.init((adv_con_flag ? TB.ADV_IND : TB.ADV_NONCONN_IND))
     adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
     // const nid = Registry.getNodeId()
     // adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())

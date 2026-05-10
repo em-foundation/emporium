@@ -16,6 +16,8 @@ export const ADV_CONNECT_IND = 0x05
 export const ADV_SCAN_IND = 0x06
 export const ADV_EXT_IND = 0x07
 
+export const INTERVAL_FUDGE = 3
+
 export const MAN_ID_LO = 0x4C
 export const MAN_ID_HI = 0x0B
 
@@ -65,6 +67,15 @@ export class ConnPkt extends $struct {
     timeout: vec_t<u8, 2>
     chMap: vec_t<u8, 5>
     hopSca: u8
+}
+
+export class ConnUpdData extends $struct {
+    winSize: u8
+    winOff: vec_t<u8, 2>
+    interval: vec_t<u8, 2>
+    latency: vec_t<u8, 2>
+    timeout: vec_t<u8, 2>
+    instant: vec_t<u8, 2>
 }
 
 const ADV_LEG_INIT = $config<AdvHdr>()
