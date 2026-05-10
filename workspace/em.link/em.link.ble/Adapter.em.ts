@@ -72,7 +72,7 @@ export function recvMsg(on_done: TL.RecvDoneFxn) {
 }
 
 function controller() {
-    $['%%c:'](cur_state)
+    // $['%%c:'](cur_state)
     while (true) {
         switch (cur_state) {
             case State.ADV_PAUSE: {
@@ -121,20 +121,23 @@ function doAdvScan(chan: u8) {
 }
 
 function radioHandler() {
+    $['%%a']
     controllerF.$$.post()
 }
 
 function radioOff() {
     RadioDriver.disable()
-    Led.off()
+    // Led.off()
 }
 
 function radioOn() {
+    Led.wink(1)
     RadioDriver.enable()
-    Led.on()
+    // Led.on()
 }
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
+    $['%%d']
     if (adv_req.$$.isScan()) {
         // printf`scanReq: `()
         // TL.printAddr(adv_req.$$.reqA)

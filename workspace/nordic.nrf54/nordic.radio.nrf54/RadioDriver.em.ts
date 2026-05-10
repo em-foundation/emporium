@@ -9,7 +9,8 @@ import * as Idle from '@nordic.mcu.nrf54/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
-import * as T from '@em.link/Types.em'
+import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
+import * as TL from '@em.link/Types.em'
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -29,11 +30,11 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 var cur_chan: u8
-var cur_params: $$<T.Params>
-var cur_phy: T.Phy
-var cur_rx_buf: T.BufPtr
+var cur_params: $$<TL.Params>
+var cur_phy: TL.Phy
+var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
-var rx_timeout = false
+var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
     HfXtal.stop()
@@ -49,7 +50,7 @@ export function enable() {
     cur_phy = cur_params.$$.radio_phy
     setState(State.SETUP)
     switch (cur_phy) {
-        case T.Phy.PROP_1M: {
+        case TL.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos)
             $R.RADIO.PCNF1.$$ = (240 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
@@ -57,7 +58,7 @@ export function enable() {
             $R.RADIO.PREFIX0.$$ = 0xCC
             break
         }
-        case T.Phy.BLE_1M: {
+        case TL.Phy.BLE_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos)
             $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
@@ -75,12 +76,6 @@ export function enable() {
     setState(State.READY)
 }
 
-function setState(s: State) {
-    // $['%%a']
-    // $['%%>'](s)
-    cur_state = s
-}
-
 export function startCw(chan: u8, power: i8) {
     setState(State.CW)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_Pos5dBm
@@ -88,20 +83,26 @@ export function startCw(chan: u8, power: i8) {
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
-export function startRx(buf: T.BufPtr, chan: u8, timeout: u16) {
+export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
+    rx_timeout = false
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(buf)
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
+    if (timeout > 0) {
+        const usecs = Rtc.getRawUsecs()
+        $['%%a']
+        Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
+    }
     $R.RADIO.TASKS_RXEN.$$ = 1
 }
 
-export function startTx(buf: T.BufFrame, chan: u8) {
+export function startTx(buf: TL.BufFrame, chan: u8) {
     setState(State.TX)
     cur_chan = chan
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
@@ -126,15 +127,41 @@ export function RADIO_0_isr$$() {
     IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
-    if (cur_state == State.TX && cur_params.$$.ble_exch_buf != $null) {
-        startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
-        return
-    }
-    if (cur_state == State.RX && cur_params.$$.ble_chain != $null) {
-        cur_params.$$.ble_chain(cur_rx_buf)
-        // if ($R.RADIO.EVENTS_CRCOK.$$) $['%%d:'](1)
-        // if ($R.RADIO.EVENTS_CRCERROR.$$) $['%%d:'](2)
+    switch (cur_state) {
+        case State.RX: {
+            if (rx_timeout) break
+            Rtc.disableAux()
+            if (cur_params.$$.ble_chain != $null) {
+                cur_params.$$.ble_chain(cur_rx_buf)
+            }
+            break
+        }
+        case State.TX: {
+            if (cur_params.$$.ble_exch_buf != $null) {
+                startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
+                return
+            }
+            break
+        }
+        default: {
+            return
+        }
     }
     setState(State.READY)
     if (handler != $null) handler()
+}
+
+function rtcHandler() {
+    rx_timeout = true
+    $['%%a']
+    Rtc.disableAux()
+    $R.RADIO.TASKS_DISABLE.$$ = 1
+    setState(State.READY)
+    if (handler != $null) handler()
+}
+
+function setState(s: State) {
+    // $['%%a']
+    // $['%%>'](s)
+    cur_state = s
 }

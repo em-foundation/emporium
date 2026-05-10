@@ -14,8 +14,8 @@ export namespace em$meta {
     export function em$configure() {
         Registry.DEFAULT_PARAMS.$$val.ble_connectible = true
         Registry.DEFAULT_PARAMS.$$val.ble_adv_chan_mask = 0x1
-        Registry.DEFAULT_PARAMS.$$val.send_count = 100
-        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 50
+        Registry.DEFAULT_PARAMS.$$val.send_count = 25
+        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 250
     }
     export function em$construct() {
         recvF.$$val = FiberMgr.em$meta.create($cb(recvFB))
