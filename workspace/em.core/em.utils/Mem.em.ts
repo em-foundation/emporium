@@ -50,6 +50,26 @@ export function prW(label: text_t, p32: ptr_t<u32>, size: u32) {
     printf`%s\n`(nl)
 }
 
+/// TODO: opaq_t args
+
+export function scan16(src: arg_t): u16 {
+    const bp = <ptr_t<u8>>(src)
+    let res = <u16>0
+    res |= bp[0] << 0
+    res |= bp[1] << 8
+    return res
+}
+
+export function scan32(src: arg_t): u32 {
+    const bp = <ptr_t<u8>>(src)
+    let res = <u32>0
+    res |= bp[0] << 0
+    res |= bp[1] << 8
+    res |= bp[2] << 16
+    res |= bp[3] << 24
+    return res
+}
+
 export function set(dst: arg_t, val: u8, len: u16) {
     e$`memset((uint8_t*)dst, val, len)`
 }
