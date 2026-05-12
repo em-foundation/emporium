@@ -36,9 +36,9 @@ export function wait() {
     while (!ready) {
         Idle.exec()
     }
-    $['%%c+']
+    // $['%%c+']
     while ($R.CLOCK.EVENTS_XOTUNED.$$ == 0) { }
-    $['%%c-']
+    // $['%%c-']
 }
 
 function rtcHandler() {

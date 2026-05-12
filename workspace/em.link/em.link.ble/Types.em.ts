@@ -35,6 +35,7 @@ export class AdvHdr extends $struct {
 }
 export interface AdvHdr {
     addData(this: AdvHdr, src: opaq_t, len: u16): void
+    addName(this: AdvHdr, name: text_t): void
     frame(this: AdvHdr): TL.BufFrame
     init(this: AdvHdr, advType: u8): void
     print(this: AdvHdr): void
@@ -78,6 +79,17 @@ export class ConnUpdData extends $struct {
     instant: vec_t<u8, 2>
 }
 
+export class LnkHdr extends $struct {
+    lnkFlags: u8
+    pduLen: u8
+}
+
+export class ScanRsp extends $struct {
+    advType: u8
+    pduLen: u8
+    advA: TL.Addr
+}
+
 const ADV_LEG_INIT = $config<AdvHdr>()
 const MY_ADDR = $config<TL.Addr>()
 const TYPE_MASK = 0x07
@@ -93,9 +105,18 @@ export namespace em$meta {
         ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
         ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
         for (const i of $range(TL.ADDR_SIZE)) {
-            ADV_LEG_INIT.$$val.advA[i] = 0xaa
-            MY_ADDR.$$val[i] = 0xaa
+            ADV_LEG_INIT.$$val.advA[i] = MY_ADDR.$$val[i] = 0xaa
         }
+        ADV_LEG_INIT.$$val.advA[5] = MY_ADDR.$$val[5] = 0xc0
+        // 0x23, 0x1A, 0xA7, 0x6D, 0x54, 0xE0
+        //
+        // ADV_LEG_INIT.$$val.advA[0] = MY_ADDR.$$val[0] = 0x23
+        // ADV_LEG_INIT.$$val.advA[1] = MY_ADDR.$$val[1] = 0x1a
+        // ADV_LEG_INIT.$$val.advA[2] = MY_ADDR.$$val[2] = 0xa7
+        // ADV_LEG_INIT.$$val.advA[3] = MY_ADDR.$$val[3] = 0x6d
+        // ADV_LEG_INIT.$$val.advA[4] = MY_ADDR.$$val[4] = 0x54
+        // ADV_LEG_INIT.$$val.advA[5] = MY_ADDR.$$val[5] = 0xe0
+
     }
 }
 
@@ -108,6 +129,15 @@ AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void 
     Mem.cpy($$(bp[off]), src, len)
     this.pduLen += len
     this.manLen += len
+}
+
+AdvHdr.prototype.addName = function (this: AdvHdr, name: text_t): void {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    let off = this.pduLen + 2
+    bp[off++] = name.$len + 1
+    bp[off++] = 0x08 // short name
+    Mem.cpy($$(bp[off]), name, name.$len)
+    this.pduLen += name.$len + 2
 }
 
 AdvHdr.prototype.frame = function (this: AdvHdr): TL.BufFrame {

@@ -43,6 +43,9 @@ const adv_req = <$$<TB.AdvReqHdr>>Heap.opaq(rx_adr)
 
 const conn_pkt = <$$<TB.ConnPkt>>Heap.opaq(rx_adr)
 
+const lnk_req = <$$<TB.LnkHdr>>Heap.opaq(rx_adr)
+const lnk_rsp = <$$<TB.LnkHdr>>Heap.opaq(tx_adr)
+
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
 }
@@ -52,7 +55,7 @@ var adv_count: u16
 var adv_inter: u16
 var adv_mask: u8
 var adv_power: i8
-var cur_adv_chan: u8
+var cur_adv_mask: u8
 var cur_state: State = State.IDLE
 var recv_done: TL.RecvDoneFxn
 
@@ -65,14 +68,14 @@ export function recvMsg(on_done: TL.RecvDoneFxn) {
         adv_mask = params.$$.ble_adv_chan_mask ? params.$$.ble_adv_chan_mask : ALL_ADV_CHANS
         adv_inter = params.$$.send_interval_ms
         adv_power = params.$$.radio_power
-        cur_adv_chan = 0
+        cur_adv_mask = 0
         setState(State.ADV_PAUSE)
         controller()
     }
 }
 
 function controller() {
-    // $['%%c:'](cur_state)
+    $['%%c:'](cur_state)
     while (true) {
         switch (cur_state) {
             case State.ADV_PAUSE: {
@@ -86,12 +89,12 @@ function controller() {
                 return
             }
             case State.ADV_SCAN: {
-                if (cur_adv_chan == NUM_ADV_CHANS) {
-                    cur_adv_chan = 0
+                if (cur_adv_mask == NUM_ADV_CHANS) {
+                    cur_adv_mask = 0
                     setState(State.ADV_PAUSE)
                     continue
                 }
-                const idx = cur_adv_chan++
+                const idx = cur_adv_mask++
                 if (!(adv_mask & (1 << idx))) continue
                 doAdvScan(TB.ADV_CHAN + idx)
                 return
@@ -99,7 +102,13 @@ function controller() {
             case State.CONN: {
                 Connection.open(conn_pkt)
                 recv_done(TL.ConnectionStatus.OPENING)
+                setState(State.CONN_PAUSE)
+                doExch(1000)
                 return
+            }
+            case State.CONN_PAUSE: {
+                radioOff()
+                halt()
             }
         }
     }
@@ -110,8 +119,18 @@ function controllerFB(_: arg_t) {
 }
 
 function doAdvScan(chan: u8) {
-    adv_hdr.$$.init((adv_con_flag ? TB.ADV_IND : TB.ADV_NONCONN_IND))
+    adv_hdr.$$.init((adv_con_flag ? (TB.ADV_IND | 0x40) : TB.ADV_NONCONN_IND))
     adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
+    adv_hdr.$$.addName(t$`EMS`)
+
+    // const bf = adv_hdr.$$.frame()
+    // printf`len = %d: `(bf.$len)
+    // for (const b of bf) {
+    //     printf`%02x `(b.$$)
+    // }
+    // printf`\n`()
+    // halt()
+
     // const nid = Registry.getNodeId()
     // adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
     // adv_hdr.$$.print()
@@ -120,8 +139,41 @@ function doAdvScan(chan: u8) {
     RadioDriver.startTx(adv_hdr.$$.frame(), chan)
 }
 
+function doExch(end_ms: u16) {
+    Registry.setupParams($cb(exchProf))
+    radioOn()
+    RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
+}
+
+function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
+    printf`flag = %02x, len = %d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
+    halt()
+    /*
+        auto req = <Types.LnkHdr&>inPkt     ## must copy
+        if req.pduLen > 0
+            reqP.post()
+        elif msgRspFlag
+            rspP.post()
+        end
+        lnkRsp.init(Types.LL_CONT) if !lnkRspFlag
+        lnkRspFlag = false
+        lnkRsp.setAck(lnkReq.lnkFlags)
+        return <uint8*>lnkRsp
+    */
+    return $null
+}
+
+function exchProf(params: $$<TL.Params>) {
+    params.$$.ble_enable = true
+    params.$$.radio_phy = TL.Phy.BLE_1M
+    params.$$.radio_power = adv_power
+    params.$$.ble_acc_adr = Connection.params().$$.accAdr
+    params.$$.ble_crc_init = Connection.params().$$.crcInit
+    params.$$.ble_exch_buf = $null
+    params.$$.ble_chain = $cb(exchChain)
+}
+
 function radioHandler() {
-    $['%%a']
     controllerF.$$.post()
 }
 
@@ -137,11 +189,32 @@ function radioOn() {
 }
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
-    $['%%d']
+
+    /*
+        auto req = <Types.AdvReqHdr&>inPkt
+        if req.isScan()
+            auto params = SysSupport.getParams()
+            params.bleExchBuf = null
+            params.bleTrain = null
+            SysSupport.setupParams(null)
+            auto rsp = <Types.ScanRspHdr&>(txPtr)
+            rsp.init()
+            return <uint8*>rsp
+        end
+        setState(State.CONN) if req.isMine() && req.isConn()
+        return null
+    */
+
+
     if (adv_req.$$.isScan()) {
-        // printf`scanReq: `()
-        // TL.printAddr(adv_req.$$.reqA)
-        return $null
+        printf`scanReq: `()
+        TL.printAddr(adv_req.$$.reqA)
+        const params = Registry.getParams()
+        params.$$.ble_exch_buf = $null
+        params.$$.ble_chain = $null
+        adv_hdr.$$.init(TB.ADV_SCAN_RSP)
+        adv_hdr.$$.addName(t$`EMS`)
+        return adv_hdr.$$.frame()
     }
     if (adv_req.$$.isConn()) {
         setState(State.CONN)
@@ -156,7 +229,7 @@ function scanProf(params: $$<TL.Params>) {
     if (!adv_con_flag) return
     params.$$.ble_chain = $cb(scanChain)
     params.$$.ble_exch_buf = rx_buf
-    params.$$.ble_exch_end_ms = 20
+    params.$$.ble_exch_end_ms = 50
 }
 
 function setState(s: State) {

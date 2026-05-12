@@ -14,8 +14,8 @@ export namespace em$meta {
     export function em$configure() {
         Registry.DEFAULT_PARAMS.$$val.ble_connectible = true
         Registry.DEFAULT_PARAMS.$$val.ble_adv_chan_mask = 0x1
-        Registry.DEFAULT_PARAMS.$$val.send_count = 25
-        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 250
+        Registry.DEFAULT_PARAMS.$$val.send_count = 200
+        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 100
     }
     export function em$construct() {
         recvF.$$val = FiberMgr.em$meta.create($cb(recvFB))
@@ -31,7 +31,6 @@ export function em$run() {
 
 function onDone(stat: T.ConnectionStatus) {
     printf`stat = %d\n`(stat)
-    halt()
 }
 
 function recvFB(a: arg_t) {
