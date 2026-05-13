@@ -46,6 +46,8 @@ const conn_pkt = <$$<TB.ConnPkt>>Heap.opaq(rx_adr)
 const lnk_req = <$$<TB.LnkHdr>>Heap.opaq(rx_adr)
 const lnk_rsp = <$$<TB.LnkHdr>>Heap.opaq(tx_adr)
 
+const scan_rsp = <$$<TB.ScanRsp>>Heap.opaq(tx_adr)
+
 enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
 }
@@ -75,8 +77,8 @@ export function recvMsg(on_done: TL.RecvDoneFxn) {
 }
 
 function controller() {
-    $['%%c:'](cur_state)
     while (true) {
+        $['%%c:'](cur_state)
         switch (cur_state) {
             case State.ADV_PAUSE: {
                 radioOff()
@@ -120,8 +122,8 @@ function controllerFB(_: arg_t) {
 
 function doAdvScan(chan: u8) {
     adv_hdr.$$.init((adv_con_flag ? (TB.ADV_IND | 0x40) : TB.ADV_NONCONN_IND))
-    adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
-    adv_hdr.$$.addName(t$`EMS`)
+    // adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
+    // adv_hdr.$$.addName(t$`EMS`)
 
     // const bf = adv_hdr.$$.frame()
     // printf`len = %d: `(bf.$len)
@@ -207,14 +209,15 @@ function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
 
 
     if (adv_req.$$.isScan()) {
-        printf`scanReq: `()
-        TL.printAddr(adv_req.$$.reqA)
+        // $['%%d']
+        // printf`scanReq: `()
+        // TL.printAddr(adv_req.$$.reqA)
         const params = Registry.getParams()
         params.$$.ble_exch_buf = $null
         params.$$.ble_chain = $null
-        adv_hdr.$$.init(TB.ADV_SCAN_RSP)
-        adv_hdr.$$.addName(t$`EMS`)
-        return adv_hdr.$$.frame()
+        scan_rsp.$$.init()
+        // adv_hdr.$$.addName(t$`EMS`)
+        return scan_rsp.$$.frame()
     }
     if (adv_req.$$.isConn()) {
         setState(State.CONN)

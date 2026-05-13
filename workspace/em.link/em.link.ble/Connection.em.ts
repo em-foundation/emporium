@@ -48,7 +48,7 @@ export function next(): bool_t {
 
 export function open(pkt: $$<TB.ConnPkt>) {
     paramsA.accAdr = Mem.scan32($$(pkt.$$.accAdr[0]))
-    paramsA.crcInit = Mem.scan32($$(pkt.$$.crcInit[0]))
+    paramsA.crcInit = Mem.scan32($$(pkt.$$.crcInit[0])) & 0x00ffffff
     paramsA.interval = ((Mem.scan16($$(pkt.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE
     paramsA.winOff = Mem.scan16($$(pkt.$$.winOff[0]))
     paramsA.winSize = pkt.$$.winSize

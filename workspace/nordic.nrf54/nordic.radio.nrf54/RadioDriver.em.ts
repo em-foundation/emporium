@@ -10,6 +10,7 @@ import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
+import * as TimeFence from '@em.utils/TimeFence.em'
 import * as TL from '@em.link/Types.em'
 
 enum State {
@@ -34,6 +35,7 @@ var cur_params: $$<TL.Params>
 var cur_phy: TL.Phy
 var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
+var ifs_active: volatile_t<bool_t> = false
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
@@ -115,6 +117,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
+    TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
@@ -126,11 +129,11 @@ export function waitReady() {
 }
 
 export function RADIO_0_isr$$() {
-    $['%%a']
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
     IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
+    TimeFence.enable(70)
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
@@ -152,9 +155,11 @@ export function RADIO_0_isr$$() {
             break
         }
         default: {
+            $['%%a']
             return
         }
     }
+    TimeFence.disable()
     setState(State.READY)
     if (handler != $null) handler()
 }
@@ -173,3 +178,4 @@ function setState(s: State) {
     // $['%%>'](s)
     cur_state = s
 }
+

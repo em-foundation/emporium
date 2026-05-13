@@ -89,6 +89,10 @@ export class ScanRsp extends $struct {
     pduLen: u8
     advA: TL.Addr
 }
+export interface ScanRsp {
+    frame(this: ScanRsp): TL.BufFrame
+    init(this: ScanRsp): void
+}
 
 const ADV_LEG_INIT = $config<AdvHdr>()
 const MY_ADDR = $config<TL.Addr>()
@@ -96,14 +100,14 @@ const TYPE_MASK = 0x07
 
 export namespace em$meta {
     export function em$construct() {
-        ADV_LEG_INIT.$$val.pduLen = $sizeof<AdvHdr>() - 2
+        ADV_LEG_INIT.$$val.pduLen = $sizeof<AdvHdr>() - 6
         ADV_LEG_INIT.$$val.flagsLen = 2
         ADV_LEG_INIT.$$val.flagsCode = 0x1
         ADV_LEG_INIT.$$val.flagsVal = 0x6 // BR_EDR_NOT_SUPPORTED | LE_GENERAL_DISC_MODE
-        ADV_LEG_INIT.$$val.manLen = 3
-        ADV_LEG_INIT.$$val.manCode = 0xff
-        ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
-        ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
+        // ADV_LEG_INIT.$$val.manLen = 3
+        // ADV_LEG_INIT.$$val.manCode = 0xff
+        // ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
+        // ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
         for (const i of $range(TL.ADDR_SIZE)) {
             ADV_LEG_INIT.$$val.advA[i] = MY_ADDR.$$val[i] = 0xaa
         }
@@ -168,3 +172,15 @@ AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
 AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
     return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && this.isMine()
 }
+
+ScanRsp.prototype.frame = function (this: ScanRsp): TL.BufFrame {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    return bp.$frame(TL.ADDR_SIZE + 2)
+}
+
+ScanRsp.prototype.init = function (this: ScanRsp): void {
+    this.advType = ADV_SCAN_RSP | 0x40
+    this.pduLen = TL.ADDR_SIZE
+    Mem.cpy($$(this.advA), $$(MY_ADDR), TL.ADDR_SIZE)
+}
+
