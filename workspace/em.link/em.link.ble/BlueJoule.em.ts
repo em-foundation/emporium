@@ -22,13 +22,11 @@ export namespace em$meta {
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
         let bytes = [
-            // 0x22, 25,
-            0x00, 9,
-            0x23, 0x1A, 0xA7, 0x6D, 0x54, 0xE0,
-            // 0xCC, 0xCC, 0xBB, 0xBB, 0xAA, 0xAA,
+            0x22, 25,
+            0xCC, 0xCC, 0xBB, 0xBB, 0xAA, 0xAA,
             0x2, 0x01, 0x06,
-            // 0xA, 0x08, c$`B`, c$`l`, c$`u`, c$`e`, c$`J`, c$`o`, c$`u`, c$`l`, c$`e`,
-            // 0x4, 0xFF, 0xD3, 0x08, 0xFF
+            0xA, 0x08, c$`B`, c$`l`, c$`u`, c$`e`, c$`J`, c$`o`, c$`u`, c$`l`, c$`e`,
+            0x4, 0xFF, 0xD3, 0x08, 0xFF
         ]
         for (const b of bytes) {
             adv_pkt.$$add(b)
@@ -39,13 +37,13 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 export function em$run() {
-    ticker.$$.start(TT.Secs30p2_initMsecs(500), $cb(tickCb))
+    ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
 }
 
 function tickCb() {
     RadioDriver.enable()
-    for (const chan of $range(37, 38)) {
+    for (const chan of $range(37, 40)) {
         RadioDriver.startTx(adv_pkt.$frame(0), chan)
         RadioDriver.waitReady()
     }

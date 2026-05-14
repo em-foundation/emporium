@@ -66,8 +66,8 @@ export function enable() {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos)
             $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
-            $R.RADIO.BASE0.$$ = acc_adr != 0 ? (acc_adr & 0xffffff00) : 0x89bed600
-            $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? (acc_adr & 0xff) : 0x8e
+            $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
+            $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? ((acc_adr >> 24) & 0xff) : 0x8e
             $R.RADIO.CRCCNF.$$ = (3 << $R.RADIO_CRCCNF_LEN_Pos) | ($R.RADIO_CRCCNF_SKIPADDR_Skip << $R.RADIO_CRCCNF_SKIPADDR_Pos)
             $R.RADIO.CRCPOLY.$$ = 0x65b
             $R.RADIO.CRCINIT.$$ = crc_init != 0 ? crc_init : 0x555555
@@ -75,7 +75,7 @@ export function enable() {
         }
         default: fail()
     }
-    if (acc_adr != 0) printf`BASE = %08x, PRE = %02x\n`($R.RADIO.BASE0.$$, $R.RADIO.PREFIX0.$$)
+    // if (acc_adr != 0) printf`BASE = %08x, PRE = %02x\n`($R.RADIO.BASE0.$$, $R.RADIO.PREFIX0.$$)
     $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_PHYEND_DISABLE_Msk
     HfXtal.wait()
     setState(State.READY)
@@ -105,6 +105,44 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         // $['%%a']
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
     }
+
+    if (chan < 37) {
+        // $R.RADIO.EVENTS_READY.$$ = 0
+        // $R.RADIO.EVENTS_ADDRESS.$$ = 0
+        // $R.RADIO.EVENTS_END.$$ = 0
+        // $R.RADIO.EVENTS_PHYEND.$$ = 0
+        // $R.RADIO.EVENTS_CRCOK.$$ = 0
+        // $R.RADIO.EVENTS_CRCERROR.$$ = 0
+        // $R.RADIO.EVENTS_DISABLED.$$ = 0
+        // 
+        // $R.RADIO.INTENSET00.$$ =
+        //     $R.RADIO_INTENSET00_ADDRESS_Msk |
+        //     $R.RADIO_INTENSET00_END_Msk |
+        //     $R.RADIO_INTENSET00_PHYEND_Msk |
+        //     $R.RADIO_INTENSET00_CRCOK_Msk |
+        //     $R.RADIO_INTENSET00_CRCERROR_Msk
+
+        // printf`chan = %d\n`(chan)
+        // printf`FREQUENCY = %08x\n`($R.RADIO.FREQUENCY.$$)
+        // printf`DATAWHITE = %08x\n`($R.RADIO.DATAWHITE.$$)
+        // printf`PACKETPTR = %08x\n`($R.RADIO.PACKETPTR.$$)
+
+        // printf`accAdr = %08x\n`(cur_params.$$.ble_acc_adr)
+        // printf`BASE0 = %08x\n`($R.RADIO.BASE0.$$)
+        // printf`PREFIX0 = %08x\n`($R.RADIO.PREFIX0.$$)
+
+        // printf`RXADDRESSES = %08x\n`($R.RADIO.RXADDRESSES.$$)
+        // printf`PCNF0 = %08x\n`($R.RADIO.PCNF0.$$)
+        // printf`PCNF1 = %08x\n`($R.RADIO.PCNF1.$$)
+        // printf`MODE = %08x\n`($R.RADIO.MODE.$$)
+        // printf`CRCCNF = %08x\n`($R.RADIO.CRCCNF.$$)
+        // printf`CRCPOLY = %08x\n`($R.RADIO.CRCPOLY.$$)
+        // printf`CRCINIT = %08x\n`($R.RADIO.CRCINIT.$$)
+        // printf`SHORTS = %08x\n`($R.RADIO.SHORTS.$$)
+        // printf`INTENSET00 = %08x\n`($R.RADIO.INTENSET00.$$)
+        // halt()
+    }
+
     $R.RADIO.TASKS_RXEN.$$ = 1
 }
 
@@ -129,6 +167,15 @@ export function waitReady() {
 }
 
 export function RADIO_0_isr$$() {
+    // if (cur_state == State.RX && cur_chan < 37) {
+    //     printf`ADDRESS = %d\n`($R.RADIO.EVENTS_ADDRESS.$$)
+    //     printf`CRCOK = %d\n`($R.RADIO.EVENTS_CRCOK.$$)
+    //     printf`CRERROR = %d\n`($R.RADIO.EVENTS_CRCERROR.$$)
+    //     printf`END = %d\n`($R.RADIO.EVENTS_END.$$)
+    //     printf`PHYEND = %d\n`($R.RADIO.EVENTS_PHYEND.$$)
+    //     printf`MODE = %08x\n`($R.RADIO.MODE.$$)
+    //     fail()
+    // }
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
     IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$

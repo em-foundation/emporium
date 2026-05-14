@@ -77,8 +77,8 @@ export function recvMsg(on_done: TL.RecvDoneFxn) {
 }
 
 function controller() {
+    $['%%c:'](cur_state)
     while (true) {
-        $['%%c:'](cur_state)
         switch (cur_state) {
             case State.ADV_PAUSE: {
                 radioOff()
@@ -148,8 +148,9 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
-    printf`flag = %02x, len = %d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
-    halt()
+    // printf`flag = %02x, len = %d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
+    // halt()
+
     /*
         auto req = <Types.LnkHdr&>inPkt     ## must copy
         if req.pduLen > 0

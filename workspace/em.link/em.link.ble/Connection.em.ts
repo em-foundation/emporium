@@ -58,8 +58,8 @@ export function open(pkt: $$<TB.ConnPkt>) {
     cur_params = $$(paramsA)
     // printf`connect: `()
     // TL.printAddr(pkt.$$.initA)
-    // $['%%d']
-    printf`acc = %08x, hop = %d\n`(paramsA.accAdr, chan_hop)
+    // printf`acc = %08x, crc = %08x, hop = %08x, chan = %d\n`(paramsA.accAdr, paramsA.crcInit, pkt.$$.hopSca, chan_num)
+    // halt()
 }
 
 export function params(): $$<Params> {
