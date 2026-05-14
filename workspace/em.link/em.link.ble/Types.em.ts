@@ -112,15 +112,6 @@ export namespace em$meta {
             ADV_LEG_INIT.$$val.advA[i] = MY_ADDR.$$val[i] = 0xaa
         }
         ADV_LEG_INIT.$$val.advA[5] = MY_ADDR.$$val[5] = 0xc0
-        // 0x23, 0x1A, 0xA7, 0x6D, 0x54, 0xE0
-        //
-        // ADV_LEG_INIT.$$val.advA[0] = MY_ADDR.$$val[0] = 0x23
-        // ADV_LEG_INIT.$$val.advA[1] = MY_ADDR.$$val[1] = 0x1a
-        // ADV_LEG_INIT.$$val.advA[2] = MY_ADDR.$$val[2] = 0xa7
-        // ADV_LEG_INIT.$$val.advA[3] = MY_ADDR.$$val[3] = 0x6d
-        // ADV_LEG_INIT.$$val.advA[4] = MY_ADDR.$$val[4] = 0x54
-        // ADV_LEG_INIT.$$val.advA[5] = MY_ADDR.$$val[5] = 0xe0
-
     }
 }
 

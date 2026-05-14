@@ -125,14 +125,6 @@ function doAdvScan(chan: u8) {
     // adv_hdr.$$.addData(Registry.getSchemaHash(), $sizeof<TL.SchemaHash>())
     // adv_hdr.$$.addName(t$`EMS`)
 
-    // const bf = adv_hdr.$$.frame()
-    // printf`len = %d: `(bf.$len)
-    // for (const b of bf) {
-    //     printf`%02x `(b.$$)
-    // }
-    // printf`\n`()
-    // halt()
-
     // const nid = Registry.getNodeId()
     // adv_hdr.$$.addData(nid.$$.devAddr, $sizeof<T.Addr>())
     // adv_hdr.$$.print()
@@ -148,9 +140,6 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
-    // printf`flag = %02x, len = %d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
-    // halt()
-
     /*
         auto req = <Types.LnkHdr&>inPkt     ## must copy
         if req.pduLen > 0
@@ -192,27 +181,7 @@ function radioOn() {
 }
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
-
-    /*
-        auto req = <Types.AdvReqHdr&>inPkt
-        if req.isScan()
-            auto params = SysSupport.getParams()
-            params.bleExchBuf = null
-            params.bleTrain = null
-            SysSupport.setupParams(null)
-            auto rsp = <Types.ScanRspHdr&>(txPtr)
-            rsp.init()
-            return <uint8*>rsp
-        end
-        setState(State.CONN) if req.isMine() && req.isConn()
-        return null
-    */
-
-
     if (adv_req.$$.isScan()) {
-        // $['%%d']
-        // printf`scanReq: `()
-        // TL.printAddr(adv_req.$$.reqA)
         const params = Registry.getParams()
         params.$$.ble_exch_buf = $null
         params.$$.ble_chain = $null
