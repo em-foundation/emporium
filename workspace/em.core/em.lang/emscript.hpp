@@ -191,7 +191,7 @@ namespace em {
     template <typename T> u16 $sizeof() { return sizeof(T); }
 
     template <typename T, u16 N> struct table_ro {
-        T $$[N];
+        T $$[N ? N : 1];
         static constexpr u16 $len = N;
         inline const T &operator[](u16 index) const { return $$[index]; }
         const frame_t<T> $frame(i16 beg, u16 len = 0) const {
@@ -201,36 +201,9 @@ namespace em {
         ref_t<T> $null() { return ref_t<T>(); }
         ptr_t<T> $ptr() const { return ptr_t<T>((T *)$$); }
         struct Iterator {
-            const T *current;
-            constexpr Iterator(const T *ptr) : current(ptr) {}
-            T operator*() const { return *current; }
-            Iterator &operator++() {
-                ++current;
-                return *this;
-            }
-            bool operator!=(const Iterator &other) const {
-                return current != other.current;
-            }
-        };
-        constexpr Iterator begin() const { return Iterator(&$$[0]); }
-        constexpr Iterator end() const { return Iterator(&$$[$len]); }
-    };
-
-    template <typename T, u16 N> struct table_rw {
-        T $$[N];
-        static constexpr u16 $len = N;
-        inline T &operator[](u16 index) { return $$[index]; }
-        inline const T &operator[](u16 index) const { return $$[index]; }
-        frame_t<T> $frame(i16 beg, u16 len = 0) {
-            return frame_t<T>::create($$, $len, beg, len);
-        }
-        operator frame_t<T>() { return $frame(0, 0); }
-        ref_t<T> $null() { return ref_t<T>(); }
-        ptr_t<T> $ptr() { return ptr_t<T>(&$$[0]); }
-        struct Iterator {
-            T *ptr;
-            constexpr Iterator(T *ptr) : ptr(ptr) {}
-            ref_t<T> operator*() const { return ref_t<T>(ptr); }
+            const T *ptr;
+            constexpr Iterator(const T *ptr) : ptr(ptr) {}
+            const T &operator*() const { return *ptr; }
             Iterator &operator++() {
                 ++ptr;
                 return *this;
@@ -239,8 +212,35 @@ namespace em {
                 return ptr != other.ptr;
             }
         };
-        constexpr Iterator begin() { return Iterator(&$$[0]); }
-        constexpr Iterator end() { return Iterator(&$$[$len]); }
+        constexpr Iterator begin() const { return Iterator($$); }
+        constexpr Iterator end() const { return Iterator($$ + $len); }
+    };
+
+    template <typename T, u16 N> struct table_rw {
+        T $$[N ? N : 1];
+        static constexpr u16 $len = N;
+        inline T &operator[](u16 index) { return $$[index]; }
+        inline const T &operator[](u16 index) const { return $$[index]; }
+        frame_t<T> $frame(i16 beg, u16 len = 0) {
+            return frame_t<T>::create($$, $len, beg, len);
+        }
+        operator frame_t<T>() { return $frame(0, 0); }
+        ref_t<T> $null() { return ref_t<T>(); }
+        ptr_t<T> $ptr() { return ptr_t<T>($$); }
+        struct Iterator {
+            const T *ptr;
+            constexpr Iterator(const T *ptr) : ptr(ptr) {}
+            const T &operator*() const { return *ptr; }
+            Iterator &operator++() {
+                ++ptr;
+                return *this;
+            }
+            bool operator!=(const Iterator &other) const {
+                return ptr != other.ptr;
+            }
+        };
+        constexpr Iterator begin() const { return Iterator($$); }
+        constexpr Iterator end() const { return Iterator($$ + $len); }
     };
 
     template <typename T, u16 N = 0> struct vec_t {

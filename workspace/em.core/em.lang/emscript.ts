@@ -617,7 +617,9 @@ namespace em {
     class em$table_t<T> {
         private $$em$config: string = 'table'
         private elems: T[] = []
-        constructor(readonly access: TableAccess, readonly cname: string, readonly $t: string, readonly $u: string) { }
+        constructor(init: T[], readonly access: TableAccess, readonly cname: string, readonly $t: string, readonly $u: string) {
+            this.elems.push(...init)
+        }
         get $len(): u16 {
             return this.elems.length
         }
@@ -656,7 +658,7 @@ namespace em {
             }
         }
     }
-    export function $table<T>(access?: never, cname?: never, $type?: never, $uid?: never): table_t<T> {
+    export function $table<T>(init: T[] = [], access?: never, cname?: never, $type?: never, $uid?: never): table_t<T> {
         const handler = {
             get(targ: any, prop: string | symbol) {
                 if (typeof prop == 'symbol') return targ[prop]
@@ -678,7 +680,7 @@ namespace em {
         const cn = cname as unknown as string
         const $t = $type as unknown as string
         const $u = $uid as unknown as string
-        return new globalThis.Proxy(new em$table_t(acc, cn, $t, $u), handler)
+        return new globalThis.Proxy(new em$table_t(init, acc, cn, $t, $u), handler)
     }
 
     // #endregion
