@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('INTERFACE')
 
-import * as T from '@em.link/Types.em'
+import * as TL from '@em.link/Types.em'
 
 export type Handler = cb_t<[]>
 
@@ -13,7 +13,8 @@ export interface $I {
     em$meta: em$meta
     disable(): void
     enable(): void
-    startRx(buf: T.BufPtr, chan: u8, timeout: u16): void
-    startTx(buf: T.BufFrame, chan: u8): void
+    getRxBuf(): TL.BufPtr
+    startRx(buf: TL.BufPtr, chan: u8, timeout: u16): void
+    startTx(buf: TL.BufFrame, chan: u8): void
 
 }

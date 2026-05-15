@@ -16,10 +16,36 @@ export const ADV_CONNECT_IND = 0x05
 export const ADV_SCAN_IND = 0x06
 export const ADV_EXT_IND = 0x07
 
-export const INTERVAL_FUDGE = 3
+export const ATT_ERROR_RESPONSE = 0x01
+export const ATT_EXCHANGE_MTU_REQ = 0x02
+export const ATT_EXCHANGE_MTU_RSP = 0x03
+export const ATT_HANDLE_VALUE_NTF = 0x1B
+export const ATT_READ_BY_TYPE_REQ = 0x08
+export const ATT_READ_BY_GROUP_TYPE_REQ = 0x10
+export const ATT_READ_BY_GROUP_TYPE_RSP = 0x11
+export const ATT_WRITE_CMD = 0x52
+
+export const GATT_PRIMARY_SERVICE = 0x2800
+export const GATT_CHARACTERISTIC = 0x2803
+
+export const LL_CONT = 0x01
+export const LL_START = 0x02
+export const LL_CTRL = 0x03
+
+export const LL_CONN_UPDATE_IND = 0x00
+export const LL_TERMINATE_IND = 0x02
+export const LL_UNKNOWN_RSP = 0x07
+export const LL_FEATURE_REQ = 0x08
+export const LL_FEATURE_RSP = 0x09
+export const LL_VERSION_IND = 0x0C
+export const LL_REJECT_IND = 0x0D
+export const LL_LENGTH_REQ = 0x14
+export const LL_LENGTH_RSP = 0x15
 
 export const MAN_ID_LO = 0x4C
 export const MAN_ID_HI = 0x0B
+
+export const INTERVAL_FUDGE = 3
 
 export class AdvHdr extends $struct {
     advType: u8
@@ -83,6 +109,14 @@ export class LnkHdr extends $struct {
     lnkFlags: u8
     pduLen: u8
 }
+export interface LnkHdr {
+    addPdu(this: LnkHdr, data: TL.BufFrame): void
+    frame(this: LnkHdr): TL.BufFrame
+    isCtrl(this: LnkHdr): bool_t
+    init(this: LnkHdr, lnk_id: u8): void
+    pduPtr(this: LnkHdr): TL.BufPtr
+    setAck(this: LnkHdr, req_flags: u8): void
+}
 
 export class ScanRsp extends $struct {
     advType: u8
@@ -94,9 +128,24 @@ export interface ScanRsp {
     init(this: ScanRsp): void
 }
 
+export const LL_FEATURE_RSP_DATA = $table<u8>([
+    0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // length extension
+])
+
+export const LL_LENGTH_RSP_DATA = $table<u8>([
+    0xFB, 0x00, 0x48, 0x08, 0xFB, 0x00, 0x48, 0x08
+])
+
+export const LL_REJECT_DATA = $table<u8>([
+    LL_REJECT_IND, 0x01  // unknown command
+])
+
+export const LL_VERSION_IND_DATA = $table<u8>([
+    0x08, MAN_ID_LO, MAN_ID_HI, 0x00, 0x00    // 4.2
+])
+
 const ADV_LEG_INIT = $config<AdvHdr>()
 const MY_ADDR = $config<TL.Addr>()
-const TYPE_MASK = 0x07
 
 export namespace em$meta {
     export function em$construct() {
@@ -117,6 +166,11 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const TYPE_MASK = 0x07
+
+const LL_ID_MASK = 0x03
+const LL_NESN_MASK = 0x04
+const LL_SN_MASK = 0x08
 
 AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void {
     const bp = $cast2<TL.BufPtr>($$(this))
@@ -162,6 +216,37 @@ AdvReqHdr.prototype.isMine = function (this: AdvReqHdr): bool_t {
 
 AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
     return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && this.isMine()
+}
+
+LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {
+    Mem.cpy(this.pduPtr(), $$(data[0]), data.$len)
+    this.pduLen += data.$len
+}
+
+LnkHdr.prototype.frame = function (this: LnkHdr): TL.BufFrame {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    return bp.$frame(TL.ADDR_SIZE + 2)
+}
+
+LnkHdr.prototype.isCtrl = function (this: LnkHdr): bool_t {
+    return (this.lnkFlags & LL_ID_MASK) == LL_CTRL
+}
+
+LnkHdr.prototype.init = function (this: LnkHdr, lnk_id: u8) {
+    this.lnkFlags = lnk_id
+    this.pduLen = 0
+}
+
+LnkHdr.prototype.pduPtr = function (this: LnkHdr): TL.BufPtr {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    const pr = $$(bp[$sizeof<LnkHdr>()])
+    return <TL.BufPtr>(pr)
+}
+
+LnkHdr.prototype.setAck = function (this: LnkHdr, req_flags: u8) {
+    const nesn = (req_flags & LL_NESN_MASK) ^ LL_NESN_MASK
+    const sn = req_flags & LL_SN_MASK
+    this.lnkFlags |= (nesn | sn)
 }
 
 ScanRsp.prototype.frame = function (this: ScanRsp): TL.BufFrame {

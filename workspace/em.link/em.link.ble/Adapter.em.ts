@@ -6,6 +6,7 @@ import * as Connection from '@em.link.ble/Connection.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
+import * as MsCounter from '@em.utils/MsCounter.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
@@ -17,6 +18,8 @@ export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 const controllerF = $config<FiberMgr.Obj>()
+const reqF = $config<FiberMgr.Obj>()
+const rspF = $config<FiberMgr.Obj>()
 
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
@@ -24,6 +27,8 @@ const tx_adr = $config<Heap.Adr>()
 export namespace em$meta {
     export function em$construct() {
         controllerF.$$val = FiberMgr.em$meta.create($cb(controllerFB))
+        reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
+        rspF.$$val = FiberMgr.em$meta.create($cb(rspFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
@@ -33,6 +38,7 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const ALL_ADV_CHANS = 0x7
+const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
 
 const rx_buf = <TL.BufPtr>Heap.opaq(rx_adr)
@@ -59,7 +65,11 @@ var adv_mask: u8
 var adv_power: i8
 var cur_adv_mask: u8
 var cur_state: State = State.IDLE
+var lnk_rsp_flag: bool_t
+var msg_rsp_flag: bool_t
+var null_pkt_cnt: u8
 var recv_done: TL.RecvDoneFxn
+var upd_flag: bool_t
 
 export function recvMsg(on_done: TL.RecvDoneFxn) {
     recv_done = on_done
@@ -86,8 +96,8 @@ function controller() {
                     recv_done(TL.ConnectionStatus.TIMEOUT)
                     return
                 }
-                setState(State.ADV_SCAN)
                 setTimeout(adv_inter)
+                setState(State.ADV_SCAN)
                 return
             }
             case State.ADV_SCAN: {
@@ -104,14 +114,41 @@ function controller() {
             case State.CONN: {
                 Connection.open(conn_pkt)
                 recv_done(TL.ConnectionStatus.OPENING)
-                setState(State.CONN_PAUSE)
                 doExch(1000)
+                setState(State.CONN_PAUSE)
                 return
             }
             case State.CONN_PAUSE: {
-                radioOff()
+                printf`CONN_PAUSE\n`()
                 halt()
+                radioOff()
+                if (RadioDriver.getRxBuf() == null) {
+                    if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
+                        recv_done(TL.ConnectionStatus.HANGUP)
+                        return
+                    } else {
+                        null_pkt_cnt = 0
+                    }
+                }
+                const t1 = MsCounter.stop()
+                const ci = Connection.params().$$.interval
+                const dt = (t1 == 0) ? ci : (t1 > ci) ? ((ci * 2) - t1) : ci - (ci - t1)
+                MsCounter.start()
+                setTimeout(dt)
+                setState(State.EXCH)
+                return
             }
+            case State.EXCH: {
+                upd_flag = Connection.next()
+                if (upd_flag) {
+                    MsCounter.stop()
+                }
+                doExch(upd_flag ? 1000 : TB.INTERVAL_FUDGE * 3)
+                setState(State.CONN_PAUSE)
+                return
+            }
+
+
         }
     }
 }
@@ -140,19 +177,17 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
-    /*
-        auto req = <Types.LnkHdr&>inPkt     ## must copy
-        if req.pduLen > 0
-            reqP.post()
-        elif msgRspFlag
-            rspP.post()
-        end
-        lnkRsp.init(Types.LL_CONT) if !lnkRspFlag
-        lnkRspFlag = false
-        lnkRsp.setAck(lnkReq.lnkFlags)
-        return <uint8*>lnkRsp
-    */
-    return $null
+    if (lnk_req.$$.pduLen > 0) {
+        reqF.$$.post()
+    } else {
+        rspF.$$.post()
+    }
+    if (!lnk_rsp_flag) {
+        lnk_rsp.$$.init(TB.LL_CONT)
+    }
+    lnk_rsp_flag = false
+    lnk_rsp.$$.setAck(lnk_req.$$.lnkFlags)
+    return lnk_rsp.$$.frame()
 }
 
 function exchProf(params: $$<TL.Params>) {
@@ -178,6 +213,81 @@ function radioOn() {
     Led.wink(1)
     RadioDriver.enable()
     // Led.on()
+}
+
+function reqCtrl() {
+    const req_pdu = lnk_req.$$.pduPtr()
+    let rsp_op = TB.LL_CTRL
+    let tab = TB.LL_REJECT_DATA.$frame(0)
+    let rsp_data = tab
+    switch (req_pdu[0]) {
+        case TB.LL_CONN_UPDATE_IND: {
+            const upd = $cast2<$$<TB.ConnUpdData>>($$(req_pdu[1]))
+            Connection.update(upd)
+            return
+        }
+        case TB.LL_FEATURE_REQ: {
+            rsp_op = TB.LL_FEATURE_RSP
+            rsp_data = TB.LL_FEATURE_RSP_DATA.$frame(0)
+            break
+        }
+        case TB.LL_LENGTH_REQ: {
+            rsp_op = TB.LL_LENGTH_RSP
+            rsp_data = TB.LL_LENGTH_RSP_DATA.$frame(0)
+            break
+        }
+        case TB.LL_VERSION_IND: {
+            rsp_op = TB.LL_VERSION_IND
+            rsp_data = TB.LL_VERSION_IND_DATA.$frame(0)
+            break
+        }
+        case TB.LL_TERMINATE_IND: {
+            radioOff()
+            recv_done(TL.ConnectionStatus.CLOSED)
+            return
+        }
+        case TB.LL_UNKNOWN_RSP: {
+            return
+        }
+        default: {
+            printf`reqCtrl: %02x\n`(req_pdu[0])
+            fail()
+        }
+    }
+    lnk_rsp.$$.init(rsp_op)
+    lnk_rsp.$$.addPdu(rsp_data)
+    lnk_rsp_flag = true
+}
+
+function reqFB(_: arg_t) {
+    if (lnk_req.$$.isCtrl()) {
+        reqCtrl()
+    } else {
+        reqGatt()
+    }
+
+}
+
+function reqGatt() {
+    printf`reqGatt\n`()
+    fail()
+}
+
+function rspFB(_: arg_t) {
+    msg_rsp_flag = false
+    printf`rspFB\n`()
+    fail()
+
+
+    /*
+        msgRspFlag = false
+        lnkRsp.init(Types.LL_START)
+        lnkRsp.addAttPkt(Types.ATT_HANDLE_VALUE_NTF, Types.GATT_NOTIFY_DATA)
+        lnkRsp.addGattVal(&msg, msg.hdr.size)
+        lnkRspFlag = true
+        sendDone()
+    */
+
 }
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {

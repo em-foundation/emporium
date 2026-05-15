@@ -80,6 +80,10 @@ export function enable() {
     setState(State.READY)
 }
 
+export function getRxBuf(): TL.BufPtr {
+    return rx_timeout ? $null : cur_rx_buf
+}
+
 export function startCw(chan: u8, power: i8) {
     setState(State.CW)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_Pos5dBm
@@ -167,6 +171,7 @@ function rtcHandler() {
     // $['%%a']
     Rtc.disableAux()
     $R.RADIO.TASKS_DISABLE.$$ = 1
+    /// TODO -- track RADIO END event
     setState(State.READY)
     if (handler != $null) handler()
 }
