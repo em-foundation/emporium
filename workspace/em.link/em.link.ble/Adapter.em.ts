@@ -58,6 +58,8 @@ enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
 }
 
+var lnk_rsp_empty: TB.LnkHdr
+
 var adv_con_flag: bool_t
 var adv_count: u16
 var adv_inter: u16
@@ -172,22 +174,21 @@ function doExch(end_ms: u16) {
     RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
 }
 
-var exch_cnt = 0
-
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
-    exch_cnt += 1
     if (lnk_req.$$.pduLen > 0) {
         reqF.$$.post()
     }
     // else if (!lnk_rsp_flag) {
     //     rspF.$$.post()
     // }
+    let lr = lnk_rsp
     if (!lnk_rsp_flag) {
-        lnk_rsp.$$.init(TB.LL_CONT)
+        lr = $$(lnk_rsp_empty)
+        lr.$$.init(TB.LL_CONT)
     }
     lnk_rsp_flag = false
-    lnk_rsp.$$.setAck(lnk_req.$$.lnkFlags)
-    return lnk_rsp.$$.frame()
+    lr.$$.setAck(lnk_req.$$.lnkFlags)
+    return lr.$$.frame()
 }
 
 function exchProf(params: $$<TL.Params>) {

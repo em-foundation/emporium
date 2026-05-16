@@ -35,8 +35,6 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const tx_buf = <TL.BufPtr>Heap.opaq(tx_adr)
-
 var cur_chan: u8
 var cur_params: $$<TL.Params>
 var cur_phy: TL.Phy
@@ -123,9 +121,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     if (chan < 37) data_cnt += 1
     setState(State.TX)
     cur_chan = chan
-    // $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
-    Mem.cpy(tx_buf, $$(buf[0]), buf.$len)
-    $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(tx_buf[0]))
+    $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
