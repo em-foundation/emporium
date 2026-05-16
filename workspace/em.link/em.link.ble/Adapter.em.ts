@@ -131,7 +131,6 @@ function controller() {
                 const t1 = MsCounter.stop()
                 const ci = Connection.params().$$.interval
                 const dt = (t1 == 0) ? ci : (t1 > ci) ? ((ci * 2) - t1) : ci - (ci - t1)
-                // printf`t1 = %d, ci = %d, dt = %d\n`(t1, ci, dt)
                 MsCounter.start()
                 setTimeout(dt)
                 setState(State.EXCH)
@@ -142,15 +141,10 @@ function controller() {
                 if (upd_flag) {
                     MsCounter.stop()
                 }
-                // printf`upd = %d, chan = %d\n`(upd_flag, Connection.channel())
-                // TB.dumpPkt($cast2<opaq_t>(lnk_rsp))
-                // halt()
                 doExch(upd_flag ? 1000 : TB.INTERVAL_FUDGE * 3)
                 setState(State.CONN_PAUSE)
                 return
             }
-
-
         }
     }
 }
@@ -212,13 +206,11 @@ function radioHandler() {
 
 function radioOff() {
     RadioDriver.disable()
-    // Led.off()
 }
 
 function radioOn() {
     Led.wink(1)
     RadioDriver.enable()
-    // Led.on()
 }
 
 function reqCtrl() {
@@ -267,7 +259,6 @@ function reqFB(_: arg_t) {
     } else {
         reqGatt()
     }
-
 }
 
 function reqGatt() {
