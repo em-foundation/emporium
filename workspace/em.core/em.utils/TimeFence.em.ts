@@ -10,13 +10,11 @@ export namespace em$meta { }
 var active: volatile_t<bool_t> = false
 
 export function disable() {
-    $['%%d-']
     active = false
     Common.UsCounter.stop()
 }
 
 export function enable(dt_us: u32) {
-    $['%%d+']
     active = true
     Common.UsCounter.set(dt_us)
 }

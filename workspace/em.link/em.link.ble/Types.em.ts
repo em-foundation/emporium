@@ -114,6 +114,7 @@ export interface LnkHdr {
     frame(this: LnkHdr): TL.BufFrame
     isCtrl(this: LnkHdr): bool_t
     init(this: LnkHdr, lnk_id: u8): void
+    print(this: LnkHdr): void
     pduPtr(this: LnkHdr): TL.BufPtr
     setAck(this: LnkHdr, req_flags: u8): void
 }
@@ -129,11 +130,11 @@ export interface ScanRsp {
 }
 
 export const LL_FEATURE_RSP_DATA = $table<u8>([
-    0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // length extension
+    LL_FEATURE_RSP, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // *no* length extension
 ])
 
 export const LL_LENGTH_RSP_DATA = $table<u8>([
-    0xFB, 0x00, 0x48, 0x08, 0xFB, 0x00, 0x48, 0x08
+    LL_LENGTH_RSP, 0xFB, 0x00, 0x48, 0x08, 0xFB, 0x00, 0x48, 0x08 // not used now
 ])
 
 export const LL_REJECT_DATA = $table<u8>([
@@ -141,7 +142,7 @@ export const LL_REJECT_DATA = $table<u8>([
 ])
 
 export const LL_VERSION_IND_DATA = $table<u8>([
-    0x08, MAN_ID_LO, MAN_ID_HI, 0x00, 0x00    // 4.2
+    LL_VERSION_IND, 0x08, MAN_ID_LO, MAN_ID_HI, 0x00, 0x00    // 4.2
 ])
 
 const ADV_LEG_INIT = $config<AdvHdr>()
@@ -172,6 +173,12 @@ const LL_ID_MASK = 0x03
 const LL_NESN_MASK = 0x04
 const LL_SN_MASK = 0x08
 
+export function dumpPkt(obuf: opaq_t) {
+    const bp = <TL.BufPtr>obuf
+    for (const i of $range(bp[1] + 2)) printf`%02x `(bp[i])
+    printf`\n`()
+}
+
 AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void {
     const bp = $cast2<TL.BufPtr>($$(this))
     const off = this.pduLen + 2
@@ -200,10 +207,7 @@ AdvHdr.prototype.init = function (this: AdvHdr, adv_type: u8): void {
 }
 
 AdvHdr.prototype.print = function (this: AdvHdr): void {
-    for (const b of this.frame()) {
-        printf`%02x `(b.$$)
-    }
-    printf`\n`()
+    dumpPkt($cast2<opaq_t>($$(this)))
 }
 
 AdvReqHdr.prototype.isConn = function (this: AdvReqHdr): bool_t {
@@ -225,7 +229,7 @@ LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {
 
 LnkHdr.prototype.frame = function (this: LnkHdr): TL.BufFrame {
     const bp = $cast2<TL.BufPtr>($$(this))
-    return bp.$frame(TL.ADDR_SIZE + 2)
+    return bp.$frame(this.pduLen + 2)
 }
 
 LnkHdr.prototype.isCtrl = function (this: LnkHdr): bool_t {
@@ -241,6 +245,10 @@ LnkHdr.prototype.pduPtr = function (this: LnkHdr): TL.BufPtr {
     const bp = $cast2<TL.BufPtr>($$(this))
     const pr = $$(bp[$sizeof<LnkHdr>()])
     return <TL.BufPtr>(pr)
+}
+
+LnkHdr.prototype.print = function (this: LnkHdr): void {
+    dumpPkt($cast2<opaq_t>($$(this)))
 }
 
 LnkHdr.prototype.setAck = function (this: LnkHdr, req_flags: u8) {

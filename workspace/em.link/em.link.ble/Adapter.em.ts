@@ -119,8 +119,6 @@ function controller() {
                 return
             }
             case State.CONN_PAUSE: {
-                printf`CONN_PAUSE\n`()
-                halt()
                 radioOff()
                 if (RadioDriver.getRxBuf() == null) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
@@ -133,6 +131,7 @@ function controller() {
                 const t1 = MsCounter.stop()
                 const ci = Connection.params().$$.interval
                 const dt = (t1 == 0) ? ci : (t1 > ci) ? ((ci * 2) - t1) : ci - (ci - t1)
+                // printf`t1 = %d, ci = %d, dt = %d\n`(t1, ci, dt)
                 MsCounter.start()
                 setTimeout(dt)
                 setState(State.EXCH)
@@ -143,6 +142,9 @@ function controller() {
                 if (upd_flag) {
                     MsCounter.stop()
                 }
+                // printf`upd = %d, chan = %d\n`(upd_flag, Connection.channel())
+                // TB.dumpPkt($cast2<opaq_t>(lnk_rsp))
+                // halt()
                 doExch(upd_flag ? 1000 : TB.INTERVAL_FUDGE * 3)
                 setState(State.CONN_PAUSE)
                 return
@@ -176,12 +178,16 @@ function doExch(end_ms: u16) {
     RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
 }
 
+var exch_cnt = 0
+
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
+    exch_cnt += 1
     if (lnk_req.$$.pduLen > 0) {
         reqF.$$.post()
-    } else {
-        rspF.$$.post()
     }
+    // else if (!lnk_rsp_flag) {
+    //     rspF.$$.post()
+    // }
     if (!lnk_rsp_flag) {
         lnk_rsp.$$.init(TB.LL_CONT)
     }
@@ -217,7 +223,6 @@ function radioOn() {
 
 function reqCtrl() {
     const req_pdu = lnk_req.$$.pduPtr()
-    let rsp_op = TB.LL_CTRL
     let tab = TB.LL_REJECT_DATA.$frame(0)
     let rsp_data = tab
     switch (req_pdu[0]) {
@@ -227,17 +232,14 @@ function reqCtrl() {
             return
         }
         case TB.LL_FEATURE_REQ: {
-            rsp_op = TB.LL_FEATURE_RSP
             rsp_data = TB.LL_FEATURE_RSP_DATA.$frame(0)
             break
         }
         case TB.LL_LENGTH_REQ: {
-            rsp_op = TB.LL_LENGTH_RSP
             rsp_data = TB.LL_LENGTH_RSP_DATA.$frame(0)
             break
         }
         case TB.LL_VERSION_IND: {
-            rsp_op = TB.LL_VERSION_IND
             rsp_data = TB.LL_VERSION_IND_DATA.$frame(0)
             break
         }
@@ -254,7 +256,7 @@ function reqCtrl() {
             fail()
         }
     }
-    lnk_rsp.$$.init(rsp_op)
+    lnk_rsp.$$.init(TB.LL_CTRL)
     lnk_rsp.$$.addPdu(rsp_data)
     lnk_rsp_flag = true
 }

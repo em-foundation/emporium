@@ -4,9 +4,11 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
+import * as Heap from '@em.utils/Heap.em'
 import * as HfXtal from '@nordic.mcu.nrf54/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf54/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
@@ -19,9 +21,12 @@ enum State {
 
 const handler = $config<RadioDriverI.Handler>()
 
+const tx_adr = $config<Heap.Adr>()
+
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('RADIO_0')
+        tx_adr.$$val = Heap.em$meta.alloc(40)
     }
     export function bindHandler(h: RadioDriverI.Handler) {
         handler.$$val = h
@@ -30,12 +35,13 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const tx_buf = <TL.BufPtr>Heap.opaq(tx_adr)
+
 var cur_chan: u8
 var cur_params: $$<TL.Params>
 var cur_phy: TL.Phy
 var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
-var ifs_active: volatile_t<bool_t> = false
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
@@ -108,12 +114,18 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
+    $['%%d:'](2)
 }
 
+var data_cnt = 0
+
 export function startTx(buf: TL.BufFrame, chan: u8) {
+    if (chan < 37) data_cnt += 1
     setState(State.TX)
     cur_chan = chan
-    $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
+    // $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
+    Mem.cpy(tx_buf, $$(buf[0]), buf.$len)
+    $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(tx_buf[0]))
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
@@ -122,6 +134,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
+    $['%%d']
 }
 
 export function waitReady() {
@@ -135,7 +148,7 @@ export function RADIO_0_isr$$() {
     IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
-    TimeFence.enable(70)
+    TimeFence.enable(65)
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
@@ -157,7 +170,6 @@ export function RADIO_0_isr$$() {
             break
         }
         default: {
-            $['%%a']
             return
         }
     }
@@ -177,7 +189,7 @@ function rtcHandler() {
 }
 
 function setState(s: State) {
-    // $['%%a']
+    // $['%%a:'](s)
     // $['%%>'](s)
     cur_state = s
 }
