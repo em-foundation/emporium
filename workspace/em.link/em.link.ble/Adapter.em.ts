@@ -59,6 +59,8 @@ enum State {
 }
 
 var lnk_rsp_empty: TB.LnkHdr
+var find_req: TB.GattFindReq
+var type_req: TB.GattTypeReq
 
 var adv_con_flag: bool_t
 var adv_count: u16
@@ -272,6 +274,44 @@ function reqGatt() {
             att_rsp_data = TB.ATT_EXCHANGE_MTU_DATA.$frame(0)
             break
         }
+        case TB.ATT_READ_BY_GROUP_TYPE_REQ:
+        case TB.ATT_READ_BY_TYPE_REQ: {
+            type_req.init(att_pkt)
+            switch (type_req.typeId) {
+                case TB.GATT_CHARACTERISTIC: {
+                    if (type_req.startHandle == 0x0001) {
+                        att_rsp_data = TB.GATT_CHARACTERISTIC_DATA.$frame(0)
+                    }
+                    break
+                }
+                case TB.GATT_PRIMARY_SERVICE: {
+                    att_rsp_data = TB.GATT_PRIMARY_SERVICE_DATA.$frame(0)
+                    break
+                }
+            }
+            if (att_rsp_data.$len == 0) {
+                att_rsp_op = TB.ATT_ERROR_RESPONSE
+                att_rsp_data = TB.ATT_ERROR_DATA.$frame(0)
+            } else {
+                att_rsp_op = att_pkt.$$.opcode + 1
+            }
+            break
+        }
+        case TB.ATT_FIND_INFORMATION_REQ: {
+            find_req.init(att_pkt)
+            if (find_req.startHandle <= 0x0001 && find_req.endHandle >= 0x0001) {
+                att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
+                att_rsp_data = TB.GATT_FIND_INFO_HANDLE1_DATA.$frame(0)
+            } else {
+                att_rsp_op = TB.ATT_ERROR_RESPONSE
+                att_rsp_data = TB.ATT_ERROR_DATA.$frame(0)
+            }
+            break
+        }
+        case TB.ATT_WRITE_CMD: {
+            recv_done(TL.ConnectionStatus.ACTIVE)
+            break
+        }
         default: {
             printf`reqGatt: %d\n`(att_pkt.$$.opcode)
             fail()
@@ -281,47 +321,6 @@ function reqGatt() {
     lnk_rsp.$$.init(TB.LL_START)
     lnk_rsp.$$.addAttPkt(att_rsp_op, att_rsp_data)
     lnk_rsp_flag = true
-
-
-    // def reqGatt()
-    //     auto attPkt = lnkReq.attPkt()
-    //     auto attRspOp = 0
-    //     auto attData = <uint8[..]>null
-    //     switch attPkt.opcode
-    //     case Types.ATT_EXCHANGE_MTU_REQ
-    //         attRspOp = Types.ATT_EXCHANGE_MTU_RSP
-    //         attData = Types.ATT_EXCHANGE_MTU_DATA
-    //     case Types.ATT_READ_BY_GROUP_TYPE_REQ
-    //     case Types.ATT_READ_BY_TYPE_REQ
-    //         var typeReq: Types.GattTypeReq
-    //         typeReq.init(attPkt)
-    //         switch typeReq.typeId
-    //         case Types.GATT_CHARACTERISTIC
-    //             attData = Types.GATT_CHARACTERISTIC_DATA if typeReq.startHandle == 0x0001
-    //         case Types.GATT_PRIMARY_SERVICE
-    //             attData = Types.GATT_PRIMARY_SERVICE_DATA
-    //         end
-    //         if attData.length == 0
-    //             attRspOp = Types.ATT_ERROR_RESPONSE
-    //             attData = Types.ATT_ERROR_DATA
-    //         else
-    //             attRspOp = attPkt.opcode + 1
-    //         end
-    //     case Types.ATT_WRITE_CMD
-    //         auto src = <uint8*>attPkt.gattValPtr()
-    //         ^memcpy(&msg, src, *src)
-    //         recvDone(Dev.ConnectionStatus.ACTIVE)
-    // ##        attRspOp = Types.ATT_HANDLE_VALUE_NTF
-    // ##        attData = Types.GATT_NOTIFY_DATA
-    //     end
-    //     return if attData.length == 0
-    //     lnkRsp.init(Types.LL_START)
-    //     lnkRsp.addAttPkt(attRspOp, attData)
-    //     lnkRspFlag = true
-    // end
-
-
-
 }
 
 function rspFB(_: arg_t) {

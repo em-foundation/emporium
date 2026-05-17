@@ -16,9 +16,12 @@ export const ADV_CONNECT_IND = 0x05
 export const ADV_SCAN_IND = 0x06
 export const ADV_EXT_IND = 0x07
 
+export const ATT_ATTR_NOT_FOUND = 0x0A
 export const ATT_ERROR_RESPONSE = 0x01
 export const ATT_EXCHANGE_MTU_REQ = 0x02
 export const ATT_EXCHANGE_MTU_RSP = 0x03
+export const ATT_FIND_INFORMATION_REQ = 0x04
+export const ATT_FIND_INFORMATION_RSP = 0x05
 export const ATT_HANDLE_VALUE_NTF = 0x1B
 export const ATT_READ_BY_TYPE_REQ = 0x08
 export const ATT_READ_BY_GROUP_TYPE_REQ = 0x10
@@ -117,6 +120,14 @@ export class ConnUpdData extends $struct {
     instant: vec_t<u8, 2>
 }
 
+export class GattFindReq extends $struct {
+    startHandle: u16
+    endHandle: u16
+}
+export interface GattFindReq {
+    init(this: GattFindReq, pkt: $$<AttPkt>): void
+}
+
 export class GattTypeReq extends $struct {
     startHandle: u16
     endHandle: u16
@@ -158,11 +169,17 @@ export const ATT_ERROR_DATA = $table<u8>([
 ])
 
 export const ATT_EXCHANGE_MTU_DATA = $table<u8>([
-    ATT_EXCHANGE_MTU_RSP, 0xFB, 0x00
+    0xFB, 0x00
 ])
 
 export const GATT_CHARACTERISTIC_DATA = $table<u8>([
     0x07, 0x01, 0x00, 0x1E, 0x02, 0x00, MAN_ID_LO, MAN_ID_HI
+])
+
+export const GATT_FIND_INFO_HANDLE1_DATA = $table<u8>([
+    0x01,       // format: 16-bit UUIDs
+    0x01, 0x00, // handle 0x0001
+    0x00, 0x28  // UUID 0x2800 = Primary Service
 ])
 
 export const GATT_NOTIFY_DATA = $table<u8>([
@@ -274,6 +291,12 @@ AttPkt.prototype.dataPtr = function (this: AttPkt): opaq_t {
 AttPkt.prototype.gattValPtr = function (this: AttPkt): opaq_t {
     const bp = $cast2<TL.BufPtr>($$(this))
     return $$(bp[$sizeof<AttPkt>() + $sizeof<u16>()])
+}
+
+GattFindReq.prototype.init = function (this: GattFindReq, pkt: $$<AttPkt>): void {
+    const data = <TL.BufPtr>pkt.$$.dataPtr()
+    this.startHandle = Mem.scan16($$(data[0]))
+    this.endHandle = Mem.scan16($$(data[2]))
 }
 
 GattTypeReq.prototype.init = function (this: GattTypeReq, pkt: $$<AttPkt>): void {

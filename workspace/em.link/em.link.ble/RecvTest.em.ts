@@ -30,7 +30,7 @@ export function em$run() {
 }
 
 function onDone(stat: T.ConnectionStatus) {
-    // printf`stat = %d\n`(stat)
+    printf`stat = %d\n`(stat)
 }
 
 function recvFB(a: arg_t) {
