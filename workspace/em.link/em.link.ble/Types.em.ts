@@ -75,9 +75,21 @@ export class AdvReqHdr extends $struct {
     advA: TL.Addr
 }
 export interface AdvReqHdr {
-    isConn(): bool_t
-    isMine(): bool_t
-    isScan(): bool_t
+    isConn(this: AdvReqHdr): bool_t
+    isMine(this: AdvReqHdr): bool_t
+    isScan(this: AdvReqHdr): bool_t
+}
+
+export class AttPkt extends $struct {
+    len: u8
+    lenHi0: u8
+    chan: u8
+    chanHi0: u8
+    opcode: u8
+}
+export interface AttPkt {
+    dataPtr(this: AttPkt): opaq_t
+    gattValPtr(this: AttPkt): opaq_t
 }
 
 export class ConnPkt extends $struct {
@@ -105,12 +117,24 @@ export class ConnUpdData extends $struct {
     instant: vec_t<u8, 2>
 }
 
+export class GattTypeReq extends $struct {
+    startHandle: u16
+    endHandle: u16
+    typeId: u16
+}
+export interface GattTypeReq {
+    init(this: GattTypeReq, pkt: $$<AttPkt>): void
+}
+
 export class LnkHdr extends $struct {
     lnkFlags: u8
     pduLen: u8
 }
 export interface LnkHdr {
+    addAttPkt(this: LnkHdr, opcode: u8, data: TL.BufFrame): void
+    addGattVal(this: LnkHdr, val_ptr: opaq_t, val_len: u8): void
     addPdu(this: LnkHdr, data: TL.BufFrame): void
+    attPkt(this: LnkHdr): $$<AttPkt>
     frame(this: LnkHdr): TL.BufFrame
     isCtrl(this: LnkHdr): bool_t
     init(this: LnkHdr, lnk_id: u8): void
@@ -128,6 +152,26 @@ export interface ScanRsp {
     frame(this: ScanRsp): TL.BufFrame
     init(this: ScanRsp): void
 }
+
+export const ATT_ERROR_DATA = $table<u8>([
+    ATT_READ_BY_TYPE_REQ, 0x01, 0x00, 0x0A
+])
+
+export const ATT_EXCHANGE_MTU_DATA = $table<u8>([
+    ATT_EXCHANGE_MTU_RSP, 0xFB, 0x00
+])
+
+export const GATT_CHARACTERISTIC_DATA = $table<u8>([
+    0x07, 0x01, 0x00, 0x1E, 0x02, 0x00, MAN_ID_LO, MAN_ID_HI
+])
+
+export const GATT_NOTIFY_DATA = $table<u8>([
+    0x02, 0x00
+])
+
+export const GATT_PRIMARY_SERVICE_DATA = $table<u8>([
+    0x06, 0x01, 0x00, 0xFF, 0xFF, MAN_ID_LO, MAN_ID_HI
+])
 
 export const LL_FEATURE_RSP_DATA = $table<u8>([
     LL_FEATURE_RSP, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // *no* length extension
@@ -207,7 +251,7 @@ AdvHdr.prototype.init = function (this: AdvHdr, adv_type: u8): void {
 }
 
 AdvHdr.prototype.print = function (this: AdvHdr): void {
-    dumpPkt($cast2<opaq_t>($$(this)))
+    dumpPkt($$(this))
 }
 
 AdvReqHdr.prototype.isConn = function (this: AdvReqHdr): bool_t {
@@ -222,9 +266,48 @@ AdvReqHdr.prototype.isScan = function (this: AdvReqHdr): bool_t {
     return (this.advType & TYPE_MASK) == ADV_SCAN_REQ && this.isMine()
 }
 
+AttPkt.prototype.dataPtr = function (this: AttPkt): opaq_t {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    return $$(bp[$sizeof<AttPkt>()])
+}
+
+AttPkt.prototype.gattValPtr = function (this: AttPkt): opaq_t {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    return $$(bp[$sizeof<AttPkt>() + $sizeof<u16>()])
+}
+
+GattTypeReq.prototype.init = function (this: GattTypeReq, pkt: $$<AttPkt>): void {
+    const data = <TL.BufPtr>pkt.$$.dataPtr()
+    this.startHandle = Mem.scan16($$(data[0]))
+    this.endHandle = Mem.scan16($$(data[2]))
+    this.typeId = Mem.scan16($$(data[4]))
+}
+
+LnkHdr.prototype.addAttPkt = function (this: LnkHdr, opcode: u8, data: TL.BufFrame): void {
+    const pkt = this.attPkt()
+    pkt.$$.chan = 0x04
+    pkt.$$.chanHi0 = 0x00
+    pkt.$$.len = data.$len + 1
+    pkt.$$.lenHi0 = 0x00
+    pkt.$$.opcode = opcode
+    Mem.cpy(pkt.$$.dataPtr(), $$(data[0]), data.$len)
+    this.pduLen += $sizeof<AttPkt>() + data.$len
+}
+
+LnkHdr.prototype.addGattVal = function (this: LnkHdr, val_ptr: opaq_t, val_len: u8): void {
+    const pkt = this.attPkt()
+    Mem.cpy(pkt.$$.gattValPtr(), val_ptr, val_len)
+    pkt.$$.len += val_len
+    this.pduLen += val_len
+}
+
 LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {
     Mem.cpy(this.pduPtr(), $$(data[0]), data.$len)
     this.pduLen += data.$len
+}
+
+LnkHdr.prototype.attPkt = function (this: LnkHdr): $$<AttPkt> {
+    return $cast2<$$<AttPkt>>(this.pduPtr())
 }
 
 LnkHdr.prototype.frame = function (this: LnkHdr): TL.BufFrame {
@@ -248,7 +331,7 @@ LnkHdr.prototype.pduPtr = function (this: LnkHdr): TL.BufPtr {
 }
 
 LnkHdr.prototype.print = function (this: LnkHdr): void {
-    dumpPkt($cast2<opaq_t>($$(this)))
+    dumpPkt($$(this))
 }
 
 LnkHdr.prototype.setAck = function (this: LnkHdr, req_flags: u8) {

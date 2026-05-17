@@ -263,8 +263,65 @@ function reqFB(_: arg_t) {
 }
 
 function reqGatt() {
-    printf`reqGatt\n`()
-    fail()
+    const att_pkt = lnk_req.$$.attPkt()
+    let att_rsp_op = 0
+    let att_rsp_data = <TL.BufFrame>$null
+    switch (att_pkt.$$.opcode) {
+        case TB.ATT_EXCHANGE_MTU_REQ: {
+            att_rsp_op = TB.ATT_EXCHANGE_MTU_RSP
+            att_rsp_data = TB.ATT_EXCHANGE_MTU_DATA.$frame(0)
+            break
+        }
+        default: {
+            printf`reqGatt: %d\n`(att_pkt.$$.opcode)
+            fail()
+        }
+    }
+    if (att_rsp_data.$len == 0) return
+    lnk_rsp.$$.init(TB.LL_START)
+    lnk_rsp.$$.addAttPkt(att_rsp_op, att_rsp_data)
+    lnk_rsp_flag = true
+
+
+    // def reqGatt()
+    //     auto attPkt = lnkReq.attPkt()
+    //     auto attRspOp = 0
+    //     auto attData = <uint8[..]>null
+    //     switch attPkt.opcode
+    //     case Types.ATT_EXCHANGE_MTU_REQ
+    //         attRspOp = Types.ATT_EXCHANGE_MTU_RSP
+    //         attData = Types.ATT_EXCHANGE_MTU_DATA
+    //     case Types.ATT_READ_BY_GROUP_TYPE_REQ
+    //     case Types.ATT_READ_BY_TYPE_REQ
+    //         var typeReq: Types.GattTypeReq
+    //         typeReq.init(attPkt)
+    //         switch typeReq.typeId
+    //         case Types.GATT_CHARACTERISTIC
+    //             attData = Types.GATT_CHARACTERISTIC_DATA if typeReq.startHandle == 0x0001
+    //         case Types.GATT_PRIMARY_SERVICE
+    //             attData = Types.GATT_PRIMARY_SERVICE_DATA
+    //         end
+    //         if attData.length == 0
+    //             attRspOp = Types.ATT_ERROR_RESPONSE
+    //             attData = Types.ATT_ERROR_DATA
+    //         else
+    //             attRspOp = attPkt.opcode + 1
+    //         end
+    //     case Types.ATT_WRITE_CMD
+    //         auto src = <uint8*>attPkt.gattValPtr()
+    //         ^memcpy(&msg, src, *src)
+    //         recvDone(Dev.ConnectionStatus.ACTIVE)
+    // ##        attRspOp = Types.ATT_HANDLE_VALUE_NTF
+    // ##        attData = Types.GATT_NOTIFY_DATA
+    //     end
+    //     return if attData.length == 0
+    //     lnkRsp.init(Types.LL_START)
+    //     lnkRsp.addAttPkt(attRspOp, attData)
+    //     lnkRspFlag = true
+    // end
+
+
+
 }
 
 function rspFB(_: arg_t) {
