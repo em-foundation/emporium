@@ -31,6 +31,9 @@ export function em$run() {
 
 function onDone(stat: T.ConnectionStatus) {
     $['%%a:'](stat)
+    if (stat == T.ConnectionStatus.CLOSED) {
+        halt()
+    }
     // printf`stat = %d\n`(stat)
 }
 
