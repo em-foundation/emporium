@@ -56,7 +56,7 @@ const lnk_req = <$$<TB.LnkHdr>>Heap.opaq(rx_adr)
 const scan_rsp = <$$<TB.ScanRsp>>Heap.opaq(tx_adr)
 
 enum State {
-    ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
+    ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, CLOSING, IDLE
 }
 
 var find_req: TB.GattFindReq
@@ -151,6 +151,12 @@ function controller() {
                 setState(State.CONN_PAUSE)
                 return
             }
+            case State.CLOSING: {
+                radioOff()
+                setState(State.IDLE)
+                recv_done(TL.ConnectionStatus.CLOSED)
+                return
+            }
         }
     }
 }
@@ -236,8 +242,7 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             break
         }
         case TB.LL_TERMINATE_IND: {
-            radioOff()
-            recv_done(TL.ConnectionStatus.CLOSED)
+            setState(State.CLOSING)
             return false
         }
         case TB.LL_UNKNOWN_RSP: {
