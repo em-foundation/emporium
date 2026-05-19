@@ -30,9 +30,11 @@ export function em$run() {
 }
 
 function onDone(stat: T.ConnectionStatus) {
-    printf`stat = %d\n`(stat)
+    $['%%a:'](stat)
+    // printf`stat = %d\n`(stat)
 }
 
 function recvFB(a: arg_t) {
+    printf`recv\n`()
     Adapter.recvMsg($cb(onDone))
 }

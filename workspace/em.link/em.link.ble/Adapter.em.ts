@@ -6,6 +6,7 @@ import * as Connection from '@em.link.ble/Connection.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
+import * as LnkTx from '@em.link.ble/LnkTx.em'
 import * as MsCounter from '@em.utils/MsCounter.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
@@ -32,6 +33,7 @@ export namespace em$meta {
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
+        LnkTx.em$meta.bindAttBuf(tx_adr.$$val)
     }
 }
 
@@ -50,7 +52,6 @@ const adv_req = <$$<TB.AdvReqHdr>>Heap.opaq(rx_adr)
 const conn_pkt = <$$<TB.ConnPkt>>Heap.opaq(rx_adr)
 
 const lnk_req = <$$<TB.LnkHdr>>Heap.opaq(rx_adr)
-const lnk_rsp = <$$<TB.LnkHdr>>Heap.opaq(tx_adr)
 
 const scan_rsp = <$$<TB.ScanRsp>>Heap.opaq(tx_adr)
 
@@ -58,7 +59,6 @@ enum State {
     ADV_PAUSE, ADV_SCAN, CONN, CONN_PAUSE, EXCH, IDLE
 }
 
-var lnk_rsp_empty: TB.LnkHdr
 var find_req: TB.GattFindReq
 var type_req: TB.GattTypeReq
 
@@ -69,11 +69,12 @@ var adv_mask: u8
 var adv_power: i8
 var cur_adv_mask: u8
 var cur_state: State = State.IDLE
-var lnk_rsp_flag: bool_t
 var msg_rsp_flag: bool_t
 var null_pkt_cnt: u8
 var recv_done: TL.RecvDoneFxn
 var upd_flag: bool_t
+
+var exch_cnt: u8 = 0
 
 export function recvMsg(on_done: TL.RecvDoneFxn) {
     recv_done = on_done
@@ -118,6 +119,7 @@ function controller() {
             case State.CONN: {
                 Connection.open(conn_pkt)
                 recv_done(TL.ConnectionStatus.OPENING)
+                LnkTx.reset()
                 doExch(1000)
                 setState(State.CONN_PAUSE)
                 return
@@ -128,9 +130,9 @@ function controller() {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         recv_done(TL.ConnectionStatus.HANGUP)
                         return
-                    } else {
-                        null_pkt_cnt = 0
                     }
+                } else {
+                    null_pkt_cnt = 0
                 }
                 const t1 = MsCounter.stop()
                 const ci = Connection.params().$$.interval
@@ -177,20 +179,11 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
+    LnkTx.ack(lnk_req)
     if (lnk_req.$$.pduLen > 0) {
         reqF.$$.post()
     }
-    // else if (!lnk_rsp_flag) {
-    //     rspF.$$.post()
-    // }
-    let lr = lnk_rsp
-    if (!lnk_rsp_flag) {
-        lr = $$(lnk_rsp_empty)
-        lr.$$.init(TB.LL_CONT)
-    }
-    lnk_rsp_flag = false
-    lr.$$.setAck(lnk_req.$$.lnkFlags)
-    return lr.$$.frame()
+    return LnkTx.choose(lnk_req)
 }
 
 function exchProf(params: $$<TL.Params>) {
@@ -212,19 +205,23 @@ function radioOff() {
 }
 
 function radioOn() {
-    Led.wink(1)
+    if (cur_state == State.ADV_SCAN) {
+        Led.wink(1)
+    }
     RadioDriver.enable()
 }
 
-function reqCtrl() {
+function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
     const req_pdu = lnk_req.$$.pduPtr()
     let tab = TB.LL_REJECT_DATA.$frame(0)
     let rsp_data = tab
-    switch (req_pdu[0]) {
+    let unk_flag = false
+    const opcode = req_pdu[0]
+    switch (opcode) {
         case TB.LL_CONN_UPDATE_IND: {
             const upd = $cast2<$$<TB.ConnUpdData>>($$(req_pdu[1]))
             Connection.update(upd)
-            return
+            return false
         }
         case TB.LL_FEATURE_REQ: {
             rsp_data = TB.LL_FEATURE_RSP_DATA.$frame(0)
@@ -241,30 +238,42 @@ function reqCtrl() {
         case TB.LL_TERMINATE_IND: {
             radioOff()
             recv_done(TL.ConnectionStatus.CLOSED)
-            return
+            return false
         }
         case TB.LL_UNKNOWN_RSP: {
-            return
+            return false
         }
         default: {
-            printf`reqCtrl: %02x\n`(req_pdu[0])
-            fail()
+            unk_flag = true
         }
     }
-    lnk_rsp.$$.init(TB.LL_CTRL)
-    lnk_rsp.$$.addPdu(rsp_data)
-    lnk_rsp_flag = true
+    rsp_pkt.$$.init(TB.LL_CTRL)
+    if (unk_flag) {
+        rsp_pkt.$$.addUnkRsp(opcode)
+    } else {
+        rsp_pkt.$$.addPdu(rsp_data)
+    }
+    return true
 }
 
 function reqFB(_: arg_t) {
+    $['%%a']
     if (lnk_req.$$.isCtrl()) {
-        reqCtrl()
+        const rsp = LnkTx.getCtrlPkt()
+        // assert(rsp != $null)
+        if (reqCtrl(rsp)) {
+            LnkTx.setCtrlReady()
+        }
     } else {
-        reqGatt()
+        const rsp = LnkTx.getAttPkt()
+        // assert(rsp != $null)
+        if (reqGatt(rsp)) {
+            LnkTx.setAttReady()
+        }
     }
 }
 
-function reqGatt() {
+function reqGatt(rsp_pkt: $$<TB.LnkHdr>): bool_t {
     const att_pkt = lnk_req.$$.attPkt()
     let att_rsp_op = 0
     let att_rsp_data = <TL.BufFrame>$null
@@ -317,10 +326,10 @@ function reqGatt() {
             fail()
         }
     }
-    if (att_rsp_data.$len == 0) return
-    lnk_rsp.$$.init(TB.LL_START)
-    lnk_rsp.$$.addAttPkt(att_rsp_op, att_rsp_data)
-    lnk_rsp_flag = true
+    if (att_rsp_data.$len == 0) return false
+    rsp_pkt.$$.init(TB.LL_START)
+    rsp_pkt.$$.addAttPkt(att_rsp_op, att_rsp_data)
+    return true
 }
 
 function rspFB(_: arg_t) {

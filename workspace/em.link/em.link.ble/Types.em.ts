@@ -145,13 +145,15 @@ export interface LnkHdr {
     addAttPkt(this: LnkHdr, opcode: u8, data: TL.BufFrame): void
     addGattVal(this: LnkHdr, val_ptr: opaq_t, val_len: u8): void
     addPdu(this: LnkHdr, data: TL.BufFrame): void
+    addUnkRsp(this: LnkHdr, opcode: u8): void
     attPkt(this: LnkHdr): $$<AttPkt>
     frame(this: LnkHdr): TL.BufFrame
     isCtrl(this: LnkHdr): bool_t
     init(this: LnkHdr, lnk_id: u8): void
     print(this: LnkHdr): void
     pduPtr(this: LnkHdr): TL.BufPtr
-    setAck(this: LnkHdr, req_flags: u8): void
+    setSeq(this: LnkHdr, req_flags: u8, tx_sn: u8): void
+    updateTxAck(this: LnkHdr, tx_sn: $$<u8>): bool_t
 }
 
 export class ScanRsp extends $struct {
@@ -200,6 +202,10 @@ export const LL_LENGTH_RSP_DATA = $table<u8>([
 
 export const LL_REJECT_DATA = $table<u8>([
     LL_REJECT_IND, 0x01  // unknown command
+])
+
+export const LL_UNKNOWN_RSP_DATA = $table<u8>([
+    LL_UNKNOWN_RSP, 0xFF   // placeholder opcode
 ])
 
 export const LL_VERSION_IND_DATA = $table<u8>([
@@ -329,6 +335,12 @@ LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {
     this.pduLen += data.$len
 }
 
+LnkHdr.prototype.addUnkRsp = function (this: LnkHdr, opcode: u8): void {
+    const bp = this.pduPtr()
+    this.addPdu(LL_UNKNOWN_RSP_DATA.$frame(0))
+    bp[1] = opcode
+}
+
 LnkHdr.prototype.attPkt = function (this: LnkHdr): $$<AttPkt> {
     return $cast2<$$<AttPkt>>(this.pduPtr())
 }
@@ -357,10 +369,20 @@ LnkHdr.prototype.print = function (this: LnkHdr): void {
     dumpPkt($$(this))
 }
 
-LnkHdr.prototype.setAck = function (this: LnkHdr, req_flags: u8) {
-    const nesn = (req_flags & LL_NESN_MASK) ^ LL_NESN_MASK
-    const sn = req_flags & LL_SN_MASK
-    this.lnkFlags |= (nesn | sn)
+LnkHdr.prototype.setSeq = function (this: LnkHdr, req_flags: u8, tx_sn: u8) {
+    const nesn = (req_flags & LL_SN_MASK) ? 0 : LL_NESN_MASK
+    const sn = tx_sn & LL_SN_MASK
+    this.lnkFlags = (this.lnkFlags & ~(LL_NESN_MASK | LL_SN_MASK)) | nesn | sn
+}
+
+LnkHdr.prototype.updateTxAck = function (this: LnkHdr, tx_sn: $$<u8>): bool_t {
+    const peer_nesn = this.lnkFlags & LL_NESN_MASK
+    const tx_sn_as_nesn = (tx_sn.$$ & LL_SN_MASK) >> 1
+    if (peer_nesn != tx_sn_as_nesn) {
+        tx_sn.$$ ^= LL_SN_MASK
+        return true
+    }
+    return false
 }
 
 ScanRsp.prototype.frame = function (this: ScanRsp): TL.BufFrame {
