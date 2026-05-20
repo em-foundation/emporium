@@ -1055,6 +1055,8 @@ declare global {
     type u16 = em.u8
     type u32 = em.u32
     type u64 = em.u64
+    type table_ro_t<T> = em.table_t<T>
+    type table_rw_t<T> = em.table_t<T>
     type text_t = em.text_t
     type vec_t<T, N extends number> = em.vec_t<T, N>
     type volatile_t<T> = em.volatile_t<T>

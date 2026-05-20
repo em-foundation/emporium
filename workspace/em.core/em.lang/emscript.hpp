@@ -191,7 +191,7 @@ namespace em {
 
     template <typename T> u16 $sizeof() { return sizeof(T); }
 
-    template <typename T, u16 N> struct table_ro {
+    template <typename T, u16 N = 0> struct table_ro_t {
         T $$[N ? N : 1];
         static constexpr u16 $len = N;
         inline const T &operator[](u16 index) const { return $$[index]; }
@@ -217,7 +217,7 @@ namespace em {
         constexpr Iterator end() const { return Iterator($$ + $len); }
     };
 
-    template <typename T, u16 N> struct table_rw {
+    template <typename T, u16 N = 0> struct table_rw_t {
         T $$[N ? N : 1];
         static constexpr u16 $len = N;
         inline T &operator[](u16 index) { return $$[index]; }
