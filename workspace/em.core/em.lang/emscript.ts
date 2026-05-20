@@ -874,7 +874,7 @@ namespace em {
             a5?: arg_t,
             a6?: arg_t
         ) {
-            console.log(sprintf(sa[0], a1, a2, a3, a4, a5, a6))
+            process.stdout.write(sprintf(sa[0], a1, a2, a3, a4, a5, a6))
         }
         return fn
     }
