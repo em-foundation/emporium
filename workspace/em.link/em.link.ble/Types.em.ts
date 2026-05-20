@@ -4,6 +4,17 @@ export const $U = $declare('MODULE')
 import * as Mem from '@em.utils/Mem.em'
 import * as TL from '@em.link/Types.em'
 
+export const AD_COMPLETE_LOCAL_NAME = 0x09
+export const AD_COMPLETE_UUID128 = 0x07
+export const AD_FLAGS = 0x01
+export const AD_INCOMPLETE_UUID128 = 0x06
+export const AD_MANUFACTURER_DATA = 0xFF
+export const AD_SHORT_LOCAL_NAME = 0x08
+
+export const ADV_FLAG_BR_EDR_NOT_SUPPORTED = 0x04
+export const ADV_FLAG_LE_GENERAL_DISC_MODE = 0x02
+export const ADV_FLAG_LE_LIMITED_DISC_MODE = 0x01
+
 export const ADV_CHAN = 37
 export const ADV_CHAN_MAX = 39
 
@@ -20,16 +31,30 @@ export const ATT_ATTR_NOT_FOUND = 0x0A
 export const ATT_ERROR_RESPONSE = 0x01
 export const ATT_EXCHANGE_MTU_REQ = 0x02
 export const ATT_EXCHANGE_MTU_RSP = 0x03
+export const ATT_FIND_BY_TYPE_VALUE_REQ = 0x06
+export const ATT_FIND_BY_TYPE_VALUE_RSP = 0x07
 export const ATT_FIND_INFORMATION_REQ = 0x04
 export const ATT_FIND_INFORMATION_RSP = 0x05
 export const ATT_HANDLE_VALUE_NTF = 0x1B
-export const ATT_READ_BY_TYPE_REQ = 0x08
+export const ATT_INVALID_HANDLE = 0x01
 export const ATT_READ_BY_GROUP_TYPE_REQ = 0x10
 export const ATT_READ_BY_GROUP_TYPE_RSP = 0x11
+export const ATT_READ_BY_TYPE_REQ = 0x08
+export const ATT_READ_BY_TYPE_RSP = 0x09
+export const ATT_READ_NOT_PERMITTED = 0x02
+export const ATT_READ_REQ = 0x0A
+export const ATT_READ_RSP = 0x0B
+export const ATT_REQUEST_NOT_SUPPORTED = 0x06
+export const ATT_UNSUPPORTED_GROUP_TYPE = 0x10
 export const ATT_WRITE_CMD = 0x52
+export const ATT_WRITE_NOT_PERMITTED = 0x03
+export const ATT_WRITE_REQ = 0x12
+export const ATT_WRITE_RSP = 0x13
 
-export const GATT_PRIMARY_SERVICE = 0x2800
 export const GATT_CHARACTERISTIC = 0x2803
+export const GATT_CHARACTERISTIC_READ = 0x02
+export const GATT_CHARACTERISTIC_WRITE = 0x08
+export const GATT_PRIMARY_SERVICE = 0x2800
 
 export const LL_CONT = 0x01
 export const LL_START = 0x02
@@ -50,25 +75,19 @@ export const MAN_ID_HI = 0x0B
 
 export const INTERVAL_FUDGE = 3
 
+export type AdvData = table_ro_t<u8>
+
+
 export class AdvHdr extends $struct {
     advType: u8
     pduLen: u8
     advA: TL.Addr
-    flagsLen: u8
-    flagsCode: u8
-    flagsVal: u8
-    manLen: u8
-    manCode: u8
-    manIdLo: u8
-    manIdHi: u8
 }
 export interface AdvHdr {
-    addData(this: AdvHdr, src: opaq_t, len: u16): void
-    addName(this: AdvHdr, name: text_t): void
+    addData(this: AdvHdr, data: TL.BufFrame): void
     frame(this: AdvHdr): TL.BufFrame
     init(this: AdvHdr, advType: u8): void
     print(this: AdvHdr): void
-    // isMine: () => bool_t
 }
 
 export class AdvReqHdr extends $struct {
@@ -212,23 +231,66 @@ export const LL_VERSION_IND_DATA = $table<u8>([
     LL_VERSION_IND, 0x08, MAN_ID_LO, MAN_ID_HI, 0x00, 0x00    // 4.2
 ])
 
-const ADV_LEG_INIT = $config<AdvHdr>()
 const MY_ADDR = $config<TL.Addr>()
 
 export namespace em$meta {
+
     export function em$construct() {
-        ADV_LEG_INIT.$$val.pduLen = $sizeof<AdvHdr>() - 2
-        ADV_LEG_INIT.$$val.flagsLen = 2
-        ADV_LEG_INIT.$$val.flagsCode = 0x1
-        ADV_LEG_INIT.$$val.flagsVal = 0x6 // BR_EDR_NOT_SUPPORTED | LE_GENERAL_DISC_MODE
-        ADV_LEG_INIT.$$val.manLen = 3
-        ADV_LEG_INIT.$$val.manCode = 0xff
-        ADV_LEG_INIT.$$val.manIdLo = MAN_ID_LO
-        ADV_LEG_INIT.$$val.manIdHi = MAN_ID_HI
         for (const i of $range(TL.ADDR_SIZE)) {
-            ADV_LEG_INIT.$$val.advA[i] = MY_ADDR.$$val[i] = 0xaa
+            MY_ADDR.$$val[i] = 0xaa
         }
-        ADV_LEG_INIT.$$val.advA[5] = MY_ADDR.$$val[5] = 0xc0
+        MY_ADDR.$$val[5] = 0xc0
+    }
+
+    export function addAdvFlags(data: AdvData, flags = ADV_FLAG_LE_GENERAL_DISC_MODE | ADV_FLAG_BR_EDR_NOT_SUPPORTED) {
+        addAdvPdu(data, AD_FLAGS, [flags])
+    }
+
+    function addAdvPdu(data: AdvData, type: u8, bytes: u8[]) {
+        data.$$add(bytes.length + 1)
+        data.$$add(type)
+        for (const b of bytes) {
+            data.$$add(b)
+        }
+    }
+
+    export function addAdvName(data: AdvData, name: string, complete = false) {
+        addAdvPdu(data, complete ? AD_COMPLETE_LOCAL_NAME : AD_SHORT_LOCAL_NAME, stringBytes(name))
+    }
+
+    export function addAdvManufacturerData(data: AdvData, company: u16, bytes: number[]) {
+        const res: number[] = [company & 0xff, company >> 8]
+        for (const b of bytes) {
+            res.push(b)
+        }
+        addAdvPdu(data, AD_MANUFACTURER_DATA, res)
+    }
+
+    export function addAdvUuid128(data: AdvData, uuid: string, complete = true) {
+        addAdvPdu(data, complete ? AD_COMPLETE_UUID128 : AD_INCOMPLETE_UUID128, uuid128Bytes(uuid))
+    }
+
+    export function dumpAdvPdu(data: AdvData) {
+        for (const b of data) printf`%02x `(b)
+        printf`\n`()
+    }
+
+    function stringBytes(str: string) {
+        const res: number[] = []
+        for (let i = 0; i < str.length; i++) {
+            res.push(str.charCodeAt(i))
+        }
+        return res
+    }
+
+    function uuid128Bytes(uuid: string) {
+        const hex = uuid.replaceAll('-', '')
+        const res: number[] = []
+        for (let i = 15; i >= 0; i--) {
+            res.push(parseInt(hex.substring(i * 2, i * 2 + 2), 16))
+        }
+
+        return res
     }
 }
 
@@ -246,21 +308,10 @@ export function dumpPkt(obuf: opaq_t) {
     printf`\n`()
 }
 
-AdvHdr.prototype.addData = function (this: AdvHdr, src: opaq_t, len: u16): void {
+AdvHdr.prototype.addData = function (this: AdvHdr, data: TL.BufFrame): void {
     const bp = $cast2<TL.BufPtr>($$(this))
-    const off = this.pduLen + 2
-    Mem.cpy($$(bp[off]), src, len)
-    this.pduLen += len
-    this.manLen += len
-}
-
-AdvHdr.prototype.addName = function (this: AdvHdr, name: text_t): void {
-    const bp = $cast2<TL.BufPtr>($$(this))
-    let off = this.pduLen + 2
-    bp[off++] = name.$len + 1
-    bp[off++] = 0x08 // short name
-    Mem.cpy($$(bp[off]), name, name.$len)
-    this.pduLen += name.$len + 2
+    Mem.cpy($$(bp[this.pduLen + 2]), $$(data[0]), data.$len)
+    this.pduLen += data.$len
 }
 
 AdvHdr.prototype.frame = function (this: AdvHdr): TL.BufFrame {
@@ -269,8 +320,9 @@ AdvHdr.prototype.frame = function (this: AdvHdr): TL.BufFrame {
 }
 
 AdvHdr.prototype.init = function (this: AdvHdr, adv_type: u8): void {
-    Mem.cpy($$(this), $$(ADV_LEG_INIT), $sizeof<AdvHdr>())
     this.advType = adv_type
+    this.pduLen = TL.ADDR_SIZE
+    Mem.cpy($$(this.advA), $$(MY_ADDR), TL.ADDR_SIZE)
 }
 
 AdvHdr.prototype.print = function (this: AdvHdr): void {
