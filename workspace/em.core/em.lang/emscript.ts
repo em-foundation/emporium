@@ -640,17 +640,15 @@ namespace em {
         $ref(idx: u16): ref_t<T> {
             return new em$oref<T>(this.elems, idx, this.cname)
         }
-        [Symbol.iterator](): Iterator<ref_t<T>> {
-            // TODO combine with ARRAY
+        [Symbol.iterator](): Iterator<T> {
             let idx = 0
             let elems = this.elems
-            let cn = this.cname
             return {
-                next(): IteratorResult<ref_t<T>> {
+                next(): IteratorResult<T> {
                     if (idx < elems.length) {
                         let cur = idx
                         idx += 1
-                        return { value: new em$oref<T>(elems, idx, cn), done: false }
+                        return { value: elems[cur], done: false }
                     } else {
                         return { value: undefined as any, done: true }
                     }
