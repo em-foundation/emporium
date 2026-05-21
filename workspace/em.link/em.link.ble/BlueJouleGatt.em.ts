@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-export const $S_name = 'BlueJouleGattRw'
+export const $S_name = 'BlueJouleGatt'
 export const $S_uuid = '0000b100-0000-1000-8000-00805f9b34fb'
 
 export type Status_T = u8
@@ -9,6 +9,8 @@ export const Status_uuid = '0000b101-0000-1000-8000-00805f9b34fb'
 
 export type Command_T = u8
 export const Command_uuid = '0000b102-0000-1000-8000-00805f9b34fb'
+
+export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
