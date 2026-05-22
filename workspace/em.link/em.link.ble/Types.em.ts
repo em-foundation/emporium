@@ -2,6 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Mem from '@em.utils/Mem.em'
+import * as SchemaC from '@em.link/SchemaC.em'
 import * as TL from '@em.link/Types.em'
 
 export const AD_COMPLETE_LOCAL_NAME = 0x09
@@ -75,8 +76,7 @@ export const MAN_ID_HI = 0x0B
 
 export const INTERVAL_FUDGE = 3
 
-export type AdvData = table_ro_t<u8>
-
+export type PduData = table_ro_t<u8>
 
 export class AdvHdr extends $struct {
     advType: u8
@@ -242,11 +242,11 @@ export namespace em$meta {
         MY_ADDR.$$val[5] = 0xc0
     }
 
-    export function addAdvFlags(data: AdvData, flags = ADV_FLAG_LE_GENERAL_DISC_MODE | ADV_FLAG_BR_EDR_NOT_SUPPORTED) {
+    export function addAdvFlags(data: PduData, flags = ADV_FLAG_LE_GENERAL_DISC_MODE | ADV_FLAG_BR_EDR_NOT_SUPPORTED) {
         addAdvPdu(data, AD_FLAGS, [flags])
     }
 
-    function addAdvPdu(data: AdvData, type: u8, bytes: u8[]) {
+    function addAdvPdu(data: PduData, type: u8, bytes: u8[]) {
         data.$$add(bytes.length + 1)
         data.$$add(type)
         for (const b of bytes) {
@@ -254,11 +254,11 @@ export namespace em$meta {
         }
     }
 
-    export function addAdvName(data: AdvData, name: string, complete = false) {
+    export function addAdvName(data: PduData, name: string, complete = false) {
         addAdvPdu(data, complete ? AD_COMPLETE_LOCAL_NAME : AD_SHORT_LOCAL_NAME, stringBytes(name))
     }
 
-    export function addAdvManufacturerData(data: AdvData, company: u16, bytes: number[]) {
+    export function addAdvManufacturerData(data: PduData, company: u16, bytes: number[]) {
         const res: number[] = [company & 0xff, company >> 8]
         for (const b of bytes) {
             res.push(b)
@@ -266,11 +266,66 @@ export namespace em$meta {
         addAdvPdu(data, AD_MANUFACTURER_DATA, res)
     }
 
-    export function addAdvUuid128(data: AdvData, uuid: string, complete = true) {
+    export function addAdvUuid128(data: PduData, uuid: string, complete = true) {
         addAdvPdu(data, complete ? AD_COMPLETE_UUID128 : AD_INCOMPLETE_UUID128, uuid128Bytes(uuid))
     }
 
-    export function dumpAdvPdu(data: AdvData) {
+    export function addGattPrimaryService(data: PduData, uuid: string, start = 0x0001, end = 0xffff) {
+        data.$$add(0x14)              // attribute data length: start + end + UUID128
+        addU16(data, start)
+        addU16(data, end)
+        addUuid128(data, uuid)
+    }
+
+    export function addGattCharacteristics(data: PduData, resources: SchemaC.Resource[]) {
+        data.$$add(0x15)
+        let decl = 0x0002
+        let value = 0x0003
+        for (const r of resources) {
+            let props = 0
+            if (r.canRead) {
+                props |= GATT_CHARACTERISTIC_READ
+            }
+            if (r.canWrite) {
+                props |= GATT_CHARACTERISTIC_WRITE
+            }
+            addU16(data, decl)
+            data.$$add(props)
+            addU16(data, value)
+            addUuid128(data, r.uuid!)
+            decl += 2
+            value += 2
+        }
+    }
+
+    function addU16(data: PduData, value: u16) {
+        data.$$add(value & 0xff)
+        data.$$add(value >> 8)
+    }
+
+    function addUuid128(data: PduData, uuid: string) {
+        for (const b of uuid128Bytes(uuid)) {
+            data.$$add(b)
+        }
+    }
+
+    export function addAttMtu(data: PduData, mtu = 0x00fb) {
+        addU16(data, mtu)
+    }
+
+    export function addAttError(data: PduData, reqOp: u8, handle: u16, err: u8) {
+        data.$$add(reqOp)
+        addU16(data, handle)
+        data.$$add(err)
+    }
+
+    export function addGattFindInfo(data: PduData) {
+        data.$$add(0x01)          // 16-bit UUID format
+        addU16(data, 0x0001)
+        addU16(data, GATT_PRIMARY_SERVICE)
+    }
+
+    export function dumpAdvPdu(data: PduData) {
         for (const b of data) printf`%02x `(b)
         printf`\n`()
     }
