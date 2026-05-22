@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
-type Resource = {
+export type Resource = {
     name: string
     typeName: string
     typeDesc: string
@@ -11,7 +11,7 @@ type Resource = {
     canNotify: boolean
 }
 
-type Info = {
+export type Info = {
     uid: string
     name: string
     uuid: string
