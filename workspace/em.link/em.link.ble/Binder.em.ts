@@ -25,21 +25,23 @@ export namespace em$meta {
         sch_info = SchemaC.makeInfo(AppSchema.$U!.uid)
         TB.em$meta.addAdvFlags(ADV_DATA)
         TB.em$meta.addAdvUuid128(ADV_DATA, sch_info.uuid)
+        TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
+        //
+        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0005)
+        TB.em$meta.addGattCharacteristics(CHARACTERISTIC_DATA, sch_info.resources)
+        //
         TB.em$meta.addAttError(ATT_ERROR_DATA, 0, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_INFO_ERROR_DATA, TB.ATT_FIND_INFORMATION_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
-        TB.em$meta.addGattCharacteristics(CHARACTERISTIC_DATA, sch_info.resources)
         TB.em$meta.addGattFindInfo(FIND_INFO_DATA)
         TB.em$meta.addAttMtu(MTU_DATA)
-        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid)
-        TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
     }
 
     export function getTxBufSize(): u16 {
-        return 40
+        return 100
     }
 
     export function getRxBufSize(): u16 {
-        return 40
+        return 100
     }
 }
 
@@ -72,7 +74,6 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
         }
         case TB.ATT_READ_BY_TYPE_REQ: {
             type_req.init(att_pkt)
-
             if (type_req.typeId == TB.GATT_CHARACTERISTIC) {
                 att_rsp_op = TB.ATT_READ_BY_TYPE_RSP
                 att_rsp_data = CHARACTERISTIC_DATA.$frame(0)
@@ -105,5 +106,9 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
     }
     rsp_pkt.$$.init(TB.LL_START)
     rsp_pkt.$$.addAttPkt(att_rsp_op, att_rsp_data)
+
+    // rsp_pkt.$$.print()
+    // halt()
+
     return true
 }

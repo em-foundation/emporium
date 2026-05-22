@@ -41,6 +41,6 @@ function appFb(_: arg_t) {
 
 
 function statusHandler(stat: TL.ConnectionStatus) {
-    printf`stat = %d\n`(stat)
-    halt()
+    // $['%%>'](stat)
+    if (stat == TL.ConnectionStatus.CLOSED) halt()
 }
