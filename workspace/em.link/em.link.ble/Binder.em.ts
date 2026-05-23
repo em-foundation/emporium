@@ -32,13 +32,13 @@ export namespace em$meta {
 
     export function em$construct() {
         sch_info = SchemaC.makeInfo(AppSchema.$U!.uid)
-        const schema_cname = AppSchema.$U!.uid.replaceAll('.', '_')
+        const schema_cname = AppSchema.$U!.uid.replaceAll('.', '_').replace('/', '_')
         TB.em$meta.addAdvFlags(ADV_DATA)
         TB.em$meta.addAdvUuid128(ADV_DATA, sch_info.uuid)
         TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
         //
         TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0005)
-        TB.em$meta.addGattCharacteristics(CHARACTERISTIC_DATA, sch_info.resources)
+        addGattCharacteristicData(CHARACTERISTIC_DATA, sch_info.resources)
         //
         for (let r of sch_info.resources) {
             READ_FUNCS.$$add(r.canRead ? $cb(`${r.name}_read`, schema_cname) : $cb(null))
@@ -60,6 +60,38 @@ export namespace em$meta {
     export function getRxBufSize(): u16 {
         return 100
     }
+
+    function addGattCharacteristicData(data: TB.PduData, resources: SchemaC.Resource[]) {
+        var h: u16 = 0x0002
+        for (let r of resources) {
+            data.$$add(0x15)
+            addU16(data, h)
+            addProps(data, r)
+            addU16(data, h + 1)
+            addUuid128(data, r.uuid!)
+            h += 2
+        }
+    }
+
+    function addProps(data: TB.PduData, r: SchemaC.Resource) {
+        var props = 0
+        if (r.canRead) props |= TB.GATT_CHARACTERISTIC_READ
+        if (r.canWrite) props |= TB.GATT_CHARACTERISTIC_WRITE
+        data.$$add(props)
+    }
+
+    function addU16(data: TB.PduData, value: u16) {
+        data.$$add(value & 0xff)
+        data.$$add(value >> 8)
+    }
+
+    function addUuid128(data: TB.PduData, uuid: string) {
+        const hex = uuid.replaceAll('-', '')
+        for (let i = 15; i >= 0; i--) {
+            data.$$add(parseInt(hex.substring(i * 2, i * 2 + 2), 16))
+        }
+    }
+
 }
 
 //>> ---- em$targ ---- <<//

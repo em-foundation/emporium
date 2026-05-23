@@ -52,6 +52,20 @@ export function prW(label: text_t, p32: ptr_t<u32>, size: u32) {
 
 /// TODO: opaq_t args
 
+export function pack16(dst: arg_t, val: u16) {
+    const bp = <ptr_t<u8>>(dst)
+    bp[0] = (val >> 0) & 0xFF
+    bp[1] = (val >> 8) & 0xFF
+}
+
+export function pack32(dst: arg_t, val: u32) {
+    const bp = <ptr_t<u8>>(dst)
+    bp[0] = (val >> 0) & 0xFF
+    bp[1] = (val >> 8) & 0xFF
+    bp[2] = (val >> 16) & 0xFF
+    bp[3] = (val >> 24) & 0xFF
+}
+
 export function scan16(src: arg_t): u16 {
     const bp = <ptr_t<u8>>(src)
     let res = <u16>0
