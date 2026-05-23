@@ -162,6 +162,16 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             const handle = Mem.scan16($$(data[0]))
             return readValue(handle, rsp_pkt)
         }
+        case TB.ATT_WRITE_REQ: {
+            const data = <TL.BufPtr>att_pkt.$$.dataPtr()
+            const handle = Mem.scan16($$(data[0]))
+            if (!writeValue(handle, <TL.BufPtr>$$(data[2]))) {
+                return false
+            }
+            rsp_pkt.$$.init(TB.LL_START)
+            rsp_pkt.$$.addAttPkt(TB.ATT_WRITE_RSP, EMPTY_DATA.$frame(0))
+            return true
+        }
         default: {
             return false
         }
@@ -248,3 +258,10 @@ function writeResource(handle: u16, src: TL.BufPtr) {
     write_fxn(src)
 }
 
+function writeValue(handle: u16, src: TL.BufPtr): bool_t {
+    if (!isValueHandle(handle)) {
+        return false
+    }
+    writeResource(handle, src)
+    return true
+}
