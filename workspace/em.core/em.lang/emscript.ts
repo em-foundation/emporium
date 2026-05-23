@@ -49,27 +49,22 @@ namespace em {
     export type cb_t<A extends unknown[] = [], R = void> = (...args: A) => R
 
     export function $cb<A extends unknown[] = [], R = void>(
-        fxn: (...args: A) => R,
+        fxn: ((...args: A) => R) | string | null,
         cname?: string
     ): cb_t<A, R> {
-        return new em$cb(fxn, cname!) as unknown as cb_t<A, R>
-    }
-
-    export function $cb$null() {
-        return new em$cb(undefined, '<undefined')
+        return new em$cb(fxn, cname) as unknown as cb_t<A, R>
     }
 
     class em$cb<A extends any[]> {
         __em$class = 'em$cb'
+        cname: string | undefined
+        fname: string | undefined
         constructor(
-            private fxn: ((...args: A) => void) | undefined,
-            private cname: string
+            fxn: ((...args: A) => void) | string | null,
+            cname: string | undefined
         ) {
-            return new Proxy(this, {
-                apply: (target, thisArg, args: A) => {
-                    return this.fxn!(...args)
-                },
-            }) as any
+            this.cname = cname
+            this.fname = fxn == null ? undefined : typeof fxn == 'string' ? fxn : fxn.name
         }
     }
 
@@ -441,7 +436,7 @@ namespace em {
 
     const typeDefaults: ReadonlyMap<string, any> = new Map<string, any>([
         ['bool_t', false],
-        ['cb_t', $cb$null()],
+        ['cb_t', $cb(null)],
         ['i8', 0],
         ['i16', 0],
         ['i32', 0],
@@ -1070,7 +1065,6 @@ declare global {
     const $board: typeof em.$board
     const $cast2: typeof em.$cast2
     const $cb: typeof em.$cb
-    const $cb$null: typeof em.$cb$null
     const $clone: typeof em.$clone
     const $config: typeof em.$config
     const $declare: typeof em.$declare
@@ -1113,7 +1107,6 @@ Object.assign(globalThis, {
     $board: em.$board,
     $cast2: em.$cast2,
     $cb: em.$cb,
-    $cb$null: em.$cb$null,
     $clone: em.$clone,
     $config: em.$config,
     $declare: em.$declare,
