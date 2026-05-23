@@ -46,6 +46,11 @@ namespace em {
     const __CB__ = null
     // #region
 
+    // TODO: rename cname to uid in the public/meta descriptor.
+    // The transformer currently injects the translated C++ unit name when omitted.
+    // Prefer injecting the EMS unit UID instead, and let emitters derive their own
+    // target-specific qualified name form.    
+
     export type cb_t<A extends unknown[] = [], R = void> = (...args: A) => R
 
     export function $cb<A extends unknown[] = [], R = void>(
