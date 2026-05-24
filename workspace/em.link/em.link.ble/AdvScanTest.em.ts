@@ -41,6 +41,11 @@ function appFb(_: arg_t) {
 
 
 function statusHandler(stat: TL.ConnectionStatus) {
-    // $['%%>'](stat)
+    switch (stat) {
+        case TL.ConnectionStatus.OPENING:
+        case TL.ConnectionStatus.CLOSED:
+            $['%%d']
+            break
+    }
     if (stat == TL.ConnectionStatus.CLOSED) halt()
 }
