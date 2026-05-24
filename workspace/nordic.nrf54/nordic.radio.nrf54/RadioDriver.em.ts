@@ -40,6 +40,7 @@ var cur_phy: TL.Phy
 var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
 var pause_handler: RadioDriverI.Handler = $null
+var rx_end_time: u32
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
@@ -88,6 +89,19 @@ export function getRxBuf(): TL.BufPtr {
     return rx_timeout ? $null : cur_rx_buf
 }
 
+export function getRxEndTimeUs(): u32 {
+    return rx_end_time
+}
+
+export function nowTimeUs(): u32 {
+    return Rtc.getRawUsecs()
+}
+
+export function pause(usecs: u32, handler: RadioDriverI.Handler) {
+    pause_handler = handler
+    Rtc.enableAux(Rtc.getRawUsecs() + usecs, $cb(rtcHandler))
+}
+
 export function startCw(chan: u8, power: i8) {
     setState(State.CW)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_Pos5dBm
@@ -99,6 +113,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
+    rx_end_time = 0
     rx_timeout = false
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(buf)
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
@@ -111,11 +126,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
-}
-
-export function pause(usecs: u32, handler: RadioDriverI.Handler) {
-    pause_handler = handler
-    Rtc.enableAux(Rtc.getRawUsecs() + usecs, $cb(rtcHandler))
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
@@ -147,6 +157,7 @@ export function RADIO_0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
+            rx_end_time = nowTimeUs()
             Rtc.disableAux()
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
