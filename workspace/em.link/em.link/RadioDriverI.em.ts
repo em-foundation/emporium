@@ -14,6 +14,7 @@ export interface $I {
     disable(): void
     enable(): void
     getRxBuf(): TL.BufPtr
+    pause(usecs: u32, handler: Handler): void
     startRx(buf: TL.BufPtr, chan: u8, timeout: u16): void
     startTx(buf: TL.BufFrame, chan: u8): void
 

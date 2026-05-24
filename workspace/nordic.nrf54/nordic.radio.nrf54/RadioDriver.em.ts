@@ -8,7 +8,6 @@ import * as Heap from '@em.utils/Heap.em'
 import * as HfXtal from '@nordic.mcu.nrf54/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf54/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
-import * as Mem from '@em.utils/Mem.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
@@ -19,7 +18,7 @@ enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
 }
 
-const handler = $config<RadioDriverI.Handler>()
+const radio_handler = $config<RadioDriverI.Handler>()
 
 const tx_adr = $config<Heap.Adr>()
 
@@ -29,7 +28,7 @@ export namespace em$meta {
         tx_adr.$$val = Heap.em$meta.alloc(40)
     }
     export function bindHandler(h: RadioDriverI.Handler) {
-        handler.$$val = h
+        radio_handler.$$val = h
     }
 }
 
@@ -40,6 +39,7 @@ var cur_params: $$<TL.Params>
 var cur_phy: TL.Phy
 var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
+var pause_handler: RadioDriverI.Handler = $null
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
@@ -108,17 +108,17 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     if (timeout > 0) {
         const usecs = Rtc.getRawUsecs()
-        // $['%%a']
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
-    // $['%%a:'](2)
 }
 
-var data_cnt = 0
+export function pause(usecs: u32, handler: RadioDriverI.Handler) {
+    pause_handler = handler
+    Rtc.enableAux(Rtc.getRawUsecs() + usecs, $cb(rtcHandler))
+}
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
-    if (chan < 37) data_cnt += 1
     setState(State.TX)
     cur_chan = chan
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>($$(buf[0]))
@@ -130,7 +130,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
-    // $['%%a']
 }
 
 export function waitReady() {
@@ -171,17 +170,22 @@ export function RADIO_0_isr$$() {
     }
     TimeFence.disable()
     setState(State.READY)
-    if (handler != $null) handler()
+    if (radio_handler != $null) radio_handler()
 }
 
 function rtcHandler() {
-    rx_timeout = true
-    // $['%%a']
     Rtc.disableAux()
+    if (pause_handler != $null) {
+        const h = pause_handler
+        pause_handler = $null
+        h()
+        return
+    }
+    rx_timeout = true
     $R.RADIO.TASKS_DISABLE.$$ = 1
     /// TODO -- track RADIO END event
     setState(State.READY)
-    if (handler != $null) handler()
+    if (radio_handler != $null) radio_handler()
 }
 
 function setState(s: State) {
@@ -189,4 +193,3 @@ function setState(s: State) {
     // $['%%>'](s)
     cur_state = s
 }
-

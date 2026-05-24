@@ -15,7 +15,6 @@ export namespace em$meta {
     export function em$configure() {
         Binder.AppSchema.$$dlg = AppSchema
         Controller.Led.$$dlg = $delegate(BoardC.AppLed)
-        Controller.OneShot.$$dlg = $delegate(BoardC.OneShot)
         Controller.RadioDriver.$$dlg = $delegate(BoardC.RadioDriver)
         Registry.DEFAULT_PARAMS.$$val.ble_connectible = true
         Registry.DEFAULT_PARAMS.$$val.ble_adv_chan_mask = 0x1

@@ -8,14 +8,12 @@ import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
 import * as MsCounter from '@em.utils/MsCounter.em'
-import * as OneShotI from '@em.hal/OneShotI.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
-export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 const rx_adr = $config<Heap.Adr>()
@@ -318,10 +316,9 @@ function setState(s: State) {
 }
 
 function setTimeout(msecs: u32) {
-    OneShot.disable()
-    OneShot.enable(msecs, $cb(timerHandler), 0)
+    RadioDriver.pause(msecs * 1000, $cb(timerHandler))
 }
 
-function timerHandler(_: arg_t) {
+function timerHandler() {
     controllerF.$$.post()
 }
