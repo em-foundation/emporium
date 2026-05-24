@@ -277,7 +277,6 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
 }
 
 function reqFB(_: arg_t) {
-    $['%%a']
     if (lnk_req.$$.isCtrl()) {
         const rsp = LnkTx.getCtrlPkt()
         if (reqCtrl(rsp)) {

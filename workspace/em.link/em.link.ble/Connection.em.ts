@@ -29,7 +29,7 @@ var paramsB: Params
 // TODO: consider smaller struct for paramsB
 
 export function channel(): u8 {
-    $['%%>'](chan_num)
+    // $['%%>'](chan_num)
     return chan_num
 }
 

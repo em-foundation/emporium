@@ -16,6 +16,7 @@ const ADV_DATA = $table<u8>()
 const ATT_ERROR_DATA = $table<u8>()
 const CHARACTERISTIC_DATA = $table<u8>()
 const EMPTY_DATA = $table<u8>()
+const FIND_BY_TYPE_ERROR_DATA = $table<u8>()
 const FIND_INFO_DATA = $table<u8>()
 const FIND_INFO_ERROR_DATA = $table<u8>()
 const GROUP_TYPE_ERROR_DATA = $table<u8>()
@@ -46,6 +47,7 @@ export namespace em$meta {
         }
         //  
         TB.em$meta.addAttError(ATT_ERROR_DATA, 0, 0x0001, TB.ATT_ATTR_NOT_FOUND)
+        TB.em$meta.addAttError(FIND_BY_TYPE_ERROR_DATA, TB.ATT_FIND_BY_TYPE_VALUE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_INFO_ERROR_DATA, TB.ATT_FIND_INFORMATION_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0006, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(TYPE_ERROR_DATA, TB.ATT_READ_BY_TYPE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
@@ -113,10 +115,21 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
     let att_rsp_op = 0
     let att_rsp_data = <TL.BufFrame>$null
     switch (att_pkt.$$.opcode) {
+        case TB.ATT_FIND_BY_TYPE_VALUE_REQ: {
+            type_req.init(att_pkt)
+            if (type_req.typeId == TB.GATT_PRIMARY_SERVICE && type_req.startHandle <= 0x0001 && type_req.endHandle >= 0x0001) {
+                att_rsp_op = att_pkt.$$.opcode + 1
+                att_rsp_data = PRIMARY_SERVICE_DATA.$frame(1, 4)
+            } else {
+                att_rsp_op = TB.ATT_ERROR_RESPONSE
+                att_rsp_data = FIND_BY_TYPE_ERROR_DATA.$frame(0)
+            }
+            break
+        }
         case TB.ATT_READ_BY_GROUP_TYPE_REQ: {
             type_req.init(att_pkt)
             if (type_req.typeId == TB.GATT_PRIMARY_SERVICE && type_req.startHandle <= 0x0001 && type_req.endHandle >= 0x0001) {
-                att_rsp_op = TB.ATT_READ_BY_GROUP_TYPE_RSP
+                att_rsp_op = att_pkt.$$.opcode + 1
                 att_rsp_data = PRIMARY_SERVICE_DATA.$frame(0)
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
@@ -129,7 +142,7 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             if (type_req.typeId == TB.GATT_CHARACTERISTIC) {
                 att_rsp_data = getCharacteristicRspData(type_req.startHandle, type_req.endHandle)
                 if (att_rsp_data.$len != 0) {
-                    att_rsp_op = TB.ATT_READ_BY_TYPE_RSP
+                    att_rsp_op = att_pkt.$$.opcode + 1
                 } else {
                     att_rsp_op = TB.ATT_ERROR_RESPONSE
                     att_rsp_data = TYPE_ERROR_DATA.$frame(0)
@@ -147,7 +160,6 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
         }
         case TB.ATT_FIND_INFORMATION_REQ: {
             find_req.init(att_pkt)
-
             if (find_req.startHandle <= 0x0001 && find_req.endHandle >= 0x0001) {
                 att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
                 att_rsp_data = FIND_INFO_DATA.$frame(0)

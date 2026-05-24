@@ -112,7 +112,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
-    $['%%d:'](2)
+    // $['%%a:'](2)
 }
 
 var data_cnt = 0
@@ -130,7 +130,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
-    $['%%d']
+    // $['%%a']
 }
 
 export function waitReady() {
