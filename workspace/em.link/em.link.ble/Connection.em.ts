@@ -8,10 +8,10 @@ import * as TL from '@em.link/Types.em'
 export class Params extends $struct {
     accAdr: u32
     crcInit: u32
-    interval: u16
+    interval_us: u32
+    winOff_us: u32
+    winSize_us: u32
     latency: u16
-    winOff: u16
-    winSize: u16
 }
 
 export namespace em$meta { }
@@ -50,9 +50,9 @@ export function next(): bool_t {
 export function open(pkt: $$<TB.ConnPkt>) {
     paramsA.accAdr = Mem.scan32($$(pkt.$$.accAdr[0]))
     paramsA.crcInit = Mem.scan32($$(pkt.$$.crcInit[0])) & 0x00ffffff
-    paramsA.interval = ((Mem.scan16($$(pkt.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE
-    paramsA.winOff = Mem.scan16($$(pkt.$$.winOff[0]))
-    paramsA.winSize = pkt.$$.winSize
+    paramsA.interval_us = (((Mem.scan16($$(pkt.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
+    paramsA.winOff_us = Mem.scan16($$(pkt.$$.winOff[0])) * 1250
+    paramsA.winSize_us = pkt.$$.winSize * 1250
     chan_hop = pkt.$$.hopSca & 0x1f
     chan_num = chan_hop
     instant = 0
@@ -65,9 +65,9 @@ export function params(): $$<Params> {
 
 export function update(data: $$<TB.ConnUpdData>) {
     Mem.cpy($$(paramsB), $$(paramsA), $sizeof<Params>())
-    paramsB.interval = ((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE
-    paramsB.winOff = Mem.scan16($$(data.$$.winOff[0]))
-    paramsB.winSize = data.$$.winSize
+    paramsA.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
+    paramsA.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
+    paramsA.winSize_us = data.$$.winSize * 1250
     instant = Mem.scan16($$(data.$$.instant[0]))
 }
 

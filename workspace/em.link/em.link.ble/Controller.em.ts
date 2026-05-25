@@ -7,7 +7,6 @@ import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
-import * as MsCounter from '@em.utils/MsCounter.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as TB from '@em.link.ble/Types.em'
@@ -104,7 +103,7 @@ function controller() {
                     status_cb(TL.ConnectionStatus.TIMEOUT)
                     return
                 }
-                setTimeout(adv_inter)
+                setTimeout(adv_inter * 1000)
                 setState(State.ADV_SCAN)
                 return
             }
@@ -142,20 +141,13 @@ function controller() {
                 } else {
                     null_pkt_cnt = 0
                 }
-                const t1 = MsCounter.stop()
-                const ci = Connection.params().$$.interval
-                const dt = (t1 == 0) ? ci : (t1 > ci) ? ((ci * 2) - t1) : ci - (ci - t1)
-                MsCounter.start()
-                setTimeout(dt)
+                setTimeout(Connection.params().$$.interval_us)
                 setState(State.EXCH)
                 return
             }
 
             case State.EXCH: {
                 upd_flag = Connection.next()
-                if (upd_flag) {
-                    MsCounter.stop()
-                }
                 doExch(upd_flag ? 1000 : TB.INTERVAL_FUDGE * 3)
                 setState(State.CONN_PAUSE)
                 return
@@ -315,8 +307,8 @@ function setState(s: State) {
     cur_state = s
 }
 
-function setTimeout(msecs: u32) {
-    RadioDriver.pause(msecs * 1000, $cb(timerHandler))
+function setTimeout(usecs: u32) {
+    RadioDriver.pause(usecs, $cb(timerHandler))
 }
 
 function timerHandler() {
