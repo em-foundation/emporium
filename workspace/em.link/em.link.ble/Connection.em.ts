@@ -50,6 +50,8 @@ export function next(): bool_t {
 export function open(pkt: $$<TB.ConnPkt>) {
     paramsA.accAdr = Mem.scan32($$(pkt.$$.accAdr[0]))
     paramsA.crcInit = Mem.scan32($$(pkt.$$.crcInit[0])) & 0x00ffffff
+    const upd = $cast2<$$<TB.ConnUpdData>>($$(pkt.$$.winSize))      /// TODO: add conversions in TB
+    scanTiming(upd)
     paramsA.interval_us = (((Mem.scan16($$(pkt.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
     paramsA.winOff_us = Mem.scan16($$(pkt.$$.winOff[0])) * 1250
     paramsA.winSize_us = pkt.$$.winSize * 1250
@@ -65,74 +67,12 @@ export function params(): $$<Params> {
 
 export function update(data: $$<TB.ConnUpdData>) {
     Mem.cpy($$(paramsB), $$(paramsA), $sizeof<Params>())
-    paramsA.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
-    paramsA.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
-    paramsA.winSize_us = data.$$.winSize * 1250
+    scanTiming(data)
     instant = Mem.scan16($$(data.$$.instant[0]))
 }
 
-/*
-module Connection
-
-    type Params: struct
-        accAdr: uint32
-        crcInit: uint32
-        interval: uint16
-        latency: uint16
-        winOff: uint16
-        winSize: uint16
-    end
-
-    function channel(): uint8
-    function close()
-    function next(): bool
-    function open(pkt: Types.ConnPkt&)
-    function params(): Params&
-    function update(data: Types.ConnUpdData&)
-
-
-
-def channel()
-    return chanNum
-end
-
-def close()
-    current = null
-end
-
-def next()
-    auto ch = chanNum + chanHop
-    chanNum = ch > 36 ? (ch - 37) : ch
-    evtCount += 1
-    return false if evtCount != instant
-    paramsA := paramsB
-    instant = 0
-    return true
-end
-
-def open(pkt)
-    auto params = &paramsA
-    params.accAdr = Types.parse32(&pkt.accAdr[0])
-    params.crcInit = Types.parse32(&pkt.crcInit[0])
-    params.interval = ((Types.parse16(&pkt.interval[0]) * 5) / 4) - Types.INTERVAL_FUDGE
-    params.winOff = Types.parse16(&pkt.winOff[0])
-    params.winSize = pkt.winSize
-    chanHop = pkt.hopSca & 0x1F
-    chanNum = chanHop
-    current = params
-    instant = 0
-end
-
-def params()
-    return current
-end
-
-def update(data)
-    auto params = &paramsB
-    params := paramsA
-    params.interval = ((Types.parse16(&data.interval[0]) * 5) / 4) - Types.INTERVAL_FUDGE
-    params.winOff = Types.parse16(&data.winOff[0])
-    params.winSize = data.winSize
-    instant = Types.parse16(&data.instant[0])
-end
-*/
+function scanTiming(data: $$<TB.ConnUpdData>) {
+    paramsA.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
+    paramsA.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
+    paramsA.winSize_us = data.$$.winSize * 1250
+}
