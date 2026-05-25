@@ -330,7 +330,7 @@ function timerHandler() {
 
 const BLE_RX_AIRTIME_US = 128
 const HFCLK_GUARD_US = 1000
-const RX_GUARD_US = 500
+const RX_GUARD_US = 0
 
 Anchor.prototype.nextPause = function (this: Anchor, rx_ok: bool_t): u32 {
     const interval_us = Connection.params().$$.interval_us
