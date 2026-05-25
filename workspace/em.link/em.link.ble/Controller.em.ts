@@ -66,7 +66,7 @@ class Anchor extends $struct {
     valid: bool_t
 }
 interface Anchor {
-    nextPause(this: Anchor, rx_ok: bool_t): u32
+    nextPause(this: Anchor, air_us: u32): u32
     reset(this: Anchor): void
 }
 
@@ -145,8 +145,9 @@ function controller() {
 
             case State.CONN_PAUSE: {
                 radioOff()
-                const rx_ok = (RadioDriver.getRxBuf() != $null)
-                if (!rx_ok) {
+                const air_us = (RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
+                setTimeout(anchor.nextPause(air_us))
+                if (air_us == 0) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         status_cb(TL.ConnectionStatus.HANGUP)
                         return
@@ -154,7 +155,7 @@ function controller() {
                 } else {
                     null_pkt_cnt = 0
                 }
-                setTimeout(anchor.nextPause(rx_ok))
+                setTimeout(anchor.nextPause(air_us))
                 setState(State.EXCH)
                 return
             }
@@ -293,6 +294,10 @@ function reqFB(_: arg_t) {
     }
 }
 
+function rxAirtimeUs(pkt: $$<TB.LnkHdr>): u32 {
+    return (10 + pkt.$$.pduLen) * 8
+}
+
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (adv_req.$$.isScan()) {
         Binder.initScanRspPkt(scan_rsp)
@@ -329,14 +334,13 @@ function timerHandler() {
 }
 
 const BLE_RX_AIRTIME_US = 128
-const HFCLK_GUARD_US = 1000
+const HFCLK_GUARD_US = 750
 const RX_GUARD_US = 0
 
-Anchor.prototype.nextPause = function (this: Anchor, rx_ok: bool_t): u32 {
+Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
     const interval_us = Connection.params().$$.interval_us
-    if (rx_ok) {
+    if (air_us != 0) {
         const rx_end_us = RadioDriver.getRxEndTimeUs()
-        const air_us = BLE_RX_AIRTIME_US
         this.usecs = rx_end_us - air_us
         this.valid = true
     } else if (this.valid) {
