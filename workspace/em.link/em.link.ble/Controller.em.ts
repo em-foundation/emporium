@@ -61,6 +61,17 @@ enum State {
     IDLE,
 }
 
+class Anchor extends $struct {
+    usecs: u32
+    valid: bool_t
+}
+interface Anchor {
+    nextPause(this: Anchor, rx_ok: bool_t): u32
+    reset(this: Anchor): void
+}
+
+var anchor: Anchor
+
 var adv_con_flag: bool_t
 var adv_count: u16
 var adv_inter: u16
@@ -125,6 +136,7 @@ function controller() {
             case State.CONN: {
                 Connection.open(conn_pkt)
                 status_cb(TL.ConnectionStatus.OPENING)
+                anchor.reset()
                 LnkTx.reset()
                 doExch(1000)
                 setState(State.CONN_PAUSE)
@@ -133,7 +145,8 @@ function controller() {
 
             case State.CONN_PAUSE: {
                 radioOff()
-                if (RadioDriver.getRxBuf() == null) {
+                const rx_ok = (RadioDriver.getRxBuf() != $null)
+                if (!rx_ok) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         status_cb(TL.ConnectionStatus.HANGUP)
                         return
@@ -141,7 +154,7 @@ function controller() {
                 } else {
                     null_pkt_cnt = 0
                 }
-                setTimeout(Connection.params().$$.interval_us)
+                setTimeout(anchor.nextPause(rx_ok))
                 setState(State.EXCH)
                 return
             }
@@ -313,4 +326,29 @@ function setTimeout(usecs: u32) {
 
 function timerHandler() {
     controllerF.$$.post()
+}
+
+const BLE_RX_AIRTIME_US = 128
+const HFCLK_GUARD_US = 500
+const RX_GUARD_US = 250
+
+Anchor.prototype.nextPause = function (this: Anchor, rx_ok: bool_t): u32 {
+    const interval_us = Connection.params().$$.interval_us
+    if (rx_ok) {
+        const rx_end_us = RadioDriver.getRxEndTimeUs()
+        const air_us = BLE_RX_AIRTIME_US
+        this.usecs = rx_end_us - air_us
+        this.valid = true
+    } else if (this.valid) {
+        this.usecs += interval_us
+    } else {
+        return interval_us
+    }
+    const wake_us = this.usecs + interval_us - HFCLK_GUARD_US - RX_GUARD_US
+    const now_us = RadioDriver.nowTimeUs()
+    return wake_us > now_us ? wake_us - now_us : 0
+}
+
+Anchor.prototype.reset = function (this: Anchor): void {
+    this.valid = false
 }
