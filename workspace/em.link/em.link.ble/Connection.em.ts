@@ -69,8 +69,7 @@ export function update(data: $$<TB.ConnUpdData>) {
 }
 
 function scanTiming(params: $$<Params>, data: $$<TB.ConnUpdData>) {
-    params.$$.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
-    // params.$$.interval_us = Mem.scan16($$(data.$$.interval[0])) * 1250
+    params.$$.interval_us = Mem.scan16($$(data.$$.interval[0])) * 1250
     params.$$.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
     params.$$.winSize_us = data.$$.winSize * 1250
 }
