@@ -333,7 +333,7 @@ function timerHandler() {
     controllerF.$$.post()
 }
 
-const HFCLK_GUARD_US = 700
+const HFCLK_GUARD_US = 650
 const RX_GUARD_US = 0
 
 Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
