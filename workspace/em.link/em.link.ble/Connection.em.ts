@@ -51,7 +51,7 @@ export function open(pkt: $$<TB.ConnPkt>) {
     paramsA.accAdr = Mem.scan32($$(pkt.$$.accAdr[0]))
     paramsA.crcInit = Mem.scan32($$(pkt.$$.crcInit[0])) & 0x00ffffff
     const upd = $cast2<$$<TB.ConnUpdData>>($$(pkt.$$.winSize))      /// TODO: add conversions in TB
-    scanTiming(upd)
+    scanTiming($$(paramsA), upd)
     paramsA.interval_us = (((Mem.scan16($$(pkt.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
     paramsA.winOff_us = Mem.scan16($$(pkt.$$.winOff[0])) * 1250
     paramsA.winSize_us = pkt.$$.winSize * 1250
@@ -67,12 +67,12 @@ export function params(): $$<Params> {
 
 export function update(data: $$<TB.ConnUpdData>) {
     Mem.cpy($$(paramsB), $$(paramsA), $sizeof<Params>())
-    scanTiming(data)
+    scanTiming($$(paramsB), data)
     instant = Mem.scan16($$(data.$$.instant[0]))
 }
 
-function scanTiming(data: $$<TB.ConnUpdData>) {
-    paramsA.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
-    paramsA.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
-    paramsA.winSize_us = data.$$.winSize * 1250
+function scanTiming(params: $$<Params>, data: $$<TB.ConnUpdData>) {
+    params.$$.interval_us = (((Mem.scan16($$(data.$$.interval[0])) * 5) / 4) - TB.INTERVAL_FUDGE) * 1000
+    params.$$.winOff_us = Mem.scan16($$(data.$$.winOff[0])) * 1250
+    params.$$.winSize_us = data.$$.winSize * 1250
 }
