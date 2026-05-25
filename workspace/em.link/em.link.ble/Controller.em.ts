@@ -333,8 +333,7 @@ function timerHandler() {
     controllerF.$$.post()
 }
 
-const BLE_RX_AIRTIME_US = 128
-const HFCLK_GUARD_US = 750
+const HFCLK_GUARD_US = 700
 const RX_GUARD_US = 0
 
 Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
