@@ -146,7 +146,6 @@ function controller() {
             case State.CONN_PAUSE: {
                 radioOff()
                 const air_us = (RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
-                setTimeout(anchor.nextPause(air_us))
                 if (air_us == 0) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         status_cb(TL.ConnectionStatus.HANGUP)
@@ -318,7 +317,7 @@ function scanProf(params: $$<TL.Params>) {
     }
     params.$$.ble_chain = $cb(scanChain)
     params.$$.ble_exch_buf = rx_buf
-    params.$$.ble_exch_end_ms = 50
+    params.$$.ble_exch_end_ms = 1
 }
 
 function setState(s: State) {
