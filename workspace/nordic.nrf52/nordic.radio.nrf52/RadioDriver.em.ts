@@ -40,6 +40,7 @@ var rx_end_time: u32
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
+    Rtc.disableAux()
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
