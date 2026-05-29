@@ -64,16 +64,11 @@ export function enableAux(thresh: T.RtcThresh, handler: Handler) {
 }
 
 export function enableAuxUsecs(usecs: u32, handler: Handler) {
-    const ticks = usecsToTicks(usecs)
-    enableAux(($R.RTC0.COUNTER.$$ + ticks) & 0x00ffffff, handler)
+    enableAux(usecsToTicks(usecs), handler)
 }
 
 export function getCounter(): u32 {
     return $R.RTC0.COUNTER.$$
-}
-
-export function getNowUsecs(): u32 {
-    return ticksToUsecs(getCounter())
 }
 
 export function getRawTime(): T.RawTime {
@@ -83,6 +78,10 @@ export function getRawTime(): T.RawTime {
     res.subs = (ctr & SUBS_Msk) << (32 - SUBS_Cnt)
     if (DEBUG) printf`raw: ovr = %08x, ctr = %08x, secs = %08x, subs = %08x\n`(ovr_cnt, ctr, res.secs, res.subs)
     return res
+}
+
+export function getRawUsecs(): u32 {
+    return ticksToUsecs(getCounter())
 }
 
 export function toThresh(qsecs: T.Secs30p2): T.RtcThresh {
