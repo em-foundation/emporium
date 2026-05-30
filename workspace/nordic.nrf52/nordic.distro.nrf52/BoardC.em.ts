@@ -16,6 +16,7 @@ import * as Idle from '@nordic.mcu.nrf52/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf52/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf52/OneShotTimer0.em'
+import * as OneShotN from '@em.hal/OneShotN.em'
 import * as Poller from '@em.mcu/Poller.em'
 import * as RadioDriver from '@nordic.radio.nrf52/RadioDriver.em'
 import * as Rtc from '@nordic.mcu.nrf52/Rtc.em'
@@ -82,7 +83,7 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
-    Poller.OneShot.$$dlg = OneShot
+    Poller.OneShot.$$dlg = OneShotN   /// force busy wait default
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
