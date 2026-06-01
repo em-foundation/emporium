@@ -1,9 +1,12 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+
+
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
 import * as Common from '@em.mcu/Common.em'
+import * as TL from '@em.link/Types.em'
 
 export namespace em$meta { }
 
@@ -25,38 +28,37 @@ export function prepareTX() {
     $R.LRFDPBE.FCFG0.$$ = txcfg
 }
 
-export function readPkt(pkt: frame_t<u8>): u8 {
-    let addr = <u32>($R.LRFD_BUFRAM_BASE + <u32>(($R.LRFDPBE.FCFG3.$$ << 2)))
-    var word = $reg32[addr]
-    // printf`w = %08x\n`(word)
-    addr += 4
-    word = $reg32[addr]
-    // printf`w = %08x\n`(word)
-    addr += 4
-    word >>= 16
-    // TODO: per-PHY length field
-    const sz = <u8>(word & 0xff) + 1
-    // printf`h = %04x, sz = %d\n`(word, sz)
-    let cnt: u8 = 2
-    for (const i of $range(sz)) {
-        if (cnt == 0) {
-            cnt = 4
-            word = $reg32[addr]
-            // em.print("w[{d}] = {x:0>8}\n", .{ i, word })
-            addr += 4
-        }
-        pkt[i] = <u8>(word & 0xff)
-        word >>= 8
-        cnt -= 1
+
+export function readPkt(buf: TL.BufPtr): u8 {
+    var word = $reg32[$R.LRFDRXF_BASE]
+    // printf`rxd[0] = %08x\n`(word)
+    word = $reg32[$R.LRFDRXF_BASE]
+    // printf`rxd[1] = %08x\n`(word)
+    buf[0] = <u8>(word >> 16)
+    buf[1] = <u8>(word >> 24)
+    const sz = <u8>((buf[1] & 0x3f) + 2)
+    var i: u8 = 2
+    while (i < sz) {
+        word = $reg32[$R.LRFDRXF_BASE]
+        // printf`rxd[%d] = %08x\n`(i, word)
+        buf[i] = <u8>(word >> 0)
+        i += 1
+        if (i >= sz) break
+        buf[i] = <u8>(word >> 8)
+        i += 1
+        if (i >= sz) break
+        buf[i] = <u8>(word >> 16)
+        i += 1
+        if (i >= sz) break
+        buf[i] = <u8>(word >> 24)
+        i += 1
     }
     return sz
 }
 
-
-
-export function writePkt(pkt: frame_t<u8>) {
+export function writePkt(buf: TL.BufFrame) {
     prepareTX()
-    const sz = <u8>pkt.$len
+    const sz = <u8>buf.$len
     let word = <u32>(0x02030000 | (sz + 4))
     let addr = <u32>($R.LRFD_BUFRAM_BASE + ($R.LRFDPBE.FCFG1.$$ << 2))
     $reg32[addr] = word
@@ -65,7 +67,7 @@ export function writePkt(pkt: frame_t<u8>) {
     word = <u32>0x00000001
     let mask: u32 = 0x00ff0000
     let shift: u8 = 16
-    for (const b of pkt) {
+    for (const b of buf) {
         if (mask == 0) {
             mask = 0x000000ff
             shift = 0

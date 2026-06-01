@@ -298,12 +298,14 @@ function rxAirtimeUs(pkt: $$<TB.LnkHdr>): u32 {
 }
 
 function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
+    // printf`%02x\n`(adv_req.$$.advType)
     if (adv_req.$$.isScan()) {
         Binder.initScanRspPkt(scan_rsp)
         return scan_rsp.$$.frame()
     }
     if (adv_req.$$.isConn()) {
         setState(State.CONN)
+        // halt()
     }
     return $null
 }
