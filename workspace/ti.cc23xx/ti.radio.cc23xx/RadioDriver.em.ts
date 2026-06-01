@@ -117,6 +117,15 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     cur_rx_buf = buf
     cur_chan = chan
     RfFifo.prepareRX()
+    // printf`after prepareRX: FCFG0=%08x FCFG3=%08x RXFREADABLE=%08x RXFWRITABLE=%08x RXFRP=%08x RXFWP=%08x\n`(
+    //     $R.LRFDPBE.FCFG0.$$,
+    //     $R.LRFDPBE.FCFG3.$$,
+    //     $R.LRFDPBE.RXFREADABLE.$$,
+    //     $R.LRFDPBE.RXFWRITABLE.$$,
+    //     $R.LRFDPBE.RXFRP.$$,
+    //     $R.LRFDPBE.RXFWP.$$
+    // )
+    // halt()
     RfCtrl.enableImages()
     rx_timeout = false
     const whiten_init = chan | 0x40
@@ -126,10 +135,8 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_MAXLEN] = 255
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 1 << $R.PBE_BLE5_RAM_OPCFG_REPEAT_S
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = whiten_init
-            // $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OWNADRL] = 0xDDDD
-            // $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OWNADRM] = 0xEEEE
-            // $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OWNADRH] = 0xFFFF
 
+            $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8E89_BED6
             // hal_setup_sync_found_cap
             $R.LRFDMDM.SYSTIMEVTMUX0.$$ = (21 << $R.LRFDMDM_SYSTIMEVTMUX0_SEL0_S)
             $R.LRFDDBELL.SYSTIMOEV.$$ = $R.LRFDDBELL_SYSTIMOEV_SRC2_MCESYSTIM0
@@ -149,20 +156,19 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     }
     RfFreq.program(Channel.getFrequency(chan), cur_phy)
 
-    // $R.LRFDDBELL.IMASK0.$$ =
-    //     LRF.EventOpDone |
-    //     LRF.EventOpError |
-    //     LRF.EventRxCtrl |
-    //     LRF.EventRxNok |
-    //     LRF.EventRxIgnored |
-    //     LRF.EventRxEmpty |
-    //     LRF.EventRxBufFull |
-    //     LRF.EventRxOk |
-    //     LRF.EventRxfifo |
-    //     LRF.EventSystim1
+    $R.LRFDDBELL.IMASK0.$$ =
+        LRF.EventOpDone |
+        LRF.EventOpError |
+        LRF.EventRxCtrl |
+        LRF.EventRxNok |
+        LRF.EventRxIgnored |
+        LRF.EventRxEmpty |
+        LRF.EventRxBufFull |
+        LRF.EventRxOk |
+        LRF.EventSystim1
 
 
-    $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError | LRF.EventRxOk | LRF.EventSystim1
+    // $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError | LRF.EventRxOk | LRF.EventSystim1
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
     $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
@@ -170,6 +176,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.LRFDDBELL.ICLR0.$$ = $R.LRFDDBELL_ICLR0_SYSTIM1_M
         $R.SYSTIM.CH3CC.$$ = $R.SYSTIM.TIME250N.$$ + (<u32>timeout * 4000)
     }
+    $['%%a']
     $R.LRFDPBE.API.$$ = op
 }
 
@@ -177,18 +184,19 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $['%%d:'](1)
     setState(State.TX)
     cur_chan = chan
-    // _ = pkt
     RfFifo.writePkt(buf)
-    // reg($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD).* = ($R.LRFDPBE_FCMD_DATA_TXFIFO_RETRY >> $R.LRFDPBE_FCMD_DATA_S)
     RfPower.program(cur_params.$$.radio_power)
     RfCtrl.enableImages()
     let op = 0
     switch (cur_phy) {
-        case TL.Phy.BLE_1M:
+        case TL.Phy.BLE_1M: {
+            const whiten_init = chan | 0x40
             op = $R.PBE_BLE5_REGDEF_API_OP_TXRAW
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 0
-            $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = chan | 0x40
+            $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = whiten_init
+            // $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8E89_BED6 ^ (<u32>whiten_init << 24)
             break
+        }
     }
     RfFreq.program(Channel.getFrequency(chan), cur_phy)
     $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError
@@ -211,12 +219,22 @@ export function LRFD_IRQ0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             if ((mis & LRF.EventSystim1) != 0) {
+                $['%%a']
                 rx_timeout = true
                 break
             }
+            if ((mis & LRF.EventOpError) != 0) {
+                const cause = $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE]
+                printf`OpError: %04x\n`(cause)
+                printf`FCFG0: %08x\n`($R.LRFDPBE.FCFG0.$$)
+                printf`RXFRP: %08x\n`($R.LRFDPBE.RXFRP.$$)
+                printf`RXFWP: %08x\n`($R.LRFDPBE.RXFWP.$$)
+                printf`RXFREADABLE: %08x\n`($R.LRFDPBE.RXFREADABLE.$$)
+                printf`RXFWRITABLE: %08x\n`($R.LRFDPBE.RXFWRITABLE.$$)
+                fail()
+            }
+            // $['%%>'](mis)
             if ((mis & LRF.EventRxOk) == 0) {
-                // printf`RX fail: %08x\n`(mis)
-                // fail()
                 return
             }
             rx_end_time = nowTimeUs()
@@ -231,6 +249,7 @@ export function LRFD_IRQ0_isr$$() {
             break
         }
         case State.TX: {
+            $['%%a']
             if ((mis & LRF.EventOpDone) == 0) {
                 return
             }

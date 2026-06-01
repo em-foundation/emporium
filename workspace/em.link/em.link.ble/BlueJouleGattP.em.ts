@@ -57,6 +57,7 @@ function statusHandler(stat: TL.ConnectionStatus) {
         // fall thru
         case TL.ConnectionStatus.TIMEOUT:
         case TL.ConnectionStatus.HANGUP:
+            halt()
             Controller.stop()
             break
     }

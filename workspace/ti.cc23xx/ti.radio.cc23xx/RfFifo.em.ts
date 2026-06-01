@@ -14,10 +14,10 @@ export namespace em$meta { }
 
 export function prepareRX() {
     $R.LRFDPBE.FCMD.$$ = $R.LRFDPBE_FCMD_DATA_RXFIFO_RESET >> $R.LRFDPBE_FCMD_DATA_S
-    let rxcfg = $R.LRFDPBE.FCFG0.$$
-    rxcfg &= ~(<u32>($R.LRFDPBE_FCFG0_RXADEAL_M | $R.LRFDPBE_FCFG0_RXACOM_M))
-    $R.LRFDPBE.FCFG0.$$ = rxcfg
-    $R.LRFDPBE.RXFSRP.$$ = 256
+    let fcfg0 = $R.LRFDPBE.FCFG0.$$
+    fcfg0 &= ~(<u32>($R.LRFDPBE_FCFG0_RXADEAL_M | $R.LRFDPBE_FCFG0_RXACOM_M))
+    $R.LRFDPBE.FCFG0.$$ = fcfg0
+    writeFifoPtr($R.LRFDPBE.RXFRP.$$ + 255, $R.LRFDPBE_BASE + $R.LRFDPBE_O_RXFSRP)
 }
 
 export function prepareTX() {
