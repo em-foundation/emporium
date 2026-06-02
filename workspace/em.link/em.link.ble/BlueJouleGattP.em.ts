@@ -12,6 +12,8 @@ import * as TickerMgr from '@em.utils/TickerMgr.em'
 import * as TL from '@em.link/Types.em'
 import * as TT from '@em.utils/TimeTypes.em'
 
+const CacheStats = $delegate(BoardC.CacheStats)
+
 const ticker = $config<TickerMgr.Obj>()
 
 export namespace em$meta {
@@ -41,23 +43,17 @@ function tickCb() {
     Controller.start()
 }
 
-function mark() {
-    $['%%d+']
-    Common.BusyWait.wait(10)
-    $['%%d-']
-}
-
 function statusHandler(stat: TL.ConnectionStatus) {
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
-            mark()
+            CacheStats.start()
             break
         case TL.ConnectionStatus.CLOSED:
-            mark()
+            CacheStats.stop()
+            CacheStats.print()
         // fall thru
         case TL.ConnectionStatus.TIMEOUT:
         case TL.ConnectionStatus.HANGUP:
-            halt()
             Controller.stop()
             break
     }

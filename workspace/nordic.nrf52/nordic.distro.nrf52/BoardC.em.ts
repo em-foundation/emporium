@@ -5,6 +5,7 @@ import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as ButtonT from '@em.utils/ButtonT.em'
+import * as CacheStats from '@nordic.mcu.nrf52/CacheStats.em'
 import * as Console from '@em.lang/Console.em'
 import * as Common from '@em.mcu/Common.em'
 import * as ConsoleUart from '@nordic.mcu.nrf52/ConsoleUart0.em'
@@ -23,7 +24,7 @@ import * as Rtc from '@nordic.mcu.nrf52/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
-export { OneShot, RadioDriver }
+export { CacheStats, OneShot, RadioDriver }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
