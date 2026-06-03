@@ -5,6 +5,7 @@ import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as ButtonT from '@em.utils/ButtonT.em'
+import * as CacheStats from '@em.utils/CacheStats.em'
 import * as Console from '@em.lang/Console.em'
 import * as Common from '@em.mcu/Common.em'
 import * as ConsoleUart0 from '@ti.mcu.cc23xx/ConsoleUart0.em'
@@ -23,7 +24,7 @@ import * as Rtc from '@ti.mcu.cc23xx/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
-export { OneShot, RadioDriver }
+export { CacheStats, OneShot, RadioDriver }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
