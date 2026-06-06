@@ -82,6 +82,10 @@ export function enable() {
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_FL2MASK] = 0
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 0
             break
+        case TL.Phy.PROP_1M:
+            $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8E89_BED6
+            $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_CRCINITL] = (0x555555 << 8)
+            break
     }
     Idle.setPauseOnly(true)
     setState(State.READY)
@@ -104,28 +108,11 @@ export function pause(usecs: u32, handler: RadioDriverI.Handler) {
     Rtc.enableAuxUsecs(Rtc.getRawUsecs() + usecs, $cb(rtcHandler))
 }
 
-/// TODO: merge into current APIs
-// export function readPkt(pkt: frame_t<u8>): u8 {
-//     if (rx_timeout) return 0
-//     const sz = RfFifo.readPkt(pkt);
-//     return sz
-// }
-
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $['%%d:'](2)
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
-    RfFifo.prepareRX()
-    // printf`after prepareRX: FCFG0=%08x FCFG3=%08x RXFREADABLE=%08x RXFWRITABLE=%08x RXFRP=%08x RXFWP=%08x\n`(
-    //     $R.LRFDPBE.FCFG0.$$,
-    //     $R.LRFDPBE.FCFG3.$$,
-    //     $R.LRFDPBE.RXFREADABLE.$$,
-    //     $R.LRFDPBE.RXFWRITABLE.$$,
-    //     $R.LRFDPBE.RXFRP.$$,
-    //     $R.LRFDPBE.RXFWP.$$
-    // )
-    // halt()
     RfCtrl.enableImages()
     rx_timeout = false
     const whiten_init = chan | 0x40
@@ -188,13 +175,32 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     RfPower.program(cur_params.$$.radio_power)
     RfCtrl.enableImages()
     let op = 0
+    const whiten_init = chan | 0x40
     switch (cur_phy) {
         case TL.Phy.BLE_1M: {
-            const whiten_init = chan | 0x40
             op = $R.PBE_BLE5_REGDEF_API_OP_TXRAW
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_OPCFG] = 0
             $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_BLE5_RAM_O_WHITEINIT] = whiten_init
             // $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8E89_BED6 ^ (<u32>whiten_init << 24)
+            break
+        }
+        case TL.Phy.PROP_1M: {
+            op = $R.PBE_GENERIC_REGDEF_API_OP_TX
+            const cfg_val =
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_TXINFINITE_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_TXPATTERN_S) |
+                (2 << $R.PBE_GENERIC_RAM_OPCFG_TXFCMD_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_START_S) |
+                // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
+                // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_RXREPEATOK_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_NEXTOP_S) |
+                (1 << $R.PBE_GENERIC_RAM_OPCFG_SINGLE_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_IFSPERIOD_S) |
+                (0 << $R.PBE_GENERIC_RAM_OPCFG_RFINTERVAL_S);
+            $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_OPCFG] = cfg_val
+            $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_WHITEINIT] = whiten_init
+            $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = $R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF
             break
         }
     }
