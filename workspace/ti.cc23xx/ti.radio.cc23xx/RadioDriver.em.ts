@@ -7,6 +7,7 @@ import * as Channel from '@em.link.ble/Channel.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LRF from '@ti.radio.cc23xx/LRF.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as RfCtrl from '@ti.radio.cc23xx/RfCtrl.em'
@@ -168,7 +169,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
-    $['%%d:'](1)
     setState(State.TX)
     cur_chan = chan
     RfFifo.writePkt(buf)
@@ -209,6 +209,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
     $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
+    $['%%d:'](1)
     $R.LRFDPBE.API.$$ = op
 }
 
@@ -256,6 +257,13 @@ export function LRFD_IRQ0_isr$$() {
         }
         case State.TX: {
             $['%%a']
+            $['%%>'](mis)
+            const cause = $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE]
+            $['%%>'](cause)
+            const mbox = $reg16[$R.LRFDRFE_BASE + $R.LRFDRFE_O_MSGBOX]
+            $['%%>'](mbox)
+
+
             if ((mis & LRF.EventOpDone) == 0) {
                 return
             }

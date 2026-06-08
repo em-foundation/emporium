@@ -19,7 +19,7 @@ export namespace em$meta {
     export function em$construct() {
         // const phy_name = Config.Phy[Config.phy].toLowerCase()
         // if (phy_name == 'none') return
-        const phy_name = 'ble_1m'
+        const phy_name = 'prop_1m'
         const regs = Fs.readFileSync(`ti.cc23xx/ti.radio.cc23xx/regs_${phy_name}.txt`, 'utf-8')
         let pre_flag = true
         for (const ln of regs.split('\n')) {
