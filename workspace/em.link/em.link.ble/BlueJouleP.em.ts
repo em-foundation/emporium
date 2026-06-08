@@ -20,7 +20,7 @@ const ADV_DATA = $table<u8>()
 
 export namespace em$meta {
     export function em$configure() {
-        Registry.DEFAULT_PARAMS.$$val.radio_phy = TL.Phy.PROP_1M
+        Registry.DEFAULT_PARAMS.$$val.radio_phy = TL.Phy.BLE_1M
         Registry.DEFAULT_PARAMS.$$val.radio_power = 0
     }
     export function em$construct() {

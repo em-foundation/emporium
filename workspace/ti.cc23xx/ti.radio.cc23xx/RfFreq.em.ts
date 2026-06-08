@@ -93,7 +93,7 @@ function findPllMBase(frequency: u32): u32 {
     return pllMBase
 }
 
-export function program(frequency: u32, phy: T.Phy) {
+export function program(frequency: u32) {
     const synthFrequency = frequency - 1_000_000 // TODO: generalize for different PHYs & RX/TX
     const synthFrequencyCompensated = scaleFreqWithHFXTOffset(synthFrequency)
     const frequencyDiv2_16 = (synthFrequency + (1 << 15)) >> 16
@@ -119,12 +119,7 @@ export function program(frequency: u32, phy: T.Phy) {
     $reg16[$R.LRFD_RFERAM_BASE + $R.RFE_COMMON_RAM_O_RXIF] = <u16>findFoff(0, invSynthFreq) // rxFreqOff
     $reg16[$R.LRFD_RFERAM_BASE + $R.RFE_COMMON_RAM_O_TXIF] = <u16>findFoff(1_000_000, invSynthFreq) // txFreqOff
     programCMixN(1_000_000, invSynthFreq) // rxIntFreq
-    switch (phy) {
-        case T.Phy.BLE_1M:
-        case T.Phy.PROP_1M:
-            programShape(BLE_1M_SHAPE, invSynthFreq << 4)
-            break
-    }
+    programShape(BLE_1M_SHAPE, invSynthFreq << 4)
 }
 
 function programCMixN(rxIntFrequency: i32, invSynthFreq: u32) {
