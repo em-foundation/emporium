@@ -282,16 +282,16 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
 function reqFB(_: arg_t) {
     if (lnk_req.$$.isCtrl()) {
         const rsp = LnkTx.getCtrlPkt()
+        if (rsp == $null) return
         if (reqCtrl(rsp)) {
             LnkTx.setCtrlReady()
         }
     } else {
-        $['%%a+']
         const rsp = LnkTx.getAttPkt()
+        if (rsp == $null) return
         if (Binder.reqGatt(lnk_req.$$.attPkt(), rsp)) {
             LnkTx.setAttReady()
         }
-        $['%%a-']
     }
 }
 
