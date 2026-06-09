@@ -155,18 +155,19 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     const whiten_init = chan | 0x40
     // cur_phy
     op = $R.PBE_GENERIC_REGDEF_API_OP_TX
+    const keep_fs = cur_params.$$.ble_chain != $null
     const cfg_val =
         (0 << $R.PBE_GENERIC_RAM_OPCFG_TXINFINITE_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_TXPATTERN_S) |
         (2 << $R.PBE_GENERIC_RAM_OPCFG_TXFCMD_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_START_S) |
-        // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
-        // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
+        ((keep_fs ? 1 : 0) << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_RXREPEATOK_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_NEXTOP_S) |
         (1 << $R.PBE_GENERIC_RAM_OPCFG_SINGLE_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_IFSPERIOD_S) |
-        (0 << $R.PBE_GENERIC_RAM_OPCFG_RFINTERVAL_S);
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_RFINTERVAL_S)
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_OPCFG] = cfg_val
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_WHITEINIT] = whiten_init
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = $R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF
@@ -191,6 +192,7 @@ export function LRFD_IRQ0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             $['%%a']
+            $['%%>'](mis)
             if ((mis & LRF.EventSystim1) != 0) {
                 rx_timeout = true
                 break
