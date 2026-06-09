@@ -192,7 +192,6 @@ export function LRFD_IRQ0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             $['%%a']
-            $['%%>'](mis)
             if ((mis & LRF.EventSystim1) != 0) {
                 rx_timeout = true
                 break
