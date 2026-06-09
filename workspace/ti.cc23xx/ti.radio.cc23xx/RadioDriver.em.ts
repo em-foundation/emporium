@@ -178,7 +178,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
         (2 << $R.PBE_GENERIC_RAM_OPCFG_TXFCMD_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_START_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
-        // ((tx_reuse_fs ? 1 : 0) << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
         ((keep_fs ? 1 : 0) << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_RXREPEATOK_S) |
         (0 << $R.PBE_GENERIC_RAM_OPCFG_NEXTOP_S) |
@@ -197,9 +196,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
     TimeFence.wait()
-    if (cur_chan < 37) {
-        $['%%a']
-    }
     $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
     $R.LRFDPBE.API.$$ = op
 }
@@ -217,7 +213,6 @@ export function LRFD_IRQ0_isr$$() {
     TimeFence.enable(30)
     switch (cur_state) {
         case State.RX: {
-            if (cur_chan < 37) $['%%a']
             if ((mis & LRF.EventSystim1) != 0) {
                 rx_timeout = true
                 break
@@ -240,7 +235,6 @@ export function LRFD_IRQ0_isr$$() {
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
-                    // if (cur_chan < 37) $['%%a:'](2)
                     tx_reuse_fs = true
                     startTx(tx_buf, cur_chan)
                     return
@@ -251,7 +245,6 @@ export function LRFD_IRQ0_isr$$() {
         case State.TX: {
             if ((mis & LRF.EventOpError) != 0) {
                 const cause = $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE]
-                $['%%a:'](5)
                 $['%%>'](cause)
                 fail()
             }

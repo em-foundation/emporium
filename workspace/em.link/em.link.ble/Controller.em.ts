@@ -286,10 +286,12 @@ function reqFB(_: arg_t) {
             LnkTx.setCtrlReady()
         }
     } else {
+        $['%%a+']
         const rsp = LnkTx.getAttPkt()
         if (Binder.reqGatt(lnk_req.$$.attPkt(), rsp)) {
             LnkTx.setAttReady()
         }
+        $['%%a-']
     }
 }
 
