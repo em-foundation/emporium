@@ -46,7 +46,6 @@ function tickCb() {
 function statusHandler(stat: TL.ConnectionStatus) {
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
-            halt()
             CacheStats.start()
             break
         case TL.ConnectionStatus.CLOSED:
@@ -55,7 +54,7 @@ function statusHandler(stat: TL.ConnectionStatus) {
         // fall thru
         case TL.ConnectionStatus.TIMEOUT:
         case TL.ConnectionStatus.HANGUP:
-            fail()
+            halt()
             Controller.stop()
             break
     }
