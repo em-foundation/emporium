@@ -18,7 +18,7 @@ var pktbuf = $table<u8>()
 
 export namespace em$meta {
     export function em$init() {
-        for (const _ of $range(25)) pktbuf.$$add(0)
+        for (const _ of $range(50)) pktbuf.$$add(0)
     }
     export function em$configure() {
         Registry.DEFAULT_PARAMS.$$val.radio_phy = TL.Phy.BLE_1M
@@ -31,7 +31,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const CHAN = 17
+const CHAN = 37
 const RATE = 1000
 
 export function em$run() {

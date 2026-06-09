@@ -44,6 +44,7 @@ function tickCb() {
 }
 
 function statusHandler(stat: TL.ConnectionStatus) {
+    fail()
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
             CacheStats.start()

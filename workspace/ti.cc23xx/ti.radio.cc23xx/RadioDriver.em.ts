@@ -101,6 +101,27 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     const whiten_init = chan | 0x40
     let op = 0
     // cur_phy
+    const cfg_val: u32 =
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_RXFILTEROP_S) |
+        (1 << $R.PBE_GENERIC_RAM_OPCFG_RXINCLUDEHDR_S) |
+        (1 << $R.PBE_GENERIC_RAM_OPCFG_RXREPEATNOK_S) |
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_START_S) |
+        // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_NOCAL_S) |
+        // (1 << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
+        (1 << $R.PBE_GENERIC_RAM_OPCFG_NEXTOP_S) |
+        (1 << $R.PBE_GENERIC_RAM_OPCFG_SINGLE_S) |
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_IFSPERIOD_S) |
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_RXREPEATOK_S) |
+        (0 << $R.PBE_GENERIC_RAM_OPCFG_RFINTERVAL_S)
+    $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_OPCFG] = <u16>cfg_val
+    $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_NESB] = $R.PBE_GENERIC_RAM_NESB_NESBMODE_OFF
+    $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_MAXLEN] = 256 // TODO
+    $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_RXTIMEOUT] = 0
+    $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_FIRSTRXTIMEOUT] = 0
+    let demc1be1 = $R.LRFDMDM.DEMC1BE1.$$
+    demc1be1 = (demc1be1 & ~$R.LRFDMDM_DEMC1BE1_THRESHOLDB_M) | (0x7F << $R.LRFDMDM_DEMC1BE1_THRESHOLDB_S)
+    $R.LRFDMDM.DEMC1BE1.$$ = demc1be1
+    op = $R.PBE_GENERIC_REGDEF_API_OP_RX
     RfFreq.program(Channel.getFrequency(chan))
     $R.LRFDDBELL.IMASK0.$$ =
         LRF.EventOpDone |
@@ -120,7 +141,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.LRFDDBELL.ICLR0.$$ = $R.LRFDDBELL_ICLR0_SYSTIM1_M
         $R.SYSTIM.CH3CC.$$ = $R.SYSTIM.TIME250N.$$ + (<u32>timeout * 4000)
     }
-    $['%%a']
     $R.LRFDPBE.API.$$ = op
 }
 
@@ -165,12 +185,12 @@ export function waitReady() {
 }
 
 export function LRFD_IRQ0_isr$$() {
-    $['%%a']
     const mis = $R.LRFDDBELL.MIS0.$$
     $R.LRFDDBELL.ICLR0.$$ = mis
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     switch (cur_state) {
         case State.RX: {
+            $['%%a']
             if ((mis & LRF.EventSystim1) != 0) {
                 rx_timeout = true
                 break
