@@ -264,7 +264,6 @@ export function LRFD_IRQ0_isr$$() {
                 startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
                 return
             }
-            if (cur_chan < 37) halt()
             break
         }
         default: {
