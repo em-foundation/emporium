@@ -49,6 +49,7 @@ var pause_handler: RadioDriverI.Handler = $null
 var rx_end_time: u32
 var rx_timeout = false
 var tx_chained = false
+var tx_start = 0
 
 export function disable() {
     $['%%d:'](3)
@@ -196,10 +197,17 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
-    if (tx_chained) {
-        TimeFence.wait()
-    }
-    $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
+    // if (tx_chained) {
+    //     // if (chan < 37) {
+    //     //     const t0 = $R.SYSTIM.TIME250N.$$
+    //     //     $['%%>'](tx_start - t0)
+    //     //     halt()
+    //     // }
+    //     
+    //     // TimeFence.wait()
+    //     
+    // }
+    $R.SYSTIM.CH2CC.$$ = tx_chained ? tx_start : $R.SYSTIM.TIME250N.$$
     $R.LRFDPBE.API.$$ = op
     tx_chained = false
 }
@@ -235,6 +243,7 @@ export function LRFD_IRQ0_isr$$() {
             }
             rx_end_time = nowTimeUs()
             TimeFence.enable(TX_IFS_FENCE)
+            tx_start = $R.SYSTIM.TIME250N.$$ + (TX_IFS_FENCE * 4)
             RfFifo.readPkt(cur_rx_buf)
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
