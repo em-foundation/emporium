@@ -34,6 +34,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const CACHE_STATS = false
+
 export function em$run() {
     ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
@@ -47,11 +49,11 @@ function statusHandler(stat: TL.ConnectionStatus) {
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
             $['%%a:'](3)
-            CacheStats.start()
+            if (CACHE_STATS) CacheStats.start()
             break
         case TL.ConnectionStatus.CLOSED:
-            CacheStats.stop()
-            CacheStats.print()
+            if (CACHE_STATS) CacheStats.stop()
+            if (CACHE_STATS) CacheStats.print()
         // fall thru
         case TL.ConnectionStatus.TIMEOUT:
         case TL.ConnectionStatus.HANGUP:
