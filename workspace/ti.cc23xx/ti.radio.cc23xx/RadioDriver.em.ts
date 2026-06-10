@@ -38,7 +38,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const TX_IFS_FENCE = 44
+const TX_CHAIN_DELAY = 42
 
 var cur_chan: u8
 var cur_params: $$<TL.Params>
@@ -231,7 +231,7 @@ export function LRFD_IRQ0_isr$$() {
                 return
             }
             rx_end_time = nowTimeUs()
-            tx_start = $R.SYSTIM.TIME250N.$$ + (TX_IFS_FENCE * 4)
+            tx_start = $R.SYSTIM.TIME250N.$$ + (TX_CHAIN_DELAY * 4)
             RfFifo.readPkt(cur_rx_buf)
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
