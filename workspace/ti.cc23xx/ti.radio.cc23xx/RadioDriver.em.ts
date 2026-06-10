@@ -19,7 +19,6 @@ import * as RfRegs from '@ti.radio.cc23xx/RfRegs.em'
 import * as RfTrim from '@ti.radio.cc23xx/RfTrim.em'
 import * as RfXtal from '@ti.radio.cc23xx/RfXtal.em'
 import * as Rtc from '@ti.mcu.cc23xx/Rtc.em'
-import * as TimeFence from '@em.utils/TimeFence.em'
 import * as TL from '@em.link/Types.em'
 
 enum State {
@@ -39,7 +38,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const TX_IFS_FENCE = 42
+const TX_IFS_FENCE = 44
 
 var cur_chan: u8
 var cur_params: $$<TL.Params>
@@ -197,16 +196,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
-    // if (tx_chained) {
-    //     // if (chan < 37) {
-    //     //     const t0 = $R.SYSTIM.TIME250N.$$
-    //     //     $['%%>'](tx_start - t0)
-    //     //     halt()
-    //     // }
-    //     
-    //     // TimeFence.wait()
-    //     
-    // }
     $R.SYSTIM.CH2CC.$$ = tx_chained ? tx_start : $R.SYSTIM.TIME250N.$$
     $R.LRFDPBE.API.$$ = op
     tx_chained = false
@@ -242,7 +231,6 @@ export function LRFD_IRQ0_isr$$() {
                 return
             }
             rx_end_time = nowTimeUs()
-            TimeFence.enable(TX_IFS_FENCE)
             tx_start = $R.SYSTIM.TIME250N.$$ + (TX_IFS_FENCE * 4)
             RfFifo.readPkt(cur_rx_buf)
             if (cur_params.$$.ble_chain != $null) {
