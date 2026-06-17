@@ -18,13 +18,11 @@ const CHARACTERISTIC_DATA = $table<u8>()
 const EMPTY_DATA = $table<u8>()
 const FIND_BY_TYPE_ERROR_DATA = $table<u8>()
 const FIND_INFO_DATA = $table<u8>()
-const DESCRIPTOR_FIND_INFO_DATA = $table<u8>()
 const FIND_INFO_ERROR_DATA = $table<u8>()
 const GROUP_TYPE_ERROR_DATA = $table<u8>()
 const MTU_DATA = $table<u8>()
 const PRIMARY_SERVICE_DATA = $table<u8>()
 const READ_FUNCS = $table<ResourceReadCb>()
-const STATUS_UUID_DATA = $table<u8>()
 const SCAN_RSP_DATA = $table<u8>()
 const TYPE_ERROR_DATA = $table<u8>()
 const WRITE_FUNCS = $table<ResourceWriteCb>()
@@ -40,9 +38,8 @@ export namespace em$meta {
         TB.em$meta.addAdvUuid128(ADV_DATA, sch_info.uuid)
         TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
         //
-        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0006)
+        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0005)
         addGattCharacteristicData(CHARACTERISTIC_DATA, sch_info.resources)
-        addUuid128(STATUS_UUID_DATA, sch_info.resources[0].uuid!)
         //
         for (let r of sch_info.resources) {
             READ_FUNCS.$$add(r.canRead ? $cb(`${r.name}_read`, schema_cname) : $cb(null))
@@ -52,10 +49,9 @@ export namespace em$meta {
         TB.em$meta.addAttError(ATT_ERROR_DATA, 0, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_BY_TYPE_ERROR_DATA, TB.ATT_FIND_BY_TYPE_VALUE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_INFO_ERROR_DATA, TB.ATT_FIND_INFORMATION_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
-        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0007, TB.ATT_ATTR_NOT_FOUND)
+        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0006, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(TYPE_ERROR_DATA, TB.ATT_READ_BY_TYPE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addGattFindInfo(FIND_INFO_DATA)
-        addGattUserDescriptionFindInfo(DESCRIPTOR_FIND_INFO_DATA, 0x0006)
         TB.em$meta.addAttMtu(MTU_DATA)
     }
 
@@ -77,16 +73,6 @@ export namespace em$meta {
             addUuid128(data, r.uuid!)
             h += 2
         }
-    }
-
-
-    function addGattUserDescriptionFindInfo(data: TB.PduData, handle: u16) {
-        // ATT Find Information Response, format 0x01 = handle + 16-bit UUID pairs.
-        // 0x2901 is Characteristic User Description.  It is attached to the
-        // preceding characteristic value handle, currently Command at 0x0005.
-        data.$$add(0x01)
-        addU16(data, handle)
-        addU16(data, 0x2901)
     }
 
     function addProps(data: TB.PduData, r: SchemaC.Resource) {
@@ -161,8 +147,6 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
                     att_rsp_op = TB.ATT_ERROR_RESPONSE
                     att_rsp_data = TYPE_ERROR_DATA.$frame(0)
                 }
-            } else if (isStatusReadByUuidReq(att_pkt) && type_req.startHandle <= 0x0003 && type_req.endHandle >= 0x0003) {
-                return readValueByType(0x0003, rsp_pkt)
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
                 att_rsp_data = TYPE_ERROR_DATA.$frame(0)
@@ -179,9 +163,6 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             if (find_req.startHandle <= 0x0001 && find_req.endHandle >= 0x0001) {
                 att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
                 att_rsp_data = FIND_INFO_DATA.$frame(0)
-            } else if (find_req.startHandle <= 0x0006 && find_req.endHandle >= 0x0006) {
-                att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
-                att_rsp_data = DESCRIPTOR_FIND_INFO_DATA.$frame(0)
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
                 att_rsp_data = FIND_INFO_ERROR_DATA.$frame(0)
@@ -204,7 +185,7 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             return true
         }
         default: {
-            return false
+            return sendUnsupportedRequestError(att_pkt.$$.opcode, rsp_pkt)
         }
     }
     if (att_rsp_data.$len == 0) {
@@ -216,6 +197,27 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
     // rsp_pkt.$$.print()
     // halt()
 
+    return true
+}
+
+function sendUnsupportedRequestError(req_op: u8, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    rsp_pkt.$$.init(TB.LL_START)
+    rsp_pkt.$$.addAttPkt(TB.ATT_ERROR_RESPONSE, EMPTY_DATA.$frame(0))
+
+    const pkt = rsp_pkt.$$.attPkt()
+    const data = <TL.BufPtr>pkt.$$.dataPtr()
+
+    // ATT Error Response payload:
+    //   request opcode in error, attribute handle in error, error code.
+    // Unsupported ATT request opcodes should receive Request Not Supported (0x06)
+    // instead of being silently ignored, otherwise PTS UNS/BI-01-C times out.
+    data[0] = req_op
+    data[1] = 0x00
+    data[2] = 0x00
+    data[3] = 0x06
+
+    pkt.$$.len += 4
+    rsp_pkt.$$.pduLen += 4
     return true
 }
 
@@ -236,33 +238,6 @@ function getCharacteristicRspData(start: u16, end: u16): TL.BufFrame {
         return $null
     }
     return CHARACTERISTIC_DATA.$frame(off, 0x16)
-}
-
-function isStatusReadByUuidReq(att_pkt: $$<TB.AttPkt>): bool_t {
-    const data = <TL.BufPtr>att_pkt.$$.dataPtr()
-    /// TODO: add TB type with Uuid element
-    return Mem.cmp($$(data[4]), STATUS_UUID_DATA.$ptr(), 16) == 0
-}
-
-function readValueByType(handle: u16, rsp_pkt: $$<TB.LnkHdr>): bool_t {
-    rsp_pkt.$$.init(TB.LL_START)
-    rsp_pkt.$$.addAttPkt(TB.ATT_READ_BY_TYPE_REQ + 1, EMPTY_DATA.$frame(0))
-
-    const pkt = rsp_pkt.$$.attPkt()
-    const data = <TL.BufPtr>pkt.$$.dataPtr()
-
-    data[0] = 0x03
-    data[1] = handle & 0xff
-    data[2] = handle >> 8
-
-    const len = readResource(handle, <TL.BufPtr>$$(data[3]))
-    if (len == 0) {
-        return false
-    }
-
-    pkt.$$.len += len + 3
-    rsp_pkt.$$.pduLen += len + 3
-    return true
 }
 
 function isValueHandle(handle: u16): bool_t {
