@@ -162,6 +162,8 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
                     att_rsp_op = TB.ATT_ERROR_RESPONSE
                     att_rsp_data = TYPE_ERROR_DATA.$frame(0)
                 }
+            } else if (readValueByUuid(att_pkt, rsp_pkt)) {
+                return true
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
                 att_rsp_data = TYPE_ERROR_DATA.$frame(0)
@@ -261,6 +263,40 @@ function getCharacteristicRspData(start: u16, end: u16): TL.BufFrame {
         return $null
     }
     return CHARACTERISTIC_DATA.$frame(off, 0x16)
+}
+
+function readValueByUuid(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    const req = <TL.BufPtr>att_pkt.$$.dataPtr()
+    const start = Mem.scan16($$(req[0]))
+    const end = Mem.scan16($$(req[2]))
+    for (const idx of $range(READ_FUNCS.$len)) {
+        const handle: u16 = 0x0003 + (idx << 1)
+        if (handle >= start && handle <= end && maskHas(READABLE_MASK, idx)) {
+            const off: u16 = (idx * 0x16) + 6
+            if (Mem.cmp($$(req[4]), $$(CHARACTERISTIC_DATA[off]), 16) == 0) {
+                return readValueByType(idx, handle, rsp_pkt)
+            }
+        }
+    }
+    return false
+}
+
+function readValueByType(idx: u16, handle: u16, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    rsp_pkt.$$.init(TB.LL_START)
+    rsp_pkt.$$.addAttPkt(TB.ATT_READ_BY_TYPE_REQ + 1, EMPTY_DATA.$frame(0))
+    const pkt = rsp_pkt.$$.attPkt()
+    const data = <TL.BufPtr>pkt.$$.dataPtr()
+    data[0] = 0x03
+    data[1] = handle & 0xff
+    data[2] = handle >> 8
+    const len = readResource(idx, <TL.BufPtr>$$(data[3]))
+    if (len == 0) {
+        return false
+    }
+
+    pkt.$$.len += len + 3
+    rsp_pkt.$$.pduLen += len + 3
+    return true
 }
 
 function isValueHandle(handle: u16): bool_t {
