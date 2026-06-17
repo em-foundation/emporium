@@ -18,6 +18,7 @@ const CHARACTERISTIC_DATA = $table<u8>()
 const EMPTY_DATA = $table<u8>()
 const FIND_BY_TYPE_ERROR_DATA = $table<u8>()
 const FIND_INFO_DATA = $table<u8>()
+const DESCRIPTOR_FIND_INFO_DATA = $table<u8>()
 const FIND_INFO_ERROR_DATA = $table<u8>()
 const GROUP_TYPE_ERROR_DATA = $table<u8>()
 const MTU_DATA = $table<u8>()
@@ -38,7 +39,7 @@ export namespace em$meta {
         TB.em$meta.addAdvUuid128(ADV_DATA, sch_info.uuid)
         TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
         //
-        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0005)
+        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0006)
         addGattCharacteristicData(CHARACTERISTIC_DATA, sch_info.resources)
         //
         for (let r of sch_info.resources) {
@@ -49,9 +50,10 @@ export namespace em$meta {
         TB.em$meta.addAttError(ATT_ERROR_DATA, 0, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_BY_TYPE_ERROR_DATA, TB.ATT_FIND_BY_TYPE_VALUE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_INFO_ERROR_DATA, TB.ATT_FIND_INFORMATION_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
-        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0006, TB.ATT_ATTR_NOT_FOUND)
+        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0007, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(TYPE_ERROR_DATA, TB.ATT_READ_BY_TYPE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addGattFindInfo(FIND_INFO_DATA)
+        addGattUserDescriptionFindInfo(DESCRIPTOR_FIND_INFO_DATA, 0x0006)
         TB.em$meta.addAttMtu(MTU_DATA)
     }
 
@@ -73,6 +75,16 @@ export namespace em$meta {
             addUuid128(data, r.uuid!)
             h += 2
         }
+    }
+
+
+    function addGattUserDescriptionFindInfo(data: TB.PduData, handle: u16) {
+        // ATT Find Information Response, format 0x01 = handle + 16-bit UUID pairs.
+        // 0x2901 is Characteristic User Description.  It is attached to the
+        // preceding characteristic value handle, currently Command at 0x0005.
+        data.$$add(0x01)
+        addU16(data, handle)
+        addU16(data, 0x2901)
     }
 
     function addProps(data: TB.PduData, r: SchemaC.Resource) {
@@ -163,6 +175,9 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             if (find_req.startHandle <= 0x0001 && find_req.endHandle >= 0x0001) {
                 att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
                 att_rsp_data = FIND_INFO_DATA.$frame(0)
+            } else if (find_req.startHandle <= 0x0006 && find_req.endHandle >= 0x0006) {
+                att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
+                att_rsp_data = DESCRIPTOR_FIND_INFO_DATA.$frame(0)
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
                 att_rsp_data = FIND_INFO_ERROR_DATA.$frame(0)
