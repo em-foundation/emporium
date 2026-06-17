@@ -27,6 +27,9 @@ const SCAN_RSP_DATA = $table<u8>()
 const TYPE_ERROR_DATA = $table<u8>()
 const WRITE_FUNCS = $table<ResourceWriteCb>()
 
+const READABLE_MASK = $config<u32>()
+const WRITABLE_MASK = $config<u32>()
+
 export namespace em$meta {
 
     var sch_info: SchemaC.Info
@@ -38,18 +41,26 @@ export namespace em$meta {
         TB.em$meta.addAdvUuid128(ADV_DATA, sch_info.uuid)
         TB.em$meta.addAdvName(SCAN_RSP_DATA, sch_info.name)
         //
-        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0005)
+        TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, serviceEndHandle(sch_info.resources))
         addGattCharacteristicData(CHARACTERISTIC_DATA, sch_info.resources)
         //
+        var rd_mask = 0
+        var wr_mask = 0
+        var idx = 0
         for (let r of sch_info.resources) {
+            if (r.canRead) rd_mask |= (1 << idx)
+            if (r.canWrite) wr_mask |= (1 << idx)
             READ_FUNCS.$$add(r.canRead ? $cb(`${r.name}_read`, schema_cname) : $cb(null))
             WRITE_FUNCS.$$add(r.canWrite ? $cb(`${r.name}_write`, schema_cname) : $cb(null))
+            idx += 1
         }
+        READABLE_MASK.$$val = rd_mask
+        WRITABLE_MASK.$$val = wr_mask
         //  
         TB.em$meta.addAttError(ATT_ERROR_DATA, 0, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_BY_TYPE_ERROR_DATA, TB.ATT_FIND_BY_TYPE_VALUE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(FIND_INFO_ERROR_DATA, TB.ATT_FIND_INFORMATION_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
-        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, 0x0006, TB.ATT_ATTR_NOT_FOUND)
+        TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, serviceEndHandle(sch_info.resources) + 1, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(TYPE_ERROR_DATA, TB.ATT_READ_BY_TYPE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addGattFindInfo(FIND_INFO_DATA)
         TB.em$meta.addAttMtu(MTU_DATA)
@@ -61,6 +72,10 @@ export namespace em$meta {
 
     export function getRxBufSize(): u16 {
         return 100
+    }
+
+    function serviceEndHandle(resources: SchemaC.Resource[]): u16 {
+        return 0x0001 + (resources.length << 1)
     }
 
     function addGattCharacteristicData(data: TB.PduData, resources: SchemaC.Resource[]) {
@@ -177,12 +192,7 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
         case TB.ATT_WRITE_REQ: {
             const data = <TL.BufPtr>att_pkt.$$.dataPtr()
             const handle = Mem.scan16($$(data[0]))
-            if (!writeValue(handle, <TL.BufPtr>$$(data[2]))) {
-                return false
-            }
-            rsp_pkt.$$.init(TB.LL_START)
-            rsp_pkt.$$.addAttPkt(TB.ATT_WRITE_RSP, EMPTY_DATA.$frame(0))
-            return true
+            return writeValue(handle, <TL.BufPtr>$$(data[2]), rsp_pkt)
         }
         default: {
             const op = att_pkt.$$.opcode
@@ -208,21 +218,26 @@ function isAttCommand(op: u8): bool_t {
     return (op & 0x40) != 0
 }
 
+const ATT_ERR_INVALID_HANDLE = 0x01
+const ATT_ERR_READ_NOT_PERMITTED = 0x02
+const ATT_ERR_WRITE_NOT_PERMITTED = 0x03
+const ATT_ERR_REQUEST_NOT_SUPPORTED = 0x06
+
 function sendUnsupportedRequestError(req_op: u8, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    return sendAttError(req_op, 0x0000, ATT_ERR_REQUEST_NOT_SUPPORTED, rsp_pkt)
+}
+
+function sendAttError(req_op: u8, handle: u16, err: u8, rsp_pkt: $$<TB.LnkHdr>): bool_t {
     rsp_pkt.$$.init(TB.LL_START)
     rsp_pkt.$$.addAttPkt(TB.ATT_ERROR_RESPONSE, EMPTY_DATA.$frame(0))
 
     const pkt = rsp_pkt.$$.attPkt()
     const data = <TL.BufPtr>pkt.$$.dataPtr()
 
-    // ATT Error Response payload:
-    //   request opcode in error, attribute handle in error, error code.
-    // Unsupported ATT request opcodes should receive Request Not Supported (0x06)
-    // instead of being silently ignored, otherwise PTS UNS/BI-01-C times out.
     data[0] = req_op
-    data[1] = 0x00
-    data[2] = 0x00
-    data[3] = 0x06
+    data[1] = handle & 0xff
+    data[2] = handle >> 8
+    data[3] = err
 
     pkt.$$.len += 4
     rsp_pkt.$$.pduLen += 4
@@ -256,14 +271,18 @@ function resourceIndex(handle: u16): u16 {
     return (handle - 0x0003) >> 1
 }
 
-function readResource(handle: u16, dst: TL.BufPtr): u8 {
+function isValidResourceHandle(handle: u16): bool_t {
     if (!isValueHandle(handle)) {
-        return 0
+        return false
     }
-    const idx = resourceIndex(handle)
-    if (idx >= READ_FUNCS.$len) {
-        return 0
-    }
+    return resourceIndex(handle) < READ_FUNCS.$len
+}
+
+function maskHas(mask: u32, idx: u16): bool_t {
+    return (mask & (<u32>1 << idx)) != 0
+}
+
+function readResource(idx: u16, dst: TL.BufPtr): u8 {
     const read_fxn = READ_FUNCS[idx]
     if (read_fxn == null) {
         return 0
@@ -272,10 +291,18 @@ function readResource(handle: u16, dst: TL.BufPtr): u8 {
 }
 
 function readValue(handle: u16, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    if (!isValidResourceHandle(handle)) {
+        return sendAttError(TB.ATT_READ_REQ, handle, ATT_ERR_INVALID_HANDLE, rsp_pkt)
+    }
+    const idx = resourceIndex(handle)
+    if (!maskHas(READABLE_MASK, idx)) {
+        return sendAttError(TB.ATT_READ_REQ, handle, ATT_ERR_READ_NOT_PERMITTED, rsp_pkt)
+    }
+
     rsp_pkt.$$.init(TB.LL_START)
     rsp_pkt.$$.addAttPkt(TB.ATT_READ_RSP, EMPTY_DATA.$frame(0))
     const pkt = rsp_pkt.$$.attPkt()
-    const len = readResource(handle, <TL.BufPtr>pkt.$$.dataPtr())
+    const len = readResource(idx, <TL.BufPtr>pkt.$$.dataPtr())
     if (len == 0) {
         return false
     }
@@ -284,14 +311,7 @@ function readValue(handle: u16, rsp_pkt: $$<TB.LnkHdr>): bool_t {
     return true
 }
 
-function writeResource(handle: u16, src: TL.BufPtr) {
-    if (!isValueHandle(handle)) {
-        return
-    }
-    const idx = resourceIndex(handle)
-    if (idx >= WRITE_FUNCS.$len) {
-        return
-    }
+function writeResource(idx: u16, src: TL.BufPtr) {
     const write_fxn = WRITE_FUNCS[idx]
     if (write_fxn == null) {
         return
@@ -299,10 +319,16 @@ function writeResource(handle: u16, src: TL.BufPtr) {
     write_fxn(src)
 }
 
-function writeValue(handle: u16, src: TL.BufPtr): bool_t {
-    if (!isValueHandle(handle)) {
-        return false
+function writeValue(handle: u16, src: TL.BufPtr, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    if (!isValidResourceHandle(handle)) {
+        return sendAttError(TB.ATT_WRITE_REQ, handle, ATT_ERR_INVALID_HANDLE, rsp_pkt)
     }
-    writeResource(handle, src)
+    const idx = resourceIndex(handle)
+    if (!maskHas(WRITABLE_MASK, idx)) {
+        return sendAttError(TB.ATT_WRITE_REQ, handle, ATT_ERR_WRITE_NOT_PERMITTED, rsp_pkt)
+    }
+    writeResource(idx, src)
+    rsp_pkt.$$.init(TB.LL_START)
+    rsp_pkt.$$.addAttPkt(TB.ATT_WRITE_RSP, EMPTY_DATA.$frame(0))
     return true
 }
