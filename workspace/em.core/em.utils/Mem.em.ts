@@ -5,8 +5,8 @@ export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-export function cmp(dst: arg_t, src: arg_t, len: u16): i32 {
-    return <i32>e$`memcpy((uint8_t*)dst, (uint8_t*)src, len)`
+export function cmp(src1: arg_t, src2: arg_t, len: u16): i32 {
+    return <i32>e$`memcmp((uint8_t*)src1, (uint8_t*)src2, len)`
 }
 
 export function cpy(dst: arg_t, src: arg_t, len: u16) {

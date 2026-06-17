@@ -24,6 +24,7 @@ const GROUP_TYPE_ERROR_DATA = $table<u8>()
 const MTU_DATA = $table<u8>()
 const PRIMARY_SERVICE_DATA = $table<u8>()
 const READ_FUNCS = $table<ResourceReadCb>()
+const STATUS_UUID_DATA = $table<u8>()
 const SCAN_RSP_DATA = $table<u8>()
 const TYPE_ERROR_DATA = $table<u8>()
 const WRITE_FUNCS = $table<ResourceWriteCb>()
@@ -41,6 +42,7 @@ export namespace em$meta {
         //
         TB.em$meta.addGattPrimaryService(PRIMARY_SERVICE_DATA, sch_info.uuid, 0x0001, 0x0006)
         addGattCharacteristicData(CHARACTERISTIC_DATA, sch_info.resources)
+        addUuid128(STATUS_UUID_DATA, sch_info.resources[0].uuid!)
         //
         for (let r of sch_info.resources) {
             READ_FUNCS.$$add(r.canRead ? $cb(`${r.name}_read`, schema_cname) : $cb(null))
@@ -159,6 +161,8 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
                     att_rsp_op = TB.ATT_ERROR_RESPONSE
                     att_rsp_data = TYPE_ERROR_DATA.$frame(0)
                 }
+            } else if (isStatusReadByUuidReq(att_pkt) && type_req.startHandle <= 0x0003 && type_req.endHandle >= 0x0003) {
+                return readValueByType(0x0003, rsp_pkt)
             } else {
                 att_rsp_op = TB.ATT_ERROR_RESPONSE
                 att_rsp_data = TYPE_ERROR_DATA.$frame(0)
@@ -232,6 +236,33 @@ function getCharacteristicRspData(start: u16, end: u16): TL.BufFrame {
         return $null
     }
     return CHARACTERISTIC_DATA.$frame(off, 0x16)
+}
+
+function isStatusReadByUuidReq(att_pkt: $$<TB.AttPkt>): bool_t {
+    const data = <TL.BufPtr>att_pkt.$$.dataPtr()
+    /// TODO: add TB type with Uuid element
+    return Mem.cmp($$(data[4]), STATUS_UUID_DATA.$ptr(), 16) == 0
+}
+
+function readValueByType(handle: u16, rsp_pkt: $$<TB.LnkHdr>): bool_t {
+    rsp_pkt.$$.init(TB.LL_START)
+    rsp_pkt.$$.addAttPkt(TB.ATT_READ_BY_TYPE_REQ + 1, EMPTY_DATA.$frame(0))
+
+    const pkt = rsp_pkt.$$.attPkt()
+    const data = <TL.BufPtr>pkt.$$.dataPtr()
+
+    data[0] = 0x03
+    data[1] = handle & 0xff
+    data[2] = handle >> 8
+
+    const len = readResource(handle, <TL.BufPtr>$$(data[3]))
+    if (len == 0) {
+        return false
+    }
+
+    pkt.$$.len += len + 3
+    rsp_pkt.$$.pduLen += len + 3
+    return true
 }
 
 function isValueHandle(handle: u16): bool_t {
