@@ -18,6 +18,7 @@ const CHARACTERISTIC_DATA = $table<u8>()
 const EMPTY_DATA = $table<u8>()
 const FIND_BY_TYPE_ERROR_DATA = $table<u8>()
 const FIND_INFO_DATA = $table<u8>()
+const DESCRIPTOR_FIND_INFO_DATA = $table<u8>()
 const FIND_INFO_ERROR_DATA = $table<u8>()
 const GROUP_TYPE_ERROR_DATA = $table<u8>()
 const MTU_DATA = $table<u8>()
@@ -63,6 +64,7 @@ export namespace em$meta {
         TB.em$meta.addAttError(GROUP_TYPE_ERROR_DATA, TB.ATT_READ_BY_GROUP_TYPE_REQ, serviceEndHandle(sch_info.resources) + 1, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addAttError(TYPE_ERROR_DATA, TB.ATT_READ_BY_TYPE_REQ, 0x0001, TB.ATT_ATTR_NOT_FOUND)
         TB.em$meta.addGattFindInfo(FIND_INFO_DATA)
+        addGattUserDescriptionFindInfo(DESCRIPTOR_FIND_INFO_DATA, descriptorHandle(sch_info.resources))
         TB.em$meta.addAttMtu(MTU_DATA)
     }
 
@@ -75,7 +77,11 @@ export namespace em$meta {
     }
 
     function serviceEndHandle(resources: SchemaC.Resource[]): u16 {
-        return 0x0001 + (resources.length << 1)
+        return descriptorHandle(resources)
+    }
+
+    function descriptorHandle(resources: SchemaC.Resource[]): u16 {
+        return 0x0002 + (resources.length << 1)
     }
 
     function addGattCharacteristicData(data: TB.PduData, resources: SchemaC.Resource[]) {
@@ -88,6 +94,12 @@ export namespace em$meta {
             addUuid128(data, r.uuid!)
             h += 2
         }
+    }
+
+    function addGattUserDescriptionFindInfo(data: TB.PduData, handle: u16) {
+        data.$$add(0x01)
+        addU16(data, handle)
+        addU16(data, 0x2901)
     }
 
     function addProps(data: TB.PduData, r: SchemaC.Resource) {
@@ -181,8 +193,14 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
                 att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
                 att_rsp_data = FIND_INFO_DATA.$frame(0)
             } else {
-                att_rsp_op = TB.ATT_ERROR_RESPONSE
-                att_rsp_data = FIND_INFO_ERROR_DATA.$frame(0)
+                const desc_handle: u16 = 0x0002 + (READ_FUNCS.$len << 1)
+                if (find_req.startHandle <= desc_handle && find_req.endHandle >= desc_handle) {
+                    att_rsp_op = TB.ATT_FIND_INFORMATION_RSP
+                    att_rsp_data = DESCRIPTOR_FIND_INFO_DATA.$frame(0)
+                } else {
+                    att_rsp_op = TB.ATT_ERROR_RESPONSE
+                    att_rsp_data = FIND_INFO_ERROR_DATA.$frame(0)
+                }
             }
             break
         }
