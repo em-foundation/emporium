@@ -185,7 +185,11 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             return true
         }
         default: {
-            return sendUnsupportedRequestError(att_pkt.$$.opcode, rsp_pkt)
+            const op = att_pkt.$$.opcode
+            if (isAttCommand(op)) {
+                return false
+            }
+            return sendUnsupportedRequestError(op, rsp_pkt)
         }
     }
     if (att_rsp_data.$len == 0) {
@@ -198,6 +202,10 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
     // halt()
 
     return true
+}
+
+function isAttCommand(op: u8): bool_t {
+    return (op & 0x40) != 0
 }
 
 function sendUnsupportedRequestError(req_op: u8, rsp_pkt: $$<TB.LnkHdr>): bool_t {
