@@ -63,6 +63,10 @@ export const L2CAP_CID_LE_SIG = 0x0005
 export const L2CAP_COMMAND_REJECT_RSP = 0x01
 export const L2CAP_REJ_CMD_NOT_UNDERSTOOD = 0x0000
 
+export const L2CAP_LE_CREDIT_BASED_CONNECTION_REQ = 0x14
+export const L2CAP_LE_CREDIT_BASED_CONNECTION_RSP = 0x15
+export const L2CAP_LE_CB_RESULT_NO_RESOURCES = 0x0004
+
 export const LL_CONT = 0x01
 export const LL_START = 0x02
 export const LL_CTRL = 0x03
@@ -185,6 +189,7 @@ export interface LnkHdr {
     addAttPkt(this: LnkHdr, opcode: u8, data: TL.BufFrame): void
     addGattVal(this: LnkHdr, val_ptr: opaq_t, val_len: u8): void
     addL2capCmdReject(this: LnkHdr, ident: u8, reason: u16): void
+    addL2capLeCreditConnRsp(this: LnkHdr, ident: u8, result: u16): void
     addPdu(this: LnkHdr, data: TL.BufFrame): void
     addUnkRsp(this: LnkHdr, opcode: u8): void
     attPkt(this: LnkHdr): $$<AttPkt>
@@ -471,6 +476,7 @@ LnkHdr.prototype.addGattVal = function (this: LnkHdr, val_ptr: opaq_t, val_len: 
 
 LnkHdr.prototype.addL2capCmdReject = function (this: LnkHdr, ident: u8, reason: u16): void {
     const pkt = this.l2capPkt()
+    /// TODO optimize
     pkt.$$.len = 0x06
     pkt.$$.lenHi = 0x00
     pkt.$$.cid = L2CAP_CID_LE_SIG
@@ -483,6 +489,31 @@ LnkHdr.prototype.addL2capCmdReject = function (this: LnkHdr, ident: u8, reason: 
     data[0] = reason & 0xff
     data[1] = reason >> 8
     this.pduLen += $sizeof<L2capPkt>() + 2
+}
+
+LnkHdr.prototype.addL2capLeCreditConnRsp = function (this: LnkHdr, ident: u8, result: u16): void {
+    const pkt = this.l2capPkt()
+    /// TODO optimize
+    pkt.$$.len = 0x0E
+    pkt.$$.lenHi = 0x00
+    pkt.$$.cid = L2CAP_CID_LE_SIG
+    pkt.$$.cidHi = 0x00
+    pkt.$$.code = L2CAP_LE_CREDIT_BASED_CONNECTION_RSP
+    pkt.$$.ident = ident
+    pkt.$$.cmdLen = 0x0A
+    pkt.$$.cmdLenHi = 0x00
+    const data = pkt.$$.cmdDataPtr()
+    data[0] = 0x00       // DCID
+    data[1] = 0x00
+    data[2] = 0x00       // MTU
+    data[3] = 0x00
+    data[4] = 0x00       // MPS
+    data[5] = 0x00
+    data[6] = 0x00       // initial credits
+    data[7] = 0x00
+    data[8] = result & 0xff
+    data[9] = result >> 8
+    this.pduLen += $sizeof<L2capPkt>() + 10
 }
 
 LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {

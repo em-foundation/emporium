@@ -292,6 +292,7 @@ function reqFB(_: arg_t) {
             case TB.L2CAP_CID_ATT: {
                 const rsp = LnkTx.getAttPkt()
                 if (rsp == $null) return
+
                 if (Binder.reqGatt(lnk_req.$$.attPkt(), rsp)) {
                     LnkTx.setAttReady()
                 }
@@ -301,8 +302,27 @@ function reqFB(_: arg_t) {
                 const rsp = LnkTx.getAttPkt()
                 if (rsp == $null) return
                 rsp.$$.init(TB.LL_START)
-                rsp.$$.addL2capCmdReject(l2.$$.ident, TB.L2CAP_REJ_CMD_NOT_UNDERSTOOD)
+                switch (l2.$$.code) {
+                    case TB.L2CAP_LE_CREDIT_BASED_CONNECTION_REQ: {
+                        rsp.$$.addL2capLeCreditConnRsp(
+                            l2.$$.ident,
+                            TB.L2CAP_LE_CB_RESULT_NO_RESOURCES
+                        )
+                        break
+                    }
+                    default: {
+                        rsp.$$.addL2capCmdReject(
+                            l2.$$.ident,
+                            TB.L2CAP_REJ_CMD_NOT_UNDERSTOOD
+                        )
+                        break
+                    }
+                }
                 LnkTx.setAttReady()
+                break
+            }
+            default: {
+                // Unsupported fixed/dynamic CID: ignore.
                 break
             }
         }
