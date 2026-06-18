@@ -304,10 +304,19 @@ function reqFB(_: arg_t) {
                 rsp.$$.init(TB.LL_START)
                 switch (l2.$$.code) {
                     case TB.L2CAP_LE_CREDIT_BASED_CONNECTION_REQ: {
-                        rsp.$$.addL2capLeCreditConnRsp(
-                            l2.$$.ident,
-                            TB.L2CAP_LE_CB_RESULT_NO_RESOURCES
-                        )
+                        const data = l2.$$.cmdDataPtr()
+                        const scid = (data[3] << 8) | data[2]
+                        if (scid >= 0x0040) {
+                            rsp.$$.addL2capLeCreditConnRsp(
+                                l2.$$.ident,
+                                TB.L2CAP_LE_CB_RESULT_NO_RESOURCES
+                            )
+                        } else {
+                            rsp.$$.addL2capCmdReject(
+                                l2.$$.ident,
+                                TB.L2CAP_REJ_CMD_NOT_UNDERSTOOD
+                            )
+                        }
                         break
                     }
                     default: {
