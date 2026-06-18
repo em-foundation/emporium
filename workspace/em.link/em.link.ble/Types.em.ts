@@ -57,6 +57,12 @@ export const GATT_CHARACTERISTIC_READ = 0x02
 export const GATT_CHARACTERISTIC_WRITE = 0x08
 export const GATT_PRIMARY_SERVICE = 0x2800
 
+export const L2CAP_CID_ATT = 0x0004
+export const L2CAP_CID_LE_SIG = 0x0005
+
+export const L2CAP_COMMAND_REJECT_RSP = 0x01
+export const L2CAP_REJ_CMD_NOT_UNDERSTOOD = 0x0000
+
 export const LL_CONT = 0x01
 export const LL_START = 0x02
 export const LL_CTRL = 0x03
@@ -156,6 +162,21 @@ export interface GattTypeReq {
     init(this: GattTypeReq, pkt: $$<AttPkt>): void
 }
 
+export class L2capPkt extends $struct {
+    len: u8
+    lenHi: u8
+    cid: u8
+    cidHi: u8
+    code: u8
+    ident: u8
+    cmdLen: u8
+    cmdLenHi: u8
+}
+export interface L2capPkt {
+    cid16(this: L2capPkt): u16
+    cmdDataPtr(this: L2capPkt): TL.BufPtr
+}
+
 export class LnkHdr extends $struct {
     lnkFlags: u8
     pduLen: u8
@@ -163,12 +184,14 @@ export class LnkHdr extends $struct {
 export interface LnkHdr {
     addAttPkt(this: LnkHdr, opcode: u8, data: TL.BufFrame): void
     addGattVal(this: LnkHdr, val_ptr: opaq_t, val_len: u8): void
+    addL2capCmdReject(this: LnkHdr, ident: u8, reason: u16): void
     addPdu(this: LnkHdr, data: TL.BufFrame): void
     addUnkRsp(this: LnkHdr, opcode: u8): void
     attPkt(this: LnkHdr): $$<AttPkt>
     frame(this: LnkHdr): TL.BufFrame
     isCtrl(this: LnkHdr): bool_t
     init(this: LnkHdr, lnk_id: u8): void
+    l2capPkt(this: LnkHdr): $$<L2capPkt>
     print(this: LnkHdr): void
     pduPtr(this: LnkHdr): TL.BufPtr
     setSeq(this: LnkHdr, req_flags: u8, tx_sn: u8): void
@@ -419,6 +442,15 @@ GattTypeReq.prototype.init = function (this: GattTypeReq, pkt: $$<AttPkt>): void
     this.typeId = Mem.scan16($$(data[4]))
 }
 
+L2capPkt.prototype.cid16 = function (this: L2capPkt): u16 {
+    return (this.cidHi << 8) | this.cid
+}
+
+L2capPkt.prototype.cmdDataPtr = function (this: L2capPkt): TL.BufPtr {
+    const bp = $cast2<TL.BufPtr>($$(this))
+    return <TL.BufPtr>$$(bp[$sizeof<L2capPkt>()])
+}
+
 LnkHdr.prototype.addAttPkt = function (this: LnkHdr, opcode: u8, data: TL.BufFrame): void {
     const pkt = this.attPkt()
     pkt.$$.chan = 0x04
@@ -435,6 +467,22 @@ LnkHdr.prototype.addGattVal = function (this: LnkHdr, val_ptr: opaq_t, val_len: 
     Mem.cpy(pkt.$$.gattValPtr(), val_ptr, val_len)
     pkt.$$.len += val_len
     this.pduLen += val_len
+}
+
+LnkHdr.prototype.addL2capCmdReject = function (this: LnkHdr, ident: u8, reason: u16): void {
+    const pkt = this.l2capPkt()
+    pkt.$$.len = 0x06
+    pkt.$$.lenHi = 0x00
+    pkt.$$.cid = L2CAP_CID_LE_SIG
+    pkt.$$.cidHi = 0x00
+    pkt.$$.code = L2CAP_COMMAND_REJECT_RSP
+    pkt.$$.ident = ident
+    pkt.$$.cmdLen = 0x02
+    pkt.$$.cmdLenHi = 0x00
+    const data = pkt.$$.cmdDataPtr()
+    data[0] = reason & 0xff
+    data[1] = reason >> 8
+    this.pduLen += $sizeof<L2capPkt>() + 2
 }
 
 LnkHdr.prototype.addPdu = function (this: LnkHdr, data: TL.BufFrame): void {
@@ -464,6 +512,10 @@ LnkHdr.prototype.isCtrl = function (this: LnkHdr): bool_t {
 LnkHdr.prototype.init = function (this: LnkHdr, lnk_id: u8) {
     this.lnkFlags = lnk_id
     this.pduLen = 0
+}
+
+LnkHdr.prototype.l2capPkt = function (this: LnkHdr): $$<L2capPkt> {
+    return $cast2<$$<L2capPkt>>(this.pduPtr())
 }
 
 LnkHdr.prototype.pduPtr = function (this: LnkHdr): TL.BufPtr {

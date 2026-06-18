@@ -287,10 +287,24 @@ function reqFB(_: arg_t) {
             LnkTx.setCtrlReady()
         }
     } else {
-        const rsp = LnkTx.getAttPkt()
-        if (rsp == $null) return
-        if (Binder.reqGatt(lnk_req.$$.attPkt(), rsp)) {
-            LnkTx.setAttReady()
+        const l2 = lnk_req.$$.l2capPkt()
+        switch (l2.$$.cid16()) {
+            case TB.L2CAP_CID_ATT: {
+                const rsp = LnkTx.getAttPkt()
+                if (rsp == $null) return
+                if (Binder.reqGatt(lnk_req.$$.attPkt(), rsp)) {
+                    LnkTx.setAttReady()
+                }
+                break
+            }
+            case TB.L2CAP_CID_LE_SIG: {
+                const rsp = LnkTx.getAttPkt()
+                if (rsp == $null) return
+                rsp.$$.init(TB.LL_START)
+                rsp.$$.addL2capCmdReject(l2.$$.ident, TB.L2CAP_REJ_CMD_NOT_UNDERSTOOD)
+                LnkTx.setAttReady()
+                break
+            }
         }
     }
 }
