@@ -166,6 +166,9 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
         }
         case TB.ATT_READ_BY_TYPE_REQ: {
             type_req.init(att_pkt)
+            if (type_req.startHandle == 0 || type_req.startHandle > type_req.endHandle) {
+                return sendAttError(TB.ATT_READ_BY_TYPE_REQ, type_req.startHandle, ATT_ERR_INVALID_HANDLE, rsp_pkt)
+            }
             if (type_req.typeId == TB.GATT_CHARACTERISTIC) {
                 att_rsp_data = getCharacteristicRspData(type_req.startHandle, type_req.endHandle)
                 if (att_rsp_data.$len != 0) {
