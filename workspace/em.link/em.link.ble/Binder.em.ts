@@ -289,9 +289,12 @@ function readValueByUuid(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t
     const end = Mem.scan16($$(req[2]))
     for (const idx of $range(READ_FUNCS.$len)) {
         const handle: u16 = 0x0003 + (idx << 1)
-        if (handle >= start && handle <= end && maskHas(READABLE_MASK, idx)) {
+        if (handle >= start && handle <= end) {
             const off: u16 = (idx * 0x16) + 6
             if (Mem.cmp($$(req[4]), $$(CHARACTERISTIC_DATA[off]), 16) == 0) {
+                if (!maskHas(READABLE_MASK, idx)) {
+                    return sendAttError(TB.ATT_READ_BY_TYPE_REQ, handle, ATT_ERR_READ_NOT_PERMITTED, rsp_pkt)
+                }
                 return readValueByType(idx, handle, rsp_pkt)
             }
         }
