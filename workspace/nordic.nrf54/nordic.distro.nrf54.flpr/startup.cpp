@@ -16,20 +16,6 @@ extern "C" uint32_t __stack_top__;
 
 extern "C" int main();
 
-typedef struct {
-    uint32_t *loadAddr;
-    uint32_t loadSize;
-    uint32_t *bssAddr;
-    uint32_t bssSize;
-} __em_desc_t;
-
-extern "C" __em_desc_t __attribute__((section(".desc"))) __em_desc = {
-    .loadAddr = &__code_addr__,
-    .loadSize = (uint32_t)&__code_size__ + (uint32_t)&__data_size__,
-    .bssAddr = &__bss_addr__,
-    .bssSize = (uint32_t)&__bss_size__,
-};
-
 extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
 
     asm(".option norelax");

@@ -63,13 +63,19 @@ export function em$configure() {
 }
 
 export function em$generate() {
-    LinkerC.genScript({
-        dmem_flash: { orig: 0x20000000, len: 0x00004000 },
-        imem_flash: { orig: 0x00000000, len: 0x00008000 },
-        dmem_sram: { orig: 0x20000000, len: 0x00004000 },
-        imem_sram: { orig: 0x00808000, len: 0x00008000 },
-        lmem_sram: { orig: 0x00000000, len: 0x00008000 },
-    })
+    LinkerC.genScript(
+        {
+            dmem_flash: { orig: 0x20000000, len: 0x00004000 },
+            imem_flash: { orig: 0x00000000, len: 0x00008000 },
+            dmem_sram: { orig: 0x20000000, len: 0x00004000 },
+            imem_sram: { orig: 0x00808000, len: 0x00008000 },
+            lmem_sram: { orig: 0x00000000, len: 0x00008000 },
+        },
+        [
+            { name: 'FLASH_CCFG', sect: '.ccfg', desc: { orig: 0x4e020000, len: 0x800 } }
+        ]
+
+    )
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
     let libflav = opt == 'Oz' ? 'small' : 'balanced'
