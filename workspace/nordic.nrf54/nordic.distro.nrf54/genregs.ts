@@ -20,6 +20,7 @@ const TYPE_SET = new Set<string>([
     'TIMER',
     'UART',
     'UARTE',
+    'VPR'
 ])
 const INSTS = [
     ['APPLICATION_ICACHE', 'CACHE'],
@@ -39,6 +40,7 @@ const INSTS = [
     ['TAMPC', 'TAMPC'],
     ['TIMER20', 'TIMER'],
     ['UARTE30', 'UARTE'],
+    ['VPR00', 'VPR'],
 ]
 const INDICIES = [
     ['P', 'GPIO'],

@@ -17,15 +17,21 @@ extern "C" uint32_t __stack_top__;
 extern "C" int main();
 
 typedef struct {
-    unsigned int *codeLoad;
-    unsigned int *codeAddr;
-    unsigned int *bssAddr;
-    unsigned int bssSize;
+    uint32_t *loadAddr;
+    uint32_t loadSize;
+    uint32_t *bssAddr;
+    uint32_t bssSize;
 } __em_desc_t;
+
+extern "C" __em_desc_t __attribute__((section(".desc"))) __em_desc = {
+    .loadAddr = &__code_addr__,
+    .loadSize = (uint32_t)&__code_size__ + (uint32_t)&__data_size__,
+    .bssAddr = &__bss_addr__,
+    .bssSize = (uint32_t)&__bss_size__,
+};
 
 extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
 
-#ifdef __EM_ARCH_riscv__
     asm(".option norelax");
     asm("lui     gp,     %hi(__global_pointer__)");
     asm("addi    gp, gp, %lo(__global_pointer__)");
@@ -34,8 +40,8 @@ extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
     asm("lui     t0,     %hi(__stack_top__)");
     asm("addi    sp, t0, %lo(__stack_top__)");
     asm(".option relax");
-#endif
 
+#if 0
     uint32_t *src;
     uint32_t *dst;
     volatile uint32_t sz;
@@ -53,14 +59,7 @@ extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
     for (uint32_t i = 0; i < sz; i++) {
         dst[i] = src[i];
     }
+#endif
     main();
     __builtin_unreachable();
 }
-
-#if __EM_BOOT_FLASH__ == 1
-extern "C" const void *__attribute__((
-    section(".start_vec"))) __em_start_vec[] = {
-    (void *)&__stack_top__,
-    (void *)em__start,
-};
-#endif
