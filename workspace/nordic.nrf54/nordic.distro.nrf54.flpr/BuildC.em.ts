@@ -297,8 +297,8 @@ export function em$configure() {
 
 export function em$generate() {
     LinkerC.genScript({
-        dmem_flash: { orig: 0x20020000, len: 0x00008000 },
-        imem_flash: { orig: 0x20028000, len: 0x00008000 },
+        dmem_flash: { orig: 0x20028000, len: 0x00008000 },
+        imem_flash: { orig: 0x20020000, len: 0x00008000 },
         dmem_sram: { orig: 0, len: 0 },
         imem_sram: { orig: 0, len: 0 },
         lmem_sram: { orig: 0, len: 0 },

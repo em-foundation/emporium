@@ -25,7 +25,7 @@ typedef struct {
 
 extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
 
-#ifdef __EM_ARCH_riscv32__
+#ifdef __EM_ARCH_riscv__
     asm(".option norelax");
     asm("lui     gp,     %hi(__global_pointer__)");
     asm("addi    gp, gp, %lo(__global_pointer__)");
