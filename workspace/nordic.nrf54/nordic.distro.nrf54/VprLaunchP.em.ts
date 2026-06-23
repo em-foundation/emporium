@@ -30,4 +30,5 @@ export function em$run() {
     $reg32[0x50040530] |= 0x10
     $R.VPR00.INITPC.$$ = $cast2<u32>(desc.$$.loadAddr)
     $R.VPR00.CPURUN.$$ = 1
+    e$`asm volatile ("wfi")`
 }
