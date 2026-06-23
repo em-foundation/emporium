@@ -26,6 +26,7 @@ export function em$generate() {
         |-> LD=$TOOLS/gcc/riscv32-none-elf/bin/ld
         |-> OBJCOPY=$TOOLS/gcc/riscv32-none-elf/bin/objcopy
         |-> OBJDUMP=$TOOLS/gcc/riscv32-none-elf/bin/objdump
+        |-> SREC=${tools}/srecord/bin/srec_cat
         |-> 
         |-> OUT=.out
         |-> 
@@ -87,6 +88,8 @@ export function em$generate() {
         |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
         |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
         |-> $OBJDUMP -h $OUT/main.out
+        |-> $SREC $OUT/main.out.hex -Intel -offset - -minimum-addr $OUT/main.out.hex -Intel -o $OUT/main.out.bin -Binary
+        |-> $SREC ../nordic.nrf54/nordic.distro.nrf54/vpr-launcher.hex -Intel $OUT/main.out.bin  -Binary -offset 0x00008000 -o $OUT/merged.hex -Intel
 `)
     out.close()
     //
@@ -97,5 +100,10 @@ export function em$generate() {
     out = $outfile('linkcmd.ld')
     out.addFile('../nordic.nrf54/nordic.distro.nrf54.flpr/linkcmd.ld')
     out.close()
-
+    //
+    const ext = (process.platform === 'win32') ? '.exe' : 'Exe'
+    out = $outfile('load.sh', 0o755)
+    const exec = `${tools}/segger-jlink/JLink${ext}`
+    out.addText(`${exec} -CommandFile ../nordic.nrf54/nordic.distro.nrf54.flpr/jlink-cmds`)
+    out.close()
 }

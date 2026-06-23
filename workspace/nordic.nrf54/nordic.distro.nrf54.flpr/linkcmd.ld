@@ -1,31 +1,17 @@
-/* linkcmd.ld -- specialized EMS FLPR payload image
- *
- * Produces one contiguous loadable image:
- *
- *   0x20020000 : 16-byte descriptor
- *   0x20020010 : FLPR code/const/data load image
- *
- * Runtime layout:
- *
- *   IMEM/runtime image : 0x20020010..0x20028000
- *   DMEM/runtime data  : 0x20028000..0x20030000
- *   stack top          : 0x20030000
- *
- * Descriptor layout, four 32-bit words:
- *
- *   word 0: load address, 0x20020010
- *   word 1: load image size in 32-bit words
- *   word 2: bss address
- *   word 3: bss size in 32-bit words
- */
-
 ENTRY(em__start)
 
 MEMORY
 {
-    DESC : ORIGIN = 0x20020000, LENGTH = 0x00000010
-    IMEM : ORIGIN = 0x20020010, LENGTH = 0x00007ff0
-    DMEM : ORIGIN = 0x20028000, LENGTH = 0x00008000
+    /*
+     * FLPR SRAM window:
+     *   0x20028000 .. 0x20040000
+     *
+     * Descriptor is 16 bytes before IMEM.
+     * Code starts cleanly at 0x20028000.
+     */
+    DESC : ORIGIN = 0x20027FF0, LENGTH = 0x00000010
+    IMEM : ORIGIN = 0x20028000, LENGTH = 0x00008000
+    DMEM : ORIGIN = 0x20030000, LENGTH = 0x00010000
 }
 
 SECTIONS
@@ -34,8 +20,11 @@ SECTIONS
 
     /*
      * Loader descriptor.
-     * Do not source this from C++.
-     * The linker emits the actual four words.
+     * Four 32-bit words:
+     *   load address
+     *   load size in words
+     *   bss address
+     *   bss size in words
      */
     .desc ORIGIN(DESC) :
     {
@@ -46,8 +35,8 @@ SECTIONS
     } > DESC
 
     /*
-     * FLPR code image starts immediately after descriptor.
-     * This should be the value copied into VPR INITPC if em__start is first.
+     * FLPR executable image.
+     * INITPC should be __code_addr__ / em__start = 0x20028000.
      */
     .text ORIGIN(IMEM) :
     {
@@ -66,7 +55,7 @@ SECTIONS
 
     /*
      * Initialized data runs in DMEM but is loaded immediately after .text
-     * in the contiguous payload image.
+     * in the contiguous FLPR payload image.
      */
     __data_load__ = ALIGN(__text_end__, 4);
 
@@ -82,7 +71,7 @@ SECTIONS
     } > DMEM
 
     /*
-     * BSS is runtime-only. It is not part of the load image.
+     * Runtime-only BSS.
      */
     .bss (NOLOAD) :
     {
@@ -106,20 +95,17 @@ SECTIONS
     __code_size__ = (__text_end__ - __code_addr__) / 4;
 
     /*
-     * Load image is what follows descriptor and must be copied by M33:
+     * Load image copied by M33:
      *   .text/.rodata plus initialized .data load bytes.
      */
     __load_start__     = __code_addr__;
     __load_end__       = __data_load__ + SIZEOF(.data);
     __load_word_size__ = (__load_end__ - __load_start__) / 4;
 
-    /*
-     * Descriptor aliases.
-     */
     __bss_word_size__ = __bss_size__;
 
     /*
-     * Keep old names available.
+     * Compatibility aliases.
      */
     __code_load__ = __code_addr__;
     __heap_addr__ = __bss_end__;
