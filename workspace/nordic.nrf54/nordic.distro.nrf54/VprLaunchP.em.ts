@@ -48,5 +48,5 @@ export function em$run() {
     e$`asm("nop")`
     e$`asm("nop")`
     Common.BusyWait.wait(10000)
-    printf`%x %x\n`($reg32[0x20028100], $reg32[0x20030000])
+    printf`data = %x\n`($reg32[0x20030000])
 }

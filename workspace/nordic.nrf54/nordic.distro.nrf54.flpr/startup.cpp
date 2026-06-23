@@ -16,6 +16,7 @@ extern "C" uint32_t __stack_top__;
 
 extern "C" int main();
 
+#if 0
 extern "C" void __attribute__((section(".start"), naked, used, noreturn))
 em__start() {
     asm volatile(".option push\n"
@@ -40,38 +41,38 @@ em__start() {
                  /* stay here forever */
                  "1: j 1b\n");
 }
+#endif
 
-// extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
-//
-//     asm(".option norelax");
-//     asm("lui     gp,     %hi(__global_pointer__)");
-//     asm("addi    gp, gp, %lo(__global_pointer__)");
-//     asm("lui     tp,     %hi(__bss_addr__)");
-//     asm("addi    tp, tp, %lo(__bss_addr__)");
-//     asm("lui     t0,     %hi(__stack_top__)");
-//     asm("addi    sp, t0, %lo(__stack_top__)");
-//     asm(".option relax");
-//
-// #if 0
-//     uint32_t *src;
-//     uint32_t *dst;
-//     volatile uint32_t sz;
-//     sz = (uint32_t)&__bss_size__;
-//     dst = &__bss_addr__;
-//     asm("nop");
-//     asm("nop");
-//     asm("nop");
-//     for (uint32_t i = 0; i < sz; i++) { // TODO -- while (sz--) not working
-//         dst[i] = 0;
-//     }
-//     sz = (uint32_t)&__data_size__;
-//     src = &__data_load__;
-//     dst = &__data_addr__;
-//     for (uint32_t i = 0; i < sz; i++) {
-//         dst[i] = src[i];
-//     }
-// #endif
-//     main();
-//     __builtin_unreachable();
-// }
-//
+extern "C" void __attribute__((section(".start"), noreturn)) em__start() {
+
+    asm(".option norelax");
+    asm("lui     gp,     %hi(__global_pointer__)");
+    asm("addi    gp, gp, %lo(__global_pointer__)");
+    asm("lui     tp,     %hi(__bss_addr__)");
+    asm("addi    tp, tp, %lo(__bss_addr__)");
+    asm("lui     t0,     %hi(__stack_top__)");
+    asm("addi    sp, t0, %lo(__stack_top__)");
+    asm(".option relax");
+
+#if 0
+     uint32_t *src;
+     uint32_t *dst;
+     volatile uint32_t sz;
+     sz = (uint32_t)&__bss_size__;
+     dst = &__bss_addr__;
+     asm("nop");
+     asm("nop");
+     asm("nop");
+     for (uint32_t i = 0; i < sz; i++) { // TODO -- while (sz--) not working
+         dst[i] = 0;
+     }
+     sz = (uint32_t)&__data_size__;
+     src = &__data_load__;
+     dst = &__data_addr__;
+     for (uint32_t i = 0; i < sz; i++) {
+         dst[i] = src[i];
+     }
+#endif
+    main();
+    __builtin_unreachable();
+}
