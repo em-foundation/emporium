@@ -6,10 +6,10 @@ MEMORY
      * FLPR SRAM window:
      *   0x20028000 .. 0x20040000
      *
-     * Descriptor is 16 bytes before IMEM.
+     * Descriptor is 24 bytes before IMEM.
      * Code starts cleanly at 0x20028000.
      */
-    DESC : ORIGIN = 0x20027FF0, LENGTH = 0x00000010
+    DESC : ORIGIN = 0x20027FE8, LENGTH = 0x00000018
     IMEM : ORIGIN = 0x20028000, LENGTH = 0x00008000
     DMEM : ORIGIN = 0x20030000, LENGTH = 0x00010000
 }
@@ -20,16 +20,20 @@ SECTIONS
 
     /*
      * Loader descriptor.
-     * Four 32-bit words:
-     *   load address
-     *   load size in words
-     *   bss address
+     * Six 32-bit words:
+     *   code runtime address
+     *   code load size in words
+     *   data runtime address
+     *   data load size in words
+     *   bss runtime address
      *   bss size in words
      */
     .desc ORIGIN(DESC) :
     {
         LONG(__code_addr__);
-        LONG(__load_word_size__);
+        LONG(__code_word_size__);
+        LONG(__data_addr__);
+        LONG(__data_word_size__);
         LONG(__bss_addr__);
         LONG(__bss_word_size__);
     } > DESC
@@ -92,7 +96,10 @@ SECTIONS
     __data_size__ = SIZEOF(.data) / 4;
     __bss_size__  = SIZEOF(.bss) / 4;
 
-    __code_size__ = (__text_end__ - __code_addr__) / 4;
+    __code_word_size__ = (__text_end__ - __code_addr__) / 4;
+    __data_word_size__ = SIZEOF(.data) / 4;
+
+    __code_size__ = __code_word_size__;
 
     /*
      * Load image copied by M33:
@@ -120,8 +127,14 @@ SECTIONS
     /*
      * Sanity checks.
      */
+    ASSERT((__code_word_size__ * 4) == (__text_end__ - __code_addr__),
+           "FLPR code image is not 4-byte aligned")
+
+    ASSERT((__data_word_size__ * 4) == SIZEOF(.data),
+           "FLPR data image is not 4-byte aligned")
+
     ASSERT((__load_word_size__ * 4) == (__load_end__ - __load_start__),
-           "FLPR load image is not 4-byte aligned")
+           "FLPR combined load image is not 4-byte aligned")
 
     ASSERT((__bss_word_size__ * 4) == SIZEOF(.bss),
            "FLPR bss is not 4-byte aligned")
@@ -132,6 +145,6 @@ SECTIONS
     ASSERT(__bss_end__ <= ORIGIN(DMEM) + LENGTH(DMEM),
            "FLPR DMEM overflows")
 
-    ASSERT(SIZEOF(.desc) == 16,
-           "FLPR descriptor must be exactly 16 bytes")
+    ASSERT(SIZEOF(.desc) == 24,
+           "FLPR descriptor must be exactly 24 bytes")
 }
