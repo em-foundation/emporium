@@ -10,6 +10,9 @@ export const OneShot = $proxy<OneShotI.$I>()
 const use_busy = $config<bool_t>()
 
 export namespace em$meta {
+    export function em$configure() {
+        if (OneShot.$U === null) OneShot.$$dlg = OneShotN
+    }
     export function em$construct() {
         use_busy.$$val = (OneShot.$U?.uid === OneShotN.$U.uid)
     }
