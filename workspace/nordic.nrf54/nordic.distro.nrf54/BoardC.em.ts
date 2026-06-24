@@ -14,6 +14,7 @@ import * as EdgeT from '@nordic.mcu.nrf54/EdgeT.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as GpioT from '@nordic.mcu.nrf54/GpioT.em'
 import * as Idle from '@nordic.mcu.nrf54/Idle.em'
+import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
@@ -72,6 +73,7 @@ export function em$configure(): void {
     Common.ConsoleUart.$$dlg = ConsoleUart
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts
     Common.Idle.$$dlg = Idle
+    Common.Irq.$$dlg = IntrVec
     Common.Mcu.$$dlg = Mcu
     Common.Uptimer.$$dlg = Uptimer
     Common.UsCounter.$$dlg = UsCounter

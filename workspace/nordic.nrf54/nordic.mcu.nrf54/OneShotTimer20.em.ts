@@ -3,15 +3,15 @@ export const $U = $declare('MODULE', OneShotI)
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
+import * as Common from '@em.mcu/Common.em'
 import * as Idle from '@nordic.mcu.nrf54/Idle.em'
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 
 export type Handler = OneShotI.Handler
 
 export namespace em$meta {
     export function em$construct() {
-        IntrVec.em$meta.useIntr('TIMER20')
+        Common.Irq.em$meta.useIntr('TIMER20')
     }
 }
 
@@ -23,7 +23,7 @@ var cur_fxn: Handler = $null
 export function disable(): void {
     $R.TIMER20.TASKS_STOP.$$ = 1
     Idle.setPauseOnly(false)
-    IntrVec.NVIC_disable(e$`TIMER20_IRQn`)
+    Common.Irq.disable(e$`TIMER20_IRQn`)
 }
 
 export function enable(msecs: u32, handler: OneShotI.Handler, arg: arg_t): void {
@@ -38,7 +38,7 @@ function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_fxn = handler
     cur_arg = arg
     Idle.setPauseOnly(true)
-    IntrVec.NVIC_enable(e$`TIMER20_IRQn`)
+    Common.Irq.enable(e$`TIMER20_IRQn`)
     $R.TIMER20.TASKS_STOP.$$ = 1
     $R.TIMER20.TASKS_CLEAR.$$ = 1
     $R.TIMER20.MODE.$$ = $R.TIMER_MODE_MODE_Timer
@@ -49,7 +49,7 @@ function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
 }
 
 export function TIMER20_isr$$() {
-    IntrVec.NVIC_clear(e$`TIMER20_IRQn`)
+    Common.Irq.clear(e$`TIMER20_IRQn`)
     $R.TIMER20.INTENCLR.$$ = $R.TIMER_INTENCLR_COMPARE0_Msk
     $R.TIMER20.EVENTS_COMPARE[0].$$ = 0
     const fxn = cur_fxn

@@ -5,7 +5,6 @@ export type Handler = cb_t<[]>
 
 export interface em$meta {
     addIntr(name: string): void
-    addIntrNames(names: Array<string>): void
     useIntr(name: string, h?: Handler): void
 }
 
