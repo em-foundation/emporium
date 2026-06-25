@@ -5,14 +5,19 @@ import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
-import * as ConsoleUart from '@nordic.mcu.nrf54.flpr/ConsoleUart3.em'
+import * as ConsoleUart from '@nordic.mcu.nrf54/ConsoleUart3.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as GpioT from '@nordic.mcu.nrf54/GpioT.em'
+import * as Idle from '@nordic.mcu.nrf54.flpr/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
+import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
+
+export { OneShot }
 
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
+export const AppOutPin = $clone(GpioT)
 export const DbgA = $clone(GpioT)
 export const DbgB = $clone(GpioT)
 export const DbgC = $clone(GpioT)
@@ -43,11 +48,14 @@ export function em$configure(): void {
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed
+    AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
     BusyWait.scalar.$$val = 13
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart
+    Common.Idle.$$dlg = Idle
     Common.Mcu.$$dlg = Mcu
+    ConsoleUart.TxPin.$$dlg = AppOutPin
     DbgA.pin_num.$$val = brd.pins.sysDbgA
     DbgB.pin_num.$$val = brd.pins.sysDbgB
     DbgC.pin_num.$$val = brd.pins.sysDbgC

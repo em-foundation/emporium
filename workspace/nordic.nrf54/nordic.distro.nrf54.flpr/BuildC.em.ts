@@ -2,13 +2,20 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 import * as BoardC from '@nordic.distro.nrf54.flpr/BoardC.em'
+import * as IsrDefault from '@em.arch.riscv/IsrDebug.em'
+import * as IntrC from '@nordic.distro.nrf54/IntrC.em'
+import * as IntrVec from '@nordic.distro.nrf54.flpr/IntrVec.em'
 import * as REGS from '@nordic.distro.nrf54.flpr/REGS.em'
 import * as TargC from '@em.lang/TargC.em'
 
 export function em$configure() {
     $using(BoardC)
+    $using(IntrC)
+    $using(IntrVec)
     $using(REGS)
     $using(TargC)
+    IntrVec.IsrDefault.$$dlg = IsrDefault
+    for (let name of IntrC.NAMES) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {
