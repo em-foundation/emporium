@@ -8,7 +8,7 @@
         "@types/js-yaml": "^4.0.9",
         "@types/sprintf-js": "^1.1.4",
         "@types/xml2js": "^0.4.14",
-        "emscript-cli": "file:../emscript/emscript-cli-26.3.1.202606240339.tgz",
+        "emscript-cli": "file:../emscript/emscript-cli-26.3.1.202606250104.tgz",
         "intel-hex": "^0.2.0",
         "js-yaml": "^4.1.0",
         "segger-arm": "file:../../Downloads/segger-arm-8.22.1.202603301215.tgz",
