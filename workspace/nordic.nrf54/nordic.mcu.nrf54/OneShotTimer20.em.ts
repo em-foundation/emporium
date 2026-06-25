@@ -4,7 +4,6 @@ export const $U = $declare('MODULE', OneShotI)
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as Common from '@em.mcu/Common.em'
-import * as Idle from '@nordic.mcu.nrf54/Idle.em'
 import * as OneShotI from '@em.hal/OneShotI.em'
 
 export type Handler = OneShotI.Handler
@@ -22,7 +21,7 @@ var cur_fxn: Handler = $null
 
 export function disable(): void {
     $R.TIMER20.TASKS_STOP.$$ = 1
-    Idle.setPauseOnly(false)
+    Common.Idle.setLevel(1)
     Common.Irq.disable(e$`TIMER20_IRQn`)
 }
 
@@ -37,7 +36,7 @@ export function uenable(usecs: u32, handler: OneShotI.Handler, arg: arg_t): void
 function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_fxn = handler
     cur_arg = arg
-    Idle.setPauseOnly(true)
+    Common.Idle.setLevel(0)
     Common.Irq.enable(e$`TIMER20_IRQn`)
     $R.TIMER20.TASKS_STOP.$$ = 1
     $R.TIMER20.TASKS_CLEAR.$$ = 1

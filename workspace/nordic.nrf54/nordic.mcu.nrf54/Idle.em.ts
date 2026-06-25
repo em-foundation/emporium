@@ -77,4 +77,12 @@ export function shutdown() {
 
 }
 
+export function getLevel(): IdleI.SleepLevel {
+    return cur_pause_only ? 1 : 0
+}
+
+export function setLevel(level: IdleI.SleepLevel) {
+    cur_pause_only = level != 0
+}
+
 export function wakeup() { }

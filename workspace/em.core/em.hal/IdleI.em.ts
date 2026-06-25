@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('INTERFACE')
 
+export type SleepLevel = u32
 export type SleepCB = cb_t<[]>
 
 export interface em$meta {
@@ -13,5 +14,7 @@ export interface em$meta {
 export interface $I {
     em$meta: em$meta
     exec: () => void
+    getLevel: () => SleepLevel
+    setLevel: (level: SleepLevel) => void
     wakeup: () => void
 }
