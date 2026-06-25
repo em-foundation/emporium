@@ -3,16 +3,16 @@ export const $U = $declare('MODULE', ConsoleUartI)
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
+import * as Common from '@em.mcu/Common.em'
 import * as ConsoleUartI from '@em.hal/ConsoleUartI.em'
 import * as GpioI from '@em.hal/GpioI.em'
-import * as Idle from './Idle.em'
 
 export const TxPin = $proxy<GpioI.$I>()
 
 export namespace em$meta {
     export function em$construct() {
-        Idle.em$meta.addSleepEnter($cb(sleepEnter))
-        Idle.em$meta.addSleepLeave($cb(sleepLeave))
+        Common.Idle.em$meta.addSleepEnter($cb(sleepEnter))
+        Common.Idle.em$meta.addSleepLeave($cb(sleepLeave))
     }
 }
 
