@@ -11,8 +11,9 @@ export namespace em$meta {
     const NO_VEC = '<NA>'
     const intr_list = new Array<string>()
     const used_set = new Set<string>()
+    const VEC_OFF = 16
     export function em$generate() {
-        const len = intr_list.length
+        const len = VEC_OFF + intr_list.length
         let out = $outfile('nordic.distro.nrf54.flpr/intr.cpp')
         out.addFrag(`
                         |-> //
@@ -41,7 +42,7 @@ export namespace em$meta {
             if (name != NO_VEC && used_set.has(name)) {
                 out.addFrag(`
                         |-> 
-                        |-> extern "C" void __attribute__((interrupt, aligned(4))) ${name}_irq_entry(void) {                        |-> {
+                        |-> extern "C" void __attribute__((interrupt, aligned(4))) ${name}_irq_entry(void) {
                         |->     ${name}_isr$$();
                         |-> }
                 `)
@@ -49,11 +50,17 @@ export namespace em$meta {
         }
         out.addFrag(`
                         |-> 
-                        |-> extern "C" const intfunc __attribute__((section(".irq_vector_table"), aligned(64))) __riscv_irq_vector_table[${len}] = {
+                        |-> extern "C" const intfunc __attribute__((aligned(64))) __riscv_irq_vector_table[${len}] = {
         `)
+        for (let i = 0; i < VEC_OFF; i++) {
+            out.addFrag(`
+                    |->     em__riscv_default_irq_entry,      // ${i}: <CORE>
+    `       )
+        }
         for (let i = 0; i < intr_list.length; i++) {
             const name = intr_list[i]
-            let entry = '0'
+            // let entry = '0'
+            let entry = 'em__riscv_default_irq_entry'
             if (name != NO_VEC) {
                 entry = used_set.has(name) ? `${name}_irq_entry` : 'em__riscv_default_irq_entry'
             }
@@ -78,9 +85,9 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const CLICINT_BASE: u32 = 0xF0001000
-const CLICINT_ENABLE: u32 = 0x00000100
-const CLICINT_PENDING: u32 = 0x00000001
+const CLIC_BASE: u32 = 0xF0001000
+const CLIC_ENABLE: u32 = 0x00000100
+const CLIC_PENDING: u32 = 0x00000001
 
 export function em$startup() {
     const mtvec = (<u32>e$`&em__riscv_default_irq_entry`) | 3
@@ -95,25 +102,31 @@ export function DEFAULT_isr$$() {
 }
 
 function CLICINT(irq: u16): u32 {
-    return CLICINT_BASE + (<u32>irq << 2)
+    return CLIC_BASE + (<u32>irq << 2)
+}
+
+export function force(irq: u16) {
+    const addr = CLICINT(irq)
+    $reg32[addr] |= CLIC_ENABLE
+    $reg32[addr] |= CLIC_PENDING
 }
 
 // IrqI implementation
 
 export function enable(irq: u16) {
-    $reg32[CLICINT(irq)] |= CLICINT_ENABLE
+    $reg32[CLICINT(irq)] |= CLIC_ENABLE
 }
 
 export function disable(irq: u16) {
-    $reg32[CLICINT(irq)] &= ~CLICINT_ENABLE
+    $reg32[CLICINT(irq)] &= ~CLIC_ENABLE
 }
 
 export function clear(irq: u16) {
-    $reg32[CLICINT(irq)] &= ~CLICINT_PENDING
+    $reg32[CLICINT(irq)] &= ~CLIC_PENDING
 }
 
 export function isEnabled(irq: u16): bool_t {
-    return ($reg32[CLICINT(irq)] & CLICINT_ENABLE) != 0
+    return ($reg32[CLICINT(irq)] & CLIC_ENABLE) != 0
 }
 
 export function setPriority(irq: u16, pri: u8) {

@@ -16,7 +16,7 @@ export function disable(): GlobalInterruptsI.Key {
 }
 
 export function enable() {
-    e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
+    e$`asm volatile ("csrsi mstatus, 8" ::: "memory")`
 }
 
 export function isEnabled(): bool_t {

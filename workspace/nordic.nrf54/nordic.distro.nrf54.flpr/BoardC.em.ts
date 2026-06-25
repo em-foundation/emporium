@@ -7,8 +7,10 @@ import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
 import * as ConsoleUart from '@nordic.mcu.nrf54/ConsoleUart3.em'
 import * as Debug from '@em.lang/Debug.em'
+import * as GlobalInterrupts from '@em.arch.riscv/GlobalInterrupts.em'
 import * as GpioT from '@nordic.mcu.nrf54/GpioT.em'
 import * as Idle from '@nordic.mcu.nrf54.flpr/Idle.em'
+import * as IntrVec from '@nordic.distro.nrf54.flpr/IntrVec.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
@@ -53,7 +55,9 @@ export function em$configure(): void {
     BusyWait.scalar.$$val = 13
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart
+    Common.GlobalInterrupts.$$dlg = GlobalInterrupts
     Common.Idle.$$dlg = Idle
+    Common.Irq.$$dlg = IntrVec
     Common.Mcu.$$dlg = Mcu
     ConsoleUart.TxPin.$$dlg = AppOutPin
     DbgA.pin_num.$$val = brd.pins.sysDbgA
