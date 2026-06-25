@@ -12,10 +12,16 @@ export namespace em$meta {
 
 let cur_level: IdleI.SleepLevel = 0
 
+export function em$startup() {
+    $['%%b+']
+}
+
 export function exec() {
-    e$`asm volatile ("fence" ::: "memory")`
     e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
+    $['%%b:'](1)
+    $['%%b-']
     e$`asm volatile ("wfi" ::: "memory")`
+    $['%%b+']
 }
 
 export function getLevel(): IdleI.SleepLevel { return cur_level }
