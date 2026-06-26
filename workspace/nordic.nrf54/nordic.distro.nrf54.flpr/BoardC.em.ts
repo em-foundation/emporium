@@ -3,6 +3,7 @@ export const $U = $declare('COMPOSITE')
 
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
+import * as CacheStats from '@em.utils/CacheStats.em'
 import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
 import * as ConsoleUart from '@nordic.mcu.nrf54/ConsoleUart3.em'
@@ -16,7 +17,7 @@ import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
 import * as UsCounter from '@em.arch.riscv/UsCounterMcycle.em'
 
-export { OneShot }
+export { CacheStats, OneShot }
 
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
