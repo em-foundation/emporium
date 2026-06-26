@@ -45,13 +45,15 @@ SECTIONS
     .text :
     {
         __code_addr__ = .;
-
         KEEP(*(.start))
-
         *(.text .text.*)
+        . = ALIGN(4);
+     } > IMEM
+
+    .const :
+    {
         *(.rodata .rodata.*)
         *(.constdata .constdata.*)
-
         . = ALIGN(4);
     } > IMEM
 
