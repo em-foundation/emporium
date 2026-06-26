@@ -15,6 +15,7 @@ import * as IntrVec from '@nordic.distro.nrf54.flpr/IntrVec.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
+import * as Poller from '@em.mcu/Poller.em'
 import * as UsCounter from '@em.arch.riscv/UsCounterMcycle.em'
 
 export { CacheStats, OneShot }
@@ -71,6 +72,7 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
+    Poller.OneShot.$$dlg = OneShot
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
