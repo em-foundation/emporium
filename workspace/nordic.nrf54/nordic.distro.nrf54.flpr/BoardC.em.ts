@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
+import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as CacheStats from '@em.utils/CacheStats.em'
@@ -16,6 +17,8 @@ import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
 import * as Poller from '@em.mcu/Poller.em'
+import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
+import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.riscv/UsCounterMcycle.em'
 
 export { CacheStats, OneShot }
@@ -50,6 +53,7 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     $using(Debug)
+    AlarmMgr.Rtc.$$dlg = Rtc
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed
@@ -62,6 +66,7 @@ export function em$configure(): void {
     Common.Idle.$$dlg = Idle
     Common.Irq.$$dlg = IntrVec
     Common.Mcu.$$dlg = Mcu
+    Common.Uptimer.$$dlg = Uptimer
     Common.UsCounter.$$dlg = UsCounter
     ConsoleUart.TxPin.$$dlg = AppOutPin
     DbgA.pin_num.$$val = brd.pins.sysDbgA
@@ -76,6 +81,7 @@ export function em$configure(): void {
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
+    Uptimer.Rtc.$$dlg = Rtc
     UsCounter.MHZ_P.$$val = 64
     UsCounter.MHZ_Q.$$val = 1
 }

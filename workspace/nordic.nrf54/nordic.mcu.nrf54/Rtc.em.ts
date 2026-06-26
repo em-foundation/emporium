@@ -3,7 +3,7 @@ export const $U = $declare('MODULE', RtcI)
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as Common from '@em.mcu/Common.em'
 import * as RtcI from '@em.hal/RtcI.em'
 import * as T from '@em.utils/TimeTypes.em'
 
@@ -11,7 +11,7 @@ export type Handler = RtcI.Handler
 
 export namespace em$meta {
     export function em$construct() {
-        IntrVec.em$meta.useIntr('GRTC_0')
+        Common.Irq.em$meta.useIntr('GRTC_0')
     }
 }
 
@@ -27,7 +27,7 @@ export function em$startup() {
     $R.GRTC.CLKCFG.$$ = ($R.GRTC_CLKCFG_CLKSEL_LFXO << $R.GRTC_CLKCFG_CLKSEL_Pos) | 1
     $R.GRTC.MODE.$$ = $R.GRTC_MODE_SYSCOUNTEREN_Msk
     $R.GRTC.TASKS_START.$$ = 1
-    IntrVec.NVIC_enable(e$`GRTC_0_IRQn`)
+    Common.Irq.enable(e$`GRTC_0_IRQn`)
 }
 
 export function disable() {
@@ -79,7 +79,7 @@ export function toThresh(secs: T.Secs30p2): T.RtcThresh {
 }
 
 export function GRTC_0_isr$$() {
-    IntrVec.NVIC_clear(e$`GRTC_0_IRQn`)
+    Common.Irq.clear(e$`GRTC_0_IRQn`)
     const pend = $R.GRTC.INTPEND0.$$
     if (pend & (1 << CHAN_PUB)) {
         const hlr = cur_hlr
