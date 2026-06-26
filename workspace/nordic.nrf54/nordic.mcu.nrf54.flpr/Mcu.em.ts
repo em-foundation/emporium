@@ -9,6 +9,10 @@ import * as McuI from '@em.hal/McuI.em'
 //>> ---- em$targ ---- <<//
 
 export function startup(): void {
+    $R.CLOCK.LFCLK.SRC.$$ = $R.CLOCK_LFCLK_SRC_SRC_LFXO
+    $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
+    while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
+    $R.REGULATORS.VREGMAIN.DCDCEN.$$ = 1
     Debug.startup()
     $['%%a:'](isWarm() ? 2 : 3)
 }
