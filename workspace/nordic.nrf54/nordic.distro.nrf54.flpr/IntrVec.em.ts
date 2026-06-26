@@ -50,7 +50,7 @@ export namespace em$meta {
         }
         out.addFrag(`
                         |-> 
-                        |-> extern "C" const intfunc __attribute__((aligned(64))) __riscv_irq_vector_table[${len}] = {
+                        |-> extern "C" const intfunc __attribute__((section(".intvec"), aligned(64))) __riscv_irq_vector_table[${len}] = {
         `)
         for (let i = 0; i < VEC_OFF; i++) {
             out.addFrag(`

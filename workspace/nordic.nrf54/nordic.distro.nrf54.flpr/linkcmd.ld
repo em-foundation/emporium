@@ -42,18 +42,22 @@ SECTIONS
      * FLPR executable image.
      * INITPC should be __code_addr__ / em__start = 0x20028000.
      */
-    .text ORIGIN(IMEM) :
+    .text :
     {
         __code_addr__ = .;
 
         KEEP(*(.start))
-        KEEP(*(.intvec))
 
         *(.text .text.*)
         *(.rodata .rodata.*)
         *(.constdata .constdata.*)
 
         . = ALIGN(4);
+    } > IMEM
+
+    .intvec :
+    {
+        KEEP(*(.intvec))
         __text_end__ = .;
     } > IMEM
 
