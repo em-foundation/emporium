@@ -3,8 +3,8 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
+import * as Common from '@em.mcu/Common.em'
 import * as EdgeI from '@em.hal/EdgeI.em'
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
 export class HandlerInfo extends $struct {
     handler: EdgeI.Handler
@@ -14,7 +14,7 @@ const handler_info_tab = $table<HandlerInfo>()
 
 export namespace em$meta {
     export function em$construct() {
-        IntrVec.em$meta.useIntr('GPIOTE20_0')
+        Common.Irq.em$meta.useIntr('GPIOTE20_0')
     }
 
     export function addHandlerInfo(hi: HandlerInfo): u8 {
@@ -25,7 +25,7 @@ export namespace em$meta {
 }
 
 export function em$startup() {
-    IntrVec.NVIC_enable(e$`GPIOTE20_0_IRQn`)
+    Common.Irq.enable(e$`GPIOTE20_0_IRQn`)
 }
 
 export function GPIOTE20_0_isr$$() {
