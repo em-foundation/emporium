@@ -86,7 +86,7 @@ export function em$generate() {
         |-> "
         |-> 
         |-> LIBS="
-        |->     $TOOLS/lib/libc_rv32emc_balanced.a \\
+        |->     $TOOLS/lib/libc_rv32emc_small.a \\
         |-> "
         |-> 
         |-> $CC -c $CFLAGS $CINCS $COPTS -x c++ main.cpp -o $OUT/main.obj
