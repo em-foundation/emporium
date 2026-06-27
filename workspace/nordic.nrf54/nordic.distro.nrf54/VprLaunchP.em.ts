@@ -35,6 +35,11 @@ export function em$run() {
     for (const i of $range(desc.$$.bssSize)) {
         bss_dst[i] = 0
     }
+    //
+    $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
+    e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
+    $R.REGULATORS.VREGMAIN.DCDCEN.$$ = 1
+    //
     $reg32[0x50040530] |= 0x10
     $R.VPR00.INITPC.$$ = $cast2<u32>(desc.$$.codeAddr)
     $R.VPR00.CPURUN.$$ = 1
