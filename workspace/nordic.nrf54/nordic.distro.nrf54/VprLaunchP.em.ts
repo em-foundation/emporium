@@ -44,4 +44,5 @@ export function em$run() {
     $R.VPR00.INITPC.$$ = $cast2<u32>(desc.$$.codeAddr)
     $R.VPR00.CPURUN.$$ = 1
     e$`asm volatile ("wfi")`
+    e$`__builtin_unreachable()`
 }

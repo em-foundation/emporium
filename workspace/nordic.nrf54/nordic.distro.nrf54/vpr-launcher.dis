@@ -5,17 +5,17 @@ Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .intvec       00000478  00000000  00000000  00000074  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  1 .text         00000154  00000478  00000478  000004ec  2**2
+  1 .text         00000148  00000478  00000478  000004ec  2**2
                   CONTENTS, ALLOC, LOAD, CODE
-  2 .const        00000000  000005cc  000005cc  00000640  2**0
+  2 .const        00000000  000005c0  000005c0  00000634  2**0
                   CONTENTS
-  3 .data         00000000  2003c000  2003c000  00000640  2**0
+  3 .data         00000000  2003c000  2003c000  00000634  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   4 .bss          00000000  2003c000  2003c000  00000000  2**0
                   ALLOC
-  5 .comment      0000003d  00000000  00000000  00000640  2**0
+  5 .comment      0000003d  00000000  00000000  00000634  2**0
                   CONTENTS, READONLY
-  6 .ARM.attributes 00000044  00000000  00000000  0000067d  2**0
+  6 .ARM.attributes 00000044  00000000  00000000  00000671  2**0
                   CONTENTS, READONLY
 
 Disassembly of section .text:
@@ -58,7 +58,7 @@ Disassembly of section .text:
  4ca:	bf00      	nop
 	...
  4d4:	e000ed88 	.word	0xe000ed88
- 4d8:	000005cc 	.word	0x000005cc
+ 4d8:	000005c0 	.word	0x000005c0
  4dc:	2003c000 	.word	0x2003c000
  4e0:	2003c000 	.word	0x2003c000
 
@@ -69,92 +69,87 @@ Disassembly of section .text:
  4ec:	f89d 0003 	ldrb.w	r0, [sp, #3]
  4f0:	2800      	cmp	r0, #0
  4f2:	d1fb      	bne.n	4ec <DEFAULT_isr$$+0x8>
- 4f4:	f000 f860 	bl	5b8 <em__done()>
+ 4f4:	f000 f85a 	bl	5ac <em__done()>
  4f8:	bd08      	pop	{r3, pc}
 	...
 
 000004fc <main>:
- 4fc:	b570      	push	{r4, r5, r6, lr}
- 4fe:	4827      	ldr	r0, [pc, #156]	@ (59c <main+0xa0>)
- 500:	4927      	ldr	r1, [pc, #156]	@ (5a0 <main+0xa4>)
- 502:	6001      	str	r1, [r0, #0]
- 504:	f248 0004 	movw	r0, #32772	@ 0x8004
- 508:	6801      	ldr	r1, [r0, #0]
- 50a:	3804      	subs	r0, #4
- 50c:	6800      	ldr	r0, [r0, #0]
- 50e:	2200      	movs	r2, #0
- 510:	4291      	cmp	r1, r2
- 512:	f248 0318 	movw	r3, #32792	@ 0x8018
- 516:	d006      	beq.n	526 <main+0x2a>
- 518:	4c22      	ldr	r4, [pc, #136]	@ (5a4 <main+0xa8>)
- 51a:	ea04 0482 	and.w	r4, r4, r2, lsl #2
- 51e:	58e3      	ldr	r3, [r4, r3]
- 520:	5103      	str	r3, [r0, r4]
- 522:	3201      	adds	r2, #1
- 524:	e7f4      	b.n	510 <main+0x14>
- 526:	f248 0104 	movw	r1, #32772	@ 0x8004
- 52a:	6809      	ldr	r1, [r1, #0]
- 52c:	eb03 0181 	add.w	r1, r3, r1, lsl #2
- 530:	f248 020c 	movw	r2, #32780	@ 0x800c
- 534:	6812      	ldr	r2, [r2, #0]
- 536:	f248 0308 	movw	r3, #32776	@ 0x8008
- 53a:	681b      	ldr	r3, [r3, #0]
- 53c:	2400      	movs	r4, #0
- 53e:	42a2      	cmp	r2, r4
- 540:	d006      	beq.n	550 <main+0x54>
- 542:	4d18      	ldr	r5, [pc, #96]	@ (5a4 <main+0xa8>)
- 544:	ea05 0584 	and.w	r5, r5, r4, lsl #2
- 548:	594e      	ldr	r6, [r1, r5]
- 54a:	515e      	str	r6, [r3, r5]
- 54c:	3401      	adds	r4, #1
- 54e:	e7f6      	b.n	53e <main+0x42>
- 550:	f248 0114 	movw	r1, #32788	@ 0x8014
- 554:	6809      	ldr	r1, [r1, #0]
- 556:	f248 0210 	movw	r2, #32784	@ 0x8010
- 55a:	6812      	ldr	r2, [r2, #0]
- 55c:	2300      	movs	r3, #0
- 55e:	4299      	cmp	r1, r3
- 560:	d005      	beq.n	56e <main+0x72>
- 562:	b29c      	uxth	r4, r3
- 564:	2500      	movs	r5, #0
- 566:	f842 5024 	str.w	r5, [r2, r4, lsl #2]
- 56a:	3301      	adds	r3, #1
- 56c:	e7f7      	b.n	55e <main+0x62>
- 56e:	490e      	ldr	r1, [pc, #56]	@ (5a8 <main+0xac>)
- 570:	2203      	movs	r2, #3
- 572:	600a      	str	r2, [r1, #0]
- 574:	2200      	movs	r2, #0
- 576:	f8c1 2088 	str.w	r2, [r1, #136]	@ 0x88
- 57a:	490c      	ldr	r1, [pc, #48]	@ (5ac <main+0xb0>)
- 57c:	2201      	movs	r2, #1
- 57e:	600a      	str	r2, [r1, #0]
- 580:	490b      	ldr	r1, [pc, #44]	@ (5b0 <main+0xb4>)
- 582:	680b      	ldr	r3, [r1, #0]
- 584:	f043 0310 	orr.w	r3, r3, #16
- 588:	600b      	str	r3, [r1, #0]
- 58a:	490a      	ldr	r1, [pc, #40]	@ (5b4 <main+0xb8>)
- 58c:	6088      	str	r0, [r1, #8]
- 58e:	600a      	str	r2, [r1, #0]
- 590:	bf30      	wfi
- 592:	f000 f811 	bl	5b8 <em__done()>
- 596:	2000      	movs	r0, #0
- 598:	bd70      	pop	{r4, r5, r6, pc}
- 59a:	bf00      	nop
- 59c:	e000ed08 	.word	0xe000ed08
- 5a0:	00000000 	.word	0x00000000
- 5a4:	0003fffc 	.word	0x0003fffc
- 5a8:	5004b518 	.word	0x5004b518
- 5ac:	50120600 	.word	0x50120600
- 5b0:	50040530 	.word	0x50040530
- 5b4:	5004c800 	.word	0x5004c800
+ 4fc:	4824      	ldr	r0, [pc, #144]	@ (590 <main+0x94>)
+ 4fe:	4925      	ldr	r1, [pc, #148]	@ (594 <main+0x98>)
+ 500:	6001      	str	r1, [r0, #0]
+ 502:	f248 0004 	movw	r0, #32772	@ 0x8004
+ 506:	6801      	ldr	r1, [r0, #0]
+ 508:	3804      	subs	r0, #4
+ 50a:	6800      	ldr	r0, [r0, #0]
+ 50c:	2200      	movs	r2, #0
+ 50e:	4291      	cmp	r1, r2
+ 510:	f248 0318 	movw	r3, #32792	@ 0x8018
+ 514:	d006      	beq.n	524 <main+0x28>
+ 516:	4c20      	ldr	r4, [pc, #128]	@ (598 <main+0x9c>)
+ 518:	ea04 0482 	and.w	r4, r4, r2, lsl #2
+ 51c:	58e3      	ldr	r3, [r4, r3]
+ 51e:	5103      	str	r3, [r0, r4]
+ 520:	3201      	adds	r2, #1
+ 522:	e7f4      	b.n	50e <main+0x12>
+ 524:	f248 0104 	movw	r1, #32772	@ 0x8004
+ 528:	6809      	ldr	r1, [r1, #0]
+ 52a:	eb03 0181 	add.w	r1, r3, r1, lsl #2
+ 52e:	f248 020c 	movw	r2, #32780	@ 0x800c
+ 532:	6812      	ldr	r2, [r2, #0]
+ 534:	f248 0308 	movw	r3, #32776	@ 0x8008
+ 538:	681b      	ldr	r3, [r3, #0]
+ 53a:	2400      	movs	r4, #0
+ 53c:	42a2      	cmp	r2, r4
+ 53e:	d006      	beq.n	54e <main+0x52>
+ 540:	4d15      	ldr	r5, [pc, #84]	@ (598 <main+0x9c>)
+ 542:	ea05 0584 	and.w	r5, r5, r4, lsl #2
+ 546:	594e      	ldr	r6, [r1, r5]
+ 548:	515e      	str	r6, [r3, r5]
+ 54a:	3401      	adds	r4, #1
+ 54c:	e7f6      	b.n	53c <main+0x40>
+ 54e:	f248 0114 	movw	r1, #32788	@ 0x8014
+ 552:	6809      	ldr	r1, [r1, #0]
+ 554:	f248 0210 	movw	r2, #32784	@ 0x8010
+ 558:	6812      	ldr	r2, [r2, #0]
+ 55a:	2300      	movs	r3, #0
+ 55c:	4299      	cmp	r1, r3
+ 55e:	d005      	beq.n	56c <main+0x70>
+ 560:	b29c      	uxth	r4, r3
+ 562:	2500      	movs	r5, #0
+ 564:	f842 5024 	str.w	r5, [r2, r4, lsl #2]
+ 568:	3301      	adds	r3, #1
+ 56a:	e7f7      	b.n	55c <main+0x60>
+ 56c:	490b      	ldr	r1, [pc, #44]	@ (59c <main+0xa0>)
+ 56e:	2203      	movs	r2, #3
+ 570:	600a      	str	r2, [r1, #0]
+ 572:	2200      	movs	r2, #0
+ 574:	f8c1 2088 	str.w	r2, [r1, #136]	@ 0x88
+ 578:	4909      	ldr	r1, [pc, #36]	@ (5a0 <main+0xa4>)
+ 57a:	2201      	movs	r2, #1
+ 57c:	600a      	str	r2, [r1, #0]
+ 57e:	4909      	ldr	r1, [pc, #36]	@ (5a4 <main+0xa8>)
+ 580:	680b      	ldr	r3, [r1, #0]
+ 582:	f043 0310 	orr.w	r3, r3, #16
+ 586:	600b      	str	r3, [r1, #0]
+ 588:	4907      	ldr	r1, [pc, #28]	@ (5a8 <main+0xac>)
+ 58a:	6088      	str	r0, [r1, #8]
+ 58c:	600a      	str	r2, [r1, #0]
+ 58e:	bf30      	wfi
+ 590:	e000ed08 	.word	0xe000ed08
+ 594:	00000000 	.word	0x00000000
+ 598:	0003fffc 	.word	0x0003fffc
+ 59c:	5004b518 	.word	0x5004b518
+ 5a0:	50120600 	.word	0x50120600
+ 5a4:	50040530 	.word	0x50040530
+ 5a8:	5004c800 	.word	0x5004c800
 
-000005b8 <em__done()>:
- 5b8:	b081      	sub	sp, #4
- 5ba:	f64c 20fe 	movw	r0, #51966	@ 0xcafe
- 5be:	9000      	str	r0, [sp, #0]
- 5c0:	9800      	ldr	r0, [sp, #0]
- 5c2:	2800      	cmp	r0, #0
- 5c4:	d1fc      	bne.n	5c0 <em__done()+0x8>
- 5c6:	b001      	add	sp, #4
- 5c8:	4770      	bx	lr
+000005ac <em__done()>:
+ 5ac:	b081      	sub	sp, #4
+ 5ae:	f64c 20fe 	movw	r0, #51966	@ 0xcafe
+ 5b2:	9000      	str	r0, [sp, #0]
+ 5b4:	9800      	ldr	r0, [sp, #0]
+ 5b6:	2800      	cmp	r0, #0
+ 5b8:	d1fc      	bne.n	5b4 <em__done()+0x8>
+ 5ba:	b001      	add	sp, #4
+ 5bc:	4770      	bx	lr
 	...
