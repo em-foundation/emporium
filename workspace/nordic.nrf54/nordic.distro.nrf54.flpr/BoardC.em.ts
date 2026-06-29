@@ -19,11 +19,12 @@ import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54.flpr/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
 import * as Poller from '@em.mcu/Poller.em'
+import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.riscv/UsCounterMcycle.em'
 
-export { CacheStats, OneShot }
+export { CacheStats, OneShot, RadioDriver }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)

@@ -44,6 +44,7 @@ function doPause() {
     e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
     $['%%b:'](1)
     $['%%b-']
+    CSR.write(CSR_NORDIC_SLEEP, NORDIC_SLEEP_DEEPSLEEP)
     e$`asm volatile ("wfi" ::: "memory")`
     $['%%b+']
 }

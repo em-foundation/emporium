@@ -4,10 +4,9 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
+import * as Common from '@em.mcu/Common.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as HfXtal from '@nordic.mcu.nrf54/HfXtal.em'
-import * as Idle from '@nordic.mcu.nrf54/Idle.em'
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
@@ -24,7 +23,7 @@ const tx_adr = $config<Heap.Adr>()
 
 export namespace em$meta {
     export function em$construct() {
-        IntrVec.em$meta.useIntr('RADIO_0')
+        Common.Irq.em$meta.useIntr('RADIO_0')
         tx_adr.$$val = Heap.em$meta.alloc(40)
     }
     export function bindHandler(h: RadioDriverI.Handler) {
@@ -45,7 +44,7 @@ var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
     HfXtal.stop()
-    IntrVec.NVIC_disable(e$`RADIO_0_IRQn`)
+    Common.Irq.disable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_DISABLE.$$ = 1
     while ($R.RADIO.EVENTS_DISABLED.$$ == 0) { } // TODO -- remove
     setState(State.IDLE)
@@ -120,7 +119,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
-    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
+    Common.Irq.enable(e$`RADIO_0_IRQn`)
     if (timeout > 0) {
         const usecs = Rtc.getRawUsecs()
         Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
@@ -138,19 +137,19 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     TimeFence.wait()
-    IntrVec.NVIC_enable(e$`RADIO_0_IRQn`)
+    Common.Irq.enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
 export function waitReady() {
     while (cur_state != State.READY) {
-        Idle.exec()
+        Common.Idle.exec()
     }
 }
 
 export function RADIO_0_isr$$() {
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
-    IntrVec.NVIC_clear(e$`RADIO_0_IRQn`)
+    Common.Irq.clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
     TimeFence.enable(65)
