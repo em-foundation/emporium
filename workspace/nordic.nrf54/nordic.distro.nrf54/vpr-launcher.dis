@@ -5,17 +5,17 @@ Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .intvec       00000478  00000000  00000000  00000074  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  1 .text         00000148  00000478  00000478  000004ec  2**2
+  1 .text         0000014c  00000478  00000478  000004ec  2**2
                   CONTENTS, ALLOC, LOAD, CODE
-  2 .const        00000000  000005c0  000005c0  00000634  2**0
+  2 .const        00000000  000005c4  000005c4  00000638  2**0
                   CONTENTS
-  3 .data         00000000  2003c000  2003c000  00000634  2**0
+  3 .data         00000000  2003c000  2003c000  00000638  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   4 .bss          00000000  2003c000  2003c000  00000000  2**0
                   ALLOC
-  5 .comment      0000003d  00000000  00000000  00000634  2**0
+  5 .comment      0000003d  00000000  00000000  00000638  2**0
                   CONTENTS, READONLY
-  6 .ARM.attributes 00000044  00000000  00000000  00000671  2**0
+  6 .ARM.attributes 00000044  00000000  00000000  00000675  2**0
                   CONTENTS, READONLY
 
 Disassembly of section .text:
@@ -58,7 +58,7 @@ Disassembly of section .text:
  4ca:	bf00      	nop
 	...
  4d4:	e000ed88 	.word	0xe000ed88
- 4d8:	000005c0 	.word	0x000005c0
+ 4d8:	000005c4 	.word	0x000005c4
  4dc:	2003c000 	.word	0x2003c000
  4e0:	2003c000 	.word	0x2003c000
 
@@ -69,13 +69,13 @@ Disassembly of section .text:
  4ec:	f89d 0003 	ldrb.w	r0, [sp, #3]
  4f0:	2800      	cmp	r0, #0
  4f2:	d1fb      	bne.n	4ec <DEFAULT_isr$$+0x8>
- 4f4:	f000 f85a 	bl	5ac <em__done()>
+ 4f4:	f000 f85c 	bl	5b0 <em__done()>
  4f8:	bd08      	pop	{r3, pc}
 	...
 
 000004fc <main>:
- 4fc:	4824      	ldr	r0, [pc, #144]	@ (590 <main+0x94>)
- 4fe:	4925      	ldr	r1, [pc, #148]	@ (594 <main+0x98>)
+ 4fc:	4825      	ldr	r0, [pc, #148]	@ (594 <main+0x98>)
+ 4fe:	4926      	ldr	r1, [pc, #152]	@ (598 <main+0x9c>)
  500:	6001      	str	r1, [r0, #0]
  502:	f248 0004 	movw	r0, #32772	@ 0x8004
  506:	6801      	ldr	r1, [r0, #0]
@@ -85,7 +85,7 @@ Disassembly of section .text:
  50e:	4291      	cmp	r1, r2
  510:	f248 0318 	movw	r3, #32792	@ 0x8018
  514:	d006      	beq.n	524 <main+0x28>
- 516:	4c20      	ldr	r4, [pc, #128]	@ (598 <main+0x9c>)
+ 516:	4c21      	ldr	r4, [pc, #132]	@ (59c <main+0xa0>)
  518:	ea04 0482 	and.w	r4, r4, r2, lsl #2
  51c:	58e3      	ldr	r3, [r4, r3]
  51e:	5103      	str	r3, [r0, r4]
@@ -101,7 +101,7 @@ Disassembly of section .text:
  53a:	2400      	movs	r4, #0
  53c:	42a2      	cmp	r2, r4
  53e:	d006      	beq.n	54e <main+0x52>
- 540:	4d15      	ldr	r5, [pc, #84]	@ (598 <main+0x9c>)
+ 540:	4d16      	ldr	r5, [pc, #88]	@ (59c <main+0xa0>)
  542:	ea05 0584 	and.w	r5, r5, r4, lsl #2
  546:	594e      	ldr	r6, [r1, r5]
  548:	515e      	str	r6, [r3, r5]
@@ -119,37 +119,38 @@ Disassembly of section .text:
  564:	f842 5024 	str.w	r5, [r2, r4, lsl #2]
  568:	3301      	adds	r3, #1
  56a:	e7f7      	b.n	55c <main+0x60>
- 56c:	490b      	ldr	r1, [pc, #44]	@ (59c <main+0xa0>)
- 56e:	2203      	movs	r2, #3
- 570:	600a      	str	r2, [r1, #0]
- 572:	2200      	movs	r2, #0
- 574:	f8c1 2088 	str.w	r2, [r1, #136]	@ 0x88
- 578:	4909      	ldr	r1, [pc, #36]	@ (5a0 <main+0xa4>)
- 57a:	2201      	movs	r2, #1
- 57c:	600a      	str	r2, [r1, #0]
- 57e:	4909      	ldr	r1, [pc, #36]	@ (5a4 <main+0xa8>)
- 580:	680b      	ldr	r3, [r1, #0]
- 582:	f043 0310 	orr.w	r3, r3, #16
- 586:	600b      	str	r3, [r1, #0]
- 588:	4907      	ldr	r1, [pc, #28]	@ (5a8 <main+0xac>)
- 58a:	6088      	str	r0, [r1, #8]
- 58c:	600a      	str	r2, [r1, #0]
- 58e:	bf30      	wfi
- 590:	e000ed08 	.word	0xe000ed08
- 594:	00000000 	.word	0x00000000
- 598:	0003fffc 	.word	0x0003fffc
- 59c:	5004b518 	.word	0x5004b518
+ 56c:	490c      	ldr	r1, [pc, #48]	@ (5a0 <main+0xa4>)
+ 56e:	2201      	movs	r2, #1
+ 570:	f8c1 2200 	str.w	r2, [r1, #512]	@ 0x200
+ 574:	4b0b      	ldr	r3, [pc, #44]	@ (5a4 <main+0xa8>)
+ 576:	2403      	movs	r4, #3
+ 578:	601c      	str	r4, [r3, #0]
+ 57a:	2400      	movs	r4, #0
+ 57c:	f8c3 4088 	str.w	r4, [r3, #136]	@ 0x88
+ 580:	600a      	str	r2, [r1, #0]
+ 582:	4909      	ldr	r1, [pc, #36]	@ (5a8 <main+0xac>)
+ 584:	680b      	ldr	r3, [r1, #0]
+ 586:	f043 0310 	orr.w	r3, r3, #16
+ 58a:	600b      	str	r3, [r1, #0]
+ 58c:	4907      	ldr	r1, [pc, #28]	@ (5ac <main+0xb0>)
+ 58e:	6088      	str	r0, [r1, #8]
+ 590:	600a      	str	r2, [r1, #0]
+ 592:	bf30      	wfi
+ 594:	e000ed08 	.word	0xe000ed08
+ 598:	00000000 	.word	0x00000000
+ 59c:	0003fffc 	.word	0x0003fffc
  5a0:	50120600 	.word	0x50120600
- 5a4:	50040530 	.word	0x50040530
- 5a8:	5004c800 	.word	0x5004c800
+ 5a4:	5004b518 	.word	0x5004b518
+ 5a8:	50040530 	.word	0x50040530
+ 5ac:	5004c800 	.word	0x5004c800
 
-000005ac <em__done()>:
- 5ac:	b081      	sub	sp, #4
- 5ae:	f64c 20fe 	movw	r0, #51966	@ 0xcafe
- 5b2:	9000      	str	r0, [sp, #0]
- 5b4:	9800      	ldr	r0, [sp, #0]
- 5b6:	2800      	cmp	r0, #0
- 5b8:	d1fc      	bne.n	5b4 <em__done()+0x8>
- 5ba:	b001      	add	sp, #4
- 5bc:	4770      	bx	lr
+000005b0 <em__done()>:
+ 5b0:	b081      	sub	sp, #4
+ 5b2:	f64c 20fe 	movw	r0, #51966	@ 0xcafe
+ 5b6:	9000      	str	r0, [sp, #0]
+ 5b8:	9800      	ldr	r0, [sp, #0]
+ 5ba:	2800      	cmp	r0, #0
+ 5bc:	d1fc      	bne.n	5b8 <em__done()+0x8>
+ 5be:	b001      	add	sp, #4
+ 5c0:	4770      	bx	lr
 	...

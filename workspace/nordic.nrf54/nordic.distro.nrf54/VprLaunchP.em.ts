@@ -36,6 +36,7 @@ export function em$run() {
         bss_dst[i] = 0
     }
     //
+    e$`NRF_OSCILLATORS_S->PLL.FREQ = 1` // 128 MHz
     $R.RRAMC.POWER.LOWPOWERCONFIG.$$ = $R.RRAMC_POWER_LOWPOWERCONFIG_MODE_PowerOff
     e$`NRF_GLITCHDET_S->CONFIG = (GLITCHDET_CONFIG_ENABLE_Disable << GLITCHDET_CONFIG_ENABLE_Pos)`
     $R.REGULATORS.VREGMAIN.DCDCEN.$$ = 1

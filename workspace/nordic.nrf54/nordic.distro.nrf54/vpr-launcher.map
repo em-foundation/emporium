@@ -27,7 +27,7 @@ Linker script and memory map
  .intvec        0x00000000      0x478 .out/main.obj
                 0x00000000                __vector_table
 
-.text           0x00000478      0x148
+.text           0x00000478      0x14c
  *(.start)
  .start         0x00000478       0x6c .out/main.obj
                 0x00000478                em__start
@@ -36,39 +36,39 @@ Linker script and memory map
                 0x000004e4       0x16 .out/main.obj
                 0x000004e4                DEFAULT_isr$$
  *fill*         0x000004fa        0x2 
- .text.main     0x000004fc       0xb0 .out/main.obj
+ .text.main     0x000004fc       0xb4 .out/main.obj
                 0x000004fc                main
  .text._ZL8em__donev
-                0x000005ac       0x12 .out/main.obj
-                0x000005c0                        . = ALIGN (., 0x4)
- *fill*         0x000005be        0x2 
+                0x000005b0       0x12 .out/main.obj
+                0x000005c4                        . = ALIGN (., 0x4)
+ *fill*         0x000005c2        0x2 
 
-.glue_7         0x000005c0        0x0
- .glue_7        0x000005c0        0x0 linker stubs
+.glue_7         0x000005c4        0x0
+ .glue_7        0x000005c4        0x0 linker stubs
 
-.glue_7t        0x000005c0        0x0
- .glue_7t       0x000005c0        0x0 linker stubs
+.glue_7t        0x000005c4        0x0
+ .glue_7t       0x000005c4        0x0 linker stubs
 
-.vfp11_veneer   0x000005c0        0x0
- .vfp11_veneer  0x000005c0        0x0 linker stubs
+.vfp11_veneer   0x000005c4        0x0
+ .vfp11_veneer  0x000005c4        0x0 linker stubs
 
-.v4_bx          0x000005c0        0x0
- .v4_bx         0x000005c0        0x0 linker stubs
+.v4_bx          0x000005c4        0x0
+ .v4_bx         0x000005c4        0x0 linker stubs
 
-.iplt           0x000005c0        0x0
- .iplt          0x000005c0        0x0 .out/main.obj
+.iplt           0x000005c4        0x0
+ .iplt          0x000005c4        0x0 .out/main.obj
 
-.rel.dyn        0x000005c0        0x0
- .rel.iplt      0x000005c0        0x0 .out/main.obj
+.rel.dyn        0x000005c4        0x0
+ .rel.iplt      0x000005c4        0x0 .out/main.obj
 
 .ARM.exidx
 
-.const          0x000005c0        0x0
+.const          0x000005c4        0x0
  *(.rodata .rodata.* .constdata .constdata.*)
-                0x000005c0                        . = ALIGN (., 0x4)
-                0x000005c0                        __data_load_start__ = ALIGN (., 0x4)
+                0x000005c4                        . = ALIGN (., 0x4)
+                0x000005c4                        __data_load_start__ = ALIGN (., 0x4)
 
-.data           0x2003c000        0x0 load address 0x000005c0
+.data           0x2003c000        0x0 load address 0x000005c4
  *(.data .data.* .sdata .sdata.*)
                 0x2003c000                        . = ALIGN (., 0x4)
 
@@ -83,7 +83,7 @@ Linker script and memory map
                 0x00000000                        __bss_size__ = (SIZEOF (.bss) / 0x4)
                 0x00000478                        __code_addr__ = ADDR (.text)
                 0x2003c000                        __data_addr__ = ADDR (.data)
-                0x000005c0                        __data_load__ = LOADADDR (.data)
+                0x000005c4                        __data_load__ = LOADADDR (.data)
                 0x00000000                        __data_size__ = (SIZEOF (.data) / 0x4)
                 0xffffffff                        __code_load__ = 0xffffffffffffffff
                 0xffffffff                        __code_size__ = 0xffffffffffffffff
