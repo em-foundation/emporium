@@ -2,16 +2,8 @@ ENTRY(em__start)
 
 MEMORY
 {
-    /*
-     * FLPR SRAM window:
-     *   0x20028000 .. 0x20040000
-     *
-     * Descriptor is 24 bytes before IMEM.
-     * Code starts cleanly at 0x20028000.
-     */
-    DESC : ORIGIN = 0x20027FE8, LENGTH = 0x00000018
-    IMEM : ORIGIN = 0x20028000, LENGTH = 0x00008000
-    DMEM : ORIGIN = 0x20030000, LENGTH = 0x00008000
+    DESC : ORIGIN = 0x2003BFE8, LENGTH = 0x00000018
+    PMEM : ORIGIN = 0x2003C000, LENGTH = 0x00003E00
 }
 
 SECTIONS
@@ -48,28 +40,24 @@ SECTIONS
         KEEP(*(.start))
         *(.text .text.*)
         . = ALIGN(4);
-     } > IMEM
+     } > PMEM
 
     .const :
     {
         *(.rodata .rodata.*)
         *(.constdata .constdata.*)
         . = ALIGN(4);
-    } > IMEM
+    } > PMEM
 
     .intvec :
     {
         KEEP(*(.intvec))
         __text_end__ = .;
-    } > IMEM
+    } > PMEM
 
-    /*
-     * Initialized data runs in DMEM but is loaded immediately after .text
-     * in the contiguous FLPR payload image.
-     */
     __data_load__ = ALIGN(__text_end__, 4);
 
-    .data ORIGIN(DMEM) : AT(__data_load__)
+    .data : AT(__data_load__)
     {
         __data_addr__ = .;
 
@@ -78,7 +66,7 @@ SECTIONS
 
         . = ALIGN(4);
         __data_end__ = .;
-    } > DMEM
+    } > PMEM
 
     /*
      * Runtime-only BSS.
@@ -93,7 +81,7 @@ SECTIONS
 
         . = ALIGN(4);
         __bss_end__ = .;
-    } > DMEM
+    } > PMEM
 
     /*
      * Runtime symbols expected by startup.
@@ -128,7 +116,7 @@ SECTIONS
      */
     __global_pointer__ = __data_addr__ + 0x800;
     __global_pointer$  = __global_pointer__;
-    __stack_top__      = ORIGIN(DMEM) + LENGTH(DMEM);
+    __stack_top__      = ORIGIN(PMEM) + LENGTH(PMEM);
 
     /*
      * Sanity checks.
@@ -145,11 +133,8 @@ SECTIONS
     ASSERT((__bss_word_size__ * 4) == SIZEOF(.bss),
            "FLPR bss is not 4-byte aligned")
 
-    ASSERT(__load_end__ <= ORIGIN(IMEM) + LENGTH(IMEM),
-           "FLPR load image overflows IMEM")
-
-    ASSERT(__bss_end__ <= ORIGIN(DMEM) + LENGTH(DMEM),
-           "FLPR DMEM overflows")
+    ASSERT(__bss_end__ <= ORIGIN(PMEM) + LENGTH(PMEM),
+           "FLPR image overflows")
 
     ASSERT(SIZEOF(.desc) == 24,
            "FLPR descriptor must be exactly 24 bytes")
