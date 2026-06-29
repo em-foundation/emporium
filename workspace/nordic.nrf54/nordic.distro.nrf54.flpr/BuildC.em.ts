@@ -57,6 +57,11 @@ export function em$generate() {
         |->     -target-feature +e \\
         |->     -target-feature +m \\
         |->     -target-feature +c \\
+        |->     -target-feature +zicsr \\
+        |->     -target-feature +zba \\
+        |->     -target-feature +zbb \\
+        |->     -target-feature +zbs \\
+        |->     -target-feature +zcb \\
         |->     -target-abi ilp32e \\
         |->     -ffreestanding \\
         |->     -ffunction-sections \\
