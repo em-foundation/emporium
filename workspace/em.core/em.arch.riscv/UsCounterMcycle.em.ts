@@ -15,6 +15,7 @@ let cur_thresh = <u32>0
 
 export function set(time_us: u32) {
     cur_thresh = time_us * MHZ_P / MHZ_Q
+    CSR.write(CSR.MCYCLE, 0)
     CSR.clear(CSR.MCOUNTINHIBIT, 0x1)
 }
 
@@ -29,7 +30,7 @@ export function start() {
 }
 
 export function stop(): u32 {
-    const dt = CSR.read(CSR.MCYCLE) * MHZ_Q / MHZ_P
     CSR.set(CSR.MCOUNTINHIBIT, 0x1)
+    const dt = CSR.read(CSR.MCYCLE) * MHZ_Q / MHZ_P
     return dt
 }
