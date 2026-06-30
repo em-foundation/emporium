@@ -41,17 +41,16 @@ export function em$startup() {
 }
 
 function doPause() {
-    e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
     $['%%b:'](1)
     $['%%b-']
     CSR.write(CSR_NORDIC_SLEEP, NORDIC_SLEEP_DEEPSLEEP)
     e$`asm volatile ("wfi" ::: "memory")`
     $['%%b+']
+    e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
 }
 
 function doSleep() {
     for (let cb of sleep_enter_tab) cb()
-    e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
     $['%%b:'](2)
     $['%%b-']
     Debug.reset()
@@ -62,6 +61,7 @@ function doSleep() {
     Debug.startup()
     $['%%b+']
     for (let cb of sleep_leave_tab) cb()
+    e$`asm volatile ("csrs mstatus, 8" ::: "memory")`
 }
 
 export function exec() {
