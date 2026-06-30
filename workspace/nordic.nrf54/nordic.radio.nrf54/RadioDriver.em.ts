@@ -13,6 +13,8 @@ import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
 import * as TimeFence from '@em.utils/TimeFence.em'
 import * as TL from '@em.link/Types.em'
 
+export const ifs_fence = $config<u32>()
+
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
 }
@@ -137,6 +139,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     TimeFence.wait()
+    $['%%d-']
     Common.Irq.enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
@@ -152,7 +155,7 @@ export function RADIO_0_isr$$() {
     Common.Irq.clear(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO.INTENSET00.$$
     $R.RADIO.EVENTS_PHYEND.$$ = 0
-    TimeFence.enable(65)
+    TimeFence.enable(ifs_fence)
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
@@ -161,6 +164,7 @@ export function RADIO_0_isr$$() {
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
+                    $['%%d+']
                     startTx(tx_buf, cur_chan)
                     return
                 }

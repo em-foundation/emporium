@@ -87,6 +87,7 @@ export function em$configure(): void {
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
     Poller.OneShot.$$dlg = OneShot
+    RadioDriver.ifs_fence.$$val = 65
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
