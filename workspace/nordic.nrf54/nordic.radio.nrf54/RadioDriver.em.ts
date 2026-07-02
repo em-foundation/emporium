@@ -139,7 +139,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     TimeFence.wait()
-    $['%%d-']
     Common.Irq.enable(e$`RADIO_0_IRQn`)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
@@ -164,7 +163,6 @@ export function RADIO_0_isr$$() {
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
-                    $['%%d+']
                     startTx(tx_buf, cur_chan)
                     return
                 }
