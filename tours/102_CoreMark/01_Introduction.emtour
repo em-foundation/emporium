@@ -1,4 +1,4 @@
-title: CoreMark in EMS
+title: Transforming CoreMark
 
 files:
   - em.prog:em.benchmark.coremark/legacy-source/core_main.c
@@ -9,26 +9,30 @@ files:
 steps:
   - cmds: []
     text: |
-      {[ht,$start]Welcome}
+      {[ht,$start]Introduction}
 
-      TODO: Position this group as the first larger EMS program after Orientation and Basic Examples.
+      The prior **Basic Examples** tours featured small, single-file programs which introduced different facets of **EM&bull;Script**.
 
-      TODO: Explain that CoreMark starts as a real embedded C benchmark, and this group shows how that benchmark is re-rendered into EMS modules while preserving validation behavior.
+      Building upon this knowledge, we'll now dive into a larger program comprising multiple **EMS** application modules.
 
-      TODO: Mention that the tour run is intentionally short and observable, not yet a formal published CoreMark score.
+      This group of tours will specifically explore the widely-used **CoreMark&reg;** benchmark &ndash; re-written here in **EMS**.
+
+      {[in]Starting with legacy C code, this exercise further rein&shy;forces <b>EMS</b> as a higher-level language alternative.}
+
+      The initial tour in this group kicks-off a top-down explor&shy;ation of the **EMS** CoreMark implementation.
 
   - cmds:
       - open 1
       - mark 1 A 19
       - mark 1 B 51
       - mark 1 C 88
-    focus: [1,88]
+    focus: [1, 88]
     text: |
       {[ht,$look]Legacy Sources}
 
       TODO: Give the reader a quick look at the original CoreMark C harness without doing a line-by-line reading.
 
-      {[bm,A]} TODO: Identify this as the original {[cd]core_main.c} framework.
+      {[bm,A]} TODO: Identify this as the original {[cd]core_main.c} framework.H
 
       {[bm,B]} TODO: Point out the benchmark iteration function.
 
@@ -59,8 +63,8 @@ steps:
       - mark 3 D 23
       - mark 3 E 24
       - mark 3 F 29
-    focus: [3,17]
-    acts: ['$build']
+    focus: [3, 17]
+    acts: ["$build"]
     text: |
       {[ht,$steps]ActiveRunner Flow}
 
@@ -82,8 +86,8 @@ steps:
 
   - cmds:
       - mark 3 A 29
-    focus: [3,29]
-    acts: ['$build']
+    focus: [3, 29]
+    acts: ["$build"]
     text: |
       {[ht,$build]ActiveRunner Output}
 
