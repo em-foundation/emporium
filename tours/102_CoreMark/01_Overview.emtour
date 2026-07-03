@@ -1,0 +1,126 @@
+title: CoreMark in EMS
+
+files:
+  - em.prog:em.benchmark.coremark/legacy-source/core_main.c
+  - .assets/img-102-01-03.png
+  - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
+  - .assets/img-102-01-07.png
+
+steps:
+  - cmds: []
+    text: |
+      {[ht,$start]Welcome}
+
+      TODO: Position this group as the first larger EMS program after Orientation and Basic Examples.
+
+      TODO: Explain that CoreMark starts as a real embedded C benchmark, and this group shows how that benchmark is re-rendered into EMS modules while preserving validation behavior.
+
+      TODO: Mention that the tour run is intentionally short and observable, not yet a formal published CoreMark score.
+
+  - cmds:
+      - open 1
+      - mark 1 A 19
+      - mark 1 B 51
+      - mark 1 C 88
+    focus: [1,88]
+    text: |
+      {[ht,$look]Legacy Sources}
+
+      TODO: Give the reader a quick look at the original CoreMark C harness without doing a line-by-line reading.
+
+      {[bm,A]} TODO: Identify this as the original {[cd]core_main.c} framework.
+
+      {[bm,B]} TODO: Point out the benchmark iteration function.
+
+      {[bm,C]} TODO: Point out the traditional C {[cd]main()} harness and its setup/run/report responsibilities.
+
+      TODO: Link or mention the official CoreMark source set and explain that later tours can compare individual EMS workload modules against the corresponding C files.
+
+  - cmds:
+      - close 1
+      - view 2
+    text: |
+      {[ht,$details]Module Map}
+
+      TODO: Use this diagram as the roadmap for the CoreMark in EMS group.
+
+      TODO: Explain the active path first: {[cd]ActiveRunnerP} calls the shared {[cd]CoreBench} engine.
+
+      TODO: Preview that {[cd]CoreBench} works through {[cd]BenchAlgI} to run {[cd]MatrixBench}, {[cd]StateBench}, and {[cd]ListBench}, with {[cd]Crc} and {[cd]Utils} underneath.
+
+      TODO: Keep {[cd]SleepyRunnerP} visible but deferred.
+
+  - cmds:
+      - close 2
+      - open 3
+      - mark 3 A 11
+      - mark 3 B 17
+      - mark 3 C 22
+      - mark 3 D 23
+      - mark 3 E 24
+      - mark 3 F 29
+    focus: [3,17]
+    acts: ['$build']
+    text: |
+      {[ht,$steps]ActiveRunner Flow}
+
+      TODO: Read {[cd]ActiveRunnerP} as a compact command-line-style benchmark program.
+
+      {[bm,A]} TODO: The iteration count stays configurable and deliberately small for the tour.
+
+      {[bm,B]} TODO: Startup prepares the shared {[cd]CoreBench} engine.
+
+      {[bm,C]} TODO: LED winks bracket the active benchmark interval.
+
+      {[bm,D]} TODO: The microsecond counter measures elapsed active time.
+
+      {[bm,E]} TODO: The loop repeatedly calls {[cd]CoreBench.run(0)}.
+
+      {[bm,F]} TODO: The final block prints timing and CRC validation results.
+
+      TODO: Use the build/run action to launch the Pico simulator and watch the program run.
+
+  - cmds:
+      - mark 3 A 29
+    focus: [3,29]
+    acts: ['$build']
+    text: |
+      {[ht,$build]ActiveRunner Output}
+
+      TODO: Interpret the output that appears after building and running the program.
+
+      {[bm,A]} TODO: Connect this printf block to the five terminal lines:
+
+      {[cd]usecs = ...}
+      {[cd]list crc = ...}
+      {[cd]matrix crc = ...}
+      {[cd]state crc = ...}
+      {[cd]final crc = ...}
+
+      TODO: Explain that {[cd]usecs} is a real elapsed-time measurement for this short configured run, while the CRCs are the correctness checks that keep the EMS rendering honest.
+
+      TODO: Optionally mention the build size reported by the tools: larger than Basic Examples, still tiny for a real benchmark-style program.
+
+  - cmds: []
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      TODO: Suggest changing the iteration count from 10 to 50 or 100 and observing how elapsed time scales.
+
+      TODO: Suggest browsing the legacy CoreMark C sources and comparing the visible C harness with the compact EMS runner.
+
+      TODO: Suggest looking at the build output size and thinking about what would be required for a fair EMS-vs-C CoreMark comparison.
+
+      TODO: Keep this stop light; do not turn it into a benchmark methodology lesson.
+
+  - cmds:
+      - close 3
+      - view 4
+    text: |
+      {[ht,$done]Next Steps}
+
+      TODO: Return to the module map with {[cd]SleepyRunnerP} highlighted as the forward-looking bridge.
+
+      TODO: Explain that this tour started with the active benchmark path, but the same {[cd]CoreBench} engine can later support a wake-work-sleep runner.
+
+      TODO: Hand off to Tour 02: next we leave the roadmap and enter {[cd]CoreBench}, the shared benchmark engine behind {[cd]ActiveRunnerP}.
