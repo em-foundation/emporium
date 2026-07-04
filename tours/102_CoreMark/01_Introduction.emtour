@@ -10,7 +10,7 @@ steps:
     text: |
       {[ht,$start]Transforming CoreMark}
 
-      The prior **Basic Examples** tours featured small, single-file programs which introduced different facets of **EM&bull;Script**.
+      The prior **Basic Examples** tours featured small, single-file programs which introduced different facets **EMS**.
 
       Building upon this knowledge, we'll now dive into a larger program comprising multiple **EMS** application modules.
 
@@ -53,7 +53,7 @@ steps:
 
       The final tour covers {[cu]SleepyRunnerP} &ndash; which re-uses all of these modules in a very different application setting.
 
-      {[in]%[cu]SleepRunnerP% leads us to <b>EM&bull;Mark</b> &ndash; an MCU bench&shy;mark favoring energy-efficiency over execution-time.}
+      {[in]%[cu]SleepyRunnerP% leads us to <b>EM&bull;Mark</b> &ndash; an MCU bench&shy;mark favoring energy-efficiency over execution-time.}
   - cmds:
       - close 2
       - open 3
@@ -70,7 +70,7 @@ steps:
       {[bm,A]} The {[cu]CoreBench} module manages the algorithms.<br>
       {[bm,B]} The {[cn]iterations} config parameter defaults to `10`.<br>
       {[bm,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
-      {[bm,D]} {[cu]CoreBench}.{[cf]run}executes a single algorithm iteration.<br>
+      {[bm,D]} {[cu]CoreBench}.{[cf]run} executes a single algorithm iteration.<br>
 
       The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten CoreMark iterations.
 
@@ -87,7 +87,7 @@ steps:
 
       Click the **build&thinsp;+&thinsp;load** button to execute {[cu]ActiveRunnerP} on the default &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board}&thinsp; [`rpi.2040://PI_PICO-sim$$`]
 
-      Two [GREEN] `AppLed` winks bracket algorithm execution; printed output then appears before program termination,
+      Two [GREEN] `AppLed` winks bracket algorithm execution; printed output then appears before program termination:
 
       ```
         usecs = 123871
@@ -116,7 +116,7 @@ steps:
     text: |
       {[ht,$steps]Next Steps}
 
-      With a first pass through {[cu]ActiveRunnerP} now behind us, we'll continue our decent into its dependent modules.
+      With a first pass through {[cu]ActiveRunnerP} now behind us, we'll continue our descent into its dependent modules.
 
       The **Benchmark Infrastructure** tour (which follows next) will exa&shy;mine {[cu]CoreBench} itself, as well as {[cu]Crc} and {[cu]Utils}.
 
