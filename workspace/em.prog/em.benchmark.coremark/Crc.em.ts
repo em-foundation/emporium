@@ -43,11 +43,3 @@ function update(data: u8, crc: sum_t): sum_t {
     }
     return crc
 }
-
-export function em$run() {
-    let sum = 0
-    for (let i = 0; i < 5; i++) {
-        sum = add16(i, sum)
-    }
-    printf`sum = %04x\n`(sum)
-}

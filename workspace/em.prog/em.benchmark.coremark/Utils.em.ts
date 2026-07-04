@@ -4,15 +4,11 @@ export const $U = $declare('MODULE')
 export const NUM_SEEDS = 5
 
 export enum Kind {
-    FINAL,
-    LIST,
-    MATRIX,
-    STATE,
-    ZZZ_,
+    FINAL, LIST, MATRIX, STATE, ZZZ_,
 }
 
-export type seed_t = em.u16
-export type sum_t = em.u16
+export type seed_t = u16
+export type sum_t = u16
 
 let crc_tab = $table<sum_t>()
 const seed_tab = $table<seed_t>()
