@@ -4,7 +4,6 @@ files:
   - em.prog:em.benchmark.coremark/legacy-source/core_main.c
   - .assets/img-102-01-03.png
   - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
-  - .assets/img-102-01-07.png
 
 steps:
   - cmds: []
@@ -106,22 +105,19 @@ steps:
     text: |
       {[ht,$extra]Extra Credit}
 
-      TODO: Suggest changing the iteration count from 10 to 50 or 100 and observing how elapsed time scales.
+        {[bi,task_alt]} Vary {[cn]iterations} and observe {[cu]ActiveRunnerP} timing.
 
-      TODO: Suggest browsing the legacy CoreMark C sources and comparing the visible C harness with the compact EMS runner.
+        {[bi,task_alt]} Explore the implementation of {[cu]Common}.{[cn]UsCounter}.
 
-      TODO: Suggest looking at the build output size and thinking about what would be required for a fair EMS-vs-C CoreMark comparison.
-
-      TODO: Keep this stop light; do not turn it into a benchmark methodology lesson.
+        {[bi,task_alt]} Browse `em.benchmark.coremark/legacy-source`
 
   - cmds:
-      - close 3
-      - view 4
+      - view 2
     text: |
-      {[ht,$done]Next Steps}
+      {[ht,$steps]Next Steps}
 
-      TODO: Return to the module map with {[cd]SleepyRunnerP} highlighted as the forward-looking bridge.
+      With a first pass through {[cu]ActiveRunnerP} now behind us, we'll continue our decent into its dependent modules.
 
-      TODO: Explain that this tour started with the active benchmark path, but the same {[cd]CoreBench} engine can later support a wake-work-sleep runner.
+      The **Benchmark Infrastructure** tour (which follows next) will exa&shy;mine {[cu]CoreBench} itself, as well as {[cu]Crc} and {[cu]Utils}.
 
-      TODO: Hand off to Tour 02: next we leave the roadmap and enter {[cd]CoreBench}, the shared benchmark engine behind {[cd]ActiveRunnerP}.
+      {[hc]}
