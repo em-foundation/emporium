@@ -71,32 +71,36 @@ steps:
       {[bm,A]} The {[cu]CoreBench} module manages the algorithms.<br>
       {[bm,B]} The {[cn]iterations} config parameter defaults to `10`.<br>
       {[bm,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
-      {[bm,D]} {[cu]CoreBench}.{[cf]run}executes one algorithm iteration.<br>
+      {[bm,D]} {[cu]CoreBench}.{[cf]run}executes a single algorithm iteration.<br>
 
       The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten CoreMark iterations.
 
       {[in]Unlike legacy CoreMark &ndash; which will often run for <i>ten seconds</i> &ndash; a small iteration count proves sufficient.}
 
   - cmds:
-      - mark 3 A 29
+      - mark 3 A 23
+      - mark 3 B 27
+      - mark 3 C 29
     focus: [3, 1]
     acts: ["$build"]
     text: |
-      {[ht,$build]ActiveRunner Output}
+      {[ht,$build]%[cu]ActiveRunnerP% &ndash; output}
 
-      TODO: Interpret the output that appears after building and running the program.
+      Click the **build&thinsp;+&thinsp;load** button to execute {[cu]ActiveRunnerP} on the default &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board}&thinsp; [`rpi.2040://PI_PICO-sim$$`]
 
-      {[bm,A]} TODO: Connect this printf block to the five terminal lines:
+      Two [GREEN] `AppLed` winks bracket algorithm execution; printed output then appears before program termination,
 
-      {[cd]usecs = ...}
-      {[cd]list crc = ...}
-      {[cd]matrix crc = ...}
-      {[cd]state crc = ...}
-      {[cd]final crc = ...}
+      ```
+        usecs = 123871
+        list crc = e714
+        matrix crc = 1fd7
+        state crc = 8e3a
+        final crc = fcaf
+      ```
 
-      TODO: Explain that {[cd]usecs} is a real elapsed-time measurement for this short configured run, while the CRCs are the correctness checks that keep the EMS rendering honest.
+      Using the {[cu]Common}.{[cn]UsCounter} proxy at lines {[bm,A]} and {[bm,B]} yields the (&mu;s accurate) elapsed time printed at line {[bm,C]}.
 
-      TODO: Optionally mention the build size reported by the tools: larger than Basic Examples, still tiny for a real benchmark-style program.
+      {[in]CoreMark defines the algorithm CRCs as invariant re&shy;sults; the final CRC depends on the iteration count.}
 
   - cmds: []
     text: |
