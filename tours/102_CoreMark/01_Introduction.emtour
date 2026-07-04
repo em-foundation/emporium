@@ -9,7 +9,7 @@ files:
 steps:
   - cmds: []
     text: |
-      {[ht,$start]Introduction}
+      {[ht,$start]Transforming CoreMark}
 
       The prior **Basic Examples** tours featured small, single-file programs which introduced different facets of **EM&bull;Script**.
 
@@ -19,74 +19,67 @@ steps:
 
       {[in]Starting with legacy C code, this exercise further rein&shy;forces <b>EMS</b> as a higher-level language alternative.}
 
-      The initial tour in this group kicks-off a top-down explor&shy;ation of the **EMS** CoreMark implementation.
+      The initial tour in this group kicks-off a top-down explor&shy;ation of legacy CoreMark transformed through **EMS**.
 
   - cmds:
       - open 1
-      - mark 1 A 19
-      - mark 1 B 51
-      - mark 1 C 88
-    focus: [1, 88]
+    focus: [1, 93]
     text: |
-      {[ht,$look]Legacy Sources}
+      {[ht,files]Legacy Sources}
 
-      TODO: Give the reader a quick look at the original CoreMark C harness without doing a line-by-line reading.
+      The CoreMark benchmark comprises six (portable) source files written in C and archived on {[le,https://github.com/eembc/coremark]GitHub}:
 
-      {[bm,A]} TODO: Identify this as the original {[cd]core_main.c} framework.H
+      {[bm,1]} `core_main.c` &ndash; benchmark execution harness<br>
+      {[bm,2]} `coremark.h` &ndash; common declarations<br>
+      {[bm,3]} `core_matrix.c` &ndash; matrix-math algorithm<br>
+      {[bm,4]} `core_state.c` &ndash; state-machine algorithm<br>
+      {[bm,5]} `core_list_join.c` &ndash; list-processing algorithm<br>
+      {[bm,6]} `core_util.c` &ndash; CRC and seed-retrieval functions
 
-      {[bm,B]} TODO: Point out the benchmark iteration function.
+      We'll peek into these C files only as a point of reference when exploring the corresponding **EMS** implementation.
 
-      {[bm,C]} TODO: Point out the traditional C {[cd]main()} harness and its setup/run/report responsibilities.
-
-      TODO: Link or mention the official CoreMark source set and explain that later tours can compare individual EMS workload modules against the corresponding C files.
+      {[in]And in our opinion, not the prettiest C code either 😉}
 
   - cmds:
       - close 1
       - view 2
     text: |
-      {[ht,$details]Module Map}
+      {[ht,account_tree]EM&bull;Script Modules}
 
-      TODO: Use this diagram as the roadmap for the CoreMark in EMS group.
+      This hierarchy of **EMS** modules implements the function&shy;ality of the legacy C code cataloged previously.
 
-      TODO: Explain the active path first: {[cd]ActiveRunnerP} calls the shared {[cd]CoreBench} engine.
+      The {[cu]ActiveRunnerP} program (our next stop) runs mul&shy;tiple benchmark iterations before printing results.
 
-      TODO: Preview that {[cd]CoreBench} works through {[cd]BenchAlgI} to run {[cd]MatrixBench}, {[cd]StateBench}, and {[cd]ListBench}, with {[cd]Crc} and {[cd]Utils} underneath.
+      Subsequent tours in this group cover the modules called directly/indirectly by {[cu]ActiveRunnerP}.
 
-      TODO: Keep {[cd]SleepyRunnerP} visible but deferred.
+      The final tour covers {[cu]SleepyRunnerP} &ndash; which re-uses all of these modules in a very different application setting.
 
+      {[in]%[cu]SleepRunnerP% leads us to <b>EM&bull;Mark</b> &ndash; an MCU bench&shy;mark favoring energy-efficiency over execution-time.}
   - cmds:
       - close 2
       - open 3
-      - mark 3 A 11
-      - mark 3 B 17
-      - mark 3 C 22
-      - mark 3 D 23
-      - mark 3 E 24
-      - mark 3 F 29
-    focus: [3, 17]
-    acts: ["$build"]
+      - mark 3 A 6
+      - mark 3 B 11
+      - mark 3 C 18
+      - mark 3 D 25
+    focus: [3, 1]
     text: |
-      {[ht,$steps]ActiveRunner Flow}
+      {[ht,$details]%[cu]ActiveRunnerP% &ndash; details}
 
-      TODO: Read {[cd]ActiveRunnerP} as a compact command-line-style benchmark program.
+      This program behaves similarly to `core_main.c` &ndash; execu&shy;ting multiple iterations of the benchmark algorithms.
 
-      {[bm,A]} TODO: The iteration count stays configurable and deliberately small for the tour.
+      {[bm,A]} The {[cu]CoreBench} module manages the algorithms.<br>
+      {[bm,B]} The {[cn]iterations} config parameter defaults to `10`.<br>
+      {[bm,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
+      {[bm,D]} {[cu]CoreBench}.{[cf]run}executes one algorithm iteration.<br>
 
-      {[bm,B]} TODO: Startup prepares the shared {[cd]CoreBench} engine.
+      The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten CoreMark iterations.
 
-      {[bm,C]} TODO: LED winks bracket the active benchmark interval.
-
-      {[bm,D]} TODO: The microsecond counter measures elapsed active time.
-
-      {[bm,E]} TODO: The loop repeatedly calls {[cd]CoreBench.run(0)}.
-
-      {[bm,F]} TODO: The final block prints timing and CRC validation results.
-
-      TODO: Use the build/run action to launch the Pico simulator and watch the program run.
+      {[in]Unlike legacy CoreMark &ndash; which will often run for <i>ten seconds</i> &ndash; a small iteration count proves sufficient.}
 
   - cmds:
       - mark 3 A 29
-    focus: [3, 29]
+    focus: [3, 1]
     acts: ["$build"]
     text: |
       {[ht,$build]ActiveRunner Output}
