@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/01_Introduction.emtour"
 title: "Transforming CoreMark"
 
 source_snapshot:
-  git_sha: "63750be5cb360d0e18ff8617efc6b1e4c87a9509"
-  generated_at: "2026-07-04T15:52:55.056Z"
+  git_sha: "dda0532b2fad06af179380578cdad89179752e1e"
+  generated_at: "2026-07-04T15:55:22.475Z"
 
 ground_truth:
   stop_count: 5
