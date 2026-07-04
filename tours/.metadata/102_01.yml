@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/01_Introduction.emtour"
 title: "Transforming CoreMark"
 
 source_snapshot:
-  git_sha: "1d931d85b8d9ab10de38f353d023aefc2e589d90"
-  generated_at: "2026-07-04T15:27:47.355Z"
+  git_sha: "63750be5cb360d0e18ff8617efc6b1e4c87a9509"
+  generated_at: "2026-07-04T15:52:55.056Z"
 
 ground_truth:
   stop_count: 5
@@ -17,7 +17,7 @@ ground_truth:
       raw: "em.prog:em.benchmark.coremark/legacy-source/core_main.c"
       resolved: "em.prog/em.benchmark.coremark/legacy-source/core_main.c"
       kind: "source"
-      exists: false
+      exists: true
     - index: 2
       raw: ".assets/img-102-01-03.png"
       resolved: "tours/.assets/img-102-01-03.png"
@@ -27,7 +27,7 @@ ground_truth:
       raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
       resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
       kind: "source"
-      exists: false
+      exists: true
 
 steps:
   - stop: 1
@@ -86,84 +86,112 @@ marker_audit:
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "A"
     line: 6
-    expect: ""
+    expect: "import * as CoreBench from '@em.benchmark.coremark/CoreBench.em'"
     context_before:
-      []
+      - ""
+      - "import * as BoardC from '@$distro/BoardC.em'"
+      - "import * as Common from '@em.mcu/Common.em'"
     context_after:
-      []
-    status: "missing_file"
+      - "import * as Utils from '@em.benchmark.coremark/Utils.em'"
+      - ""
+      - "const AppLed = $delegate(BoardC.AppLed)"
+    status: "ok"
   - stop: 3
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "B"
     line: 11
-    expect: ""
+    expect: "const iterations = $config<u16>(10)"
     context_before:
-      []
+      - ""
+      - "const AppLed = $delegate(BoardC.AppLed)"
+      - ""
     context_after:
-      []
-    status: "missing_file"
+      - ""
+      - "export namespace em$meta { }"
+      - ""
+    status: "ok"
   - stop: 3
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "C"
     line: 18
-    expect: ""
+    expect: "    CoreBench.setup()"
     context_before:
-      []
+      - "//>> ---- em$targ ---- <<//"
+      - ""
+      - "export function em$startup() {"
     context_after:
-      []
-    status: "missing_file"
+      - "}"
+      - ""
+      - "export function em$run() {"
+    status: "ok"
   - stop: 3
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "D"
     line: 25
-    expect: ""
+    expect: "        CoreBench.run(0)"
     context_before:
-      []
+      - "    AppLed.wink(1000)"
+      - "    Common.UsCounter.start()"
+      - "    for (const _ of $range(iterations)) {"
     context_after:
-      []
-    status: "missing_file"
+      - "    }"
+      - "    const usecs = Common.UsCounter.stop()"
+      - "    AppLed.wink(1000)"
+    status: "ok"
   - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "A"
     line: 23
-    expect: ""
+    expect: "    Common.UsCounter.start()"
     context_before:
-      []
+      - ""
+      - "export function em$run() {"
+      - "    AppLed.wink(1000)"
     context_after:
-      []
-    status: "missing_file"
+      - "    for (const _ of $range(iterations)) {"
+      - "        CoreBench.run(0)"
+      - "    }"
+    status: "ok"
   - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "B"
     line: 27
-    expect: ""
+    expect: "    const usecs = Common.UsCounter.stop()"
     context_before:
-      []
+      - "    for (const _ of $range(iterations)) {"
+      - "        CoreBench.run(0)"
+      - "    }"
     context_after:
-      []
-    status: "missing_file"
+      - "    AppLed.wink(1000)"
+      - "    printf`usecs = %d\\n`(usecs)"
+      - "    printf`list crc = %04x\\n`(Utils.getCrc(Utils.Kind.LIST))"
+    status: "ok"
   - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
     label: "C"
     line: 29
-    expect: ""
+    expect: "    printf`usecs = %d\\n`(usecs)"
     context_before:
-      []
+      - "    }"
+      - "    const usecs = Common.UsCounter.stop()"
+      - "    AppLed.wink(1000)"
     context_after:
-      []
-    status: "missing_file"
+      - "    printf`list crc = %04x\\n`(Utils.getCrc(Utils.Kind.LIST))"
+      - "    printf`matrix crc = %04x\\n`(Utils.getCrc(Utils.Kind.MATRIX))"
+      - "    printf`state crc = %04x\\n`(Utils.getCrc(Utils.Kind.STATE))"
+    status: "ok"
 
 usage:
   heading_icons:
