@@ -37,7 +37,7 @@ steps:
 
       We'll peek into these C files only as a point of reference when exploring the corresponding **EMS** implementation.
 
-      {[in]And in our opinion, not the prettiest C code either 😉}
+      {[in]In our opinion &ndash; not the prettiest C code either 😉}
 
   - cmds:
       - close 1
