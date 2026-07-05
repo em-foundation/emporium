@@ -1053,7 +1053,7 @@ declare global {
     type ref2_t<T> = T & { $obj: T }
     type eref_t<T> = T & {}
     type u8 = em.u8
-    type u16 = em.u8
+    type u16 = em.u16
     type u32 = em.u32
     type u64 = em.u64
     type table_ro_t<T> = em.table_t<T>
