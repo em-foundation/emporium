@@ -1,28 +1,26 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Utils from '@em.benchmark.coremark/Utils.em'
-
-export type sum_t = Utils.sum_t
+import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-export function add16(val: i16, crc: sum_t): sum_t {
+export function add16(val: i16, crc: UT.sum_t): UT.sum_t {
     const v = val
     crc = update(v, crc)
     crc = update(v >> 8, crc)
     return crc
 }
 
-export function addU32(val: u32, crc: sum_t): sum_t {
+export function addU32(val: u32, crc: UT.sum_t): UT.sum_t {
     crc = add16(<i16>val, crc)
     crc = add16(<i16>(val >> 16), crc)
     return crc
 }
 
-function update(data: u8, crc: sum_t): sum_t {
+function update(data: u8, crc: UT.sum_t): UT.sum_t {
     let x16 = <u8>0
     let carry = <u8>0
     for (const _ of $range(8)) {

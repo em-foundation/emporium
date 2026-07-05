@@ -10,13 +10,13 @@ export enum Kind {
 export type seed_t = u16
 export type sum_t = u16
 
-let crc_tab = $table<sum_t>()
 const seed_tab = $table<seed_t>()
+var crc_tab = $table<sum_t>()
 
 export namespace em$meta {
     export function em$init() {
-        for (const _ of $range(Kind.ZZZ_)) crc_tab.$$add(0)
         for (const _ of $range(NUM_SEEDS)) seed_tab.$$add(0)
+        for (const _ of $range(Kind.ZZZ_)) crc_tab.$$add(0)
     }
     export function bindSeed(idx: u8, val: seed_t) {
         seed_tab[idx - 1] = val
@@ -34,7 +34,7 @@ export function getCrc(kind: Kind): sum_t {
 }
 
 export function getSeed(idx: u8): seed_t {
-    let seed: volatile_t<seed_t> = seed_tab[idx - 1]
+    const seed: volatile_t<seed_t> = seed_tab[idx - 1]
     return seed
 }
 

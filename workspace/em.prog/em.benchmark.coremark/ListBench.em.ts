@@ -2,7 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Crc from '@em.benchmark.coremark/Crc.em'
-import * as Utils from '@em.benchmark.coremark/Utils.em'
+import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const memsize = $config<u16>()
 
@@ -46,21 +46,21 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-export function kind(): Utils.Kind {
-    return Utils.Kind.LIST
+export function kind(): UT.Kind {
+    return UT.Kind.LIST
 }
 
 export function print() {
     pr(curHead, t$`current`)
 }
 
-export function run(arg: i16): Utils.sum_t {
+export function run(arg: i16): UT.sum_t {
     let list = curHead
     let finderIdx = <i16>arg
-    let findCnt = Utils.getSeed(3)
+    let findCnt = UT.getSeed(3)
     let found = <u16>0
     let missed = <u16>0
-    let retval = <Crc.sum_t>0
+    let retval = <UT.sum_t>0
     let data = Data.$make()
     data.idx = finderIdx
     for (let i of $range(findCnt)) {
@@ -103,7 +103,7 @@ export function run(arg: i16): Utils.sum_t {
 
 export function setup() {
     curHead = curHead_c
-    let seed = Utils.getSeed(1)
+    let seed = UT.getSeed(1)
     let ki = 1
     let kd = maxElems - 3
     let e = curHead
@@ -274,20 +274,20 @@ function valCalc(pval: $$<i16>): i16 {
     switch (flag) {
         case 0:
             ret = Bench0.run(<i16>vtype)
-            Utils.bindCrc(Bench0.kind(), ret)
+            UT.bindCrc(Bench0.kind(), ret)
             break
         case 1:
             ret = Bench1.run(<i16>vtype)
-            Utils.bindCrc(Bench1.kind(), ret)
+            UT.bindCrc(Bench1.kind(), ret)
             break
         default:
             ret = val
             break
     }
-    let newcrc = Crc.add16(<i16>ret, Utils.getCrc(Utils.Kind.FINAL))
-    Utils.setCrc(
-        Utils.Kind.FINAL,
-        Crc.add16(<i16>ret, Utils.getCrc(Utils.Kind.FINAL))
+    let newcrc = Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL))
+    UT.setCrc(
+        UT.Kind.FINAL,
+        Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL))
     )
     ret &= 0x007f
     pval.$$ = <i16>((val & 0xff00) | 0x0080 | ret) // cache the result

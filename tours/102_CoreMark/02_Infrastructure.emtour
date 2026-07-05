@@ -1,1 +1,101 @@
 title: Benchmark Infrastructure
+
+files:
+  - em.prog:em.benchmark.coremark/BenchAlgI.em.ts
+  - em.prog:em.benchmark.coremark/CoreBench.em.ts
+  - em.prog:em.benchmark.coremark/Crc.em.ts
+  - em.prog:em.benchmark.coremark/Utils.em.ts
+  - .assets/img-102-02-01.png
+
+steps:
+  - cmds:
+      - view 5
+    text: |
+      {[ht,$start]Benchmark Infrastructure}
+
+      {[in]DRAFT}
+
+      * tour scope
+      * shared support layer
+      * CoreBench as benchmark engine
+      * algorithms come next
+
+  - cmds:
+      - close 5
+      - open 1
+    focus: [1, 1]
+    acts: [$reveal]
+    text: |
+      {[ht,$look]%[cu]BenchAlgI% &ndash; quick peek}
+
+      The {[cu]BenchAlgI} interfaces defines a common set of func&shy;tions implemented by all benchmark algorithm modules:
+
+      {[bi,arrow_circle_right]} {[cu]CoreBench}&nbsp; [examined in this tour]<br>
+      {[bi,arrow_circle_right]} {[cu]ListBench},{[cu]MatrixBench},{[cu]StateBench}&nbsp; [in next tour]
+
+      The {[cu]ActiveRunnerP} program viewed earlier illustra&shy;ted calls to {[cf]setup} and {[cf]run} via {[cu]CoreBench}.
+
+      {[in]%[cf]kind% and %[cf]print% primarily support program debug.}
+
+      In general, {[cu]CoreBench} will forward calls to its {[cu]BenchAlgI} functions to the other algorithm modules.
+
+  - cmds:
+      - open 2
+      - mark 2 A 30
+    focus: [2, 32]
+    text: |
+      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$targ% details}
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
+      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$meta% details}
+
+      {[in]DRAFT}
+
+      * run path
+      * workload dispatch
+      * print / CRC reporting
+
+  - cmds:
+      - open 4
+      - mark 4 A 13
+    focus: [4, 9]
+    text: |
+      {[ht,$details]%[cu]Utils% &ndash; details}
+
+      The {[cu]Utils} module exports a common set of constants, types, and accessors used by sibling **EMS** units.
+
+      The module encapsulates two {[cs]$table} datasets {[bm,A]} which respectively hold {[ct]seed_t} constants and {[ct]sum_t} variables.
+
+  - cmds:
+      - open 3
+    focus: [3, 1]
+    text: |
+      {[ht,$details]%[cu]Crc% &ndash; details}
+
+  - cmds:
+      - close 5
+      - close 4
+      - close 3
+      - close 2
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[in]DRAFT}
+
+      * inspect how each workload satisfies BenchAlgI
+      * trace one CRC value from workload to final report
+      * compare this infrastructure with ActiveRunnerP
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$done]Next Steps}
+
+      {[in]DRAFT}
+
+      * infrastructure is now in place
+      * next tour focuses on MatrixBench, StateBench, and ListBench
+      * same map, different layer

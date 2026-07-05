@@ -2,7 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Crc from '@em.benchmark.coremark/Crc.em'
-import * as Utils from '@em.benchmark.coremark/Utils.em'
+import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const memsize = $config<u16>()
 
@@ -34,8 +34,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-export function kind(): Utils.Kind {
-    return Utils.Kind.MATRIX
+export function kind(): UT.Kind {
+    return UT.Kind.MATRIX
 }
 
 export function print() {
@@ -44,8 +44,8 @@ export function print() {
     prRes(t$`C`)
 }
 
-export function run(arg: arg_t): Utils.sum_t {
-    let crc = <Crc.sum_t>0
+export function run(arg: arg_t): UT.sum_t {
+    let crc = <UT.sum_t>0
     let val = <matdat_t>arg
     let clipval = enlarge(val)
     //
@@ -63,11 +63,11 @@ export function run(arg: arg_t): Utils.sum_t {
     crc = Crc.add16(sumDat(clipval), crc)
     //
     addVal(-val)
-    return Crc.add16(<i16>crc, Utils.getCrc(Utils.Kind.FINAL))
+    return Crc.add16(<i16>crc, UT.getCrc(UT.Kind.FINAL))
 }
 
 export function setup() {
-    let s32 = (<u32>Utils.getSeed(1)) | ((<u32>Utils.getSeed(2)) << 16)
+    let s32 = (<u32>UT.getSeed(1)) | ((<u32>UT.getSeed(2)) << 16)
     let sd = <matdat_t>s32
     if (sd == 0) sd = 1
     let order = <matdat_t>1

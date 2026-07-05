@@ -2,21 +2,14 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Crc from '@em.benchmark.coremark/Crc.em'
-import * as Utils from '@em.benchmark.coremark/Utils.em'
+import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const memsize = $config<u16>()
 
 const NUM_STATES = 8
 
 enum State {
-    START,
-    INVALID,
-    S1,
-    S2,
-    INT,
-    FLOAT,
-    EXPONENT,
-    SCIENTIFIC,
+    START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
 }
 
 const intPat = $table<text_t>()
@@ -67,8 +60,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-export function kind(): Utils.Kind {
-    return Utils.Kind.STATE
+export function kind(): UT.Kind {
+    return UT.Kind.STATE
 }
 
 export function print() {
@@ -90,16 +83,16 @@ export function print() {
     printf`\n%c, count = %d\n`(c$`"`, cnt)
 }
 
-export function run(arg: i16): Utils.sum_t {
+export function run(arg: i16): UT.sum_t {
     if (arg < 0x22) arg = 0x22
     let finalCnt = StateCnt.$make()
     let transCnt = StateCnt.$make()
     for (let i of $range(NUM_STATES)) finalCnt[i] = transCnt[i] = 0
     scan(finalCnt, transCnt)
-    scramble(Utils.getSeed(1), arg)
+    scramble(UT.getSeed(1), arg)
     scan(finalCnt, transCnt)
-    scramble(Utils.getSeed(2), arg)
-    let crc = Utils.getCrc(Utils.Kind.FINAL)
+    scramble(UT.getSeed(2), arg)
+    let crc = UT.getCrc(UT.Kind.FINAL)
     for (let i of $range(NUM_STATES)) {
         crc = Crc.addU32(finalCnt[i], crc)
         crc = Crc.addU32(transCnt[i], crc)
@@ -108,7 +101,7 @@ export function run(arg: i16): Utils.sum_t {
 }
 
 export function setup() {
-    let seed = Utils.getSeed(1)
+    let seed = UT.getSeed(1)
     let p = membuf.$ptr()
     let total = 0
     let pat = t$``
@@ -256,7 +249,7 @@ function scan(finalCnt: index_t<u32>, transCnt: index_t<u32>) {
     }
 }
 
-function scramble(seed: Utils.seed_t, step: u32) {
+function scramble(seed: UT.seed_t, step: u32) {
     for (let idx = 0; idx < memsize; idx += step) {
         // TODO: use $range
         if (membuf[idx] != c$`,`) membuf[idx] ^= <u8>seed
