@@ -4,7 +4,7 @@ export const $U = $declare('MODULE')
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as UT from '@em.benchmark.coremark/Utils.em'
 
-export const memsize = $config<u16>()
+export const mem_size = $config<u16>()
 
 export class Data extends $struct {
     val: i16
@@ -29,7 +29,7 @@ let curHead: $$<Elem>
 export namespace em$meta {
     export function em$construct() {
         let itemSize = 16 + $sizeof<Data>()
-        maxElems.$$val = Math.round(memsize / itemSize) - 3
+        maxElems.$$val = Math.round(mem_size / itemSize) - 3
         curHead = elem_tab.$$add()
         curHead.$$.data = data_tab.$$add()
         let p = curHead

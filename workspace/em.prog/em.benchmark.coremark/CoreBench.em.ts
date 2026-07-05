@@ -11,17 +11,18 @@ const total_data_size = $config<u16>(2000)
 const num_algs = $config<u8>(3)
 
 export namespace em$meta {
+
     export function em$configure() {
-        const memsize = Math.floor(total_data_size / num_algs)
-        ListBench.memsize.$$val = memsize
-        MatrixBench.memsize.$$val = memsize
-        StateBench.memsize.$$val = memsize
+        const mem_size = Math.floor(total_data_size / num_algs)
+        ListBench.mem_size.$$val = mem_size
+        MatrixBench.mem_size.$$val = mem_size
+        StateBench.mem_size.$$val = mem_size
     }
 
     export function em$construct() {
-        UT.em$meta.bindSeed(1, 0x0)
-        UT.em$meta.bindSeed(2, 0x0)
-        UT.em$meta.bindSeed(3, 0x66)
+        UT.em$meta.setSeed(1, 0x0)
+        UT.em$meta.setSeed(2, 0x0)
+        UT.em$meta.setSeed(3, 0x66)
     }
 }
 
@@ -38,18 +39,18 @@ export function print() {
 }
 
 export function run(arg: i16): UT.sum_t {
-    let crc = ListBench.run(1)
+    const crcA = ListBench.run(1)
     UT.setCrc(
-        UT.Kind.FINAL,
-        Crc.add16(<i16>crc, UT.getCrc(UT.Kind.FINAL))
+        kind(),
+        Crc.add16(<i16>crcA, UT.getCrc(kind()))
     )
-    crc = ListBench.run(-1)
+    const crcB = ListBench.run(-1)
     UT.setCrc(
-        UT.Kind.FINAL,
-        Crc.add16(<i16>crc, UT.getCrc(UT.Kind.FINAL))
+        kind(),
+        Crc.add16(<i16>crcB, UT.getCrc(kind()))
     )
-    UT.bindCrc(UT.Kind.LIST, UT.getCrc(UT.Kind.FINAL))
-    return UT.getCrc(UT.Kind.FINAL)
+    UT.bindCrc(UT.Kind.LIST, UT.getCrc(kind()))
+    return UT.getCrc(kind())
 }
 
 export function setup() {

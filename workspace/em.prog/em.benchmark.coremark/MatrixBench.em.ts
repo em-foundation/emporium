@@ -4,7 +4,7 @@ export const $U = $declare('MODULE')
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as UT from '@em.benchmark.coremark/Utils.em'
 
-export const memsize = $config<u16>()
+export const mem_size = $config<u16>()
 
 type matdat_t = i16
 type matres_t = i32
@@ -19,7 +19,7 @@ export namespace em$meta {
     export function em$construct() {
         let i = 0
         let j = 0
-        while (j < memsize) {
+        while (j < mem_size) {
             i += 1
             j = i * i * 2 * 4
         }

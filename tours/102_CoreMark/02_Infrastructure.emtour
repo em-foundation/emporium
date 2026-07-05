@@ -13,12 +13,15 @@ steps:
     text: |
       {[ht,$start]Benchmark Infrastructure}
 
-      {[in]DRAFT}
+      This tour revolves around the {[cu]CoreBench} module &ndash; used earlier within the {[cu]ActiveRunnerP} program.
 
-      * tour scope
-      * shared support layer
-      * CoreBench as benchmark engine
-      * algorithms come next
+      We'll first examine {[cu]BenchAlgI} &ndash; an **EMS** interface imple&shy;ment&shy;ed by {[cu]CoreBench} and the other algorithm modules.
+
+      We'll then visit the supporting {[cu]Crc} and {[cu]Utils} modules before circling back to {[cu]CoreBench}.
+
+      {[in]The modules track content found in the %[cx]core_util.c% and %[cx]coremark.h% legacy source files.}<br>
+
+      {[in]%[cu]Crc% and %[cu]Utils% largely mirror design and implementa&shy;tion choices enshrined forever in CoreMark.}
 
   - cmds:
       - close 5
@@ -28,52 +31,97 @@ steps:
     text: |
       {[ht,$look]%[cu]BenchAlgI% &ndash; quick peek}
 
-      The {[cu]BenchAlgI} interfaces defines a common set of func&shy;tions implemented by all benchmark algorithm modules:
+      The {[cu]BenchAlgI} interface defines a common set of func&shy;tions implemented by all benchmark algorithm modules:
 
       {[bi,arrow_circle_right]} {[cu]CoreBench}&nbsp; [examined in this tour]<br>
       {[bi,arrow_circle_right]} {[cu]ListBench},{[cu]MatrixBench},{[cu]StateBench}&nbsp; [in next tour]
 
-      The {[cu]ActiveRunnerP} program viewed earlier illustra&shy;ted calls to {[cf]setup} and {[cf]run} via {[cu]CoreBench}.
+      The {[cu]ActiveRunnerP} program viewed earlier illustra&shy;ted calls to {[cf]setup} and {[cf]run} through the {[cu]CoreBench} module.
 
       {[in]%[cf]kind% and %[cf]print% primarily support program debug.}
 
-      In general, {[cu]CoreBench} will forward calls to its {[cu]BenchAlgI} functions to the other algorithm modules.
-
-  - cmds:
-      - open 2
-      - mark 2 A 30
-    focus: [2, 32]
-    text: |
-      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$targ% details}
-
-  - cmds:
-      - open 2
-    focus: [2, 1]
-    text: |
-      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$meta% details}
-
-      {[in]DRAFT}
-
-      * run path
-      * workload dispatch
-      * print / CRC reporting
+      In general, {[cu]CoreBench} will forward client calls to its {[cu]BenchAlgI} functions to the other algorithm modules.
 
   - cmds:
       - open 4
-      - mark 4 A 13
+      - mark 4 A 6
+      - mark 4 B 13
+      - mark 4 C 21
+      - mark 4 D 28
+      - mark 4 E 32
+      - mark 4 F 36
+      - mark 4 G 41
     focus: [4, 9]
     text: |
       {[ht,$details]%[cu]Utils% &ndash; details}
 
-      The {[cu]Utils} module exports a common set of constants, types, and accessors used by sibling **EMS** units.
+      The {[cu]Utils} module exports a common set of constants, types, and accessors used by its sibling **EMS** units.
 
-      The module encapsulates two {[cs]$table} datasets {[bm,A]} which respectively hold {[ct]seed_t} constants and {[ct]sum_t} variables.
+      {[bm,A]} Each module implementing {[cu]BenchAlgI}.{[cf]kind} returns a distinct value of this type (with {[cn]ZZZ_} as a sentinel).
+
+      {[bm,B]} Two {[cs]$table} datasets (initialized at build-time) respec&shy;tively hold {[ct]seed_t} con&shy;stants and {[ct]sum_t} variables.
+
+      Both datasets in turn support special accessor functions:
+
+      {[cn]seed_tab} &ndash; writeable only at build-time {[bm,C]}, readable at run-time {[bm,F]} through a forced {[ct]volatile_t} memory fetch.
+
+      {[cn]crc_tab} &ndash; readable {[bm,E]} and writeable {[bm,G]} at run-time, special {[cf]bindCrc} function {[bm,D]} enforces single-assignment.
 
   - cmds:
       - open 3
-    focus: [3, 1]
+      - mark 3 A 10
+      - mark 3 B 17
+      - mark 3 C 23
+    focus: [3, 12]
     text: |
       {[ht,$details]%[cu]Crc% &ndash; details}
+
+      Updating 16-bit checksums serves as the primary means to ensure correct execution of the CoreMark algorithms.
+
+      Each {[cu]BenchAlgI}.{[cf]run} implementation returns a {[ct]sum_t}, further combined with other checksums in the final result.
+
+      The {[cu]Crc} modules exports functions for respec&shy;tively accu&shy;mulating 16-bit {[bm,A]} and 32-bit {[bm,B]} in a given checksum.
+
+      Both of these functions ultimately call {[cf]update}{[bm,C]}, which accepts a {[ct]u8} value applied bitwise to modify the {[cn]crc}.
+
+  - cmds:
+      - open 2
+      - mark 2 A 31
+      - mark 2 B 35
+      - mark 2 C 42
+      - mark 2 D 48
+      - mark 2 E 52
+      - mark 2 F 56
+    focus: [2, 33]
+    text: |
+      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$targ% details}
+
+      The {[cu]BenchAlgI}.{[cf]run} implementation shown here lines up with the {[cf]iterate} function within `core_main.c`.
+
+      Calls to {[cu]ListBench}.{[cf]run} at {[bm,C]} and {[bm,D]} yield {[ct]sum_t} values accumulated in the {[cn]FINAL} checksum.
+
+      Following CoreMark, line {[bm,E]} binds the current {[cn]FINAL} sum to {[cn]LIST} on the *first* call to {[cu]CoreBench}.{[cf]run}.
+
+      The {[cf]print} {[bm,B]} and {[cf]setup} {[bm,F]} implementations call cor&shy;responding {[cu]BenchAlgI} functions in the other algorithms.
+
+      The {[cf]kind} function at {[bm,A]} (used heavily within the body of {[cf]run}) returns a prescribed value of type {[ct]UT}.{[ct]Kind}.
+
+  - cmds:
+      - open 2
+      - mark 2 A 8
+      - mark 2 B 15
+      - mark 2 C 22
+    focus: [2, 1]
+    text: |
+      {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$meta% details}
+
+      Without violating the intent of legacy CoreMark sources, {[cu]CoreBench} executes some *build-time* computation.
+
+      The {[cs]em$configure} meta-function at {[bm,B]} calculates the amount of memory allotted to each benchmark algorithm.
+
+      The {[cs]em$construct} meta-function at {[bm,C]} initializes the first three {[ct]seed_t} values to prescribed CoreMark constants.
+
+      {[in]If you haven't already noticed, we've defined a local %[ct]UT% moniker for %[cu]Utils% at line %[bm,A]% to improve readability.}
 
   - cmds:
       - close 5

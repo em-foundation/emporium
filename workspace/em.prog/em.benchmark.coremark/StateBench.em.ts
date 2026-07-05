@@ -4,7 +4,7 @@ export const $U = $declare('MODULE')
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as UT from '@em.benchmark.coremark/Utils.em'
 
-export const memsize = $config<u16>()
+export const mem_size = $config<u16>()
 
 const NUM_STATES = 8
 
@@ -54,7 +54,7 @@ export namespace em$meta {
     }
 
     export function em$construct() {
-        for (const _ of $range(memsize)) membuf.$$add(0)
+        for (const _ of $range(mem_size)) membuf.$$add(0)
     }
 }
 
@@ -106,7 +106,7 @@ export function setup() {
     let total = 0
     let pat = t$``
     let plen = 0
-    while (total + plen + 1 < memsize - 1) {
+    while (total + plen + 1 < mem_size - 1) {
         if (plen) {
             for (let i of $range(plen)) {
                 p.$$ = pat[i]
@@ -250,7 +250,7 @@ function scan(finalCnt: index_t<u32>, transCnt: index_t<u32>) {
 }
 
 function scramble(seed: UT.seed_t, step: u32) {
-    for (let idx = 0; idx < memsize; idx += step) {
+    for (let idx = 0; idx < mem_size; idx += step) {
         // TODO: use $range
         if (membuf[idx] != c$`,`) membuf[idx] ^= <u8>seed
     }
