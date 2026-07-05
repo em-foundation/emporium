@@ -80,7 +80,7 @@ steps:
 
       Each {[cu]BenchAlgI}.{[cf]run} implementation returns a {[ct]sum_t}, further combined with other checksums in the final result.
 
-      The {[cu]Crc} modules exports functions for respec&shy;tively accu&shy;mulating 16-bit {[bm,A]} and 32-bit {[bm,B]} in a given checksum.
+      The {[cu]Crc} module exports functions for respec&shy;tively accu&shy;mulating 16-bit {[bm,A]} and 32-bit {[bm,B]} in a given checksum.
 
       Both of these functions ultimately call {[cf]update}{[bm,C]}, which accepts a {[ct]u8} value applied bitwise to modify the {[cn]crc}.
 
@@ -131,19 +131,21 @@ steps:
     text: |
       {[ht,$extra]Extra Credit}
 
-      {[in]DRAFT}
+      {[bi,task_alt]} Look ahead at how {[cu]MatrixBench} satisfies {[cu]BenchAlgI}.
 
-      * inspect how each workload satisfies BenchAlgI
-      * trace one CRC value from workload to final report
-      * compare this infrastructure with ActiveRunnerP
+      {[bi,task_alt]} Use {[cd]printf} to trace the execution of {[cu]Crc}.{[cf]update}.
+
+      {[bi,task_alt]} Determine the time {[cu]ActiveRunnerP} spends in {[cu]Crc}.
 
   - cmds:
-      - view 1
+      - view 5
     text: |
       {[ht,$done]Next Steps}
 
-      {[in]DRAFT}
+      {[cu]BenchAlgI},&thinsp;{[cu]Crc}, and&thinsp;{[cu]Utils} play a similar role in sha&shy;ping the implementation of the three CoreMark algorithms.
 
-      * infrastructure is now in place
-      * next tour focuses on MatrixBench, StateBench, and ListBench
-      * same map, different layer
+      The next tour of the **CoreMark** group will explore the {[cu]MatrixBench} and {[cu]StateBench} algorithms.
+
+      {[in]We'll then devote a separate tour to %[cu]ListBench%, due to the relative complexity of this algorithm.}
+
+      {[hc]}
