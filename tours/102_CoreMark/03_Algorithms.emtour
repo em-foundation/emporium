@@ -35,31 +35,52 @@ steps:
 
       A calculation inside {[cs]em$construct} eventually binds this dimension value to the {[cn]dimN} config parameter at line {[bm,C]}.
 
-      {[in]The subsequent loop then dimensions and initializes the %[cs]$table% matricies using the intrinsic <b>%[cx]$$add%</b> operator.}
+      {[in]The subsequent loop then dimensions and zeroes the %[cs]$table% matricies using the intrinsic <b>%[cx]$$add%</b> operator.}
 
   - cmds:
       - open 1
-    focus: [1, 1]
+    focus: [1, 51]
     text: |
       {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]run% details}
 
+      Starting with its scalar argument, {[cu]MatrixBench}.{[cf]run} ma&shy;nip&shy;ulates {[cn]mat&lbrack;ABC&rbrack;} through a series of private functions.
+
+      {[in]Navigate to helpers like %[cf]addVal% and %[cf]mulVec%, which match functions found in the legacy <b>CoreMark</b> code.}
+
+      To compute its {[ct]sum_t} result, {[cu]MatrixBench}.{[cf]run} updates its local {[cn]crc} variable with a scalar returned by {[cf]sumDat}.
+
+      The {[ct]sum_t} returned by {[cf]run} folds the accumulated {[cn]crc} value into the benchmark's {[cn]FINAL} checksum.
+
   - cmds:
       - open 1
-    focus: [1, 1]
+      - mark 1 A 70
+    focus: [1, 73]
     text: |
       {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]setup% details}
 
+      The {[cu]MatrixBench}.{[cf]setup} initializes (at *run-time*) the {[cn]matA} and {[cn]matB} objects dimensioned and zeroed at *build-time*.
+
+      The scalar values held in these matricies ultimately derive from special **CoreMark** seed values read here at line {[bm,A]}.
+
+      {[in]Recall that %[cu]UT%.%[cf]getSeed% forcibly reads (at <i>run-time</i>) an unknown constant value bound at <i>build-time</i>.}
+
   - cmds:
       - open 1
     focus: [1, 1]
     text: |
-      {[ht,$look]Setup Boundary}
+      {[ht,fence]%[cu]BenchAlgI%.%[cf]setup% &ndash; domain boundaries}
 
-      {[in]DRAFT}
+      The {[cf]setup} function we just examined could seem&shy;ingly have resided in the **`em$meta`** domain.
 
-      * build-time shape and allocation
-      * runtime seed values through {[cu]Utils}.{[cf]getSeed}
-      * setup work before the measured benchmark run
+      {[in]Build-time initialization of complex data structures in fact distinguishes <b>EMS</b> from other embedded languages.}
+
+      Moving **`em$targ`** code upstream to the **`em$meta`** domain reduces program size and often improves performance.
+
+      But **CoreMark** forbids this &ndash; fearing a compiler might "pre-compute" benchmark results from static datasets.
+
+      **CoreMark** thus requires *explicit* memory reads of all seed values &ndash; like any program input known only at run-time.
+
+      {[in]Our <b>EMS</b> modules will maximize build-time initial&shy;ization, while still respecting <b>CoreMark</b>'s inherent constraint.}
 
   - cmds:
       - open 2

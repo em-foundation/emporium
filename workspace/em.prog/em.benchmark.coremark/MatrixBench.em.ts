@@ -71,8 +71,8 @@ export function setup() {
     let sd = <matdat_t>s32
     if (sd == 0) sd = 1
     let order = <matdat_t>1
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             sd = <matdat_t>((order * sd) % 65536)
             let val = <matdat_t>(sd + order)
             val = clip(val, false)
