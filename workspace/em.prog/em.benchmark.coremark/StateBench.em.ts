@@ -6,53 +6,27 @@ import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const mem_size = $config<u16>()
 
-const NUM_STATES = 8
+const int_pat = $table<text_t>([
+    t$`5012`, t$`1234`, t$`-874`, t$`+122`
+])
+const flt_pat = $table<text_t>([
+    t$`35.54400`, t$`.1234500`, t$`-110.700`, t$`+0.64400`
+])
+const sci_pat = $table<text_t>([
+    t$`5.500e+3`, t$`-.123e-2`, t$`-87e+832`, t$`+0.6e-12`
+])
+const err_pat = $table<text_t>([
+    t$`T0.3e-1F`, t$`-T.T++Tq`, t$`1T3.4e4z`, t$`34.0e-T^`
+])
 
-enum State {
-    START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
-}
-
-const int_pat = $table<text_t>()
-const flt_pat = $table<text_t>()
-const sci_pat = $table<text_t>()
-const err_pat = $table<text_t>()
-
-const int_pat_len = $config<u16>()
-const flt_pat_len = $config<u16>()
-const sci_pat_len = $config<u16>()
-const err_pat_len = $config<u16>()
-
-class StateCnt extends $vector<u32> { $len = NUM_STATES }
+const int_pat_len = $config<u16>(int_pat[0].$len)
+const flt_pat_len = $config<u16>(flt_pat[0].$len)
+const sci_pat_len = $config<u16>(sci_pat[0].$len)
+const err_pat_len = $config<u16>(err_pat[0].$len)
 
 var membuf = $table<u8>()
 
 export namespace em$meta {
-    export function em$init() {
-        int_pat.$$add(t$`5012`)
-        int_pat.$$add(t$`1234`)
-        int_pat.$$add(t$`-874`)
-        int_pat.$$add(t$`+122`)
-        int_pat_len.$$val = int_pat[0].$len
-        //
-        flt_pat.$$add(t$`35.54400`)
-        flt_pat.$$add(t$`.1234500`)
-        flt_pat.$$add(t$`-110.700`)
-        flt_pat.$$add(t$`+0.64400`)
-        flt_pat_len.$$val = flt_pat[0].$len
-        //
-        sci_pat.$$add(t$`5.500e+3`)
-        sci_pat.$$add(t$`-.123e-2`)
-        sci_pat.$$add(t$`-87e+832`)
-        sci_pat.$$add(t$`+0.6e-12`)
-        sci_pat_len.$$val = sci_pat[0].$len
-        //
-        err_pat.$$add(t$`T0.3e-1F`)
-        err_pat.$$add(t$`-T.T++Tq`)
-        err_pat.$$add(t$`1T3.4e4z`)
-        err_pat.$$add(t$`34.0e-T^`)
-        err_pat_len.$$val = err_pat[0].$len
-    }
-
     export function em$construct() {
         for (const _ of $range(mem_size)) membuf.$$add(0)
     }
@@ -60,28 +34,12 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-export function kind(): UT.Kind {
-    return UT.Kind.STATE
+enum State {
+    START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
 }
 
-export function print() {
-    let p = membuf.$ptr()
-    let cnt = 0
-    printf`\n%c`(c$`"`)
-    while (p.$$) {
-        if (cnt++ % 8 == 0) {
-            printf`\n    `()
-        }
-        while (true) {
-            let c = p.$$
-            p.$inc()
-            if (c == c$`,`) break
-            printf`%c`(c)
-        }
-        printf`, `()
-    }
-    printf`\n%c, count = %d\n`(c$`"`, cnt)
-}
+const NUM_STATES = 8
+class StateCnt extends $vector<u32> { $len = NUM_STATES }
 
 export function run(arg: i16): UT.sum_t {
     if (arg < 0x22) arg = 0x22
@@ -139,6 +97,29 @@ export function setup() {
                 break
         }
     }
+}
+
+export function kind(): UT.Kind {
+    return UT.Kind.STATE
+}
+
+export function print() {
+    let p = membuf.$ptr()
+    let cnt = 0
+    printf`\n%c`(c$`"`)
+    while (p.$$) {
+        if (cnt++ % 8 == 0) {
+            printf`\n    `()
+        }
+        while (true) {
+            let c = p.$$
+            p.$inc()
+            if (c == c$`,`) break
+            printf`%c`(c)
+        }
+        printf`, `()
+    }
+    printf`\n%c, count = %d\n`(c$`"`, cnt)
 }
 
 // private

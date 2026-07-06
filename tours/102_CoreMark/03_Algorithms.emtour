@@ -66,7 +66,8 @@ steps:
 
   - cmds:
       - open 1
-    focus: [1, 1]
+      - mark 1 A 70
+    focus: [1, 73]
     text: |
       {[ht,fence]%[cu]BenchAlgI%.%[cf]setup% &ndash; domain boundaries}
 
@@ -83,20 +84,28 @@ steps:
       {[in]Our <b>EMS</b> modules will maximize build-time initial&shy;ization, while still respecting <b>CoreMark</b>'s inherent constraint.}
 
   - cmds:
+      - close 1
       - open 2
+      - mark 2 A 7
     focus: [2, 1]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cx]em$meta% details}
 
   - cmds:
       - open 2
-    focus: [2, 1]
+    focus: [2, 46]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
 
   - cmds:
       - open 2
-    focus: [2, 1]
+    focus: [2, 136]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details}
+
+  - cmds:
+      - open 2
+    focus: [2, 72]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
 
