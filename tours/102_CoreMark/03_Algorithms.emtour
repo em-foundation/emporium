@@ -11,20 +11,31 @@ steps:
     text: |
       {[ht,$start]Algorithms – %[cu]MatrixBench% &middot; %[cu]StateBench%}
 
-      We've finally arrived at the heart of **CoreMark** &ndash; its bench&shy;mark algorithms.
+      We've finally arrived at the heart of **CoreMark** &ndash; its trio of bench&shy;mark algorithms.
 
       This tour focuses on the *matrix-math* and *state-machine* algorithms embodied in {[cu]MatrixBench} and {[cu]StateBench}.
 
-      Like {[cu]CoreBench} seen previously, each of these modules implement the same {[cu]BenchAlgI} interface.
+      Like {[cu]CoreBench} seen previously, each of these modules implements a common {[cu]BenchAlgI} interface.
 
       {[in]We'll highlight their %[cf]run% and %[cf]setup% functions, which track legacy code found in %[cx]core_&lbrace;matrix,state&rbrace;.c% }
 
   - cmds:
       - close 3
       - open 1
+      - mark 1 A 7
+      - mark 1 B 14
+      - mark 1 C 26
     focus: [1, 1]
     text: |
       {[ht,$details]%[cu]MatrixBench% &ndash; %[cx]em$meta% details}
+
+      {[cu]MatrixBench} subjects the three {[cs]$table} objects declared at line {[bm,B]} to a variety of matrix-math opertions.
+
+      The value of {[cn]mem_size}{[bm,A]} (bound by {[cu]CoreBench} at build-time) ultimately determines the dimension of {[cn]mat&lbrack;ABC&rbrack;}.
+
+      A calculation inside {[cs]em$construct} eventually binds this dimension value to the {[cn]dimN} config parameter at line {[bm,C]}.
+
+      {[in]The subsequent loop then dimensions and initializes the %[cs]$table% matricies using the intrinsic <b>%[cx]$$add%</b> operator.}
 
   - cmds:
       - open 1
