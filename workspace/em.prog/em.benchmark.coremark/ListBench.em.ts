@@ -21,26 +21,26 @@ var elem_tab = $table<Elem>()
 
 type Comparator = (a: $$<Data>, b: $$<Data>) => i32
 
-const maxElems = $config<u16>()
+const max_elems = $config<u16>()
 
-let curHead_c = $config<$$<Elem>>()
-let curHead: $$<Elem>
+const cur_head_c = $config<$$<Elem>>()
+var cur_head: $$<Elem>
 
 export namespace em$meta {
     export function em$construct() {
-        let itemSize = 16 + $sizeof<Data>()
-        maxElems.$$val = Math.round(mem_size / itemSize) - 3
-        curHead = elem_tab.$$add()
-        curHead.$$.data = data_tab.$$add()
-        let p = curHead
-        for (const _ of $range(maxElems - 1)) {
+        const itemSize = 16 + $sizeof<Data>()
+        max_elems.$$val = Math.round(mem_size / itemSize) - 3
+        cur_head = elem_tab.$$add()
+        cur_head.$$.data = data_tab.$$add()
+        let p = cur_head
+        for (const _ of $range(max_elems - 1)) {
             let q = (p.$$.next = elem_tab.$$add())
             q.$$.data = data_tab.$$add()
             p = q
         }
         p.$$.data = data_tab.$$add()
         p.$$.next = elem_tab.$null()
-        curHead_c.$$val = curHead
+        cur_head_c.$$val = cur_head
     }
 }
 
@@ -51,21 +51,21 @@ export function kind(): UT.Kind {
 }
 
 export function print() {
-    pr(curHead, t$`current`)
+    pr(cur_head, t$`current`)
 }
 
 export function run(arg: i16): UT.sum_t {
-    let list = curHead
-    let finderIdx = <i16>arg
-    let findCnt = UT.getSeed(3)
+    const finder_idx = <i16>arg
+    const find_cnt = UT.getSeed(3)
+    let list = cur_head
     let found = <u16>0
     let missed = <u16>0
     let retval = <UT.sum_t>0
     let data = Data.$make()
-    data.idx = finderIdx
-    for (let i of $range(findCnt)) {
+    data.idx = finder_idx
+    for (const i of $range(find_cnt)) {
         data.val = <i16>(i & 0xff)
-        let elem = find(list, $$(data))
+        const elem = find(list, $$(data))
         list = reverse(list)
         if (!elem) {
             missed += 1
@@ -76,7 +76,7 @@ export function run(arg: i16): UT.sum_t {
                 retval += (<u16>(elem.$$.data.$$.val >> 9)) & 0x1
             }
             if (elem.$$.next) {
-                let tmp = elem.$$.next
+                const tmp = elem.$$.next
                 elem.$$.next = tmp.$$.next
                 tmp.$$.next = list.$$.next
                 list.$$.next = tmp
@@ -85,7 +85,7 @@ export function run(arg: i16): UT.sum_t {
         if (data.idx >= 0) data.idx += 1
     }
     retval += found * 4 - missed
-    if (finderIdx > 0) list = sort(list, valCompare)
+    if (finder_idx > 0) list = sort(list, valCompare)
     let remover = remove(list.$$.next)
     let finder = find(list, $$(data))
     if (!finder) finder = list.$$.next
@@ -102,11 +102,11 @@ export function run(arg: i16): UT.sum_t {
 }
 
 export function setup() {
-    curHead = curHead_c
+    cur_head = cur_head_c
     let seed = UT.getSeed(1)
     let ki = 1
-    let kd = maxElems - 3
-    let e = curHead
+    let kd = max_elems - 3
+    let e = cur_head
     e.$$.data.$$.idx = 0
     e.$$.data.$$.val = 0x8080
     for (e = e.$$.next; e.$$.next != null; e = e.$$.next) {
@@ -114,7 +114,7 @@ export function setup() {
         let dat = (pat << 3) | (kd & 0x7)
         e.$$.data.$$.val = <i16>((dat << 8) | dat)
         kd -= 1
-        if (ki < maxElems / 5) {
+        if (ki < max_elems / 5) {
             e.$$.data.$$.idx = ki++
         } else {
             pat = <u16>(seed ^ ki++)
@@ -123,7 +123,7 @@ export function setup() {
     }
     e.$$.data.$$.idx = 0x7fff
     e.$$.data.$$.val = 0xffff
-    curHead = sort(curHead, idxCompare)
+    cur_head = sort(cur_head, idxCompare)
 }
 
 // private
@@ -135,10 +135,7 @@ function find(list: $$<Elem>, data: $$<Data>): $$<Elem> {
             elem = elem.$$.next
         }
     } else {
-        while (
-            elem &&
-            <i16>((<u16>elem.$$.data.$$.val) & 0xff) != data.$$.val
-        ) {
+        while (elem && <i16>((<u16>elem.$$.data.$$.val) & 0xff) != data.$$.val) {
             elem = elem.$$.next
         }
     }
@@ -146,12 +143,8 @@ function find(list: $$<Elem>, data: $$<Data>): $$<Elem> {
 }
 
 function idxCompare(a: $$<Data>, b: $$<Data>): i32 {
-    a.$$.val = <i16>(
-        (((<u16>a.$$.val) & 0xff00) | (0x00ff & (<u16>(a.$$.val >> 8))))
-    )
-    b.$$.val = <i16>(
-        (((<u16>b.$$.val) & 0xff00) | (0x00ff & (<u16>(b.$$.val >> 8))))
-    )
+    a.$$.val = <i16>((((<u16>a.$$.val) & 0xff00) | (0x00ff & (<u16>(a.$$.val >> 8)))))
+    b.$$.val = <i16>((((<u16>b.$$.val) & 0xff00) | (0x00ff & (<u16>(b.$$.val >> 8)))))
     return a.$$.idx - b.$$.idx
 }
 
@@ -159,15 +152,15 @@ function pr(list: $$<Elem>, name: text_t) {
     let sz = 0
     printf`%s\n[`(name)
     for (let e = list; e != null; e = e.$$.next) {
-        let pre = sz++ % 8 == 0 ? t$`\n    ` : t$``
+        const pre = sz++ % 8 == 0 ? t$`\n    ` : t$``
         printf`%s(%04x,%04x)`(pre, e.$$.data.$$.idx, <u16>e.$$.data.$$.val)
     }
     printf`\n], size = %d\n`(sz)
 }
 
 function remove(item: $$<Elem>): $$<Elem> {
-    let ret = item.$$.next
-    let tmp = item.$$.data
+    const ret = item.$$.next
+    const tmp = item.$$.data
     item.$$.data = ret.$$.data
     ret.$$.data = tmp
     item.$$.next = item.$$.next.$$.next
@@ -264,10 +257,10 @@ import * as Bench0 from '@em.benchmark.coremark/StateBench.em'
 import * as Bench1 from '@em.benchmark.coremark/MatrixBench.em'
 
 function valCalc(pval: $$<i16>): i16 {
-    let val = <u16>pval.$$
-    let optype = (<u8>(val >> 7)) & 1
+    const val = <u16>pval.$$
+    const optype = (<u8>(val >> 7)) & 1
     if (optype) return <i16>(val & 0x007f)
-    let flag = val & 0x7
+    const flag = val & 0x7
     let vtype = (val >> 3) & 0xf
     vtype |= vtype << 4
     let ret: u16
@@ -284,11 +277,8 @@ function valCalc(pval: $$<i16>): i16 {
             ret = val
             break
     }
-    let newcrc = Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL))
-    UT.setCrc(
-        UT.Kind.FINAL,
-        Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL))
-    )
+    const _ = Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL))
+    UT.setCrc(UT.Kind.FINAL, Crc.add16(<i16>ret, UT.getCrc(UT.Kind.FINAL)))
     ret &= 0x007f
     pval.$$ = <i16>((val & 0xff00) | 0x0080 | ret) // cache the result
     return <i16>ret

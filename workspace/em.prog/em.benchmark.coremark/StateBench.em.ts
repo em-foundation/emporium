@@ -12,45 +12,45 @@ enum State {
     START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
 }
 
-const intPat = $table<text_t>()
-const fltPat = $table<text_t>()
-const sciPat = $table<text_t>()
-const errPat = $table<text_t>()
+const int_pat = $table<text_t>()
+const flt_pat = $table<text_t>()
+const sci_pat = $table<text_t>()
+const err_pat = $table<text_t>()
 
-const intPatLen = $config<u16>()
-const fltPatLen = $config<u16>()
-const sciPatLen = $config<u16>()
-const errPatLen = $config<u16>()
+const int_pat_len = $config<u16>()
+const flt_pat_len = $config<u16>()
+const sci_pat_len = $config<u16>()
+const err_pat_len = $config<u16>()
 
 class StateCnt extends $vector<u32> { $len = NUM_STATES }
 
-let membuf = $table<u8>()
+var membuf = $table<u8>()
 
 export namespace em$meta {
     export function em$init() {
-        intPat.$$add(t$`5012`)
-        intPat.$$add(t$`1234`)
-        intPat.$$add(t$`-874`)
-        intPat.$$add(t$`+122`)
-        intPatLen.$$val = intPat[0].$len
+        int_pat.$$add(t$`5012`)
+        int_pat.$$add(t$`1234`)
+        int_pat.$$add(t$`-874`)
+        int_pat.$$add(t$`+122`)
+        int_pat_len.$$val = int_pat[0].$len
         //
-        fltPat.$$add(t$`35.54400`)
-        fltPat.$$add(t$`.1234500`)
-        fltPat.$$add(t$`-110.700`)
-        fltPat.$$add(t$`+0.64400`)
-        fltPatLen.$$val = fltPat[0].$len
+        flt_pat.$$add(t$`35.54400`)
+        flt_pat.$$add(t$`.1234500`)
+        flt_pat.$$add(t$`-110.700`)
+        flt_pat.$$add(t$`+0.64400`)
+        flt_pat_len.$$val = flt_pat[0].$len
         //
-        sciPat.$$add(t$`5.500e+3`)
-        sciPat.$$add(t$`-.123e-2`)
-        sciPat.$$add(t$`-87e+832`)
-        sciPat.$$add(t$`+0.6e-12`)
-        sciPatLen.$$val = sciPat[0].$len
+        sci_pat.$$add(t$`5.500e+3`)
+        sci_pat.$$add(t$`-.123e-2`)
+        sci_pat.$$add(t$`-87e+832`)
+        sci_pat.$$add(t$`+0.6e-12`)
+        sci_pat_len.$$val = sci_pat[0].$len
         //
-        errPat.$$add(t$`T0.3e-1F`)
-        errPat.$$add(t$`-T.T++Tq`)
-        errPat.$$add(t$`1T3.4e4z`)
-        errPat.$$add(t$`34.0e-T^`)
-        errPatLen.$$val = errPat[0].$len
+        err_pat.$$add(t$`T0.3e-1F`)
+        err_pat.$$add(t$`-T.T++Tq`)
+        err_pat.$$add(t$`1T3.4e4z`)
+        err_pat.$$add(t$`34.0e-T^`)
+        err_pat_len.$$val = err_pat[0].$len
     }
 
     export function em$construct() {
@@ -85,17 +85,17 @@ export function print() {
 
 export function run(arg: i16): UT.sum_t {
     if (arg < 0x22) arg = 0x22
-    let finalCnt = StateCnt.$make()
-    let transCnt = StateCnt.$make()
-    for (let i of $range(NUM_STATES)) finalCnt[i] = transCnt[i] = 0
-    scan(finalCnt, transCnt)
+    let final_cnt = StateCnt.$make()
+    let trans_cnt = StateCnt.$make()
+    for (const i of $range(NUM_STATES)) final_cnt[i] = trans_cnt[i] = 0
+    scan(final_cnt, trans_cnt)
     scramble(UT.getSeed(1), arg)
-    scan(finalCnt, transCnt)
+    scan(final_cnt, trans_cnt)
     scramble(UT.getSeed(2), arg)
     let crc = UT.getCrc(UT.Kind.FINAL)
     for (let i of $range(NUM_STATES)) {
-        crc = Crc.addU32(finalCnt[i], crc)
-        crc = Crc.addU32(transCnt[i], crc)
+        crc = Crc.addU32(final_cnt[i], crc)
+        crc = Crc.addU32(trans_cnt[i], crc)
     }
     return crc
 }
@@ -120,22 +120,22 @@ export function setup() {
             case 0:
             case 1:
             case 2:
-                pat = intPat[(seed >> 3) & 0x3]
-                plen = intPatLen
+                pat = int_pat[(seed >> 3) & 0x3]
+                plen = int_pat_len
                 break
             case 3:
             case 4:
-                pat = fltPat[(seed >> 3) & 0x3]
-                plen = fltPatLen
+                pat = flt_pat[(seed >> 3) & 0x3]
+                plen = flt_pat_len
                 break
             case 5:
             case 6:
-                pat = sciPat[(seed >> 3) & 0x3]
-                plen = sciPatLen
+                pat = sci_pat[(seed >> 3) & 0x3]
+                plen = sci_pat_len
                 break
             case 7:
-                pat = errPat[(seed >> 3) & 0x3]
-                plen = errPatLen
+                pat = err_pat[(seed >> 3) & 0x3]
+                plen = err_pat_len
                 break
         }
     }
@@ -147,11 +147,11 @@ function isDigit(ch: u8): bool_t {
     return ch >= c$`0` && ch <= c$`9`
 }
 
-function nextState(pStr: $$<ptr_t<u8>>, transCnt: index_t<u32>): State {
-    let str = pStr.$$
+function nextState(str_ptr: $$<ptr_t<u8>>, trans_cnt: index_t<u32>): State {
+    let str = str_ptr.$$
     let state = <State>State.START
     for (; str.$$ && state != State.INVALID; str.$inc()) {
-        let ch = str.$$
+        const ch = str.$$
         // printf`ch = %c\n`(ch)
         if (ch == c$`,`) {
             str.$inc()
@@ -167,62 +167,62 @@ function nextState(pStr: $$<ptr_t<u8>>, transCnt: index_t<u32>): State {
                     state = State.FLOAT
                 } else {
                     state = State.INVALID
-                    transCnt[ord(State.INVALID)] += 1
+                    trans_cnt[ord(State.INVALID)] += 1
                 }
-                transCnt[ord(State.START)] += 1
+                trans_cnt[ord(State.START)] += 1
                 break
             case State.S1:
                 if (isDigit(ch)) {
                     state = State.INT
-                    transCnt[ord(State.S1)] += 1
+                    trans_cnt[ord(State.S1)] += 1
                 } else if (ch == c$`.`) {
                     state = State.FLOAT
-                    transCnt[ord(State.S1)] += 1
+                    trans_cnt[ord(State.S1)] += 1
                 } else {
                     state = State.INVALID
-                    transCnt[ord(State.S1)] += 1
+                    trans_cnt[ord(State.S1)] += 1
                 }
                 break
             case State.INT:
                 if (ch == c$`.`) {
                     state = State.FLOAT
-                    transCnt[ord(State.INT)] += 1
+                    trans_cnt[ord(State.INT)] += 1
                 } else if (!isDigit(ch)) {
                     state = State.INVALID
-                    transCnt[ord(State.INT)] += 1
+                    trans_cnt[ord(State.INT)] += 1
                 }
                 break
             case State.FLOAT:
                 if (ch == c$`E` || ch == c$`e`) {
                     state = State.S2
-                    transCnt[ord(State.FLOAT)] += 1
+                    trans_cnt[ord(State.FLOAT)] += 1
                 } else if (!isDigit(ch)) {
                     state = State.INVALID
-                    transCnt[ord(State.FLOAT)] += 1
+                    trans_cnt[ord(State.FLOAT)] += 1
                 }
                 break
             case State.S2:
                 if (ch == c$`+` || ch == c$`-`) {
                     state = State.EXPONENT
-                    transCnt[ord(State.S2)] += 1
+                    trans_cnt[ord(State.S2)] += 1
                 } else {
                     state = State.INVALID
-                    transCnt[ord(State.S2)] += 1
+                    trans_cnt[ord(State.S2)] += 1
                 }
                 break
             case State.EXPONENT:
                 if (isDigit(ch)) {
                     state = State.SCIENTIFIC
-                    transCnt[ord(State.EXPONENT)] += 1
+                    trans_cnt[ord(State.EXPONENT)] += 1
                 } else {
                     state = State.INVALID
-                    transCnt[ord(State.EXPONENT)] += 1
+                    trans_cnt[ord(State.EXPONENT)] += 1
                 }
                 break
             case State.SCIENTIFIC:
                 if (!isDigit(ch)) {
                     state = State.INVALID
-                    transCnt[ord(State.INVALID)] += 1
+                    trans_cnt[ord(State.INVALID)] += 1
                 }
                 break
             default:
@@ -230,7 +230,7 @@ function nextState(pStr: $$<ptr_t<u8>>, transCnt: index_t<u32>): State {
                 fail()
         }
     }
-    pStr.$$ = str
+    str_ptr.$$ = str
     // printf`state = %d\n`(state)
     return state
 }
@@ -239,13 +239,13 @@ function ord(state: State): u8 {
     return <u8>state
 }
 
-function scan(finalCnt: index_t<u32>, transCnt: index_t<u32>) {
+function scan(final_cnt: index_t<u32>, trans_cnt: index_t<u32>) {
     let str = membuf.$ptr()
     let cnt = <u32>0
     while (str.$$) {
-        let state = nextState($$(str), transCnt)
+        const state = nextState($$(str), trans_cnt)
         cnt += 1
-        finalCnt[ord(state)] += 1
+        final_cnt[ord(state)] += 1
     }
 }
 

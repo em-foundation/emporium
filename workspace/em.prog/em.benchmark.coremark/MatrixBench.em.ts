@@ -11,9 +11,9 @@ type matres_t = i32
 
 const dimN = $config<u8>()
 
-let matA = $table<matdat_t>()
-let matB = $table<matdat_t>()
-let matC = $table<matres_t>()
+var matA = $table<matdat_t>()
+var matB = $table<matdat_t>()
+var matC = $table<matres_t>()
 
 export namespace em$meta {
     export function em$construct() {
@@ -45,9 +45,9 @@ export function print() {
 }
 
 export function run(arg: arg_t): UT.sum_t {
+    const val = <matdat_t>arg
+    const clipval = enlarge(val)
     let crc = <UT.sum_t>0
-    let val = <matdat_t>arg
-    let clipval = enlarge(val)
     //
     addVal(val)
     mulVal(val)
@@ -67,7 +67,7 @@ export function run(arg: arg_t): UT.sum_t {
 }
 
 export function setup() {
-    let s32 = (<u32>UT.getSeed(1)) | ((<u32>UT.getSeed(2)) << 16)
+    const s32 = (<u32>UT.getSeed(1)) | ((<u32>UT.getSeed(2)) << 16)
     let sd = <matdat_t>s32
     if (sd == 0) sd = 1
     let order = <matdat_t>1
@@ -88,33 +88,33 @@ export function setup() {
 // private
 
 function addVal(val: matdat_t) {
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             matA[i * dimN + j] += val
         }
     }
 }
 
 function bix(res: matres_t, lower: u8, upper: u8): matres_t {
-    let r = <u32>res
-    let l = <u32>lower
-    let u = <u32>upper
+    const r = <u32>res
+    const l = <u32>lower
+    const u = <u32>upper
     return <matres_t>((r >> l) & ~(0xffffffff << u))
 }
 
 function clip(d: matdat_t, b: bool_t): matdat_t {
-    let x = <u16>d
+    const x = <u16>d
     return <matdat_t>(x & (b ? 0x0ff : 0x0ffff))
 }
 
 function enlarge(val: matdat_t): matdat_t {
-    let v = <u16>val
+    const v = <u16>val
     return <matdat_t>(0xf000 | v)
 }
 
 function mulVal(val: matdat_t) {
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             matC[i * dimN + j] =
                 <matres_t>matA[i * dimN + j] * <matres_t>val
         }
@@ -122,10 +122,10 @@ function mulVal(val: matdat_t) {
 }
 
 function mulMat() {
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             matC[i * dimN + j] = 0
-            for (let k of $range(dimN)) {
+            for (const k of $range(dimN)) {
                 matC[i * dimN + j] +=
                     <matres_t>matA[i * dimN + k] *
                     <matres_t>matB[k * dimN + j]
@@ -135,11 +135,11 @@ function mulMat() {
 }
 
 function mulMatBix() {
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             matC[i * dimN + j] = 0
-            for (let k of $range(dimN)) {
-                let tmp =
+            for (const k of $range(dimN)) {
+                const tmp =
                     <matres_t>matA[i * dimN + k] *
                     <matres_t>matB[k * dimN + j]
                 matC[i * dimN + j] += bix(tmp, 2, 4) * bix(tmp, 5, 7)
@@ -149,9 +149,9 @@ function mulMatBix() {
 }
 
 function mulVec() {
-    for (let i of $range(dimN)) {
+    for (const i of $range(dimN)) {
         matC[i] = 0
-        for (let j of $range(dimN)) {
+        for (const j of $range(dimN)) {
             matC[i] += <matres_t>matA[i * dimN + j] * <matres_t>matB[j]
         }
     }
@@ -159,7 +159,7 @@ function mulVec() {
 
 function prDat(lab: text_t, mat: frame_t<matdat_t>) {
     printf`\n%s:\n    `(lab)
-    for (let i of $range(dimN)) {
+    for (const i of $range(dimN)) {
         let sep = t$``
         for (let j of $range(dimN)) {
             printf`%s%d`(sep, mat[i * dimN + j])
@@ -171,9 +171,9 @@ function prDat(lab: text_t, mat: frame_t<matdat_t>) {
 
 function prRes(lab: text_t) {
     printf`\n%s:\n    `(lab)
-    for (let i of $range(dimN)) {
+    for (const i of $range(dimN)) {
         let sep = t$``
-        for (let j of $range(dimN)) {
+        for (const j of $range(dimN)) {
             printf`%s%d`(sep, matC[i * dimN + j])
             sep = t$`,`
         }
@@ -186,8 +186,8 @@ function sumDat(clipval: matdat_t): matdat_t {
     let prev = <matres_t>0
     let tmp = <matres_t>0
     let ret = <matdat_t>0
-    for (let i of $range(dimN)) {
-        for (let j of $range(dimN)) {
+    for (const i of $range(dimN)) {
+        for (const j of $range(dimN)) {
             cur = matC[i * dimN + j]
             tmp += cur
             if (tmp > clipval) {
