@@ -21,7 +21,7 @@ steps:
 
       {[in]The modules track content found in the %[cx]core_util.c% and %[cx]coremark.h% legacy source files.}<br>
 
-      {[in]%[cu]Crc% and %[cu]Utils% largely mirror design and implementa&shy;tion choices enshrined forever in CoreMark.}
+      {[in]%[cu]Crc% and %[cu]Utils% largely mirror design and implementa&shy;tion choices enshrined forever in <b>CoreMark</b>.}
 
   - cmds:
       - close 5
@@ -76,7 +76,7 @@ steps:
     text: |
       {[ht,$details]%[cu]Crc% &ndash; details}
 
-      Updating 16-bit checksums serves as the primary means to ensure correct execution of the CoreMark algorithms.
+      Updating 16-bit checksums serves as the primary means to ensure correct execution of the **CoreMark** algorithms.
 
       Each {[cu]BenchAlgI}.{[cf]run} implementation returns a {[ct]sum_t}, further combined with other checksums in the final result.
 
@@ -100,7 +100,7 @@ steps:
 
       Calls to {[cu]ListBench}.{[cf]run} at {[bm,C]} and {[bm,D]} yield {[ct]sum_t} values accumulated in the {[cn]FINAL} checksum.
 
-      Following CoreMark, line {[bm,E]} binds the current {[cn]FINAL} sum to {[cn]LIST} on the *first* call to {[cu]CoreBench}.{[cf]run}.
+      Following **CoreMark**, line {[bm,E]} binds the current {[cn]FINAL} sum to {[cn]LIST} on the *first* call to {[cu]CoreBench}.{[cf]run}.
 
       The {[cf]print} {[bm,B]} and {[cf]setup} {[bm,F]} implementations call cor&shy;responding {[cu]BenchAlgI} functions in the other algorithms.
 
@@ -115,11 +115,11 @@ steps:
     text: |
       {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$meta% details}
 
-      Without violating the intent of legacy CoreMark sources, {[cu]CoreBench} executes some *build-time* computation.
+      Without violating the intent of legacy **CoreMark** sources, {[cu]CoreBench} executes some *build-time* computation.
 
       The {[cs]em$configure} meta-function at {[bm,B]} calculates the amount of memory allotted to each benchmark algorithm.
 
-      The {[cs]em$construct} meta-function at {[bm,C]} initializes the first three {[ct]seed_t} values to prescribed CoreMark constants.
+      The {[cs]em$construct} meta-function at {[bm,C]} initializes the first three {[ct]seed_t} values to prescribed **CoreMark** constants.
 
       {[in]If you haven't already noticed, we've defined a local %[ct]UT% moniker for %[cu]Utils% at line %[bm,A]% to improve readability.}
 
@@ -142,9 +142,9 @@ steps:
     text: |
       {[ht,$done]Next Steps}
 
-      {[cu]BenchAlgI},&thinsp;{[cu]Crc}, and&thinsp;{[cu]Utils} play a similar role in sha&shy;ping the implementation of the three CoreMark algorithms.
+      {[cu]BenchAlgI},&thinsp;{[cu]Crc}, and&thinsp;{[cu]Utils} play a similar role in sha&shy;ping the implementation of the three **CoreMark** algorithms.
 
-      The next tour of the **CoreMark** group will explore the {[cu]MatrixBench} and {[cu]StateBench} algorithms.
+      The next tour of the ****CoreMark**** group will explore the {[cu]MatrixBench} and {[cu]StateBench} algorithms.
 
       {[in]We'll then devote a separate tour to %[cu]ListBench%, due to the relative complexity of this algorithm.}
 

@@ -18,7 +18,7 @@ steps:
 
       {[in]Starting with legacy C code, this exercise further rein&shy;forces <b>EMS</b> as a higher-level language alternative.}
 
-      The initial tour in this group kicks-off a top-down explor&shy;ation of legacy CoreMark transformed through **EMS**.
+      The initial tour in this group kicks-off a top-down explor&shy;ation of legacy **CoreMark** transformed through **EMS**.
 
   - cmds:
       - open 1
@@ -26,7 +26,7 @@ steps:
     text: |
       {[ht,files]Legacy Sources}
 
-      The CoreMark benchmark comprises six (portable) source files written in C and archived on {[le,https://github.com/eembc/coremark]GitHub}:
+      The **CoreMark** benchmark comprises six (portable) source files written in C and archived on {[le,https://github.com/eembc/coremark]GitHub}:
 
       {[bm,1]} `core_main.c` &ndash; benchmark execution harness<br>
       {[bm,2]} `coremark.h` &ndash; common declarations<br>
@@ -72,9 +72,9 @@ steps:
       {[bm,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
       {[bm,D]} {[cu]CoreBench}.{[cf]run} executes a single algorithm iteration.<br>
 
-      The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten CoreMark iterations.
+      The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten **CoreMark** iterations.
 
-      {[in]Unlike legacy CoreMark &ndash; which will often run for <i>ten seconds</i> &ndash; a small iteration count proves sufficient.}
+      {[in]Unlike legacy <b>CoreMark</b> &ndash; which will often run for <i>ten seconds</i> &ndash; a small iteration count proves sufficient.}
 
   - cmds:
       - mark 3 A 23
@@ -99,7 +99,7 @@ steps:
 
       Using the {[cu]Common}.{[cn]UsCounter} proxy at lines {[bm,A]} and {[bm,B]} yields the (&mu;s accurate) elapsed time printed at line {[bm,C]}.
 
-      {[in]CoreMark defines the algorithm CRCs as invariant re&shy;sults; the final CRC depends on the iteration count.}
+      {[in]<b>CoreMark</b> defines the algorithm CRCs as invariant re&shy;sults; the final CRC depends on the iteration count.}
 
   - cmds: []
     text: |

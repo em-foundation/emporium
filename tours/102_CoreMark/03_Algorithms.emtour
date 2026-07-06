@@ -1,1 +1,90 @@
-title: Benchmark Algorithms - I
+title: Benchmark Algorithms – I
+
+files:
+  - em.prog:em.benchmark.coremark/MatrixBench.em.ts
+  - em.prog:em.benchmark.coremark/StateBench.em.ts
+  - .assets/img-102-03-01.png
+
+steps:
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$start]Algorithms – %[cu]MatrixBench% &middot; %[cu]StateBench%}
+
+      We've finally arrived at the heart of **CoreMark** &ndash; its bench&shy;mark algorithms.
+
+      This tour focuses on the *matrix-math* and *state-machine* algorithms embodied in {[cu]MatrixBench} and {[cu]StateBench}.
+
+      Like {[cu]CoreBench} seen previously, each of these modules implement the same {[cu]BenchAlgI} interface.
+
+      {[in]We'll highlight their %[cf]run% and %[cf]setup% functions, which track legacy code found in %[cx]core_&lbrace;matrix,state&rbrace;.c% }
+
+  - cmds:
+      - close 3
+      - open 1
+    focus: [1, 1]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cx]em$meta% details}
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]run% details}
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]setup% details}
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+      {[ht,$look]Setup Boundary}
+
+      {[in]DRAFT}
+
+      * build-time shape and allocation
+      * runtime seed values through {[cu]Utils}.{[cf]getSeed}
+      * setup work before the measured benchmark run
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cx]em$meta% details}
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
+
+  - cmds:
+      - close 2
+      - close 1
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[bi,task_alt]} Compare {[cu]MatrixBench} with {[cx]core_matrix.c}.
+
+      {[bi,task_alt]} Compare {[cu]StateBench} with {[cx]core_state.c}.
+
+      {[bi,task_alt]} Trace one {[ct]sum_t} value returned from {[cf]run}.
+
+      {[bi,task_alt]} Identify setup work that depends on runtime seeds.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$done]Next Steps}
+
+      {[hc]}
