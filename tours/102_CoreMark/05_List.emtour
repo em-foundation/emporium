@@ -1,1 +1,61 @@
 title: Algorithm – List Processing
+
+files:
+  - em.prog:em.benchmark.coremark/ListBench.em.ts
+  - .assets/img-102-05-01.png
+
+steps:
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$start]%[cu]ListBench% Algorithm}
+
+      The last **CoreMark** algorithm features typical *list process&shy;ing* operations, and plays a special role in the benchmark.
+
+      The {[cu]ListBench} module tracks `core_list_join.c`, while also implementing the common {[cu]BenchAlgI} interface.
+
+      Unlike its sibling modules, the {[cu]CoreBench} um&shy;brella *only* calls {[cu]ListBench}.{[cf]run} when executing the benchmark.
+
+      {[in]As we'll see, %[cu]ListBench% }
+
+  - cmds:
+      - close 2
+      - open 1
+    focus: [1, 11]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; static declarations}
+
+  - cmds:
+      - open 1
+    focus: [1, 61]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details}
+
+  - cmds:
+      - open 1
+    focus: [1, 108]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
+
+  - cmds:
+      - open 1
+    focus: [1, 51]
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[bi,task_alt]} Find {[cu]StateBench} helpers inside {[cx]core_state.c}.
+
+      {[bi,task_alt]} Compare helper functions to sharpen your **EMS** skills.
+
+      {[bi,task_alt]} Call {[cu]StateBench}.{[cf]print} to inspect interim results.
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$done]Next Steps}
+
+      Two down, one to go....
+
+      We'll now move on to {[cu]ListBench} and its implementa&shy;tion of the algorithm codified in {[cx]core_list_join.c}.
+
+      {[hc]}

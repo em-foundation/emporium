@@ -86,13 +86,13 @@ steps:
 
   - cmds:
       - open 2
-      - mark 2 A 31
-      - mark 2 B 35
-      - mark 2 C 42
-      - mark 2 D 48
-      - mark 2 E 52
-      - mark 2 F 56
-    focus: [2, 33]
+      - mark 2 A 35
+      - mark 2 B 39
+      - mark 2 C 46
+      - mark 2 D 51
+      - mark 2 E 56
+      - mark 2 F 60
+    focus: [2, 37]
     text: |
       {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$targ% details}
 
@@ -108,18 +108,21 @@ steps:
 
   - cmds:
       - open 2
-      - mark 2 A 8
-      - mark 2 B 15
+      - mark 2 A 9
+      - mark 2 B 17
       - mark 2 C 22
+      - mark 2 D 26
     focus: [2, 1]
     text: |
       {[ht,$details]%[cu]CoreBench% &ndash; %[cx]em$meta% details}
 
       Without violating the intent of legacy **CoreMark** sources, {[cu]CoreBench} executes some *build-time* computation.
 
-      The {[cs]em$configure} meta-function at {[bm,B]} calculates the amount of memory allotted to each benchmark algorithm.
+      The {[cs]em$configure} meta-function at {[bm,B]} configures the amount of memory allotted to each benchmark algorithm.
 
-      The {[cs]em$construct} meta-function at {[bm,C]} initializes the first three {[ct]seed_t} values to prescribed **CoreMark** constants.
+      This function also binds {[cu]ListBench} at {[bm,C]} to its sibling {[cu]BenchAlgI} implementations via its {[cn]Bench&lbrack;01&rbrack;} proxies.
+
+      The {[cs]em$construct} meta-function at {[bm,D]} initializes the first three {[ct]seed_t} values to prescribed **CoreMark** constants.
 
       {[in]If you haven't already noticed, we've defined a local %[ct]UT% moniker for %[cu]Utils% at line %[bm,A]% to improve readability.}
 

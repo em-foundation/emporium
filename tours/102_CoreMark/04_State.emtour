@@ -19,13 +19,13 @@ steps:
   - cmds:
       - close 2
       - open 1
-      - mark 1 A 7
-      - mark 1 B 9
-      - mark 1 C 13
-      - mark 1 D 16
-      - mark 1 E 29
-      - mark 1 F 34
-    focus: [1, 11]
+      - mark 1 A 8
+      - mark 1 B 10
+      - mark 1 C 14
+      - mark 1 D 17
+      - mark 1 E 30
+      - mark 1 F 35
+    focus: [1, 12]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; static declarations}
 
@@ -41,10 +41,10 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 A 69
-      - mark 1 B 72
-      - mark 1 C 76
-    focus: [1, 71]
+      - mark 1 A 70
+      - mark 1 B 73
+      - mark 1 C 77
+    focus: [1, 72]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
 
@@ -58,10 +58,10 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 A 222
-      - mark 1 B 225
-      - mark 1 C 227
-    focus: [1, 221]
+      - mark 1 A 223
+      - mark 1 B 226
+      - mark 1 C 228
+    focus: [1, 222]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]scan% details}
 
@@ -77,11 +77,11 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 A 132
-      - mark 1 B 134
-      - mark 1 C 141
-      - mark 1 D 213
-    focus: [1, 135]
+      - mark 1 A 133
+      - mark 1 B 135
+      - mark 1 C 142
+      - mark 1 D 214
+    focus: [1, 136]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details}
 
@@ -97,10 +97,10 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 A 85
-      - mark 1 B 90
-      - mark 1 C 100
-    focus: [1, 88]
+      - mark 1 A 86
+      - mark 1 B 91
+      - mark 1 C 101
+    focus: [1, 89]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
 
@@ -114,7 +114,7 @@ steps:
 
   - cmds:
       - open 1
-    focus: [1, 52]
+    focus: [1, 53]
     text: |
       {[ht,$extra]Extra Credit}
 
