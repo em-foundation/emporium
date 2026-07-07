@@ -229,7 +229,7 @@ function scan(final_cnt: index_t<u32>, trans_cnt: index_t<u32>) {
 }
 
 function scramble(seed: UT.seed_t, step: u32) {
-    for (const idx of $range(<u32>0, <u32>mem_size, step)) {
+    for (let idx = 0; idx < mem_size; idx += step) {
         if (membuf[idx] != c$`,`) membuf[idx] ^= <u8>seed
     }
 }
