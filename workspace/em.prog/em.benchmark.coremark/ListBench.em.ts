@@ -16,9 +16,6 @@ class Elem extends $struct {
     data: $$<Data>
 }
 
-var data_tab = $table<Data>()
-var elem_tab = $table<Elem>()
-
 type Comparator = (a: $$<Data>, b: $$<Data>) => i32
 
 const max_elems = $config<u16>()
@@ -26,13 +23,16 @@ const max_elems = $config<u16>()
 const cur_head_c = $config<$$<Elem>>()
 var cur_head: $$<Elem>
 
+var data_tab = $table<Data>()
+var elem_tab = $table<Elem>()
+
 export namespace em$meta {
     export function em$construct() {
         const itemSize = 16 + $sizeof<Data>()
         max_elems.$$val = Math.round(mem_size / itemSize) - 3
-        cur_head = elem_tab.$$add()
-        cur_head.$$.data = data_tab.$$add()
-        let p = cur_head
+        const hd = elem_tab.$$add()
+        hd.$$.data = data_tab.$$add()
+        let p = hd
         for (const _ of $range(max_elems - 1)) {
             let q = (p.$$.next = elem_tab.$$add())
             q.$$.data = data_tab.$$add()
@@ -40,7 +40,7 @@ export namespace em$meta {
         }
         p.$$.data = data_tab.$$add()
         p.$$.next = elem_tab.$null()
-        cur_head_c.$$val = cur_head
+        cur_head_c.$$val = hd
     }
 }
 
@@ -102,8 +102,8 @@ export function run(arg: i16): UT.sum_t {
 }
 
 export function setup() {
-    cur_head = cur_head_c
     let seed = UT.getSeed(1)
+    cur_head = cur_head_c
     let ki = 1
     let kd = max_elems - 3
     let e = cur_head
