@@ -6,6 +6,13 @@ import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const mem_size = $config<u16>()
 
+enum State {
+    START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
+}
+
+const NUM_STATES = 8
+class StateCnt extends $vector<u32> { $len = NUM_STATES }
+
 const int_pat = $table<text_t>([
     t$`5012`, t$`1234`, t$`-874`, t$`+122`
 ])
@@ -34,12 +41,28 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-enum State {
-    START, INVALID, S1, S2, INT, FLOAT, EXPONENT, SCIENTIFIC,
+export function kind(): UT.Kind {
+    return UT.Kind.STATE
 }
 
-const NUM_STATES = 8
-class StateCnt extends $vector<u32> { $len = NUM_STATES }
+export function print() {
+    let p = membuf.$ptr()
+    let cnt = 0
+    printf`\n%c`(c$`"`)
+    while (p.$$) {
+        if (cnt++ % 8 == 0) {
+            printf`\n    `()
+        }
+        while (true) {
+            let c = p.$$
+            p.$inc()
+            if (c == c$`,`) break
+            printf`%c`(c)
+        }
+        printf`, `()
+    }
+    printf`\n%c, count = %d\n`(c$`"`, cnt)
+}
 
 export function run(arg: i16): UT.sum_t {
     if (arg < 0x22) arg = 0x22
@@ -97,29 +120,6 @@ export function setup() {
                 break
         }
     }
-}
-
-export function kind(): UT.Kind {
-    return UT.Kind.STATE
-}
-
-export function print() {
-    let p = membuf.$ptr()
-    let cnt = 0
-    printf`\n%c`(c$`"`)
-    while (p.$$) {
-        if (cnt++ % 8 == 0) {
-            printf`\n    `()
-        }
-        while (true) {
-            let c = p.$$
-            p.$inc()
-            if (c == c$`,`) break
-            printf`%c`(c)
-        }
-        printf`, `()
-    }
-    printf`\n%c, count = %d\n`(c$`"`, cnt)
 }
 
 // private

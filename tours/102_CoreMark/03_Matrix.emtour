@@ -1,4 +1,4 @@
-title: Benchmark Algorithms – I
+title: Algorithm – Matrix Math
 
 files:
   - em.prog:em.benchmark.coremark/MatrixBench.em.ts
@@ -87,22 +87,47 @@ steps:
       - close 1
       - open 2
       - mark 2 A 7
-    focus: [2, 1]
+      - mark 2 B 9
+      - mark 2 C 13
+      - mark 2 D 16
+      - mark 2 E 29
+      - mark 2 F 34
+    focus: [2, 11]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cx]em$meta% details}
+      {[ht,$details]%[cu]StateBench% &ndash; static declarations}
+
+      {[cu]StateBench} implements a finite-state-machine which repeatedly scans {[cn]membuf} {[bm,F]} for different numeric text.
+
+      {[in]The %[cn]mem_size% config %[bm,A]% determines the buffer's size.}
+
+      The {[ct]State} type {[bm,B]} enumerates the nodes comprising the underlying state-machine scanner.
+
+      The {[ct]StateCnt} type {[bm,C]} defines a vector used to count oc&shy;curances of each state encountered when scanning.
+
+      Finally, {[cu]StateBench}.{[cf]setup} will consume {[cs]$table} {[bm,D]} and {[cs]$config} {[bm,E]} values when preparing {[cn]membuf} at run-time.
 
   - cmds:
       - open 2
-    focus: [2, 46]
+      - mark 2 A 69
+      - mark 2 B 72
+      - mark 2 C 76
+    focus: [2, 71]
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
+
+      Local {[ct]StateCnt} vectors allocated at {[bm,A]} hold tallies of fi&shy;nal and transient states encountered when scanning.
+
+      The {[cn]crc} variable at {[bm,C]} combines all of these accumulated counts into a single {[ct]sum_t} return by {[cu]StateBench}.{[cf]run}.
+
+      Line {[bm,B]} calls {[cf]scan} twice to apply the state-machine to the {[cn]membuf} text while tallying the states encountered.
+
+      {[in]The %[cf]scramble% function purposely "corrupts" the %[cn]membuf% text to force entry into the %[cn]INVALID% state.}
 
   - cmds:
       - open 2
     focus: [2, 136]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details}
-
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details
   - cmds:
       - open 2
     focus: [2, 72]

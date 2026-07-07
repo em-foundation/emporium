@@ -1,0 +1,156 @@
+title: Algorithm – State Machine
+
+files:
+  - em.prog:em.benchmark.coremark/MatrixBench.em.ts
+  - em.prog:em.benchmark.coremark/StateBench.em.ts
+  - .assets/img-102-03-01.png
+
+steps:
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$start]Algorithms – %[cu]MatrixBench% &middot; %[cu]StateBench%}
+
+      We've finally arrived at the heart of **CoreMark** &ndash; its trio of bench&shy;mark algorithms.
+
+      This tour focuses on the *matrix-math* and *state-machine* algorithms embodied in {[cu]MatrixBench} and {[cu]StateBench}.
+
+      Like {[cu]CoreBench} seen previously, each of these modules implements a common {[cu]BenchAlgI} interface.
+
+      {[in]We'll highlight their %[cf]run% and %[cf]setup% functions, which track legacy code found in %[cx]core_&lbrace;matrix,state&rbrace;.c% }
+
+  - cmds:
+      - close 3
+      - open 1
+      - mark 1 A 7
+      - mark 1 B 14
+      - mark 1 C 26
+    focus: [1, 1]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cx]em$meta% details}
+
+      {[cu]MatrixBench} subjects the three {[cs]$table} objects declared at line {[bm,B]} to a variety of matrix-math opertions.
+
+      The value of {[cn]mem_size}{[bm,A]} (bound by {[cu]CoreBench} at build-time) ultimately determines the dimension of {[cn]mat&lbrack;ABC&rbrack;}.
+
+      A calculation inside {[cs]em$construct} eventually binds this dimension value to the {[cn]dimN} config parameter at line {[bm,C]}.
+
+      {[in]The subsequent loop then dimensions and zeroes the %[cs]$table% matricies using the intrinsic <b>%[cx]$$add%</b> operator.}
+
+  - cmds:
+      - open 1
+    focus: [1, 51]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]run% details}
+
+      Starting with its scalar argument, {[cu]MatrixBench}.{[cf]run} ma&shy;nip&shy;ulates {[cn]mat&lbrack;ABC&rbrack;} through a series of private functions.
+
+      {[in]Navigate to helpers like %[cf]addVal% and %[cf]mulVec%, which match functions found in the legacy <b>CoreMark</b> code.}
+
+      To compute its {[ct]sum_t} result, {[cu]MatrixBench}.{[cf]run} updates its local {[cn]crc} variable with a scalar returned by {[cf]sumDat}.
+
+      The {[ct]sum_t} returned by {[cf]run} folds the accumulated {[cn]crc} value into the benchmark's {[cn]FINAL} checksum.
+
+  - cmds:
+      - open 1
+      - mark 1 A 70
+    focus: [1, 73]
+    text: |
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]setup% details}
+
+      The {[cu]MatrixBench}.{[cf]setup} initializes (at *run-time*) the {[cn]matA} and {[cn]matB} objects dimensioned and zeroed at *build-time*.
+
+      The scalar values held in these matricies ultimately derive from special **CoreMark** seed values read here at line {[bm,A]}.
+
+      {[in]Recall that %[cu]UT%.%[cf]getSeed% forcibly reads (at <i>run-time</i>) an unknown constant value bound at <i>build-time</i>.}
+
+  - cmds:
+      - open 1
+      - mark 1 A 70
+    focus: [1, 73]
+    text: |
+      {[ht,fence]%[cu]BenchAlgI%.%[cf]setup% &ndash; domain boundaries}
+
+      The {[cf]setup} function we just examined could seem&shy;ingly have resided in the **`em$meta`** domain.
+
+      {[in]Build-time initialization of complex data structures in fact distinguishes <b>EMS</b> from other embedded languages.}
+
+      Moving **`em$targ`** code upstream to the **`em$meta`** domain reduces program size and often improves performance.
+
+      But **CoreMark** forbids this &ndash; fearing a compiler might "pre-compute" benchmark results from static datasets.
+
+      **CoreMark** thus requires *explicit* memory reads of all seed values &ndash; like any program input known only at run-time.
+
+      {[in]Our <b>EMS</b> modules will maximize build-time initial&shy;ization, while still respecting <b>CoreMark</b>'s inherent constraint.}
+
+  - cmds:
+      - close 1
+      - open 2
+      - mark 2 A 7
+      - mark 2 B 9
+      - mark 2 C 13
+      - mark 2 D 16
+      - mark 2 E 29
+      - mark 2 F 34
+    focus: [2, 11]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; static declarations}
+
+      {[cu]StateBench} implements a finite-state-machine which repeatedly scans {[cn]membuf} {[bm,F]} for different numeric text.
+
+      {[in]The %[cn]mem_size% config %[bm,A]% determines the buffer's size.}
+
+      The {[ct]State} type {[bm,B]} enumerates the nodes comprising the underlying state-machine scanner.
+
+      The {[ct]StateCnt} type {[bm,C]} defines a vector used to count oc&shy;curances of each state encountered when scanning.
+
+      Finally, {[cu]StateBench}.{[cf]setup} will consume {[cs]$table} {[bm,D]} and {[cs]$config} {[bm,E]} values when preparing {[cn]membuf} at run-time.
+
+  - cmds:
+      - open 2
+      - mark 2 A 69
+      - mark 2 B 72
+      - mark 2 C 76
+    focus: [2, 71]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
+
+      Local {[ct]StateCnt} vectors allocated at {[bm,A]} hold tallies of fi&shy;nal and transient states encountered when scanning.
+
+      The {[cn]crc} variable at {[bm,C]} combines all of these accumulated counts into a single {[ct]sum_t} return by {[cu]StateBench}.{[cf]run}.
+
+      Line {[bm,B]} calls {[cf]scan} twice to apply the state-machine to the {[cn]membuf} text while tallying the states encountered.
+
+      {[in]The %[cf]scramble% function purposely "corrupts" the %[cn]membuf% text to force entry into the %[cn]INVALID% state.}
+
+  - cmds:
+      - open 2
+    focus: [2, 136]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details
+  - cmds:
+      - open 2
+    focus: [2, 72]
+    text: |
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
+
+  - cmds:
+      - close 2
+      - close 1
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[bi,task_alt]} Compare {[cu]MatrixBench} with {[cx]core_matrix.c}.
+
+      {[bi,task_alt]} Compare {[cu]StateBench} with {[cx]core_state.c}.
+
+      {[bi,task_alt]} Trace one {[ct]sum_t} value returned from {[cf]run}.
+
+      {[bi,task_alt]} Identify setup work that depends on runtime seeds.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$done]Next Steps}
+
+      {[hc]}
