@@ -12,7 +12,7 @@ steps:
 
       We turn now to the second **CoreMark** algorithm &ndash; a *state-machine* which scans for different forms of numeric text.
 
-      The {[cu]StateBench} module closely tracks `code_state.c`, while also implementing the {[cu]BenchAlgI} interface.
+      The {[cu]StateBench} module closely tracks `core_state.c`, while also implementing the {[cu]BenchAlgI} interface.
 
       {[in]By design, %[cu]StateBench% features "low-level" <b>EMS</b> pointer idioms similar to those found in legacy C code.}
 
@@ -35,7 +35,7 @@ steps:
 
       The {[ct]State} type {[bm,B]} enumerates the nodes comprising the underlying state-machine scanner.
 
-      The {[ct]StateCnt} type {[bm,C]} defines a vector used to count oc&shy;curances of each state encountered when scanning.
+      The {[ct]StateCnt} type {[bm,C]} defines a vector used to count oc&shy;curences of each state encountered when scanning.
 
       Finally, {[cu]StateBench}.{[cf]setup} will consume {[cs]$table} {[bm,D]} and {[cs]$config} {[bm,E]} values when preparing {[cn]membuf} at run-time.
 
@@ -65,15 +65,13 @@ steps:
     text: |
       {[ht,$details]%[cu]StateBench% &ndash; %[cf]scan% details}
 
-      The {[cf]scan} function receives our {[ct]StateCnt} vectors as argu&shy;ments &ndash; declared here using the generic {[ct]index_t} type.
+      The {[cf]scan} function receives our {[ct]StateCnt} vectors as argu&shy;ments &ndash; accessed here via the generic {[ct]index_t} type.
 
       Using a pointer {[bm,A]} to iterate through {[cn]membuf}, {[cf]nextState} {[bm,B]} matches numeric text at the current {[cn]str} position.
 
       Note that {[cf]nextState} receives {[cn]cnt} by *reference* &ndash; enab&shy;ling us to update {[cn]str} ahead of the next call to this helper.
 
       Line {[bm,C]} then increments the {[cn]final_cnt} for the {[ct]State} value returned by {[cf]nextState}.
-
-
 
       {[in]Incrementing the %[cn]cnt% variable here has no apparent purpose; the original %[cx]code_state.c% does the same.}
 
