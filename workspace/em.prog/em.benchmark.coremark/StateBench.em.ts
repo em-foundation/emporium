@@ -87,9 +87,9 @@ export function setup() {
     let total = 0
     let pat = t$``
     let plen = 0
-    while (total + plen + 1 < mem_size - 1) {
+    while ((total + plen + 1) < (mem_size - 1)) {
         if (plen) {
-            for (let i of $range(plen)) {
+            for (const i of $range(plen)) {
                 p.$$ = pat[i]
                 p.$inc()
             }
@@ -128,12 +128,11 @@ function isDigit(ch: u8): bool_t {
     return ch >= c$`0` && ch <= c$`9`
 }
 
-function nextState(str_ptr: $$<ptr_t<u8>>, trans_cnt: index_t<u32>): State {
-    let str = str_ptr.$$
+function nextState(str_ref: $$<ptr_t<u8>>, trans_cnt: index_t<u32>): State {
+    let str = str_ref.$$
     let state = <State>State.START
     for (; str.$$ && state != State.INVALID; str.$inc()) {
         const ch = str.$$
-        // printf`ch = %c\n`(ch)
         if (ch == c$`,`) {
             str.$inc()
             break
@@ -211,8 +210,7 @@ function nextState(str_ptr: $$<ptr_t<u8>>, trans_cnt: index_t<u32>): State {
                 fail()
         }
     }
-    str_ptr.$$ = str
-    // printf`state = %d\n`(state)
+    str_ref.$$ = str
     return state
 }
 

@@ -12,9 +12,9 @@ steps:
 
       We've arrived at the heart of **CoreMark** &ndash; its trio of bench&shy;mark algorithms and their implementation in **EMS**.
 
-      {[bi,arrow_circle_right]} <code>core_list.c&nbsp;&nbsp;&nbsp;</code>{[cu]ListBench&nbsp;&nbsp;&nbsp;&nbsp;}[&thinsp;list-processing&thinsp;]<br>
-      {[bi,arrow_circle_right]} <code>core_matrix.c&nbsp;</code>{[cu]MatrixBench&nbsp;&nbsp;}[&thinsp;matrix-math&thinsp;]<br>
-      {[bi,arrow_circle_right]} <code>core_state.c&nbsp;&nbsp;</code>{[cu]StateBench&nbsp;&nbsp;&nbsp;}[&thinsp;state-machine&thinsp;]<br>
+      {[bi,arrow_circle_right]} <code>core_list_join.c&nbsp;</code>{[cu]ListBench&nbsp;&nbsp;&nbsp;&nbsp;}[&thinsp;list-processing&thinsp;]<br>
+      {[bi,arrow_circle_right]} <code>core_matrix.c&nbsp;&nbsp;&nbsp;&nbsp;</code>{[cu]MatrixBench&nbsp;&nbsp;}[&thinsp;matrix-math&thinsp;]<br>
+      {[bi,arrow_circle_right]} <code>core_state.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>{[cu]StateBench&nbsp;&nbsp;&nbsp;}[&thinsp;state-machine&thinsp;]<br>
 
       Like {[cu]CoreBench} seen previously, each of these modules implements a common {[cu]BenchAlgI} interface.
 
@@ -87,8 +87,8 @@ steps:
       {[in]Our <b>EMS</b> modules will maximize build-time initial&shy;ization, while still respecting <b>CoreMark</b>'s inherent constraint.}
 
   - cmds:
-      - close 2
-      - close 1
+      - open 1
+    focus: [1, 40]
     text: |
       {[ht,$extra]Extra Credit}
 
