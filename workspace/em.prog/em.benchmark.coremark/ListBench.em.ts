@@ -1,10 +1,14 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', BenchAlgI)
 
+import * as BenchAlgI from '@em.benchmark.coremark/BenchAlgI.em'
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as UT from '@em.benchmark.coremark/Utils.em'
 
 export const mem_size = $config<u16>()
+
+export const Bench0 = $proxy<BenchAlgI.$I>()
+export const Bench1 = $proxy<BenchAlgI.$I>()
 
 export class Data extends $struct {
     val: i16
@@ -252,9 +256,6 @@ function unremove(removed: $$<Elem>, modified: $$<Elem>) {
 }
 
 // ---- ValComparator ----
-
-import * as Bench0 from '@em.benchmark.coremark/StateBench.em'
-import * as Bench1 from '@em.benchmark.coremark/MatrixBench.em'
 
 function valCalc(pval: $$<i16>): i16 {
     const val = <u16>pval.$$

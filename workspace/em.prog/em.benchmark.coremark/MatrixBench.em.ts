@@ -1,6 +1,7 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', BenchAlgI)
 
+import * as BenchAlgI from '@em.benchmark.coremark/BenchAlgI.em'
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as UT from '@em.benchmark.coremark/Utils.em'
 

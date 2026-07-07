@@ -1,6 +1,7 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', BenchAlgI)
 
+import * as BenchAlgI from '@em.benchmark.coremark/BenchAlgI.em'
 import * as Crc from '@em.benchmark.coremark/Crc.em'
 import * as ListBench from '@em.benchmark.coremark/ListBench.em'
 import * as MatrixBench from '@em.benchmark.coremark/MatrixBench.em'
@@ -17,6 +18,9 @@ export namespace em$meta {
         ListBench.mem_size.$$val = mem_size
         MatrixBench.mem_size.$$val = mem_size
         StateBench.mem_size.$$val = mem_size
+        //
+        ListBench.Bench0.$$dlg = StateBench
+        ListBench.Bench1.$$dlg = MatrixBench
     }
 
     export function em$construct() {
