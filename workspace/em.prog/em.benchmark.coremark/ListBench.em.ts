@@ -20,7 +20,7 @@ class Elem extends $struct {
     data: $$<Data>
 }
 
-type Comparator = (a: $$<Data>, b: $$<Data>) => i32
+type Comparator = cb_t<[a: $$<Data>, b: $$<Data>], i32>
 
 const max_elems = $config<u16>()
 
@@ -89,7 +89,7 @@ export function run(arg: i16): UT.sum_t {
         if (data.idx >= 0) data.idx += 1
     }
     retval += found * 4 - missed
-    if (finder_idx > 0) list = sort(list, valCompare)
+    if (finder_idx > 0) list = sort(list, $cb(valCompare))
     let remover = remove(list.$$.next)
     let finder = find(list, $$(data))
     if (!finder) finder = list.$$.next
@@ -98,7 +98,7 @@ export function run(arg: i16): UT.sum_t {
         finder = finder.$$.next
     }
     unremove(remover, list.$$.next)
-    list = sort(list, idxCompare)
+    list = sort(list, $cb(idxCompare))
     for (let e = list.$$.next; e; e = e.$$.next) {
         retval = Crc.add16(list.$$.data.$$.val, retval)
     }
@@ -127,7 +127,7 @@ export function setup() {
     }
     e.$$.data.$$.idx = 0x7fff
     e.$$.data.$$.val = 0xffff
-    cur_head = sort(cur_head, idxCompare)
+    cur_head = sort(cur_head, $cb(idxCompare))
 }
 
 // private
