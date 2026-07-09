@@ -3,6 +3,7 @@ title: Algorithm – List Processing
 files:
   - em.prog:em.benchmark.coremark/ListBench.em.ts
   - .assets/img-102-05-01.png
+  - .assets/img-102-05-02.png
 
 steps:
   - cmds:
@@ -16,14 +17,55 @@ steps:
 
       Unlike its sibling modules, the {[cu]CoreBench} um&shy;brella *only* calls {[cu]ListBench}.{[cf]run} when executing the benchmark.
 
-      {[in]As we'll see, %[cu]ListBench% }
+      {[in]%[cu]CoreBench% also bound %[cu]ListBench%.%[cn]Board&lbrack;01&rbrack;% proxies to %[cu]StateBench% and %[cu]MatrixBench% at build-time.}
+
+      Before examining its more complex codebase, we'll first introduce some key internal elements of {[cu]ListBench}.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$peek]%[cu]ListBench% Codescape}
+
+      {[bm,1]} This module enapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
+
+      {[bm,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
+
+      {[bm,3]} {[cu]ListBench}.{[cf]run} uses helpers to re-arrange the list.
+
+      {[bm,4]} The {[cf]find} helper locates {[ct]Data} nodes by {[cn]idx} or {[cn]val}.
+
+      {[bm,5]} A generic {[cf]sort} function abstracts list ordering by re&shy;ceiving a callback conforming to the {[ct]Comparator} type.
+
+      {[bm,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
+
+      {[bm,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value dervied from each {[ct]Data} node.
 
   - cmds:
       - close 2
       - open 1
-    focus: [1, 11]
+      - mark 1 A 8
+      - mark 1 B 10
+      - mark 1 C 13
+      - mark 1 D 18
+      - mark 1 E 20
+    focus: [1, 1]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; static declarations}
+
+  - cmds:
+      - open 1
+      - mark 1 A 8
+      - mark 1 B 10
+      - mark 1 C 13
+      - mark 1 D 18
+      - mark 1 E 20
+      - mark 1 F 25
+      - mark 1 G 34
+      - mark 1 H 37
+      - mark 1 * 48
+    focus: [1, 24]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; %[cx]em$meta% initialization}
 
   - cmds:
       - open 1

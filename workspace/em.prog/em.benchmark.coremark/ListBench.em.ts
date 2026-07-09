@@ -10,33 +10,31 @@ export const mem_size = $config<u16>()
 export const Bench0 = $proxy<BenchAlgI.$I>()
 export const Bench1 = $proxy<BenchAlgI.$I>()
 
-export class Data extends $struct {
+class Data extends $struct {
     val: i16
     idx: i16
 }
+
+type Comparator = cb_t<[a: $$<Data>, b: $$<Data>], i32>
 
 class Elem extends $struct {
     next: $$<Elem>
     data: $$<Data>
 }
 
-type Comparator = cb_t<[a: $$<Data>, b: $$<Data>], i32>
-
-const max_elems = $config<u16>()
-
-const cur_head_c = $config<$$<Elem>>()
-var cur_head: $$<Elem>
-
 var data_tab = $table<Data>()
 var elem_tab = $table<Elem>()
+
+const cur_head_c = $config<$$<Elem>>()
+const max_elems = $config<u16>()
 
 export namespace em$meta {
     export function em$construct() {
         const itemSize = 16 + $sizeof<Data>()
-        max_elems.$$val = Math.round(mem_size / itemSize) - 3
-        const hd = elem_tab.$$add()
+        const hd = cur_head_c.$$val = elem_tab.$$add()
         hd.$$.data = data_tab.$$add()
         let p = hd
+        max_elems.$$val = Math.round(mem_size / itemSize) - 3
         for (const _ of $range(max_elems - 1)) {
             let q = (p.$$.next = elem_tab.$$add())
             q.$$.data = data_tab.$$add()
@@ -44,9 +42,10 @@ export namespace em$meta {
         }
         p.$$.data = data_tab.$$add()
         p.$$.next = elem_tab.$null()
-        cur_head_c.$$val = hd
     }
 }
+
+var cur_head: $$<Elem>      // initialized from cur_head_c in setup()
 
 //>> ---- em$targ ---- <<//
 
