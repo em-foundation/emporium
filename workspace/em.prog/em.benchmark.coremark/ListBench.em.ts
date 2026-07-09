@@ -25,8 +25,6 @@ class Elem extends $struct {
 var data_tab = $table<Data>()
 var elem_tab = $table<Elem>()
 
-var cur_head: $$<Elem>      // initialized from cur_head_c in setup()
-
 const cur_head_c = $config<$$<Elem>>()
 const max_elems = $config<u16>()
 
@@ -46,6 +44,8 @@ export namespace em$meta {
         p.$$.next = elem_tab.$null()
     }
 }
+
+var cur_head: $$<Elem>      // initialized from cur_head_c in setup()
 
 //>> ---- em$targ ---- <<//
 
