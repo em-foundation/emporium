@@ -32,19 +32,19 @@ steps:
     text: |
       {[ht,$peek]%[cu]ListBench% Codescape}
 
-      {[bm,1]} This module enapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
+      {[dc,1]} This module enapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
 
-      {[bm,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
+      {[dc,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
 
-      {[bm,3]} {[cu]ListBench}.{[cf]run} uses helpers to re-arrange the list.
+      {[dc,3]} {[cu]ListBench}.{[cf]run} uses helpers to re-arrange the list.
 
-      {[bm,4]} The {[cf]find} helper locates {[ct]Data} nodes by {[cn]idx} or {[cn]val}.
+      {[dc,4]} The {[cf]find} helper locates {[ct]Data} nodes by {[cn]idx} or {[cn]val}.
 
-      {[bm,5]} A generic {[cf]sort} function abstracts list ordering by re&shy;ceiving a callback conforming to the {[ct]Comparator} type.
+      {[dc,5]} A generic {[cf]sort} function abstracts list ordering by re&shy;ceiving a callback conforming to the {[ct]Comparator} type.
 
-      {[bm,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
+      {[dc,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
 
-      {[bm,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value dervied from each {[ct]Data} node.
+      {[dc,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value dervied from each {[ct]Data} node.
 
   - cmds:
       - close 2
@@ -55,6 +55,7 @@ steps:
       - mark 1 C 13
       - mark 1 D 18
       - mark 1 E 20
+      - mark 1 F 28
     focus: [1, 1]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; static declarations}
@@ -67,6 +68,8 @@ steps:
 
       {[in]For brevity, we've taken syntactic liberties when defining types %[bm,C]%&middot;%[bm,D]%&middot;%[bm,E]% in our earlier codescape diagram.}
 
+      Finally, note that the {[cn]cur_head} {[bm,F]} variable re&shy;ceives its in&shy;itial value from the (*build-time*) {[cn]cur_head_c} config.
+
   - cmds:
       - open 1
       - mark 1 A 8
@@ -77,10 +80,20 @@ steps:
       - mark 1 F 25
       - mark 1 G 34
       - mark 1 H 37
-      - mark 1 * 48
+      - mark 1 I 48
     focus: [1, 24]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; %[cx]em$meta% initialization}
+
+      The {[cs]em$construct} function creates the linked data struc&shy;ture shown as item {[dc,2]}in the prior codescape figure.
+
+      After anchoring the first {[ct]Elem} at {[bm,G]}, {[cu]ListBench} calcu&shy;lates {[cn]max_elems} at {[bm,H]} based on memory budget.
+
+      The {[ck]for} loop uses the **`$$add`** intrinsic to al&shy;locate {[ct]Elem} and {[ct]Data} nodes before linking them into the list.
+
+      {[in]Note that the %[cn]idx% and %[cn]val% fields of each %[ct]Data% node remain unassigned at this time.}
+
+      Finally, the {[cn]cur_head} variable
 
   - cmds:
       - open 1
