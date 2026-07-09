@@ -2,12 +2,14 @@ title: Algorithm – List Processing
 
 files:
   - em.prog:em.benchmark.coremark/ListBench.em.ts
+  - em.prog:em.benchmark.coremark/CoreBench.em.ts
   - .assets/img-102-05-01.png
   - .assets/img-102-05-02.png
 
 steps:
   - cmds:
-      - view 2
+      - open 2
+      - view 3
     text: |
       {[ht,$start]%[cu]ListBench% Algorithm}
 
@@ -17,12 +19,16 @@ steps:
 
       Unlike its sibling modules, the {[cu]CoreBench} um&shy;brella *only* calls {[cu]ListBench}.{[cf]run} when executing the benchmark.
 
-      {[in]%[cu]CoreBench% also bound %[cu]ListBench%.%[cn]Board&lbrack;01&rbrack;% proxies to %[cu]StateBench% and %[cu]MatrixBench% at build-time.}
+      Recall that {[cu]CoreBench} also bound {[cu]ListBench}.{[cn]Board&lbrack;01&rbrack;} proxies to {[cu]StateBench} and {[cu]MatrixBench} at build-time.
+
+      {[in]Take a quick peek at the %[cx]CoreBench.em.ts% editor tab.}
 
       Before examining its more complex codebase, we'll first introduce some key internal elements of {[cu]ListBench}.
 
   - cmds:
-      - view 3
+      - close 2
+      - close 3
+      - view 4
     text: |
       {[ht,$peek]%[cu]ListBench% Codescape}
 
@@ -42,6 +48,7 @@ steps:
 
   - cmds:
       - close 2
+      - view 4
       - open 1
       - mark 1 A 8
       - mark 1 B 10
@@ -51,6 +58,14 @@ steps:
     focus: [1, 1]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; static declarations}
+
+      Like its siblings, {[cu]ListBench} exports a {[cn]mem_size} config {[bm,A]} assigned by {[cu]CoreBench} at build-time.
+
+      {[cu]CoreBench} also binds {[cn]Bench&lbrack;01&rbrack;} proxies declared at {[bm,B]}, which in fact will support a {[cu]ListBench}.{[cf]sort} helper.
+
+      The prior tour stop introduced the list-node types {[ct]Data}{[bm,C]}and {[ct]Elem}{[bm,E]}, plus a {[ct]Comparator}{[bm,D]} type used by {[cf]sort}.
+
+      {[in]For brevity, we've taken syntactic liberties when defining types %[bm,C]%&middot;%[bm,D]%&middot;%[bm,E]% in our earlier codescape diagram.}
 
   - cmds:
       - open 1
