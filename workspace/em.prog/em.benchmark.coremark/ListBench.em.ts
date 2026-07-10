@@ -59,13 +59,13 @@ export function print() {
 
 export function run(arg: i16): UT.sum_t {
     const finder_idx = <i16>arg
-    const find_cnt = UT.getSeed(3)
+    let retval = <UT.sum_t>0
     let list = cur_head
     let found = <u16>0
     let missed = <u16>0
-    let retval = <UT.sum_t>0
     let data = Data.$make()
     data.idx = finder_idx
+    const find_cnt = UT.getSeed(3)
     for (const i of $range(find_cnt)) {
         data.val = <i16>(i & 0xff)
         const elem = find(list, $$(data))
@@ -88,6 +88,7 @@ export function run(arg: i16): UT.sum_t {
         if (data.idx >= 0) data.idx += 1
     }
     retval += found * 4 - missed
+
     if (finder_idx > 0) list = sort(list, $cb(valCompare))
     let remover = remove(list.$$.next)
     let finder = find(list, $$(data))
@@ -105,8 +106,8 @@ export function run(arg: i16): UT.sum_t {
 }
 
 export function setup() {
-    let seed = UT.getSeed(1)
     cur_head = cur_head_c
+    let seed = UT.getSeed(1)
     let ki = 1
     let kd = max_elems - 3
     let e = cur_head
@@ -253,8 +254,6 @@ function unremove(removed: $$<Elem>, modified: $$<Elem>) {
     removed.$$.next = modified.$$.next
     modified.$$.next = removed
 }
-
-// ---- ValComparator ----
 
 function valCalc(pval: $$<i16>): i16 {
     const val = <u16>pval.$$

@@ -93,19 +93,75 @@ steps:
 
   - cmds:
       - open 1
-    focus: [1, 61]
+      - mark 1 A 108
+      - mark 1 B 109
+      - mark 1 C 129
+    focus: [1, 111]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]setup% details}
+
+      As noted previously, {[cu]ListBench}.{[cf]setup} initializes {[bm,A]} its {[cn]cur_head} variable with the frozen value of {[cn]cur_head_c}.
+
+      Like other {[cf]setup} functions, {[cu]ListBench} uses a run-time {[ct]seed_t} value {[bm,B]} to randomly initialize its {[ct]Data} nodes.
+
+      As a final step {[bm,C]}, {[cf]setup} sorts the list in {[ct]Data}.{[cn]idx} order before updating the {[cn]cur_head} variable.
+
+      {[in]Suffice it to say, we now have a linked-list similar to codescape item %[dc,2]% &ndash; ready for run-time manipulation.}
 
   - cmds:
       - open 1
-    focus: [1, 108]
+      - mark 1 A 62
+      - mark 1 B 66
+      - mark 1 C 69
+      - mark 1 D 71
+      - mark 1 E 72
+      - mark 1 F 90
+    focus: [1, 64]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details (search phase)}
+
+      {[bm,A]} {[cu]ListBench}.{[cf]run} uses its local {[cn]retval} variable to re&shy;cord a {[ct]sum_t} value eventually returned by this function.
+
+      {[bm,B]} The {[cf]run} function also prepares a local variable of type {[ct]Data}, used in subsequent searches.
+
+      {[bm,C]} Note how {[cu]ListBench} seeds this {[ck]for} loop's {[cn]find_cnt} termination value at run-time.
+
+      {[bm,D]} Recall the two forms of {[cf]find} [codespace {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
+
+      {[bm,E]} Calling {[cf]reverse} [codespace {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
+
+      {[bm,F]} {[cu]ListBench} eventually updates {[cn]retval} using its local {[cn]found} and {[cn]missed} tallies.
 
   - cmds:
       - open 1
-    focus: [1, 51]
+      - mark 1 A 92
+      - mark 1 B 93
+      - mark 1 C 97
+      - mark 1 D 100
+      - mark 1 E 101
+      - mark 1 F 103
+    focus: [1, 95]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details (sort phase)}
+
+  - cmds:
+      - open 1
+    focus: [1, 169]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; helper functions}
+
+  - cmds:
+      - open 1
+      - mark 1 A 259
+      - mark 1 B 267
+      - mark 1 C 280
+    focus: [1, 262]
+    text: |
+      {[ht,$details]%[cu]ListBench% &ndash; %[cn]val% %[ct]Comparator%}
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
     text: |
       {[ht,$extra]Extra Credit}
 
