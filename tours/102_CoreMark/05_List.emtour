@@ -128,7 +128,7 @@ steps:
 
       {[bm,D]} Recall the two forms of {[cf]find} [codescape {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
 
-      {[bm,E]} Calling {[cf]reverse} [codespace {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
+      {[bm,E]} Calling {[cf]reverse} [codescope {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
 
       {[bm,F]} {[cu]ListBench} eventually updates {[cn]retval} using its local {[cn]found} and {[cn]missed} tallies.
 
@@ -160,7 +160,17 @@ steps:
       - open 1
     focus: [1, 169]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; helper functions}
+      {[ht,$peek]%[cu]ListBench% &ndash; helper functions}
+
+      The {[cf]remove} and {[cf]reverse} functions seen here typify the list-processing helpers used throughout {[cu]ListBench}.
+
+      {[in]Review codescope item %[dc,3]% to fully understand the rather unusual side-effect of %[cf]remove%. }
+
+      These samples show idiomatic use of the {[ct]$$} op&shy;erator &ndash; defining reference types and *de-referencing* their values.
+
+      {[in]Depending upon context, the <b>EMS</b> %[ct]$$% operator trans&shy;lates to the %[cx]*%, %[cx]&amp;%, or %[cx]-&gt;% operator of <b>C/C++</b>.}
+
+      Finally, skim through the {[cf]sort} function [code&shy;scape {[dc,5]}] which merges list fragments in a bottom-up manner.
 
   - cmds:
       - open 1
@@ -170,6 +180,19 @@ steps:
     focus: [1, 262]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; %[cn]val% %[ct]Comparator%}
+
+      Recall that the {[cf]sort} routine used by {[cu]ListBench} receives a *callback* of type {[ct]Comparator} as an argument:
+
+      {[bi,arrow_circle_right]} {[cf]idxCompare}, which orders based on {[ct]Data}.{[cn]idx} {[dc,6]}<br>
+      {[bi,arrow_circle_right]} {[cf]valCompare}, which orders based on {[ct]Data}.{[cn]val} {[dc,7]}
+
+      Both {[ct]Comparator} implementations return a signed value used by {[cf]sort} to sequence {[ct]Data} items {[cn]a} and {[cn]b}.
+
+      The {[cf]valCalc} helper initially unpacks a *reference* to some {[ct]Data}.{[cn]val} at {[bm,A]}, which then feeds other numeric locals.
+
+      The {[ck]switch} {[ck]case} at {[bm,B]} uses these locals to call {[cf]run} on a {[cn]Bench&lbrack;01&rbrack;} proxy and to bind its {[cf]kind} of checksum.
+
+      {[bm,C]} updates the {[cn]FINAL} checksum before hash&shy;ing {[cn]ret} and modifying the original {[ct]Data}.{[cn]val} via the {[cn]pval} reference.
 
   - cmds:
       - open 1
