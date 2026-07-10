@@ -126,7 +126,7 @@ steps:
 
       {[bm,C]} Note how {[cu]ListBench} seeds this {[ck]for} loop's {[cn]find_cnt} termination value at run-time.
 
-      {[bm,D]} Recall the two forms of {[cf]find} [codespace {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
+      {[bm,D]} Recall the two forms of {[cf]find} [codescape {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
 
       {[bm,E]} Calling {[cf]reverse} [codespace {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
 
@@ -140,9 +140,21 @@ steps:
       - mark 1 D 100
       - mark 1 E 101
       - mark 1 F 103
-    focus: [1, 95]
+    focus: [1, 94]
     text: |
       {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details (sort phase)}
+
+      The second phase of {[cu]ListBench}.{[cf]run} continues updating {[cn]retval} by forming interim {[ct]sum_t} values at {[bm,C]} and {[bm,F]}.
+
+      Here too, modifying the list using {[cf]remove} at {[bm,B]} further stresses the subsequent call to {[cf]find}.
+
+      {[in]Calling %[cf]unremove% at %[bm,D]% restores the sidelined %[ct]Elem%.}
+
+      This phase of {[cu]ListBench}.{[cf]run} also calls the {[cf]sort} helper twice:&nbsp;  with {[cf]valCompare}{[bm,A]} and with {[cf]idxCompare}{[bm,E]}.
+
+      {[in] Look back and review codescape items %[dc,6]% and %[dc,7]%.}
+
+      We'll soon dive into the details of {[cf]valCompare} (leaving the simpler {[cf]idxCompare} as an exercise for the reader).
 
   - cmds:
       - open 1
