@@ -192,27 +192,31 @@ steps:
 
       The {[ck]switch} {[ck]case} at {[bm,B]} uses these locals to call {[cf]run} on a {[cn]Bench&lbrack;01&rbrack;} proxy and to bind its {[cf]kind} of checksum.
 
-      {[bm,C]} updates the {[cn]FINAL} checksum before hash&shy;ing {[cn]ret} and modifying the original {[ct]Data}.{[cn]val} via the {[cn]pval} reference.
+      {[bm,C]} updates the {[cn]FINAL} checksum before hash&shy;ing {[cn]ret} and modifying the original {[ct]Data}.{[cn]val} referenced via {[cn]pval}.
 
   - cmds:
       - open 1
-    focus: [1, 1]
+    focus: [1, 137]
     text: |
       {[ht,$extra]Extra Credit}
 
-      {[bi,task_alt]} Find {[cu]StateBench} helpers inside {[cx]core_state.c}.
+      {[bi,task_alt]} Find {[cu]ListBench} helpers inside {[cx]core_list_join.c}.
 
-      {[bi,task_alt]} Compare helper functions to sharpen your **EMS** skills.
+      {[bi,task_alt]} Review helper functions to sharpen your **EMS** skills.
 
-      {[bi,task_alt]} Call {[cu]StateBench}.{[cf]print} to inspect interim results.
+      {[bi,task_alt]} Use the internal {[cf]pr} routine to inspect interim results..
 
   - cmds:
       - view 2
     text: |
       {[ht,$done]Next Steps}
 
-      Two down, one to go....
+      We've now explored the last (and most complex) of the three **CoreMark** algorithms.
 
-      We'll now move on to {[cu]ListBench} and its implementa&shy;tion of the algorithm codified in {[cx]core_list_join.c}.
+      Though seemingly arbitrary, the algorithms do present a side-by-side comparison of legacy **C** code with **EMS**.
+
+      {[in]The comparisons have hopefully sharpened your famili&shy;arity with the <b>EMS</b> language surface.}
+
+      From here, we'll pivot to {[cu]SleepRunnerP} &ndash; a minimal pro&shy;gram which quite literally turns **CoreMark** inside-out.
 
       {[hc]}
