@@ -32,7 +32,7 @@ steps:
     text: |
       {[ht,$peek]%[cu]ListBench% Codescape}
 
-      {[dc,1]} This module enapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
+      {[dc,1]} This module encapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
 
       {[dc,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
 
@@ -44,7 +44,7 @@ steps:
 
       {[dc,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
 
-      {[dc,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value dervied from each {[ct]Data} node.
+      {[dc,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value derived from each {[ct]Data} node.
 
   - cmds:
       - close 2
@@ -128,7 +128,7 @@ steps:
 
       {[bm,D]} Recall the two forms of {[cf]find} [codescape {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
 
-      {[bm,E]} Calling {[cf]reverse} [codescope {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
+      {[bm,E]} Calling {[cf]reverse} [codescape {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
 
       {[bm,F]} {[cu]ListBench} eventually updates {[cn]retval} using its local {[cn]found} and {[cn]missed} tallies.
 
@@ -164,7 +164,7 @@ steps:
 
       The {[cf]remove} and {[cf]reverse} functions seen here typify the list-processing helpers used throughout {[cu]ListBench}.
 
-      {[in]Review codescope item %[dc,3]% to fully understand the rather unusual side-effect of %[cf]remove%. }
+      {[in]Review codescape item %[dc,3]% to fully understand the rather unusual side-effect of %[cf]remove%. }
 
       These samples show idiomatic use of the {[ct]$$} op&shy;erator &ndash; defining reference types and *de-referencing* their values.
 
@@ -204,19 +204,21 @@ steps:
 
       {[bi,task_alt]} Review helper functions to sharpen your **EMS** skills.
 
-      {[bi,task_alt]} Use the internal {[cf]pr} routine to inspect interim results..
+      {[bi,task_alt]} Use the internal {[cf]pr} routine to inspect interim results.
 
   - cmds:
-      - view 2
+      - close 1
+      - close 4
+      - view 3
     text: |
       {[ht,$done]Next Steps}
 
       We've now explored the last (and most complex) of the three **CoreMark** algorithms.
 
-      Though seemingly arbitrary, the algorithms do present a side-by-side comparison of legacy **C** code with **EMS**.
+      Though seemingly arbitrary, these algorithms do present a side-by-side comparison of legacy **C** code with **EMS**.
 
       {[in]The comparisons have hopefully sharpened your famili&shy;arity with the <b>EMS</b> language surface.}
 
-      From here, we'll pivot to {[cu]SleepRunnerP} &ndash; a minimal pro&shy;gram which quite literally turns **CoreMark** inside-out.
+      From here, we'll pivot to {[cu]SleepyRunnerP} &ndash; a minimal pro&shy;gram which quite literally turns **CoreMark** inside-out.
 
       {[hc]}
