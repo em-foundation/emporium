@@ -4,7 +4,7 @@ export const $U = $declare('MODULE')
 import * as CoreBench from '@em.benchmark.coremark/CoreBench.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
-import * as TimeTypes from '@em.utils/TimeTypes.em'
+import * as T from '@em.utils/TimeTypes.em'
 
 const ticker = $config<TickerMgr.Obj>()
 
@@ -23,7 +23,7 @@ export function em$startup() {
 }
 
 export function em$run() {
-    ticker.$$.start(TimeTypes.Secs30p2_initMsecs(1_000), $cb(tickCB))
+    ticker.$$.start(T.Secs30p2_initMsecs(1_000), $cb(tickCB))
     FiberMgr.run()
 }
 

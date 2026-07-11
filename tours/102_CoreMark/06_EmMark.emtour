@@ -1,1 +1,30 @@
 title: Towards EM•Mark
+
+files:
+  - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - .assets/img-102-06-01.png
+  - .assets/img-102-06-04.png
+
+steps:
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$start]%[cu]SleepyRunner% &ndash; A New Benchmark}
+
+  - cmds:
+      - open 1
+    text: |
+      {[ht,$peek]%[cu]ActiveRunner% &ndash; Quick Review}
+
+  - cmds:
+      - open 2
+    acts: [$build]
+    text: |
+      {[ht,$details]%[cu]SleepyRunner% &ndash; Details}
+
+  - cmds:
+      - open 2
+      - view 4
+    text: |
+      {[ht,monitor_heart]%[cu]SleepyRunner% &ndash; Signal Capture}
