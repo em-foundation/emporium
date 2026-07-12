@@ -143,7 +143,7 @@ steps:
   - cmds:
       - view 5
     text: |
-      {[ht,$done]Next Steps}
+      {[ht,$steps]Next Steps}
 
       {[cu]BenchAlgI},&thinsp;{[cu]Crc}, and&thinsp;{[cu]Utils} play a similar role in sha&shy;ping the implementation of the three **CoreMark** algorithms.
 

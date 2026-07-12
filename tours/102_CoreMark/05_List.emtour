@@ -211,7 +211,7 @@ steps:
       - close 4
       - view 3
     text: |
-      {[ht,$done]Next Steps}
+      {[ht,$steps]Next Steps}
 
       We've now explored the last (and most complex) of the three **CoreMark** algorithms.
 

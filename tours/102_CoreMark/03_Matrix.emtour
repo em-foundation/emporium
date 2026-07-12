@@ -101,7 +101,7 @@ steps:
   - cmds:
       - view 2
     text: |
-      {[ht,$done]Next Steps}
+      {[ht,$steps]Next Steps}
 
       One down, two to go....
 

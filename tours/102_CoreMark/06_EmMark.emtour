@@ -20,26 +20,26 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 + 25
+      - mark 1 R 25
     focus: [1, 1]
     acts: [$build]
     text: |
       {[ht,$peek]%[cu]ActiveRunnerP% &ndash; Quick Review}
 
-      Recall that the {[cu]ActiveRunnerP} program repeatedly in&shy;vokes {[cu]CoreBench}.{[cf]run} {[bm,+]} ten times within a {[ck]for} loop.
+      Recall that the {[cu]ActiveRunnerP} program repeatedly in&shy;vokes {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;ten times within a {[ck]for} loop.
 
       The program then prints the benchmark algorithms' total execution time followed by their cumulative checksums.
 
-      {[in] You can click %[cb,build]% to <b>build&thinsp;+&thinsp;load</b> %[cu]ActiveRunnerP% again.}
+      {[in] You can click &thinsp;%[cb,build]%&thinsp; to <b>build&thinsp;+&thinsp;load</b> %[cu]ActiveRunnerP% again.}
 
   - cmds:
       - open 2
-      - mark 2 + 32
+      - mark 2 R 32
     focus: [2, 1]
     text: |
       {[ht,$peek]%[cu]SleepyRunnerP% &ndash; Overview}
 
-      In contrast with {[cu]ActiveRunnerP}, the {[cu]SleepyRunnerP} pro&shy;gram calls {[cu]CoreBench}.{[cf]run} {[bm,+]} *once* inside {[cf]tickCB}.
+      In contrast with {[cu]ActiveRunnerP}, the {[cu]SleepyRunnerP} pro&shy;gram calls {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;*once* inside {[cf]tickCB}.
 
       Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
 
@@ -51,6 +51,7 @@ steps:
 
   - cmds:
       - open 2
+      - mark 2 R 32
     focus: [2, 1]
     acts: [$build]
     text: |
@@ -60,7 +61,7 @@ steps:
 
       {[in]Refer to the <b>Basic Examples&thinsp;/&thinsp;Blinking LEDs</b> tour for an introduction to this simulated execution environment.}
 
-      As the program executes (for ten seconds), you'll see the **Wokwi LOGIC** block blink on each iteration.
+      As the program executes (for ten seconds), you'll see the **Wokwi LOGIC** block wink its LEDs on each iteration.
 
       At the same time, you'll see (ten) interim checksum values printed once per second in the **Wokwi Terminal** panel:<br>
       <code>&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;...</code><br>
@@ -74,22 +75,34 @@ steps:
     text: |
       {[ht,monitor_heart]%[cu]SleepyRunner% &ndash; Signal Capture}
 
+      As we did throughout the **Basic Examples** tour, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunner}.
+
+      The left panel shows the ten-second execution span of {[cu]SleepyRunnerP} &ndash; bracketed by the usual {[cx]sysLed} activity.
+
+      The middle panel focuses on *one* active {[cf]tickCB} cycle &ndash; which executes {[cu]CoreBench}.{[cf]run} during interval {[bm,R]}.
+
+      {[in] Recall that %[cu]SleepyRunnerP% uses %[cx]dbgD% to bracket %[bm,R]%.}
+
+      The right panel highlights the end of a {[cf]tickCB} cycle &ndash; as it out&shy;puts a `NEWLINE` character before returning to sleep.
+
+      Note how {[cx]dbgB} signals the MCU's *active* {[bm,A]} mode; and how two pulses at {[bm,S]} mark its return to low-power *sleep*.
+
   - cmds:
       - open 2
     text: |
       {[ht,$extra]Extra Credit}
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Re-acquaint yourself with the **PulseView** tool.
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Use **PulseView** cursors to measure interval {[bm,R]}.
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Place additional debug toggles inside the algorithms.
 
   - cmds:
       - close 1
       - close 4
       - view 3
     text: |
-      {[ht,$done]Next Steps}
+      {[ht,$steps]Next Steps}
 
       {[hc]}
