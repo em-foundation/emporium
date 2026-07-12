@@ -1,4 +1,4 @@
-title: Towards EM•Mark
+title: Transforming CoreMark
 
 files:
   - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
@@ -10,21 +10,86 @@ steps:
   - cmds:
       - view 3
     text: |
-      {[ht,$start]%[cu]SleepyRunner% &ndash; A New Benchmark}
+      {[ht,$start]Transforming CoreMark}
+
+      Starting with {[cu]ActiveRunnerP}, this tour-group has faithful&shy;ly transcribed legacy **CoreMark** into this **EMS** design.
+
+      In this final tour, we'll examine {[cu]SleepyRunnerP} and how this program transforms the original benchmark.
+
+      {[in]%[cu]SleepyRunnerP% will in fact anchor <b>EM&bull;Mark</b> &ndash; a <i>new</i> benchmark presented in a future tour-group.}
 
   - cmds:
       - open 1
-    text: |
-      {[ht,$peek]%[cu]ActiveRunner% &ndash; Quick Review}
-
-  - cmds:
-      - open 2
+      - mark 1 + 25
+    focus: [1, 1]
     acts: [$build]
     text: |
-      {[ht,$details]%[cu]SleepyRunner% &ndash; Details}
+      {[ht,$peek]%[cu]ActiveRunnerP% &ndash; Quick Review}
+
+      Recall that the {[cu]ActiveRunnerP} program repeatedly in&shy;vokes {[cu]CoreBench}.{[cf]run} {[bm,+]} ten times within a {[ck]for} loop.
+
+      The program then prints the benchmark algorithms' total execution time followed by their cumulative checksums.
+
+      {[in] You can click %[cb,build]% to <b>build&thinsp;+&thinsp;load</b> %[cu]ActiveRunnerP% again.}
 
   - cmds:
       - open 2
+      - mark 2 + 32
+    focus: [2, 1]
+    text: |
+      {[ht,$peek]%[cu]SleepyRunnerP% &ndash; Overview}
+
+      In contrast with {[cu]ActiveRunnerP}, the {[cu]SleepyRunnerP} pro&shy;gram calls {[cu]CoreBench}.{[cf]run} {[bm,+]} *once* inside {[cf]tickCB}.
+
+      Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
+
+      {[in]Review the <b>Basic Examples&thinsp;/&thinsp;Cyclic Tasks</b> tour which ex&shy;amined <code>em.examples.basic/Ex13_TickerP.em.ts</code>}
+
+      Inside {[cf]tickCB}, the program brackets {[cu]CoreBench}.{[cf]run} with **EMS** debug toggles and prints the latest checksum.
+
+      Under control of its static {[cn]count} variable, {[cu]SleepyRunnerP} halts the program on the tenth execution of {[cf]tickCB}.
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    acts: [$build]
+    text: |
+      {[ht,order_play]%[cu]SleepyRunnerP% &ndash; Program Execution}
+
+      Go ahead and **build&thinsp;+&thinsp;load** the {[cu]SleepyRunnerP} program on the **Raspberry Pi Pico** simulator.
+
+      {[in]Refer to the <b>Basic Examples&thinsp;/&thinsp;Blinking LEDs</b> tour for an introduction to this simulated execution environment.}
+
+      As the program executes (for ten seconds), you'll see the **Wokwi LOGIC** block blink on each iteration.
+
+      At the same time, you'll see (ten) interim checksum values printed once per second in the **Wokwi Terminal** panel:<br>
+      <code>&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;...</code><br>
+      <code>&emsp;&emsp;&emsp;&emsp;crc = 7de8</code><br>
+      <code>&emsp;&emsp;&emsp;&emsp;crc = fcaf</code>
+
+      The `fcaf` value printed here by {[cu]SleepyRunnerP} matches the final checksum reported earlier by {[cu]ActiveRunnerP}.
+
+  - cmds:
       - view 4
     text: |
       {[ht,monitor_heart]%[cu]SleepyRunner% &ndash; Signal Capture}
+
+  - cmds:
+      - open 2
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[bi,task_alt]}
+
+      {[bi,task_alt]}
+
+      {[bi,task_alt]}
+
+  - cmds:
+      - close 1
+      - close 4
+      - view 3
+    text: |
+      {[ht,$done]Next Steps}
+
+      {[hc]}

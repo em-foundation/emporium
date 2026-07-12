@@ -16,7 +16,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var count = 10
+var count: u16 = 10
 
 export function em$startup() {
     CoreBench.setup()
@@ -32,8 +32,7 @@ function tickCB() {
     const crc = CoreBench.run(0)
     $['%%d-']
     printf`crc = %04x\n`(crc)
-    count -= 1
-    if (count > 0) return
+    if (count-- > 0) return
     ticker.$$.stop()
     halt()
 }

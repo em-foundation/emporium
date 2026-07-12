@@ -1,4 +1,4 @@
-title: Transforming CoreMark
+title: Transcribing CoreMark
 
 files:
   - em.prog:em.benchmark.coremark/legacy-source/core_main.c
@@ -8,7 +8,7 @@ files:
 steps:
   - cmds: []
     text: |
-      {[ht,$start]Transforming CoreMark}
+      {[ht,$start]Transcribing CoreMark}
 
       The prior **Basic Examples** tours featured small, single-file programs which introduced different facets **EMS**.
 
@@ -18,7 +18,7 @@ steps:
 
       {[in]Starting with legacy C code, this exercise further rein&shy;forces <b>EMS</b> as a higher-level language alternative.}
 
-      The initial tour in this group kicks-off a top-down explor&shy;ation of legacy **CoreMark** transformed through **EMS**.
+      The initial tour in this group kicks-off a top-down explor&shy;ation of legacy **CoreMark** translated into **EMS**.
 
   - cmds:
       - open 1
