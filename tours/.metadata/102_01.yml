@@ -4,11 +4,11 @@ tour_id: "102_01"
 group_id: "102"
 tour_number: "01"
 source_file: "tours/102_CoreMark/01_Introduction.emtour"
-title: "Transforming CoreMark"
+title: "Transcribing CoreMark"
 
 source_snapshot:
-  git_sha: "dda0532b2fad06af179380578cdad89179752e1e"
-  generated_at: "2026-07-04T15:55:22.475Z"
+  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
+  generated_at: "2026-07-13T02:16:11.811Z"
 
 ground_truth:
   stop_count: 5
@@ -92,7 +92,7 @@ marker_audit:
       - "import * as BoardC from '@$distro/BoardC.em'"
       - "import * as Common from '@em.mcu/Common.em'"
     context_after:
-      - "import * as Utils from '@em.benchmark.coremark/Utils.em'"
+      - "import * as UT from '@em.benchmark.coremark/Utils.em'"
       - ""
       - "const AppLed = $delegate(BoardC.AppLed)"
     status: "ok"
@@ -174,7 +174,7 @@ marker_audit:
     context_after:
       - "    AppLed.wink(1000)"
       - "    printf`usecs = %d\\n`(usecs)"
-      - "    printf`list crc = %04x\\n`(Utils.getCrc(Utils.Kind.LIST))"
+      - "    printf`list crc = %04x\\n`(UT.getCrc(UT.Kind.LIST))"
     status: "ok"
   - stop: 4
     file_index: 3
@@ -188,9 +188,9 @@ marker_audit:
       - "    const usecs = Common.UsCounter.stop()"
       - "    AppLed.wink(1000)"
     context_after:
-      - "    printf`list crc = %04x\\n`(Utils.getCrc(Utils.Kind.LIST))"
-      - "    printf`matrix crc = %04x\\n`(Utils.getCrc(Utils.Kind.MATRIX))"
-      - "    printf`state crc = %04x\\n`(Utils.getCrc(Utils.Kind.STATE))"
+      - "    printf`list crc = %04x\\n`(UT.getCrc(UT.Kind.LIST))"
+      - "    printf`matrix crc = %04x\\n`(UT.getCrc(UT.Kind.MATRIX))"
+      - "    printf`state crc = %04x\\n`(UT.getCrc(UT.Kind.STATE))"
     status: "ok"
 
 usage:

@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/02_Infrastructure.emtour"
 title: "Benchmark Infrastructure"
 
 source_snapshot:
-  git_sha: "253d9d2c46a16ff14981fef2d4bbda862fd79665"
-  generated_at: "2026-07-05T19:48:20.905Z"
+  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
+  generated_at: "2026-07-13T02:16:20.928Z"
 
 ground_truth:
   stop_count: 8
@@ -88,13 +88,13 @@ steps:
     icon: "$details"
     cmds:
       - "open 2"
-      - "mark 2 A 31"
-      - "mark 2 B 35"
-      - "mark 2 C 42"
-      - "mark 2 D 48"
-      - "mark 2 E 52"
-      - "mark 2 F 56"
-    focus: [2, 33]
+      - "mark 2 A 35"
+      - "mark 2 B 39"
+      - "mark 2 C 46"
+      - "mark 2 D 51"
+      - "mark 2 E 56"
+      - "mark 2 F 60"
+    focus: [2, 37]
     acts:
       []
   - stop: 6
@@ -102,9 +102,10 @@ steps:
     icon: "$details"
     cmds:
       - "open 2"
-      - "mark 2 A 8"
-      - "mark 2 B 15"
+      - "mark 2 A 9"
+      - "mark 2 B 17"
       - "mark 2 C 22"
+      - "mark 2 D 26"
     focus: [2, 1]
     acts:
       []
@@ -121,7 +122,7 @@ steps:
       []
   - stop: 8
     heading: "Next Steps"
-    icon: "$done"
+    icon: "$steps"
     cmds:
       - "view 5"
     focus: []
@@ -294,7 +295,7 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "A"
-    line: 31
+    line: 35
     expect: "export function kind(): UT.Kind {"
     context_before:
       - ""
@@ -310,7 +311,7 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "B"
-    line: 35
+    line: 39
     expect: "export function print() {"
     context_before:
       - "    return UT.Kind.FINAL"
@@ -326,7 +327,7 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "C"
-    line: 42
+    line: 46
     expect: "    const crcA = ListBench.run(1)"
     context_before:
       - "}"
@@ -342,23 +343,23 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "D"
-    line: 48
-    expect: "    UT.setCrc("
+    line: 51
+    expect: "    const crcB = ListBench.run(-1)"
     context_before:
+      - "        kind(),"
       - "        Crc.add16(<i16>crcA, UT.getCrc(kind()))"
       - "    )"
-      - "    const crcB = ListBench.run(-1)"
     context_after:
+      - "    UT.setCrc("
       - "        kind(),"
       - "        Crc.add16(<i16>crcB, UT.getCrc(kind()))"
-      - "    )"
     status: "ok"
   - stop: 5
     file_index: 2
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "E"
-    line: 52
+    line: 56
     expect: "    UT.bindCrc(UT.Kind.LIST, UT.getCrc(kind()))"
     context_before:
       - "        kind(),"
@@ -374,7 +375,7 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "F"
-    line: 56
+    line: 60
     expect: "export function setup() {"
     context_before:
       - "    return UT.getCrc(kind())"
@@ -390,7 +391,7 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "A"
-    line: 8
+    line: 9
     expect: "import * as UT from '@em.benchmark.coremark/Utils.em'"
     context_before:
       - "import * as ListBench from '@em.benchmark.coremark/ListBench.em'"
@@ -406,16 +407,16 @@ marker_audit:
     file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "B"
-    line: 15
-    expect: "    export function em$configure() {"
+    line: 17
+    expect: "        const mem_size = Math.floor(total_data_size / num_algs)"
     context_before:
-      - ""
       - "export namespace em$meta {"
       - ""
+      - "    export function em$configure() {"
     context_after:
-      - "        const mem_size = Math.floor(total_data_size / num_algs)"
       - "        ListBench.mem_size.$$val = mem_size"
       - "        MatrixBench.mem_size.$$val = mem_size"
+      - "        StateBench.mem_size.$$val = mem_size"
     status: "ok"
   - stop: 6
     file_index: 2
@@ -423,9 +424,25 @@ marker_audit:
     file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
     label: "C"
     line: 22
+    expect: "        ListBench.Bench0.$$dlg = StateBench"
+    context_before:
+      - "        MatrixBench.mem_size.$$val = mem_size"
+      - "        StateBench.mem_size.$$val = mem_size"
+      - "        //"
+    context_after:
+      - "        ListBench.Bench1.$$dlg = MatrixBench"
+      - "    }"
+      - ""
+    status: "ok"
+  - stop: 6
+    file_index: 2
+    file_raw: "em.prog:em.benchmark.coremark/CoreBench.em.ts"
+    file_resolved: "em.prog/em.benchmark.coremark/CoreBench.em.ts"
+    label: "D"
+    line: 26
     expect: "    export function em$construct() {"
     context_before:
-      - "        StateBench.mem_size.$$val = mem_size"
+      - "        ListBench.Bench1.$$dlg = MatrixBench"
       - "    }"
       - ""
     context_after:
@@ -443,22 +460,22 @@ usage:
     - "$details"
     - "$details"
     - "$extra"
-    - "$done"
+    - "$steps"
   macros:
     "bi": 5
-    "bm": 18
+    "bm": 19
     "cd": 1
     "cf": 15
-    "cn": 7
+    "cn": 8
     "cs": 3
     "ct": 9
-    "cu": 35
+    "cu": 37
     "hc": 1
     "ht": 8
     "in": 5
   commands:
     "close": 5
-    "mark": 19
+    "mark": 20
     "open": 5
     "view": 2
   actions:
