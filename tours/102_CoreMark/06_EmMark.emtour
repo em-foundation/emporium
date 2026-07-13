@@ -12,11 +12,11 @@ steps:
     text: |
       {[ht,$start]Transforming CoreMark}
 
-      Starting with {[cu]ActiveRunnerP}, this tour-group has faithful&shy;ly transcribed legacy **CoreMark** into this **EMS** design.
+      Starting with {[cu]ActiveRunnerP}, this tour group has faithful&shy;ly transcribed legacy **CoreMark** into this **EMS** design.
 
       In this final tour, we'll examine {[cu]SleepyRunnerP} and how this program transforms the original benchmark.
 
-      {[in]%[cu]SleepyRunnerP% will in fact anchor <b>EM&bull;Mark</b> &ndash; a <i>new</i> benchmark presented in a future tour-group.}
+      {[in]%[cu]SleepyRunnerP% will in fact anchor <b>EM&bull;Mark</b> &ndash; a <i>new</i> benchmark presented in a future tour group.}
 
   - cmds:
       - open 1
@@ -43,7 +43,7 @@ steps:
 
       Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
 
-      {[in]Review the <b>Basic Examples&thinsp;/&thinsp;Cyclic Tasks</b> tour which ex&shy;amined <code>em.examples.basic/Ex13_TickerP.em.ts</code>}
+      {[in]Review the <b>Basic Examples&thinsp;/&thinsp;Cyclic Tasks</b> tour which ex&shy;amined <code>em.examples.basic/Ex13_TickerP.em.ts</code>.}
 
       Inside {[cf]tickCB}, the program brackets {[cu]CoreBench}.{[cf]run} with **EMS** debug toggles and prints the latest checksum.
 
@@ -61,7 +61,7 @@ steps:
 
       {[in]Refer to the <b>Basic Examples&thinsp;/&thinsp;Blinking LEDs</b> tour for an introduction to this simulated execution environment.}
 
-      As the program executes (for ten seconds), you'll see the **Wokwi LOGIC** block wink its LEDs on each iteration.
+      As the program executes (for ten seconds), the block label&shy;ed **Wokwi LOGIC** will blink its LEDs on each iteration.
 
       At the same time, you'll see (ten) interim checksum values printed once per second in the **Wokwi Terminal** panel:<br>
       <code>&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;...</code><br>
@@ -73,9 +73,9 @@ steps:
   - cmds:
       - view 4
     text: |
-      {[ht,monitor_heart]%[cu]SleepyRunner% &ndash; Signal Capture}
+      {[ht,monitor_heart]%[cu]SleepyRunnerP% &ndash; Signal Capture}
 
-      As we did throughout the **Basic Examples** tour, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunner}.
+      As we did throughout the **Basic Examples** tour, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunnerP}.
 
       The left panel shows the ten-second execution span of {[cu]SleepyRunnerP} &ndash; bracketed by the usual {[cx]sysLed} activity.
 
@@ -104,5 +104,16 @@ steps:
       - view 3
     text: |
       {[ht,$steps]Next Steps}
+
+      Congratulations &ndash; we've just explored two complementary **EMS** applications which re-use a common set of modules:
+
+      {[bi,counter_1]} {[cu]ActiveRunnerP} &ndash; calls {[cf]run} repeatedly in one burst<br>
+      {[bi,counter_2]} {[cu]SleepyRunnerP} &ndash; calls {[cf]run} just once every second
+
+      While {[bi,counter_1]} preserves the intent of **CoreMark** &ndash; measuring CPU performance &ndash; {[bi,counter_2]} reflects more typical use of **EMS**.
+
+      Apps like {[cu]SleepyRunnerP} spend >&thinsp;90% of the time in low-power sleep &ndash; and draw >&thinsp;90% of their power when active.
+
+      To characterize these **EMS** apps, we also need to bench&shy;mark *energy efficiency* &ndash; which leads us to **EM&bull;Mark**.
 
       {[hc]}
