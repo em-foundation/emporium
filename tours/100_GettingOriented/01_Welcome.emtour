@@ -45,7 +45,6 @@ steps:
       Suggestions only &ndash; click **Next** and let's keep moving&thinsp;....
 
   - cmds:
-      - close 1
       - view 2
     text: |
 
@@ -63,7 +62,6 @@ steps:
       Again, suggestions only &ndash; click **Next** to continue&thinsp;....
 
   - cmds:
-      - close 2
       - open 3
     focus: [3, 1]
     text: |
@@ -81,6 +79,7 @@ steps:
       Let's dive in&thinsp;....
 
   - cmds:
+      - open 3
       - mark 3 A 2
       - mark 3 B 5
     focus: [3, 1]
