@@ -1,4 +1,5 @@
 .history/
+.screenshots/
 **/.junk/
 node_modules/
 /tools/
