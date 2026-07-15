@@ -142,7 +142,7 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$steps]Next steps}
+      {[ht,$steps]Next Steps}
 
       Congratulations on completing your first tour.&thinsp;🎉
 

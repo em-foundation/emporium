@@ -248,7 +248,7 @@ steps:
     focus: [6,1]
     text: |
 
-        {[ht,$steps]Next steps}
+        {[ht,$steps]Next Steps}
 
         We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 

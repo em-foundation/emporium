@@ -163,7 +163,7 @@ steps:
       - close 2
     text: |
 
-        {[ht,$steps]Next steps}
+        {[ht,$steps]Next Steps}
 
         Well done &ndash; you're now officially dangerous.🔥
 

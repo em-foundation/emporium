@@ -6,7 +6,8 @@ files:
   - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
 
 steps:
-  - cmds: []
+  - cmds:
+      - open 3
     text: |
       {[ht,$start]Transcribing CoreMark}
 
