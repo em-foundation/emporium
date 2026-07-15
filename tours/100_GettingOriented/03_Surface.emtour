@@ -13,7 +13,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$start]EM&bull;Script Language Overview}
+      {[ht,$start]&thinsp;EM&bull;Script Language Overview}
 
       If not already obvious, **EM&bull;Script** ≡ **TypeScript**&thinsp;!!
 
@@ -34,7 +34,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,splitscreen]One Unit &ndash; Two Domains}
+      {[ht,splitscreen]&thinsp;One Unit &ndash; Two Domains}
 
       The {[cx]em.utils/SoftUart.em.ts} **Unit** implements a low-level (albeit portable) *bit-banged* serial transmitter.
 
@@ -55,7 +55,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,timeline]Lifecycle Functions}
+      {[ht,timeline]&thinsp;Lifecycle Functions}
 
       The {[cu]SoftUart} **Unit** implements two *intrinsic* functions called during the **EM&bull;Script** program lifecycle:
 
@@ -74,7 +74,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,handshake]Client&thinsp;&middot;&thinsp;Supplier Relationship}
+      {[ht,handshake]&thinsp;Client&thinsp;&middot;&thinsp;Supplier Relationship}
 
       The {[ck]import} directives in {[cu]SoftUart} establish a *client&thinsp;&middot;&thinsp;sup&shy;plier* relationship between this and other **Units**.
 
@@ -93,7 +93,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,settings]Configuration Parameters}
+      {[ht,settings]&thinsp;Configuration Parameters}
 
       Line {[bm,C]} exports an intrinsic **EMS** {[cs]$config} parameter named {[cn]baud_rate} &ndash; which clients can assign as needed.
 
@@ -113,7 +113,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,plug_connect]Client&thinsp;&middot;&thinsp;Supplier Proxies}
+      {[ht,plug_connect]&thinsp;Client&thinsp;&middot;&thinsp;Supplier Proxies}
 
       Line {[bm,P]} exports a {[cn]TxPin} {[cs]$proxy} &ndash; which {[cu]SoftUart} clients must bind to a conformant *delegate* **Module**.
 
@@ -135,7 +135,7 @@ steps:
     focus: [1, 30]
     text: |
 
-      {[ht,electric_bolt]Bit-Banging Those Bytes}
+      {[ht,electric_bolt]&thinsp;Bit-Banging Those Bytes}
 
       Let's dive into the implementation of {[cf]put}, which trans&shy;mits 8-bit [{[ct]u8}] {[cn]data} as a framed 10-bit sequence.
 
@@ -155,7 +155,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,hub]Pluggable Software Backplane}
+      {[ht,hub]&thinsp;Pluggable Software Backplane}
 
       The rather sparse {[cu]Common} **Module** shown here takes the **EMS** {[cs]$proxy} pattern to an entirely new level.
 
@@ -178,7 +178,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,api]Integration &middot; Specialization}
+      {[ht,api]&thinsp;Integration &middot; Specialization}
 
       We'll now introduce a new flavor of **EMS Unit** &ndash; the **Composite**, as exemplified by {[cu]BoardC}.
 
@@ -204,7 +204,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,control_point_duplicate]Templates for Cloning}
+      {[ht,control_point_duplicate]&thinsp;Templates for Cloning}
 
       We've now come to our last flavor of **EMS Unit** &ndash; the **Template**, as exemplified by {[cu]LedT}.
 
@@ -225,7 +225,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,schema]Language Grammar}
+      {[ht,schema]&thinsp;Language Grammar}
 
       The **EM&bull;porium** includes a complete gram&shy;mar for the **EMS** language &ndash; accessed via the **EM&bull;Home** editor tab.
 
@@ -246,7 +246,7 @@ steps:
     focus: [6, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 

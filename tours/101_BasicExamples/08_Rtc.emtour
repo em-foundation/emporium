@@ -11,7 +11,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,$start] Real-Time Clock}
+      {[ht,$start]&thinsp; Real-Time Clock}
 
       The {[cu]AlarmMgr} implementation covered in this tour lev&shy;erages a {[cs]$proxy} conforming to the {[cu]RtcI} interface.
 
@@ -25,7 +25,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]RtcI% &ndash; Quick Look }
+      {[ht,$peek]&thinsp; %[cu]RtcI% &ndash; Quick Look }
 
       The {[cu]RtcI} interface exposes methods reflecting differ&shy;ent aspects of MCU real-time clock [RTC] peripherals:
 
@@ -46,7 +46,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]TimeTypes% &ndash; Details }
+      {[ht,$details]&thinsp; %[cu]TimeTypes% &ndash; Details }
 
       You've already seen many of these types and functions used by {[cu]RtcI} as well as by clients of {[cu]AlarmMgr}.
 
@@ -76,7 +76,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; Details }
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; Details }
 
       After declaring the all-important {[cu]RtcI}{[cs]$proxy} at {[bm,A]}, {[cu]AlarmMgr} follows the _object-factory_ design pattern:
 
@@ -108,7 +108,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; More Details }
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; More Details }
 
       Central to its implementation, {[cu]AlarmMgr} enables mul&shy;tiple {[ct]Alarm} instances to _share_ the underlying {[cn]Rtc} HW.
 
@@ -147,7 +147,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]AlarmMgr% &ndash; Still More Details }
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; Still More Details }
 
       The {[cf]wakeup} and {[cf]wakeupAligned} methods call {[cf]setup}, which adds an {[ct]Alarm} object to the scheduling mix:
 
@@ -163,7 +163,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]UptimerRtc% &ndash; Quick Look }
+      {[ht,$peek]&thinsp; %[cu]UptimerRtc% &ndash; Quick Look }
 
       We previously saw a call to {[cu]Common}.{[cn]Uptimer}.{[cf]raw} in our {[cu]AlarmMgr} implementation.
 
@@ -176,7 +176,7 @@ steps:
     focus: [3, 39]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Enable {[cn]DBG_FLAG} and run {[cu]AlarmMgr} client programs.
 
@@ -189,7 +189,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       This tour completes our forary into _timed_ wakeup from deep-sleep using the [{[cu]RtcI}] abstraction.
 

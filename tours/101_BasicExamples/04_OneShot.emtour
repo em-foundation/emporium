@@ -13,7 +13,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$start]%[cu]OneShotP% &ndash; Timer Events}
+      {[ht,$start]&thinsp;%[cu]OneShotP% &ndash; Timer Events}
 
       Once again, we'll blink `AppLed` &ndash; but now we'll use a {[cu]OneShot} {[cs]$delegate} to sleep for a given period of time.
 
@@ -32,7 +32,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details]%[cu]OneShot2P% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]OneShot2P% &ndash; Details}
 
       Like our earlier {[cu]FiberP} example, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
 
@@ -59,7 +59,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details]%[cu]OneShotI% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]OneShotI% &ndash; Details}
 
       While you may have browsed to other `em.hal` inter&shy;faces, let's use {[cu]OneShotI} to explain this **EMS** pattern.
 
@@ -85,7 +85,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek]%[cu]BoardC% &ndash; A Quick Look}
+      {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}
 
       The {[cs]'@$distro/BoardC.em'} **Composite** imported by client programs will define the {[cu]OneShot} binding.
 
@@ -104,7 +104,7 @@ steps:
     acts: [$build]
     text: |
 
-      {[ht,$build]%[cu]OneShot2P% &ndash; Build&thinsp;&middot;&thinsp;Load}
+      {[ht,$build]&thinsp;%[cu]OneShot2P% &ndash; Build&thinsp;&middot;&thinsp;Load}
 
       Click the {[cb,build]} action button to execute the {[cu]OneShot2P} program on our target {[em]%[ci,circuit-board]%&nbsp;Board}&thinsp;.
 
@@ -120,7 +120,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,monitor_heart]&thinsp;%[cu]OneShot2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;&thinsp;%[cu]OneShot2P% &ndash; Signal Capture}
 
       More activity on the `Dbg` liness&thinsp;&hellip;&thinsp;Recall that these sig&shy;nals assert active-low &ndash; {[cd]%%b+} would drive `DbgB` to 0.
 
@@ -141,7 +141,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details]%[cu]OneShot1P% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]OneShot1P% &ndash; Details}
 
       The {[cu]OneShot1P} program behaves identically to our {[cu]OneShot2P} program &ndash; but without using the {[cu]FiberMgr}.
 
@@ -161,7 +161,7 @@ steps:
     acts: [$build]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Execute {[cu]OneShotP} {[cb,build]} and view its signal capture.
 
@@ -173,7 +173,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       The next tour examines use of the {[cu]OneShotI} **Interface** within a portable utility **Module**.
 

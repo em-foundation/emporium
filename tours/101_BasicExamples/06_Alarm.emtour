@@ -10,7 +10,7 @@ steps:
       - view 3
     text: |
 
-      {[ht,$start]Wakeup Alarms}
+      {[ht,$start]&thinsp;Wakeup Alarms}
 
       This tour details two similar programs &ndash; both of which use a portable {[cu]AlarmMgr} to schedule wakeup events.
 
@@ -38,7 +38,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,$details]%[cu]Alarm1P% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]Alarm1P% &ndash; Details}
 
       <div class="em-bmlist">
 
@@ -61,7 +61,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,$details]%[cu]Alarm2P% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]Alarm2P% &ndash; Details}
 
       Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned} {[bm,D]} on its {[cn]alarm} object.
 
@@ -79,7 +79,7 @@ steps:
       - view 4
     text: |
 
-      {[ht,monitor_heart]%[cu]Alarm2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;%[cu]Alarm2P% &ndash; Signal Capture}
 
       Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
 
@@ -99,7 +99,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
 
@@ -112,7 +112,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
 

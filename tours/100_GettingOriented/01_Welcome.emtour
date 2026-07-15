@@ -9,7 +9,7 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$start]Welcome Aboard}
+      {[ht,$start]&thinsp;Welcome Aboard}
 
       This initial tour has two primary objectives:
 
@@ -32,7 +32,7 @@ steps:
       - view 1
     text: |
 
-      {[ht,household_supplies]Tidying Up &ndash; Activity Bar}
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Activity Bar}
 
       You can remove some extraneous elements from the **Activity Bar** at the left of the **VS Code** window.
 
@@ -48,7 +48,7 @@ steps:
       - view 2
     text: |
 
-      {[ht,household_supplies]Tidying Up &ndash; Outline View}
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Outline View}
 
       You should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
 
@@ -66,7 +66,7 @@ steps:
     focus: [3, 1]
     text: |
 
-      {[ht,front_hand]Hello EM&bull;Script}
+      {[ht,front_hand]&thinsp;Hello EM&bull;Script}
 
       Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
 
@@ -86,7 +86,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,$details]%[cu]HelloP% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]HelloP% &ndash; Details}
 
       Many tour-stops will examine a particular source file in greater detail.
 
@@ -109,7 +109,7 @@ steps:
     acts: [$build]
     text: |
 
-      {[ht,$build]%[cu]HelloP% &ndash; Build&thinsp;+&thinsp;Load}
+      {[ht,$build]&thinsp;%[cu]HelloP% &ndash; Build&thinsp;+&thinsp;Load}
 
       Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
 
@@ -129,7 +129,7 @@ steps:
     acts: [$build, $reveal]
     text: |
 
-      {[ht,$build]%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
+      {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
 
       While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
 
@@ -142,7 +142,7 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Congratulations on completing your first tour.&thinsp;🎉
 

@@ -11,7 +11,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,$start] Pressing Buttons}
+      {[ht,$start]&thinsp; Pressing Buttons}
 
       This tour examines {[cu]Button3P}, which uses a **del&shy;egate** implementing a higher-level {[cu]ButtonI} **interface**.
 
@@ -32,7 +32,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button3P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button3P% &ndash; Details}
 
       <div class="em-bmlist">
 
@@ -54,7 +54,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]ButtonI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]ButtonI% &ndash; Quick Look}
 
       Reading the {[cu]ButtonI} **interface** should seem second nature to you by now.
 
@@ -72,7 +72,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]ButtonT% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; Details}
 
       The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour:
 
@@ -102,7 +102,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]ButtonT% &ndash; More Details}
+      {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; More Details}
 
       When dispatched, {[cf]debounceFB} uses the {[cu]Poller} **module** at {[bm,G]} to iteratively await passage of {[cn]cur_min} msecs.
 
@@ -122,7 +122,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]BoardC% &ndash; A Look Back}
+      {[ht,$peek]&thinsp; %[cu]BoardC% &ndash; A Look Back}
 
       In case you don't notice on earlier visits, {[cu]BoardC} first clones {[cu]ButtonT} into the {[cu]AppBut} **delegate**  at {[bm,A]}.
 
@@ -133,7 +133,7 @@ steps:
     focus: [4, 45]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Quantify the {[cf]debounceFB} overhead at _run-time_.
 
@@ -145,7 +145,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Congratulations&thinsp;&hellip;&nbsp; You've completed the last tour with&shy;in the **Basic Examples** series 🎉.
 

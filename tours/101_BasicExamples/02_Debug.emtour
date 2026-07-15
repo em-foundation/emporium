@@ -11,7 +11,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,$start]%[cu]Debug% &ndash; Real-Time Debug}
+      {[ht,$start]&thinsp;%[cu]Debug% &ndash; Real-Time Debug}
 
       The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
 
@@ -24,7 +24,7 @@ steps:
     acts: ["$build"]
     text: |
 
-      {[ht,$build]%[cu]DebugP% &ndash; Build&middot;Load}
+      {[ht,$build]&thinsp;%[cu]DebugP% &ndash; Build&middot;Load}
 
       {[in]Observe the LEDs when executing this program.}
 
@@ -44,7 +44,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$details]%[cu]DebugP% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Details}
 
       <div class="em-bmlist">
 
@@ -65,7 +65,7 @@ steps:
     focus: [1, 8]
     text: |
 
-      {[ht,$details]%[cu]DebugP% &ndash; More Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; More Details}
 
       <div class="em-bmlist">
 
@@ -83,7 +83,7 @@ steps:
       - view 2
     text: |
 
-      {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;&thinsp;%[cu]DebugP% &ndash; Signal Capture}
 
       <div class="em-bmlist">
 
@@ -108,7 +108,7 @@ steps:
     focus: [1, 8]
     text: |
 
-      {[ht,$details]%[cu]DebugP% &ndash; Still More Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Still More Details}
 
       <div class="em-bmlist">
 
@@ -130,7 +130,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,$look] Portable Implementation}
+      {[ht,$look]&thinsp; Portable Implementation}
 
       The portable {[cu]Debug} **Module** shown here provides the underlying implementation for {[cd]%%[_p_&hellip;]} statements.
 
@@ -146,7 +146,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Use **PulseView** cursors to measure {[cd]%%[_p_&hellip;]} timings.
 
@@ -158,7 +158,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       The remaining **Basic Examples** tours will use {[cd]%%[_p_]} for RTA with minimal impact on run-time performance.
 

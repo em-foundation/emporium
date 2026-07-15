@@ -10,7 +10,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,$start]EM&bull;Script Content Hierarchy}
+      {[ht,$start]&thinsp;EM&bull;Script Content Hierarchy}
 
       This tour has two objectives which revolve around the **EM&bull;Builder Content** view seen in the **Primary Sidebar**:
 
@@ -29,7 +29,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Unit &ndash; Source File}
+      {[ht,account_tree]&thinsp;EM&bull;Script Unit &ndash; Source File}
 
       The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}.
 
@@ -46,7 +46,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Bucket &ndash; Namespace}
+      {[ht,account_tree]&thinsp;EM&bull;Script Bucket &ndash; Namespace}
 
       The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EMS Bucket** named {[cx]em.examples.basic}
 
@@ -68,7 +68,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Package &ndash; Container}
+      {[ht,account_tree]&thinsp;EM&bull;Script Package &ndash; Container}
 
       The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
 
@@ -87,7 +87,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,snippet_folder]Files and Folders}
+      {[ht,snippet_folder]&thinsp;Files and Folders}
 
       We've already mentioned how an **EMS Unit** corres&shy;ponds to a source file of the same name.
 
@@ -103,7 +103,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,note_add]Adding EM&bull;Script Content}
+      {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
 
       We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
 
@@ -121,7 +121,7 @@ steps:
     acts: ["$build"]
     text: |
 
-      {[ht,note_add]Implementing %[cu]Blinky%}
+      {[ht,note_add]&thinsp;Implementing %[cu]Blinky%}
 
       Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
 
@@ -139,7 +139,7 @@ steps:
       - view 2
     text: |
 
-      {[ht,rebase]Source Control}
+      {[ht,rebase]&thinsp;Source Control}
 
       Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
 
@@ -160,7 +160,7 @@ steps:
       - close 2
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Well done &ndash; you're now officially dangerous.🔥
 

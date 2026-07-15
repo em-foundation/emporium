@@ -13,7 +13,7 @@ steps:
       - view 6
     text: |
 
-      {[ht,$start] Edge Detection}
+      {[ht,$start]&thinsp; Edge Detection}
 
       This tour visits two programs which wink `AppLed` &ndash; but now in response to asynchrnously pressing `AppBut`:
 
@@ -37,7 +37,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button1P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button1P% &ndash; Details}
 
       Like the {[cu]OneShot1P} program seen prior, {[cu]Button1P} main&shy;tains its portability by using an {[cu]AppButEdge} {[cs]$delegate}:
 
@@ -60,7 +60,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button2P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button2P% &ndash; Details}
 
       In contrast with {[cu]Button1P}, the {[cu]Button2P} program uses {[cu]FiberMgr} in a conventional manner:
 
@@ -76,7 +76,7 @@ steps:
       - view 7
     text: |
 
-      {[ht,monitor_heart] %[cu]Button2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp; %[cu]Button2P% &ndash; Signal Capture}
 
       Using {[cu]Button2P}, we'll now zoom-in on a single `AppLed` wink triggered by the falling edge of `AppBut`.
 
@@ -96,7 +96,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]BoardC% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]BoardC% &ndash; Details}
 
       The {[cu]BoardC} **composite** instaniates {[cu]AppButEdge}{[bm,A]} and {[cu]AppButPin}{[bm,B]} using {[cs]$clone} with a **template**.
 
@@ -114,7 +114,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]EdgeI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]EdgeI% &ndash; Quick Look}
 
       {[cu]Button1P} and {[cu]Button2P} each interact with {[cu]AppButEdge} using meth&shy;ods specified in the {[cu]EdgeI} **interface**.
 
@@ -126,7 +126,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]GpioI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]GpioI% &ndash; Quick Look}
 
       {[cu]GpioI} provides a "low-level" HW **interface** often hid&shy;den beneath other abstractions &ndash; {[cu]EdgeI}, {[cu]LedI}, etc.
 
@@ -140,7 +140,7 @@ steps:
       - view 7
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Measure HW&thinsp;&rarr;&thinsp;SW detection latency in **PulseView**.
 
@@ -152,7 +152,7 @@ steps:
       - view 6
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Almost done with the **Basic Examples** tour bundle&thinsp;&hellip;
 

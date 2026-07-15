@@ -10,7 +10,7 @@ steps:
   - cmds:
       - view 3
     text: |
-      {[ht,$start]Transforming CoreMark}
+      {[ht,$start]&thinsp;Transforming CoreMark}
 
       Starting with {[cu]ActiveRunnerP}, this tour group has faithful&shy;ly transcribed legacy **CoreMark** into this **EMS** design.
 
@@ -24,7 +24,7 @@ steps:
     focus: [1, 1]
     acts: [$build]
     text: |
-      {[ht,$peek]%[cu]ActiveRunnerP% &ndash; Quick Review}
+      {[ht,$peek]&thinsp;%[cu]ActiveRunnerP% &ndash; Quick Review}
 
       Recall that the {[cu]ActiveRunnerP} program repeatedly in&shy;vokes {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;ten times within a {[ck]for} loop.
 
@@ -37,7 +37,7 @@ steps:
       - mark 2 R 32
     focus: [2, 1]
     text: |
-      {[ht,$peek]%[cu]SleepyRunnerP% &ndash; Overview}
+      {[ht,$peek]&thinsp;%[cu]SleepyRunnerP% &ndash; Overview}
 
       In contrast with {[cu]ActiveRunnerP}, the {[cu]SleepyRunnerP} pro&shy;gram calls {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;*once* inside {[cf]tickCB}.
 
@@ -55,7 +55,7 @@ steps:
     focus: [2, 1]
     acts: [$build]
     text: |
-      {[ht,order_play]%[cu]SleepyRunnerP% &ndash; Program Execution}
+      {[ht,order_play]&thinsp;%[cu]SleepyRunnerP% &ndash; Program Execution}
 
       Go ahead and **build&thinsp;+&thinsp;load** the {[cu]SleepyRunnerP} program on the **Raspberry Pi Pico** simulator.
 
@@ -73,7 +73,7 @@ steps:
   - cmds:
       - view 4
     text: |
-      {[ht,monitor_heart]%[cu]SleepyRunnerP% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;%[cu]SleepyRunnerP% &ndash; Signal Capture}
 
       As we did throughout the **Basic Examples** tour, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunnerP}.
 
@@ -90,7 +90,7 @@ steps:
   - cmds:
       - open 2
     text: |
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Re-acquaint yourself with the **PulseView** tool.
 
@@ -103,7 +103,7 @@ steps:
       - close 4
       - view 3
     text: |
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Congratulations &ndash; we've just explored two complementary **EMS** applications which re-use a common set of modules:
 

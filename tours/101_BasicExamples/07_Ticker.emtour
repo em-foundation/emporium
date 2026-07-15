@@ -9,7 +9,7 @@ steps:
       - view 3
     text: |
 
-      {[ht,$start] Home}
+      {[ht,$start]&thinsp; Home}
 
       This tour examines the {[cu]TickerP} program, which winks `AppLed` [1.0&thinsp;s] &thinsp;_and_ `SysLed` [1.5&thinsp;s] at different rates.
 
@@ -27,7 +27,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,$details]%[cu]TickerP% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]TickerP% &ndash; Details}
 
       The {[cu]TickerP} program winks `SysLed` as well as `AppLed` to illustrate use of multiple {[cu]TickerMgr} objects.
 
@@ -46,7 +46,7 @@ steps:
     focus: [1, 27]
     text: |
 
-      {[ht,$details]%[cu]TickerP% &ndash; More Details}
+      {[ht,$details]&thinsp;%[cu]TickerP% &ndash; More Details}
 
       Within its {[cs]em$run} intrinsic, the {[cu]TickerP} program calls the {[cf]start} method on each {[cu]TickerMgr} object.
 
@@ -71,7 +71,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,$details]%[cu]TickerMgr% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]TickerMgr% &ndash; Details}
 
       <div class="em-bmlist">
 
@@ -105,7 +105,7 @@ steps:
     focus: [2, 26]
     text: |
 
-      {[ht,$details]%[cu]TickerMgr% &ndash; More Details}
+      {[ht,$details]&thinsp;%[cu]TickerMgr% &ndash; More Details}
 
       The {[cf]start} and {[cf]stop} methods will update {[ct]Ticker} fields before calling the appropriate {[cu]AlarmMgr} function.
 
@@ -121,7 +121,7 @@ steps:
     focus: [2, 26]
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Add a {[cd]%%a} pulse to {[cf]alarmFB} and re-run {[cu]PollerP}.
 
@@ -134,7 +134,7 @@ steps:
     focus: [2, 1]
     text: |
 
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       The {[cu]TickerMgr} reinforces the **EMS** _object-factory_ de&shy;sign pattern, and shows how factories use one another.
 

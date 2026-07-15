@@ -7,19 +7,19 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$start] Home}
+      {[ht,$start]&thinsp; Home}
 
   - cmds:
     text: |
 
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]}
 
   - cmds:
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]&thinsp; Next Steps}
 
       {[hc]}
 
@@ -32,7 +32,7 @@ steps:
     acts: [$reveal, $build]
     text: |
 
-      {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
+      {[ht,menu_book]&thinsp;%[cu]Unit% &ndash; Cheat Sheet}
 
       <div class="em-bmlist">
 
