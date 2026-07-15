@@ -57,7 +57,7 @@ steps:
       - mark 1 E 20
     focus: [1, 1]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; static declarations}
+      {[ht,$details]%[cu]ListBench% &ndash; Static Declarations}
 
       Like its siblings, {[cu]ListBench} exports a {[cn]mem_size} config {[bm,A]} assigned by {[cu]CoreBench} at build-time.
 
@@ -79,7 +79,7 @@ steps:
       - mark 1 H 48
     focus: [1, 24]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; %[cx]em$meta% initialization}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cx]em$meta% Initialization}
 
       The {[cs]em$construct} function creates the linked data struc&shy;ture shown as item {[dc,2]}in the prior codescape figure.
 
@@ -98,7 +98,7 @@ steps:
       - mark 1 C 129
     focus: [1, 111]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; %[cf]setup% details}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]setup% Details}
 
       As noted previously, {[cu]ListBench}.{[cf]setup} initializes {[bm,A]} its {[cn]cur_head} variable with the frozen value of {[cn]cur_head_c}.
 
@@ -118,7 +118,7 @@ steps:
       - mark 1 F 90
     focus: [1, 64]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details (search phase)}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% Details (Search Phase)}
 
       {[bm,A]} {[cu]ListBench}.{[cf]run} uses its local {[cn]retval} variable to re&shy;cord a {[ct]sum_t} value eventually returned by this function.
 
@@ -142,7 +142,7 @@ steps:
       - mark 1 F 103
     focus: [1, 94]
     text: |
-      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% details (sort phase)}
+      {[ht,$details]%[cu]ListBench% &ndash; %[cf]run% Details (Sort Phase)}
 
       The second phase of {[cu]ListBench}.{[cf]run} continues updating {[cn]retval} by forming interim {[ct]sum_t} values at {[bm,C]} and {[bm,F]}.
 
@@ -160,7 +160,7 @@ steps:
       - open 1
     focus: [1, 169]
     text: |
-      {[ht,$peek]%[cu]ListBench% &ndash; helper functions}
+      {[ht,$peek]%[cu]ListBench% &ndash; Helper Functions}
 
       The {[cf]remove} and {[cf]reverse} functions seen here typify the list-processing helpers used throughout {[cu]ListBench}.
 

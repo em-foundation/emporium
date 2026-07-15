@@ -27,7 +27,7 @@ steps:
       - mark 1 F 35
     focus: [1, 12]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; static declarations}
+      {[ht,$details]%[cu]StateBench% &ndash; Static Declarations}
 
       {[cu]StateBench} implements a finite-state-machine which repeatedly scans {[cn]membuf} {[bm,F]} for different numeric text.
 
@@ -46,7 +46,7 @@ steps:
       - mark 1 C 77
     focus: [1, 72]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% details}
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]run% Details}
 
       Local {[ct]StateCnt} vectors allocated at {[bm,A]} hold tallies of fi&shy;nal and transient states encountered while scanning.
 
@@ -63,7 +63,7 @@ steps:
       - mark 1 C 228
     focus: [1, 222]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]scan% details}
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]scan% Details}
 
       The {[cf]scan} function receives our {[ct]StateCnt} vectors as argu&shy;ments &ndash; accessed here via the generic {[ct]index_t} type.
 
@@ -83,7 +83,7 @@ steps:
       - mark 1 D 214
     focus: [1, 136]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% details}
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]nextState% Details}
 
       The {[cf]nextState} function first unpacks its {[cn]str_ref} argu&shy;ment into a local {[cn]str} pointer at line {[bm,A]}.
 
@@ -102,7 +102,7 @@ steps:
       - mark 1 C 101
     focus: [1, 89]
     text: |
-      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% details}
+      {[ht,$details]%[cu]StateBench% &ndash; %[cf]setup% Details}
 
       Once again, **CoreMark** requires us to initialize algorithm datasets using a {[ct]seed_t} value read at *run-time* {[bm,A]}.
 

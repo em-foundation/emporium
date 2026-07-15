@@ -28,7 +28,7 @@ steps:
       - mark 1 C 27
     focus: [1, 1]
     text: |
-      {[ht,$details]%[cu]MatrixBench% &ndash; %[cx]em$meta% details}
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cx]em$meta% Details}
 
       {[cu]MatrixBench} subjects the three {[cs]$table} objects declared at line {[bm,B]} to a variety of matrix-math operations.
 
@@ -44,7 +44,7 @@ steps:
       - mark 1 B 67
     focus: [1, 51]
     text: |
-      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]run% details}
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]run% Details}
 
       Starting with its scalar argument, {[cu]MatrixBench}.{[cf]run} ma&shy;nip&shy;ulates {[cn]mat&lbrack;ABC&rbrack;} through a series of private functions.
 
@@ -59,7 +59,7 @@ steps:
       - mark 1 A 71
     focus: [1, 74]
     text: |
-      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]setup% details}
+      {[ht,$details]%[cu]MatrixBench% &ndash; %[cf]setup% Details}
 
       The {[cu]MatrixBench}.{[cf]setup} initializes (at *run-time*) the {[cn]matA} and {[cn]matB} objects dimensioned and zeroed at *build-time*.
 
@@ -72,7 +72,7 @@ steps:
       - mark 1 A 71
     focus: [1, 74]
     text: |
-      {[ht,fence]%[cu]BenchAlgI%.%[cf]setup% &ndash; domain boundaries}
+      {[ht,fence]%[cu]BenchAlgI%.%[cf]setup% &ndash; Domain Boundaries}
 
       The {[cf]setup} function we've just examined might appear to belong in the **`em$meta`** domain.
 

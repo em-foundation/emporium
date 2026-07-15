@@ -7,12 +7,10 @@ files:
   - .assets/img-100-03-01.png
   - em.prog/em.examples.basic/Ex02_BlinkerP.em.ts
 
-
 steps:
-
   - cmds:
       - open 1
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,$start]EM&bull;Script Language Overview}
@@ -33,7 +31,7 @@ steps:
   - cmds:
       - mark 1 M 13
       - mark 1 T 19
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,splitscreen]One Unit &ndash; Two Domains}
@@ -41,7 +39,7 @@ steps:
       The {[cx]em.utils/SoftUart.em.ts} **Unit** implements a low-level (albeit portable) *bit-banged* serial transmitter.
 
       When running on target HW, the {[cf]put} function serializes a single byte of data over some physical GPIO pin.
-  
+
       If used by an **EM&bull;Script** application, however, this **Unit** executes within <i><u>two</u></i> distinct programming domains:
 
       {[bi,counter_1]} *target* domain, where functions like {[cf]put} will run<br>
@@ -54,7 +52,7 @@ steps:
   - cmds:
       - mark 1 M 13
       - mark 1 T 19
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,timeline]Lifecycle Functions}
@@ -73,7 +71,7 @@ steps:
   - cmds:
       - mark 1 I 5
       - mark 1 E 26
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,handshake]Client&thinsp;&middot;&thinsp;Supplier Relationship}
@@ -83,7 +81,7 @@ steps:
       The {[ck]export} qualifiers in {[cu]SoftUart} make functions like {[cf]flush} and {[cf]put} publically visible to clients of this **Unit**.
 
       All **Units** so far have played the **Module** role &ndash; hiding its *private* implementation of its *public* specification.
-      
+
       In the case of {[cu]SoftUart}, some of its public spec in fact derives from {[cu]ConsoleUartI} &ndash; an **EMS Interface**.
 
       {[in]Select %[cu]ConsoleUartI% on line %[bm,I]% and press <b>F12</b> to see the original "spec-only" definition of %[cf]flush% and %[cf]put%.}
@@ -92,7 +90,7 @@ steps:
 
   - cmds:
       - mark 1 C 8
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,settings]Configuration Parameters}
@@ -107,12 +105,12 @@ steps:
 
       Run-time function like {[cf]put} will then use {[cn]bit_time} no differently from any statically initialized constant.
 
-      By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*. 
+      By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*.
 
   - cmds:
       - mark 1 P 9
-   
-    focus: [1,1]
+
+    focus: [1, 1]
     text: |
 
       {[ht,plug_connect]Client&thinsp;&middot;&thinsp;Supplier Proxies}
@@ -134,10 +132,10 @@ steps:
       - mark 1 B 32
       - mark 1 C 33
       - mark 1 D 39
-    focus: [1,30]
+    focus: [1, 30]
     text: |
 
-      {[ht,electric_bolt]Bit-Banging those Bytes}
+      {[ht,electric_bolt]Bit-Banging Those Bytes}
 
       Let's dive into the implementation of {[cf]put}, which trans&shy;mits 8-bit [{[ct]u8}] {[cn]data} as a framed 10-bit sequence.
 
@@ -154,7 +152,7 @@ steps:
 
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
       {[ht,hub]Pluggable Software Backplane}
@@ -176,8 +174,8 @@ steps:
       - mark 3 A 8
       - mark 3 B 29
       - mark 3 C 68
-    focus: [3,1]
-    acts: ['$reveal']
+    focus: [3, 1]
+    acts: ["$reveal"]
     text: |
 
       {[ht,api]Integration &middot; Specialization}
@@ -202,8 +200,8 @@ steps:
       - mark 4 T 9
       - mark 4 M 11
       - mark 4 C 65
-    focus: [4,1]
-    acts: ['$reveal']
+    focus: [4, 1]
+    acts: ["$reveal"]
     text: |
 
       {[ht,control_point_duplicate]Templates for Cloning}
@@ -245,22 +243,21 @@ steps:
 
   - cmds:
       - open 6
-    focus: [6,1]
+    focus: [6, 1]
     text: |
 
-        {[ht,$steps]Next Steps}
+      {[ht,$steps]Next Steps}
 
-        We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
+      We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 
-        The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
+      The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
 
-        Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
+      Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
 
-        {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
-        {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
-        {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
-        {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
+      {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
+      {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
+      {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
+      {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
 
 
-        {[hc]}
-
+      {[hc]}

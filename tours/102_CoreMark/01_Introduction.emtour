@@ -64,7 +64,7 @@ steps:
       - mark 3 D 25
     focus: [3, 1]
     text: |
-      {[ht,$details]%[cu]ActiveRunnerP% &ndash; details}
+      {[ht,$details]%[cu]ActiveRunnerP% &ndash; Details}
 
       This program behaves similarly to `core_main.c` &ndash; execu&shy;ting multiple iterations of the benchmark algorithms.
 
@@ -84,7 +84,7 @@ steps:
     focus: [3, 1]
     acts: ["$build"]
     text: |
-      {[ht,$build]%[cu]ActiveRunnerP% &ndash; output}
+      {[ht,$build]%[cu]ActiveRunnerP% &ndash; Output}
 
       Click the **build&thinsp;+&thinsp;load** button to execute {[cu]ActiveRunnerP} on the default &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board}&thinsp; [`rpi.2040://PI_PICO-sim$$`]
 

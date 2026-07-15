@@ -141,7 +141,7 @@ steps:
     acts: [$reveal]
     text: |
 
-      {[ht,$peek]%[cu]OneShot1P% &ndash; Details}
+      {[ht,$details]%[cu]OneShot1P% &ndash; Details}
 
       The {[cu]OneShot1P} program behaves identically to our {[cu]OneShot2P} program &ndash; but without using the {[cu]FiberMgr}.
 
