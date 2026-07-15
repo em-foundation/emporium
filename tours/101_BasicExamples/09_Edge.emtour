@@ -9,7 +9,6 @@ files:
   - .assets/img-101-09-02.png
 
 steps:
-
   - cmds:
       - view 6
     text: |
@@ -27,8 +26,6 @@ steps:
 
       Here, {[cu]Button1P} winks `AppLed` at the _beginning_ of the button press &ndash; when `AppBut` transitions 1&thinsp;&rarr;&thinsp;0.
 
-
-
   - cmds:
       - open 1
       - mark 1 A 7
@@ -36,8 +33,8 @@ steps:
       - mark 1 C 20
       - mark 1 D 28
       - mark 1 E 37
-    focus: [1,11]
-    acts: [$reveal,$build]
+    focus: [1, 11]
+    acts: [$reveal, $build]
     text: |
 
       {[ht,$details] %[cu]Button1P% &ndash; Details}
@@ -52,7 +49,6 @@ steps:
 
       {[in]The <b>EMS</b> translator ensures all %[cs]em$startup% code exe&shy;cutes <i>before</i> the target C++ program reaches %[cs]em$run%.}
 
-
   - cmds:
       - open 2
       - mark 2 A 10
@@ -60,8 +56,8 @@ steps:
       - mark 2 C 26
       - mark 2 D 29
       - mark 2 E 38
-    focus: [2,8]
-    acts: [$reveal,$build]
+    focus: [2, 8]
+    acts: [$reveal, $build]
     text: |
 
       {[ht,$details] %[cu]Button2P% &ndash; Details}
@@ -90,14 +86,13 @@ steps:
 
       {[in]Unlike timer events, we see the <i>exact</i> point where `AppBut` falls and can precisely measure latency.}
 
-
   - cmds:
       - open 5
       - mark 5 A 27
       - mark 5 B 28
       - mark 5 C 60
       - mark 5 D 61
-    focus: [5,31]
+    focus: [5, 31]
     acts: [$reveal]
     text: |
 
@@ -113,11 +108,9 @@ steps:
 
       The {[cu]AppButEdge} and {[cu]AppButPin} **delegates** repsectively implement {[cu]EdgeI} and {[cu]GpioI} **interfaces** &ndash; seen next.
 
-
-
   - cmds:
       - open 3
-    focus: [3,1]
+    focus: [3, 1]
     acts: [$reveal]
     text: |
 
@@ -129,7 +122,7 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4,1]
+    focus: [4, 1]
     acts: [$reveal]
     text: |
 
@@ -141,13 +134,13 @@ steps:
 
       Unlike other {[cu]GpioI} methods, note that clients can call {[cf]pinId} at _build-time_ [**`meta`**] as well as _run-time_ [**`targ`**].
 
-      {[in]In general, any <b>unit</b> can expose a common suite of getter&thinsp;&middot;&thinsp;setter methods for <i>both</i> <b>EMS</b> domains.} 
+      {[in]In general, any <b>unit</b> can expose a common suite of getter&thinsp;&middot;&thinsp;setter methods for <i>both</i> <b>EMS</b> domains.}
 
   - cmds:
       - view 7
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
       {[bi,task_alt]} Measure HW&thinsp;&rarr;&thinsp;SW detection latency in **PulseView**.
 
@@ -159,7 +152,7 @@ steps:
       - view 6
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]Next Steps}
 
       Almost done with the **Basic Examples** tour bundle&thinsp;&hellip;
 

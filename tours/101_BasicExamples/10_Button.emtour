@@ -133,7 +133,7 @@ steps:
     focus: [4, 45]
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
       {[bi,task_alt]} Quantify the {[cf]debounceFB} overhead at _run-time_.
 
@@ -145,7 +145,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]Next Steps}
 
       Congratulations&thinsp;&hellip;&nbsp; You've completed the last tour with&shy;in the **Basic Examples** series 🎉.
 

@@ -7,7 +7,6 @@ files:
   - .assets/img-101-08-01.png
 
 steps:
-
   - cmds:
       - view 5
     text: |
@@ -22,7 +21,7 @@ steps:
 
   - cmds:
       - open 1
-    focus: [1,1]
+    focus: [1, 1]
     acts: [$reveal]
     text: |
 
@@ -43,7 +42,7 @@ steps:
       - mark 2 A 11
       - mark 2 B 24
       - mark 2 C 28
-    focus: [2,1]
+    focus: [2, 1]
     acts: [$reveal]
     text: |
 
@@ -52,7 +51,7 @@ steps:
       You've already seen many of these types and functions used by {[cu]RtcI} as well as by clients of {[cu]AlarmMgr}.
 
       <div class="em-bmlist">
-      
+
       {[bm,A]} {[ct]RawTime} represents the current time since reset as the fixed-point value {[cn]secs}.{[cn]subs} in Q32.32 format.
 
       {[bm,B]} These three 32-bit types represent different _time deltas_ &ndash; each with their own range and precision.
@@ -73,7 +72,7 @@ steps:
       - mark 3 D 18
       - mark 3 E 25
       - mark 3 F 28
-    focus: [3,1]
+    focus: [3, 1]
     acts: [$reveal]
     text: |
 
@@ -105,7 +104,7 @@ steps:
       - mark 3 J 54
       - mark 3 K 60
 
-    focus: [3,39]
+    focus: [3, 39]
     acts: [$reveal]
     text: |
 
@@ -121,7 +120,7 @@ steps:
       {[bm,J]} Consider this {[ct]Alarm} as a potential candidate.<br>
       {[bm,K]} Conditionally schedule the next {[cn]Rtc} wakeup event.
 
-      You'll see calls to the internal {[cf]dispatch} function, as we next implement the client-visible {[ct]Alarm} methods. 
+      You'll see calls to the internal {[cf]dispatch} function, as we next implement the client-visible {[ct]Alarm} methods.
 
   - cmds:
       - open 3
@@ -144,7 +143,7 @@ steps:
       - mark 3 N 74
       - mark 3 O 78
 
-    focus: [3,64]
+    focus: [3, 64]
     acts: [$reveal]
     text: |
 
@@ -160,7 +159,7 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4,1]
+    focus: [4, 1]
     acts: [$reveal]
     text: |
 
@@ -172,14 +171,12 @@ steps:
 
       {[cu]UptimerRtc} declares it own {[cu]RtcI}{[cs]$proxy} and simply forwards the prescribed {[cf]read} function accordingly.
 
-
-
   - cmds:
       - open 3
-    focus: [3,39]
+    focus: [3, 39]
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
       {[bi,task_alt]} Enable {[cn]DBG_FLAG} and run {[cu]AlarmMgr} client programs.
 
@@ -187,13 +184,12 @@ steps:
 
       {[bi,task_alt]} Find {[cn]Rtc} delegates for different &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp; distros.
 
-
   - cmds:
       - open 1
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]Next Steps}
 
       This tour completes our forary into _timed_ wakeup from deep-sleep using the [{[cu]RtcI}] abstraction.
 

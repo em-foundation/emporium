@@ -5,7 +5,6 @@ files:
   - .assets/img-101-07-01.png
 
 steps:
-
   - cmds:
       - view 3
     text: |
@@ -20,14 +19,12 @@ steps:
 
       This tour also introduces {[cu]TickerMgr} &ndash; yet another in&shy;stance of the **EMS** _object-factory_ design pattern.
 
-
-
   - cmds:
       - open 1
       - mark 1 A 10
       - mark 1 B 13
       - mark 1 C 18
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
       {[ht,$details]%[cu]TickerP% &ndash; Details}
@@ -39,14 +36,14 @@ steps:
       {[bm,C]} {[cu]TickerP} binds [**`meta`**] a pair of {[cu]TickerMgr} objects.
 
       Every {[cu]TickerMgr}.{[ct]Obj} in fact holds references to simi&shy;larly created [**`meta`**] {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
- 
+
   - cmds:
       - open 1
       - mark 1 A 10
       - mark 1 B 13
       - mark 1 C 18
       - mark 1 D 28
-    focus: [1,27]
+    focus: [1, 27]
     text: |
 
       {[ht,$details]%[cu]TickerP% &ndash; More Details}
@@ -62,7 +59,7 @@ steps:
       When awakening from deep-sleep, some MCUs may trigger a _warm restart_ &ndash; ultimately reaching {[cs]em$run}.
 
       {[cu]TickerP} tests {[cn]Mcu}.{[cf]isWarm}{[bm,D]} to discriminate a _cold reset_ &ndash; ensuring we don't call {[cf]start} on every wakeup.
- 
+
   - cmds:
       - open 2
       - mark 2 A 11
@@ -71,7 +68,7 @@ steps:
       - mark 2 D 26
       - mark 2 E 27
       - mark 2 F 28
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
       {[ht,$details]%[cu]TickerMgr% &ndash; Details}
@@ -91,7 +88,7 @@ steps:
       {[bm,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
 
       </div>
- 
+
   - cmds:
       - open 2
       - mark 2 A 11
@@ -105,7 +102,7 @@ steps:
       - mark 2 I 40
       - mark 2 J 41
 
-    focus: [2,26]
+    focus: [2, 26]
     text: |
 
       {[ht,$details]%[cu]TickerMgr% &ndash; More Details}
@@ -119,14 +116,12 @@ steps:
       {[bm,I]} We invoke the callback function at this point.<br>
       {[bm,J]} We schedule the next wakeup at the current rate.
 
-
-
   - cmds:
       - open 2
-    focus: [2,26]
+    focus: [2, 26]
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
       {[bi,task_alt]} Add a {[cd]%%a} pulse to {[cf]alarmFB} and re-run {[cu]PollerP}.
 
@@ -136,10 +131,10 @@ steps:
 
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]Next Steps}
 
       The {[cu]TickerMgr} reinforces the **EMS** _object-factory_ de&shy;sign pattern, and shows how factories use one another.
 

@@ -6,7 +6,6 @@ files:
   - .assets/img-101-06-02.png
 
 steps:
-
   - cmds:
       - view 3
     text: |
@@ -35,10 +34,10 @@ steps:
       - mark 1 C 17
       - mark 1 D 35
 
-    focus: [1,1]
-    acts: [$reveal,$build]
+    focus: [1, 1]
+    acts: [$reveal, $build]
     text: |
-      
+
       {[ht,$details]%[cu]Alarm1P% &ndash; Details}
 
       <div class="em-bmlist">
@@ -58,10 +57,10 @@ steps:
   - cmds:
       - open 2
       - mark 2 D 35
-    focus: [2,1]
-    acts: [$reveal,$build]
+    focus: [2, 1]
+    acts: [$reveal, $build]
     text: |
-      
+
       {[ht,$details]%[cu]Alarm2P% &ndash; Details}
 
       Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned} {[bm,D]} on its {[cn]alarm} object.
@@ -80,46 +79,43 @@ steps:
       - view 4
     text: |
 
-        {[ht,monitor_heart]%[cu]Alarm2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]%[cu]Alarm2P% &ndash; Signal Capture}
 
-        Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
+      Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
 
-        By using {[cf]wakeupAligned}, the `AppLed` winks will start precisely after &lbrace;1500, 3000, 4500, &hellip;&thinsp;&rbrace;&thinsp;ms from reset.
+      By using {[cf]wakeupAligned}, the `AppLed` winks will start precisely after &lbrace;1500, 3000, 4500, &hellip;&thinsp;&rbrace;&thinsp;ms from reset.
 
-        {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
+      {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
 
-        {[bm,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
-        {[bm,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
+      {[bm,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
+      {[bm,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
 
-        While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
+      While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
 
-        {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[bm,L]% or <i>twice</i> %[bm,D]% when entering lite-sleep or deep-sleep mode.}
-
-  - cmds:
-      - open 2
-    focus: [2,1]
-    text: |
-
-        {[ht,$extra] Extra Credit}
-
-        {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
-
-        {[bi,task_alt]} Vary the durations (in msecs) used by {[cu]Alarm2P}
-
-        {[bi,task_alt]} Switch to {[cf]wakeup} and study the signal capture.
-
+      {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[bm,L]% or <i>twice</i> %[bm,D]% when entering lite-sleep or deep-sleep mode.}
 
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
-        {[ht,$steps] Next Steps}
+      {[ht,$extra]Extra Credit}
 
-        Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
+      {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
 
-        To simplify this design, the next tour examines a port&shy;able solution building upon {[cu]AlarmMgr} and {[cu]FiberMgr}.
+      {[bi,task_alt]} Vary the durations (in msecs) used by {[cu]Alarm2P}
 
-        {[hc]} 
+      {[bi,task_alt]} Switch to {[cf]wakeup} and study the signal capture.
 
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
 
+      {[ht,$steps]Next Steps}
+
+      Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
+
+      To simplify this design, the next tour examines a port&shy;able solution building upon {[cu]AlarmMgr} and {[cu]FiberMgr}.
+
+      {[hc]}

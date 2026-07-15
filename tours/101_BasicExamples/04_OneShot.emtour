@@ -161,7 +161,7 @@ steps:
     acts: [$build]
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
       {[bi,task_alt]} Execute {[cu]OneShotP} {[cb,build]} and view its signal capture.
 

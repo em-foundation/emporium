@@ -4,7 +4,6 @@ files:
 #  - .assets/img-101-01-01.png
 
 steps:
-
   - cmds:
     text: |
 
@@ -13,9 +12,9 @@ steps:
   - cmds:
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]Extra Credit}
 
-      {[bi,task_alt]}       
+      {[bi,task_alt]}
 
   - cmds:
     text: |
@@ -29,29 +28,29 @@ steps:
       - view 0
       - mark 0 A 4
       - close 0
-    focus: [1,1]
-    acts: [$reveal,$build]
+    focus: [1, 1]
+    acts: [$reveal, $build]
     text: |
 
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
+      {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
 
-        <div class="em-bmlist">
+      <div class="em-bmlist">
 
-        {[bm,A]}
+      {[bm,A]}
 
-        </div>
+      </div>
 
-        {[in]An insight}
+      {[in]An insight}
 
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
+      {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
+      {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
 
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
+      {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
+      {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
+      {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
 
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
+      <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
 
-        {[hc]}
+      {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
+
+      {[hc]}
