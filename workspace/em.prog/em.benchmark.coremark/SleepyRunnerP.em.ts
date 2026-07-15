@@ -32,7 +32,7 @@ function tickCB() {
     const crc = CoreBench.run(0)
     $['%%d-']
     printf`crc = %04x\n`(crc)
-    if (count-- > 0) return
+    if (--count > 0) return
     ticker.$$.stop()
     halt()
 }

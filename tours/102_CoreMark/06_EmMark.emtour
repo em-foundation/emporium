@@ -43,7 +43,7 @@ steps:
 
       Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
 
-      {[in]Review the <b>Basic Examples&thinsp;/&thinsp;Cyclic Tasks</b> tour which ex&shy;amined <code>em.examples.basic/Ex13_TickerP.em.ts</code>.}
+      {[in]Review tour %[tr,101/07]%, which examines %[cu]TickerMgr%.}
 
       Inside {[cf]tickCB}, the program brackets {[cu]CoreBench}.{[cf]run} with **EMS** debug toggles and prints the latest checksum.
 
