@@ -38,17 +38,13 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]Alarm1P% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object-factory_.
 
-      {[bm,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object-factory_.
+      {[BM,B]} {[cu]Alarm1P} first declares {[cn]alarm} &ndash; a private {[cs]$config} parameter with a value of type {[ct]AlarmMgr}.{[ct]Obj}.
 
-      {[bm,B]} {[cu]Alarm1P} first declares {[cn]alarm} &ndash; a private {[cs]$config} parameter with a value of type {[ct]AlarmMgr}.{[ct]Obj}.
+      {[BM,C]} After assigning {[cn]blinkF}, we bind {[cn]alarm} to the new object returned by {[cu]AlarmMgr}.{[cf]create} [**`meta`**].
 
-      {[bm,C]} After assigning {[cn]blinkF}, we bind {[cn]alarm} to the new object returned by {[cu]AlarmMgr}.{[cf]create} [**`meta`**].
-
-      {[bm,D]} {[cu]Alarm1P} calls {[cf]wakeup} on its {[cn]alarm} object at run-time &ndash; scheduling a future {[cn]blinkF}.{[cf]post} dispatch.
-
-      </div>
+      {[BM,D]} {[cu]Alarm1P} calls {[cf]wakeup} on its {[cn]alarm} object at run-time &ndash; scheduling a future {[cn]blinkF}.{[cf]post} dispatch.
 
       Indeed, the {[cu]AlarmMgr} implementation will itself {[ck]import} the {[cu]FiberMg} &ndash; a common **EMS** design pattern.
 
@@ -61,7 +57,7 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]Alarm2P% &ndash; Details}
 
-      Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned} {[bm,D]} on its {[cn]alarm} object.
+      Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned}{[bm,D]} on its {[cn]alarm} object.
 
       {[cf]wakeup} [{[cu]Alarm1P}] versus {[cf]wakeupAligned} [{[cu]Alarm2P}] use their _dt_ arg differently in scheduing future wakeup _t_:
 
@@ -85,12 +81,12 @@ steps:
 
       {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
 
-      {[bm,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
-      {[bm,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
+      {[DC,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
+      {[DC,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
 
       While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
 
-      {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[bm,L]% or <i>twice</i> %[bm,D]% when entering lite-sleep or deep-sleep mode.}
+      {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[dc,L]% or <i>twice</i> %[dc,D]% when entering lite-sleep or deep-sleep mode.}
 
   - cmds:
       - open 2

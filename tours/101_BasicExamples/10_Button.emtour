@@ -17,9 +17,9 @@ steps:
 
       This program can discriminate between different kinds of button presses, based upon their duration:
 
-      {[bm,1]} a _glitch_ press, falling below a minimum duration<br>
-      {[bm,2]} a _short_ press, exceding a minimum duration<br>
-      {[bm,3]} a _long_ press, exceding a maximum duration
+      {[DC,1]} a _glitch_ press, falling below a minimum duration<br>
+      {[DC,2]} a _short_ press, exceding a minimum duration<br>
+      {[DC,3]} a _long_ press, exceding a maximum duration
 
       In the case of {[cu]Button3P}, short [100&thinsp;ms] and long [4&thinsp;s] presses will respectively wink `AppLed` and `SysLed`.
 
@@ -34,15 +34,11 @@ steps:
 
       {[ht,$details]&thinsp; %[cu]Button3P% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} {[cu]Button3P} uses an {[cu]AppBut} **delegate** exported by the current {[cu]BoardC} &emsp; <span class="em codicon codicon-circuit-board"></span>&thinsp;**composite**.<br>
 
-      {[bm,A]} {[cu]Button3P} uses an {[cu]AppBut} **delegate** exported by the current {[cu]BoardC} &emsp; <span class="em codicon codicon-circuit-board"></span>&thinsp;**composite**.<br>
+      {[BM,B]} {[cu]AppBut}.{[cf]onPressed} [**`targ`**] binds a local event hand&shy;ler and specifies the [&thinsp;<b>t</b><sup>min</sup>, <b>t</b><sup>max</sup>&thinsp;] press durations.
 
-      {[bm,B]} {[cu]AppBut}.{[cf]onPressed} [**`targ`**] binds a local event hand&shy;ler and specifies the [&thinsp;<b>t</b><sup>min</sup>, <b>t</b><sup>max</sup>&thinsp;] press durations.
-
-      {[bm,C]} {[cu]AppBut}.{[cf]isPressed} tests if this event corresponds to a _long_ press exceeding <b>t</b><sup>max</sup>.
-
-      </div>
+      {[BM,C]} {[cu]AppBut}.{[cf]isPressed} tests if this event corresponds to a _long_ press exceeding <b>t</b><sup>max</sup>.
 
       {[cu]AppBut} will _not_ invoke the {[cf]onPressedH} hand&shy;ler if a 1&thinsp;&rarr;&thinsp;0&thinsp;&rarr;&thinsp;1 pulse on the `AppBut` pin doesn't cross  <b>t</b><sup>min</sup>.
 
@@ -76,12 +72,12 @@ steps:
 
       The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour:
 
-      {[bm,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
-      {[bm,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
-      {[bm,C]}We bind callback functions at build-time [**`meta`**].<br>
-      {[bm,D]}We track the "press" state at run-time [**`targ`**].<br>
-      {[bm,E]}We setup edge detection during {[cs]em$startup}.<br>
-      {[bm,F]}We (conditionally) {[cf]post} our {[ct]Fiber} upon detection.<br>
+      {[BM,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
+      {[BM,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
+      {[BM,C]}We bind callback functions at build-time [**`meta`**].<br>
+      {[BM,D]}We track the "press" state at run-time [**`targ`**].<br>
+      {[BM,E]}We setup edge detection during {[cs]em$startup}.<br>
+      {[BM,F]}We (conditionally) {[cf]post} our {[ct]Fiber} upon detection.<br>
 
       We further classify the kind of button press &ndash; _glitch_, _short_, _long_ &ndash; using the state variables declared at {[bm,D]}.
 

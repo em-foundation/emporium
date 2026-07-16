@@ -56,11 +56,11 @@ steps:
 
       {[in]The <b>EM&bull;Home</b> editor tab contains a link for installing this application on your PC.}
 
-      {[BM,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
+      {[DC,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
 
-      {[BM,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
+      {[DC,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
 
-      {[BM,3]} Reloading `wokwi.vcd` inside a running **PulseView** win&shy;dow will refresh the application's display.
+      {[DC,3]} Reloading `wokwi.vcd` inside a running **PulseView** win&shy;dow will refresh the application's display.
 
       {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
 
@@ -114,11 +114,11 @@ steps:
 
       At this point, we'll examine the values of signals **D0 - D7** over five seconds of {[cu]BlinkerP} execution time.
 
-      Label {[bm,A]} shows two quick winks of the [RED] `SysLed`, which **EMS** will always trigger before entering {[cs]em$run}.
+      Label {[dc,A]} shows two quick winks of the [RED] `SysLed`, which **EMS** will always trigger before entering {[cs]em$run}.
 
-      Label {[bm,B]} uses the **PulseView** cursor to measure the ac&shy;curacy of {[cu]Common}.{[cn]BusyWait} over {[ce]500_000} &mu;seconds.
+      Label {[dc,B]} uses the **PulseView** cursor to measure the ac&shy;curacy of {[cu]Common}.{[cn]BusyWait} over {[ce]500_000} &mu;seconds.
 
-      Label {[bm,C]} show a special {[ce]0x4} byte written to `AppOut` through {[cd]halt}, followed by asserting `SysLed`.
+      Label {[dc,C]} show a special {[ce]0x4} byte written to `AppOut` through {[cd]halt}, followed by asserting `SysLed`.
 
       {[in]If not called explicitly, the <b>EMS</b> run-time automati&shy;cally invokes <code class="cmd-cd">halt</code> during orderly program shutdown.}
 

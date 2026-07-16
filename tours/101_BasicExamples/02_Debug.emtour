@@ -81,13 +81,13 @@ steps:
 
       {[ht,monitor_heart]&thinsp;&thinsp;%[cu]DebugP% &ndash; Signal Capture}
 
-      {[BM,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
+      {[DC,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
 
-      {[BM,B]} At each `AppLed` edge, the current {[ct]u16} value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
+      {[DC,B]} At each `AppLed` edge, the current {[ct]u16} value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
 
-      {[BM,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
+      {[DC,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
 
-      {[BM,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
+      {[DC,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
 
       The {[cd]%%>} intrinsic always outputs a leading <code>0x8<i>n</i></code> con&shy;trol byte to the **UART**, followed 
       by _n_ bytes of payload.

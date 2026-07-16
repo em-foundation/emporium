@@ -15,7 +15,7 @@ steps:
 
       Looking at the {[cu]TickerP} signal capture, aligned wakeups cause each wink to start at precise intervals from reset.
 
-      In cases where these intervals coincide (such as the +3&thinsp;s mark), `AppLed`{[bm,A]} and `SysLed`{[bm,S]} wink in succession.
+      In cases where these intervals coincide (such as the +3&thinsp;s mark), `AppLed`{[dc,A]} and `SysLed`{[dc,S]} wink in succession.
 
       This tour also introduces {[cu]TickerMgr} &ndash; yet another in&shy;stance of the **EMS** _object-factory_ design pattern.
 
@@ -31,9 +31,9 @@ steps:
 
       The {[cu]TickerP} program winks `SysLed` as well as `AppLed` to illustrate use of multiple {[cu]TickerMgr} objects.
 
-      {[bm,A]} {[cu]TickerP} accesses each LED's {[cu]BoardC} {[cs]$delegate}.<br>
-      {[bm,B]} {[cu]TickerP} declares a {[cs]$config} param for each object.<br>
-      {[bm,C]} {[cu]TickerP} binds [**`meta`**] a pair of {[cu]TickerMgr} objects.
+      {[BM,A]} {[cu]TickerP} accesses each LED's {[cu]BoardC} {[cs]$delegate}.<br>
+      {[BM,B]} {[cu]TickerP} declares a {[cs]$config} param for each object.<br>
+      {[BM,C]} {[cu]TickerP} binds [**`meta`**] a pair of {[cu]TickerMgr} objects.
 
       Every {[cu]TickerMgr}.{[ct]Obj} in fact holds references to simi&shy;larly created [**`meta`**] {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
 
@@ -73,19 +73,17 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]TickerMgr% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} The internal representation of a {[ct]Ticker} contains ref&shy;erences to {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
 
-      {[bm,A]} The internal representation of a {[ct]Ticker} contains references to {[cu]AlarmMgr} and {[cu]FiberMgr} objects.
+      {[BM,B]} The client-visible API of {[ct]Ticker} objects includes the {[cf]start} method used in our {[cu]TickerP} program.
 
-      {[bm,B]} The client-visible API of {[ct]Ticker} objects includes the {[cf]start} method used in our {[cu]TickerP} program.
+      {[BM,C]} An **EMS** {[cs]$table} (a key element of the _object-factory_ pattern) has traits similar to a {[cs]$config} param.
 
-      {[bm,C]} An **EMS** {[cs]$table} (a key element of the _object-factory_ pattern) has traits similar to a {[cs]$config} param.
+      {[BM,D]} The [**`meta`**] {[cn]ticker_tab}.**`$$add`** method  expands the underlying {[cs]$table} and returns a {[ct]Ticker} reference.
 
-      {[bm,D]} The [**`meta`**] {[cn]ticker_tab}.**`$$add`** method  expands the underlying {[cs]$table} and returns a {[ct]Ticker} reference.
+      {[BM,E]} {[cu]FiberMgr}.{[cf]create} receives the _index_ of our new {[ct]Ticker} as the arg value passed to this fiber's body.
 
-      {[bm,E]} {[cu]FiberMgr}.{[cf]create} receives the _index_ of our new {[ct]Ticker} as the arg value passed to this fiber's body.
-
-      {[bm,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
+      {[BM,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
 
       </div>
 
@@ -111,10 +109,10 @@ steps:
 
       {[cf]alarmFB} lies at the heart of {[cu]TickerMgr} &ndash; implementing the body of the {[ct]Fiber}{[bm,E]} bound to our {[ct]Alarm}{[bm,F]}.
 
-      {[bm,G]} We locate the {[ct]Ticker} object using its index {[bm,E]}.<br>
-      {[bm,H]} We test for a {[cs]$null} callback (set inside {[cf]stop}).<br>
-      {[bm,I]} We invoke the callback function at this point.<br>
-      {[bm,J]} We schedule the next wakeup at the current rate.
+      {[BM,G]} We locate the {[ct]Ticker} object using its index {[bm,E]}.<br>
+      {[BM,H]} We test for a {[cs]$null} callback (set inside {[cf]stop}).<br>
+      {[BM,I]} We invoke the callback function at this point.<br>
+      {[BM,J]} We schedule the next wakeup at the current rate.
 
   - cmds:
       - open 2

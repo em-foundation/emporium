@@ -54,7 +54,7 @@ steps:
 
       The {[cu]OneShot3P} capture on the left reveals an important difference from {[cu]OneShot2P} on the right.
 
-      For orientation, labels {[bm,C]} and {[bm,D]} mark execution of the {[cd]%%c} and {[cd]%%d} statements at run-time.
+      For orientation, labels {[dc,C]} and {[dc,D]} mark execution of the {[cd]%%c} and {[cd]%%d} statements at run-time.
 
       Unlike {[cu]OneShot2P} &ndash; where the MCU stays _active_ while busy-waiting &ndash; {[cu]OneShot3P} quickly goes back to _sleep_.
 

@@ -122,11 +122,11 @@ steps:
 
       By convention, {[cu]Common}.{[cn]Idle} delegates use `DbgB` to delineate the MCU's current active&thinsp;&middot;&thinsp;sleep mode.
 
-      `DbgB` at marker {[bm,A]} reflects an inactive MCU awaiting a timer interrupt &ndash; the dominant state of {[cu]OneShot2P}.
+      `DbgB` at marker {[dc,A]} reflects an inactive MCU awaiting a timer interrupt &ndash; the dominant state of {[cu]OneShot2P}.
 
-      At marker {[bm,B]} `DbgB` now refects an active MCU &ndash; busy-waiting for 5&thinsp;ms after turning on `AppLed`.
+      At marker {[dc,B]} `DbgB` now refects an active MCU &ndash; busy-waiting for 5&thinsp;ms after turning on `AppLed`.
 
-      Looking closer, we measure 5&thinsp;&mu;s between the {[cd]%%c} at label {[bm,C]} and {[cd]%%d} at {[bm,D]} &ndash; our wakeup overhead.
+      Looking closer, we measure 5&thinsp;&mu;s between the {[cd]%%c} at label {[dc,C]} and {[cd]%%d} at {[dc,D]} &ndash; our wakeup overhead.
 
   - cmds:
       - mark 4 A 10

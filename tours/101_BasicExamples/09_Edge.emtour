@@ -41,11 +41,11 @@ steps:
 
       Like the {[cu]OneShot1P} program seen prior, {[cu]Button1P} main&shy;tains its portability by using an {[cu]AppButEdge} {[cs]$delegate}:
 
-      {[bm,A]} We access `AppBut` via the current {[cu]BoardC} <span class="em codicon codicon-circuit-board"></span>.<br>
-      {[bm,B]} We bind a detection handler at build-time [**`meta`**].<br>
-      {[bm,C]} We setup the `AppBut` pin HW at run-time [**`targ`**].<br>
-      {[bm,D]} We enable `AppBut` detection inside our super-loop.<br>
-      {[bm,E]} We clear dection before signaling {[cn]pressed_flag}.
+      {[BM,A]} We access `AppBut` via the current {[cu]BoardC} <span class="em codicon codicon-circuit-board"></span>.<br>
+      {[BM,B]} We bind a detection handler at build-time [**`meta`**].<br>
+      {[BM,C]} We setup the `AppBut` pin HW at run-time [**`targ`**].<br>
+      {[BM,D]} We enable `AppBut` detection inside our super-loop.<br>
+      {[BM,E]} We clear dection before signaling {[cn]pressed_flag}.
 
       {[in]The <b>EMS</b> translator ensures all %[cs]em$startup% code exe&shy;cutes <i>before</i> the target C++ program reaches %[cs]em$run%.}
 
@@ -64,11 +64,11 @@ steps:
 
       In contrast with {[cu]Button1P}, the {[cu]Button2P} program uses {[cu]FiberMgr} in a conventional manner:
 
-      {[bm,A]} We declare a {[cs]$config} which holds a {[ct]Fiber} object.<br>
-      {[bm,B]} We bind a new {[ct]Fiber} and its callback at build-time.<br>
-      {[bm,C]} We start dispatching {[ct]Fiber} objects at run-time.<br>
-      {[bm,D]} {[cf]blinkFB} winks `AppLed` and re-enables `AppBut`.<br>
-      {[bm,E]} {[cf]handler} invokes {[cf]post} to schedule {[cf]blinkFB}.
+      {[BM,A]} We declare a {[cs]$config} which holds a {[ct]Fiber} object.<br>
+      {[BM,B]} We bind a new {[ct]Fiber} and its callback at build-time.<br>
+      {[BM,C]} We start dispatching {[ct]Fiber} objects at run-time.<br>
+      {[BM,D]} {[cf]blinkFB} winks `AppLed` and re-enables `AppBut`.<br>
+      {[BM,E]} {[cf]handler} invokes {[cf]post} to schedule {[cf]blinkFB}.
 
       {[in]Here again, prefer <i>fiber dispatch</i> over an event <i>super-loop</i> when designing your application code.}
 
@@ -80,7 +80,7 @@ steps:
 
       Using {[cu]Button2P}, we'll now zoom-in on a single `AppLed` wink triggered by the falling edge of `AppBut`.
 
-      For orientation, labels {[bm,C]} and {[bm,D]} mark execution of {[cd]%%c} and {[cd]%%d} inside {[cf]handler} and {[cf]blinkFB}.
+      For orientation, labels {[dc,C]} and {[dc,D]} mark execution of {[cd]%%c} and {[cd]%%d} inside {[cf]handler} and {[cf]blinkFB}.
 
       The pulses on `DbgB` track program entry into _lite-sleep_ (after {[cf]wink}) versus _deep-sleep_ (after {[cf]enableDetect}).
 
