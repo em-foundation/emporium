@@ -17,14 +17,14 @@ steps:
 
       {[bi,arrow_circle_right]} Tweaking the UI to remove some visual clutter.
 
-      To proceed through the current tour, you'll use the five buttons across the top of this view:
+      To proceed through the current tour, you'll use the six buttons across the top of this view:
 
-      {[bm,1]} **Refresh** &ndash; replay the current stop on this tour<br>
-      {[bm,2]} **Restart** &ndash; rewind to the first stop on this tour <br>
-      {[bm,3]} **Back** &ndash; go to the previous stop on this tour<br>
-      {[bm,4]} **Next** &ndash; go to the next stop on this tour<br>
-      {[bm,5]} **Screenshot** &ndash; save a screenshot of the this stop<br>
-      {[bm,6]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
+      {[DC,1]} **Refresh** &ndash; replay the current stop on this tour<br>
+      {[DC,2]} **Restart** &ndash; rewind to the first stop on this tour <br>
+      {[DC,3]} **Back** &ndash; go to the previous stop on this tour<br>
+      {[DC,4]} **Next** &ndash; go to the next stop on this tour<br>
+      {[DC,5]} **Screenshot** &ndash; save a screenshot of the this stop<br>
+      {[DC,6]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
 
       Click the **Next** button to continue with **Tour&thinsp;01**&thinsp;....
 

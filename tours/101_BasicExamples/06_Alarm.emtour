@@ -16,13 +16,11 @@ steps:
 
       Looking first at their signal captures, each program winks `AppLed` five times before halting:
 
-      <div class="em-bmlist">
+      {[bi,counter_1]}{[cu]Alarm1P} alternately awakens every 0.75 or 2.00 sec&shy;onds, winking `AppLed` for 100 msecs.
 
-      &emsp;&ensp;&thinsp;{[bi,counter_1]}{[cu]Alarm1P} alternately awakens every 0.75 or 2.00 seconds, winking `AppLed` for 100 msecs.
+      {[bi,counter_2]}{[cu]Alarm2P} awakens on _aligned_ 1.50 second intervals, alternately winking `AppLed` for 5 or 100 msecs.
 
-      &emsp;&ensp;&thinsp;{[bi,counter_2]}{[cu]Alarm2P} awakens on _aligned_ 1.50 second intervals, alternately winking `AppLed` for 5 or 100 msecs.
 
-      </div>
 
       In fact, {[cu]AlarmMgr} uses a _real-time clock_ to track elapsed time from HW reset with 0.25 seconds of precision.
 

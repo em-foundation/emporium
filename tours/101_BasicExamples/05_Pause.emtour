@@ -36,17 +36,13 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]Poller% &ndash; Details}
 
-      <div class="bm-list">
+      {[BM,A]} The {[cu]Poller} implementation stays _portable_  by de&shy;claring a {[cs]$proxy} which conforms to {[cu]OneShotI}.
 
-      {[bm,A]} The {[cu]Poller} implementation stays _portable_  by declaring a {[cs]$proxy} which conforms to {[cu]OneShotI}.
+      {[BM,B]} Like {[cu]OneShot1P} from the last tour, {[cu]Poller} also de&shy;clares a (volatile) {[cn]done_flag} for synchronization.
 
-      {[bm,B]} Like {[cu]OneShot1P} from the last tour, {[cu]Poller} also de&shy;clares a (volatile) {[cn]done_flag} for synchronization.
+      {[BM,C]} The client-visible {[cf]pause} function simply defers to {[cf]upause} &ndash; scaling its parameter from msecs to &mu;secs.
 
-      {[bm,C]} The client-visible {[cf]pause} function simply defers to {[cf]upause} &ndash; scaling its parameter from msecs to &mu;secs.
-
-      {[bm,D]} The {[cf]upause} implementation should remind you of the super-loop design employed by {[cu]OneShot1P}.
-
-      </div>
+      {[BM,D]} The {[cf]upause} implementation should remind you of the super-loop design employed by {[cu]OneShot1P}.
 
       Unlike {[cu]OneShot1P}, however, {[cu]Poller} _localizes_ this pat&shy;tern to smoothly coexist with designs using {[cu]FiberMgr}.
 
@@ -73,7 +69,7 @@ steps:
 
       {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}
 
-      The {[cu]BoardC} **Composite** will bind a conformant {[cu]OneShot} **Module** to the {[cu]Poller} {[cs]$proxy}.
+      The {[cu]BoardC} **Composite** will bind a conformant {[cu]OneShot} **Module** to the {[cu]Poller}{[cs]$proxy}{[bm,P]}.
 
       By convention, {[cu]BoardC} will also {[ck]export} its {[cu]OneShot} {[cs]$delegate} for direct use by clients like {[cu]OneShot3P}.
 

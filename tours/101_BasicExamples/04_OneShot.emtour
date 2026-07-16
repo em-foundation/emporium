@@ -36,13 +36,11 @@ steps:
 
       Like our earlier {[cu]FiberP} example, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
 
-      <div class="em-bmlist">
+      {[BM,A]} The {[cu]OneShot} {[cs]$delegate} exported by {[cu]BoardC} im&shy;plements the {[cu]OneShotI} **Interface** (coming next).
 
-      {[bm,A]} The {[cu]OneShot} {[cs]$delegate} exported by {[cu]BoardC} imple&shy;ments the {[cu]OneShotI} **Interface** (coming next).
+      {[BM,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
 
-      {[bm,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
-
-      {[bm,C]} The {[cf]handler} function itself then calls {[cf]post}, which in turn schedules the next cycle of {[cf]blinkFB}.
+      {[BM,C]} The {[cf]handler} function itself then calls {[cf]post}, which in turn schedules the next cycle of {[cf]blinkFB}.
 
       </div>
 
@@ -63,13 +61,11 @@ steps:
 
       While you may have browsed to other `em.hal` inter&shy;faces, let's use {[cu]OneShotI} to explain this **EMS** pattern.
 
-      <div class="em-bmlist">
+      {[BM,A]} Similar to boilerplate found in every **EMS Unit**, we here {[cs]$declare} the "flavor" of {[cu]OneShotI}.
 
-      {[bm,A]} Similar to boilerplate found in every **EMS Unit**, we here {[cs]$declare} the "flavor" of {[cu]OneShotI}.
+      {[BM,B]} In general, an **EMS Interface** can define *constants* and *types* which support its published methods.
 
-      {[bm,B]} In general, an **EMS Interface** can define *constants* and *types* which support its published methods.
-
-      {[bm,C]} A **_TypeScript_** interface conventionally named {[cs]$I} specifies the signature of every client function.
+      {[BM,C]} A **_TypeScript_** interface conventionally named {[cs]$I} specifies the signature of every client function.
 
       </div>
 
@@ -147,11 +143,11 @@ steps:
 
       Instead, {[cu]OneShot1P} uses a _super-loop_ design &ndash; which relies on app-specific flags to gate program execution.
 
-      Here, {[cu]OneShot1P} uses its (volatile) {[cn]done_flag} {[bm,A]} to synchronize {[cf]handler} with the super-loop.
+      Here, {[cu]OneShot1P} uses its (volatile) {[cn]done_flag}{[bm,A]} to synchronize {[cf]handler} with the super-loop.
 
-      After clearing {[cn]done_flag}, {[cs]em$run} awaits {[bm,C]} a signal from the timer {[cf]handler} {[bm,D]} before the loop continues.
+      After clearing {[cn]done_flag}, {[cs]em$run} awaits {[bm,C]} a signal from the timer {[cf]handler}{[bm,D]} before the loop continues.
 
-      {[cu]OneShot1P} also explicitly manages {[cn]GlobalInterrupts} &ndash; a need otherwise managed implicitly by {[cu]FiberMgr}.
+      {[cu]OneShot1P} explicitly manages {[cn]GlobalInterrupts}{[bm,B]} &ndash; a need otherwise managed implicitly by {[cu]FiberMgr}.
 
       {[in] Prefer %[cu]FiberMgr% &ndash; but we will visit this pattern again. }
 

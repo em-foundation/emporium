@@ -69,7 +69,6 @@ steps:
 
   - cmds:
       - open 1
-      - mark 1 A 71
     focus: [1, 74]
     text: |
       {[ht,fence]&thinsp;%[cu]BenchAlgI%.%[cf]setup% &ndash; Domain Boundaries}

@@ -46,17 +46,13 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} This rather concise and distinct **EMS** statement as&shy;serts the (active-low) `DbgD` pin on your board.
 
-      {[bm,A]} This rather concise and distinct **EMS** statement as&shy;serts the (active-low) `DbgD` pin on your board.
+      {[BM,B]} This **EMS** statement then de-asserts `DbgA`, allowing us to easily measure the time consumed by {[cf]wait}.
 
-      {[bm,B]} This **EMS** statement then de-asserts `DbgA`, allowing us to easily measure the time consumed by {[cf]wait}.
+      {[BM,C]} {[cu]DebugP} skips the remaining debug code when its {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
 
-      {[bm,C]} {[cu]DebugP} skips the remaining debug code when its {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
-
-      {[bm,D]} Using a {[cd]fail} statement, {[cu]DebugP} explicitly aborts the program when this condition tests {[ck]true}.
-
-      </div>
+      {[BM,D]} Using a {[cd]fail} statement, {[cu]DebugP} explicitly aborts the program when this condition tests {[ck]true}.
 
   - cmds:
       - mark 1 E 22
@@ -67,17 +63,17 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]DebugP% &ndash; More Details}
 
-      <div class="em-bmlist">
+      {[BM,E]} This **EMS** debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
 
-      {[bm,E]} This **EMS** debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
+      {[BM,F]} This **EMS** statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
 
-      {[bm,F]} This **EMS** statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
+      {[BM,G]} With {[cn]bits11} ranging from {[ce]0&ndash;3}, this statement would toggle your board's {[cx]dbgC} pin {[ce]1&ndash;4} times.
 
-      {[bm,G]} With {[cn]bits11} ranging from {[ce]0&ndash;3}, this statement would toggle your board's {[cx]dbgC} pin {[ce]1&ndash;4} times.
-
-      </div>
+      <div class="em-info">
 
       In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
+
+      </div>
 
   - cmds:
       - view 2
@@ -85,17 +81,13 @@ steps:
 
       {[ht,monitor_heart]&thinsp;&thinsp;%[cu]DebugP% &ndash; Signal Capture}
 
-      <div class="em-bmlist">
+      {[BM,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
 
-      {[bm,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
+      {[BM,B]} At each `AppLed` edge, the current {[ct]u16} value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
 
-      {[bm,B]} At each `AppLed` edge, the current {[ct]u16 value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
+      {[BM,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
 
-      {[bm,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
-
-      {[bm,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
-
-      </div>
+      {[BM,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
 
       The {[cd]%%>} intrinsic always outputs a leading <code>0x8<i>n</i></code> con&shy;trol byte to the **UART**, followed 
       by _n_ bytes of payload.
@@ -110,13 +102,9 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Still More Details}
 
-      <div class="em-bmlist">
+      {[BM,H]} **EMS**' {[cd]printf} implements a "practical" subset of the legacy C function, emphasizing efficiency.
 
-      {[bm,H]} **EMS**' {[cd]printf} implements a "practical" subset of the legacy C function, emphasizing efficiency.
-
-      {[bm,I]} Using a {[cd]halt} statement, {[cu]DebugP} gracefully ter&shy;mi&shy;nates execution at this point in time.
-
-      </div>
+      {[BM,I]} Using a {[cd]halt} statement, {[cu]DebugP} gracefully ter&shy;mi&shy;nates execution at this point in time.
 
       **EMS**' {[cd]fail} / {[cd]halt} statements (like {[cd]printf}) serve a more practical role when (say) unit testing a module.
 

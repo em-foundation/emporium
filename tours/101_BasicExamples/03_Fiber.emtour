@@ -27,28 +27,23 @@ steps:
   - cmds:
       - mark 1 A 6
       - mark 1 B 10
-      - mark 1 C 27
-      - mark 1 D 14
-      - mark 1 E 24
+      - mark 1 C 14
+      - mark 1 D 24
+      - mark 1 E 27
     focus: [1, 1]
     text: |
 
       {[ht,$details]&thinsp;%[cu]FiberP% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} The {[cu]FiberMgr} module exhibits an _object-factory_ design pattern used elsewhere in the **EMS** runtime.
 
-      {[bm,A]} The {[cu]FiberMgr} module exhibits an _object-factory_ design pattern used elsewhere in the **EMS** runtime.
+      {[BM,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used in both domains [**`meta`**, **`targ`**].
 
-      {[bm,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used in both domains [**`meta`**, **`targ`**].
+      {[BM,E]} {[cu]blinkF} will internally reference our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
 
-      {[bm,C]} {[cu]blinkF} will internally reference our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
+      {[BM,C]} Using the {[cu]FiberMgr} build-time [**`meta`**] {[cf]create} function, we bind a new fiber object to {[cn]blinkF}.
 
-      {[bm,D]} Using the {[cu]FiberMgr} build-time [**`meta`**] {[cf]create} function, we bind a new fiber object to {[cn]blinkF}.
-
-      {[bm,E]} After starting {[cu]FiberMgr} [**`targ`**], calls to {[cf]post} will schedule execution of {[cf]blinkFB} at run-time.
-
-
-      </div>
+      {[BM,D]} After starting {[cu]FiberMgr} [**`targ`**], calls to {[cf]post} will schedule execution of {[cf]blinkFB} at run-time.
 
   - cmds:
       - open 2
@@ -65,19 +60,15 @@ steps:
 
       Several **EMS** data-types which support {[cu]FiberMgr} clients as well as the implementation of this **Module**.
 
-      <div class="em-bmlist">
+      {[BM,A]} *fiber body* type &ndash; callback function that accepts one scalar {[ct]arg_t} parameter.
 
-      {[bm,A]} *fiber body* type &ndash; callback function that accepts one scalar {[ct]arg_t} parameter.
+      {[BM,B]} *fiber object* type &ndash; reference to an internal {[ct]Fiber} structure; note that {[ct]$$} in **EMS** matches `*` in C.
 
-      {[bm,B]} *fiber object* type &ndash; reference to an internal {[ct]Fiber} structure; note that {[ct]$$} in **EMS** matches `*` in C.
+      {[BM,C]} The **EMS** idiom for defining a (private) structure with a set of typed fields.
 
-      {[bm,C]} The **EMS** idiom for defining a (private) structure with a set of typed fields.
+      {[BM,D]} An **EMS** {[cs]$struct} can optionally declare methods which operate on instances of this type.
 
-      {[bm,D]} An **EMS** {[cs]$struct} can optionally declare methods which operate on instances of this type.
-
-      {[bm,E]} Another internal {[cs]$struct} which supports {[cu]FiberMgr}.
-
-      </div>
+      {[BM,E]} Another internal {[cs]$struct} which supports the imple&shy;mentation of {[cu]FiberMgr}.
 
   - cmds:
       - mark 2 F 28
@@ -91,19 +82,15 @@ steps:
 
       The implementation of {[cu]FiberMgr} declares a pair of private variables used to maintain internal state.
 
-      <div class="em-bmlist">
+      {[BM,F]} The {[cs]$table} operator declares a static array of muta&shy;ble {[ct]Fiber} structures.
 
-      {[bm,F]} The {[cs]$table} operator declares a static array of mutable {[ct]Fiber} structures.
+      {[BM,G]} {[cf]create} adds a new element to {[cn]fiber_tab} at build-time; note that {[cn]arg} (if absent) defaults to `0`.
 
-      {[bm,G]} {[cf]create} adds a new element to {[cn]fiber_tab} at build-time; note that {[cn]arg} (if absent) defaults to `0`.
+      {[BM,H]} The {[cs]$make} operator here allocates a {[ct]List} instance, held in the private {[cn]ready_list} variable. 
 
-      {[bm,H]} The {[cs]$make} operator here allocates a {[ct]List} instance, held in the private {[cn]ready_list} variable. 
+      {[BM,I]} {[cf]dispatch} repeatedly takes {[ct]Fiber} objects from {[cn]ready_list} and then invokes their {[cf]body} callback.
 
-      {[bm,I]} {[cf]dispatch} repeatedly takes {[ct]Fiber} objects from {[cn]ready_list} and then invokes their {[cf]body} callback.
-
-      </div>
-
-      {[in]When used within a function, the %[ct]$$% operator be&shy;haves like the <code>-&gt;</code> dereference operator in C}
+      {[in]When used within a function, the %[ct]$$% operator be&shy;haves like the <code>-&gt;</code> dereference operator in C.}
 
   - cmds:
       - mark 2 J 52
@@ -117,13 +104,11 @@ steps:
 
       {[cu]FiberMgr} uses methods of the {[cn]GlobalInterrupts} proxy to enforce the consistency of its internal data.
 
-      <div class="em-bmlist">
+      {[BM,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
 
-      {[bm,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
+      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
 
-      {[bm,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
-
-      {[bm,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
+      {[BM,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
 
       </div>
 

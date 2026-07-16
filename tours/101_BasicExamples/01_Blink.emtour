@@ -36,19 +36,15 @@ steps:
 
       More language features you've noticed along the way:
 
-      <div class="em-bmlist">
+      {[BM,A]} The {[ck]import} of {[cu]BoardC} uses {[cs]'@$distro'} to logic&shy;ally name the **Bucket** associated with the current <span class="em codicon codicon-circuit-board"></span>.
 
-      {[bm,A]} The {[ck]import} of {[cu]BoardC} uses {[cs]'@$distro'} to logically name the **Bucket** associated with the current &emsp;&nbsp; <span class="em codicon codicon-circuit-board"></span>.
+      {[BM,B]} Like {[ck]import}, {[cs]$delegate} brings a **Unit** into scope &ndash; but without knowing its `'@bucket/Unit.em'` name.
 
-      {[bm,B]} Like {[ck]import}, {[cs]$delegate} brings a **Unit** into scope &ndash; but without knowing its `'@bucket/Unit.em'` name.
+      {[BM,C]} The {[cs]em$run} intrinsic provides a &laquo;`main`&raquo; program entry-point &ndash; executed after any {[cs]em$startup} calls.
 
-      {[bm,C]} The {[cs]em$run} intrinsic provides a &laquo;`main`&raquo; program entry-point &ndash; executed after any {[cs]em$startup} calls.
+      {[BM,D]} Local identifiers starting with `_` conventionally im&shy;ply their *non-usage* &ndash; silencing some **TS** warnings.
 
-      {[bm,D]} Local identifiers starting with `_` conventionally im&shy;ply their *non-usage* &ndash; silencing some **TS** warnings.
-
-      {[bm,E]} Numeric constants can use `_` for readability &ndash; part of standard **TS** automatically inherited by **EMS**.
-
-      </div>
+      {[BM,E]} Numeric constants can use `_` for readability &ndash; part of standard **TS** automatically inherited by **EMS**.
 
   - cmds:
       - view 2
@@ -60,15 +56,11 @@ steps:
 
       {[in]The <b>EM&bull;Home</b> editor tab contains a link for installing this application on your PC.}
 
-      <div class="em-bmlist">
+      {[BM,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
 
-      {[bm,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
+      {[BM,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
 
-      {[bm,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
-
-      {[bm,3]} Reloading `wokwi.vcd` inside a running **PulseView** window will refresh the application's display.
-
-      </div>
+      {[BM,3]} Reloading `wokwi.vcd` inside a running **PulseView** win&shy;dow will refresh the application's display.
 
       {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
 
@@ -84,9 +76,9 @@ steps:
 
       You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
 
-      {[bm,A]} select **Import Value Change ...** to locate this file<br>
-      {[bm,B]} set **Downsampling** to **125** before clicking **Ok**<br>
-      {[bm,C]} drag the **UART** signal above the **D0** signal
+      {[BM,A]} select **Import Value Change ...** to locate this file<br>
+      {[BM,B]} set **Downsampling** to **125** before clicking **Ok**<br>
+      {[BM,C]} drag the **UART** signal above the **D0** signal
 
       Feel free to keep **PulseView** active while working with other programs on these tours.
 
