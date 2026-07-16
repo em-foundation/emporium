@@ -29,12 +29,12 @@ steps:
 
       The **CoreMark** benchmark comprises six (portable) source files written in C and archived on {[le,https://github.com/eembc/coremark]GitHub}:
 
-      {[bm,1]} `core_main.c` &ndash; benchmark execution harness<br>
-      {[bm,2]} `coremark.h` &ndash; common declarations<br>
-      {[bm,3]} `core_matrix.c` &ndash; matrix-math algorithm<br>
-      {[bm,4]} `core_state.c` &ndash; state-machine algorithm<br>
-      {[bm,5]} `core_list_join.c` &ndash; list-processing algorithm<br>
-      {[bm,6]} `core_util.c` &ndash; CRC and seed-retrieval functions
+      {[bi,counter_1]} `core_main.c` &ndash; benchmark execution harness<br>
+      {[bi,counter_2]} `coremark.h` &ndash; common declarations<br>
+      {[bi,counter_3]} `core_matrix.c` &ndash; matrix-math algorithm<br>
+      {[bi,counter_4]} `core_state.c` &ndash; state-machine algorithm<br>
+      {[bi,counter_5]} `core_list_join.c` &ndash; list-processing algorithm<br>
+      {[bi,counter_6]} `core_util.c` &ndash; CRC and seed-retrieval functions
 
       We'll peek into these C files only as a point of reference when exploring the corresponding **EMS** implementation.
 
@@ -68,10 +68,10 @@ steps:
 
       This program behaves similarly to `core_main.c` &ndash; execu&shy;ting multiple iterations of the benchmark algorithms.
 
-      {[bm,A]} The {[cu]CoreBench} module manages the algorithms.<br>
-      {[bm,B]} The {[cn]iterations} config parameter defaults to `10`.<br>
-      {[bm,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
-      {[bm,D]} {[cu]CoreBench}.{[cf]run} executes a single algorithm iteration.<br>
+      {[BM,A]} The {[cu]CoreBench} module manages the algorithms.<br>
+      {[BM,B]} The {[cn]iterations} config parameter defaults to `10`.<br>
+      {[BM,C]} {[cu]CoreBench}.{[cf]setup} preps the algorithms at startup.<br>
+      {[BM,D]} {[cu]CoreBench}.{[cf]run} executes *one* algorithm iteration.<br>
 
       The next stop on this tour will inspect {[cu]ActiveRunnerP} output after executing ten **CoreMark** iterations.
 

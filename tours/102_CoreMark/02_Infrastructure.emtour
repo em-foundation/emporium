@@ -57,9 +57,9 @@ steps:
 
       The {[cu]Utils} module exports a common set of constants, types, and accessors used by its sibling **EMS** units.
 
-      {[bm,A]} Each module implementing {[cu]BenchAlgI}.{[cf]kind} returns a distinct value of this type (with {[cn]ZZZ_} as a sentinel).
+      Each module implementing {[cu]BenchAlgI}.{[cf]kind} returns a distinct value of this type {[bm,A]} (with {[cn]ZZZ_} as a sentinel).
 
-      {[bm,B]} Two {[cs]$table} datasets (initialized at build-time) respec&shy;tively hold {[ct]seed_t} con&shy;stants and {[ct]sum_t} variables.
+      Two {[cs]$table} datasets {[bm,B]} (initialized at build-time) respec&shy;tively hold {[ct]seed_t} con&shy;stants and {[ct]sum_t} variables.
 
       Both datasets in turn support special accessor functions:
 

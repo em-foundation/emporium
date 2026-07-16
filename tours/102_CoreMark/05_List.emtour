@@ -32,19 +32,19 @@ steps:
     text: |
       {[ht,$peek]&thinsp;%[cu]ListBench% Codescape}
 
-      {[dc,1]} This module encapsulates a singly-linked list containing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
+      {[DC,1]} This module implements a singly-linked list contain&shy;ing {[ct]Elem} and {[ct]Data} nodes; the latter type holds two numbers.
 
-      {[dc,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
+      {[DC,2]} {[cu]ListBench}.{[cf]setup} seeds each {[ct]Data} node with two numbers and points {[cn]cur_head} at the list's first {[ct]Elem}.
 
-      {[dc,3]} {[cu]ListBench}.{[cf]run} uses helpers to re-arrange the list.
+      {[DC,3]} {[cu]ListBench}.{[cf]run} uses helpers to re-arrange the list.
 
-      {[dc,4]} The {[cf]find} helper locates {[ct]Data} nodes by {[cn]idx} or {[cn]val}.
+      {[DC,4]} The {[cf]find} helper locates {[ct]Data} nodes by {[cn]idx} or {[cn]val}.
 
-      {[dc,5]} A generic {[cf]sort} function abstracts list ordering by re&shy;ceiving a callback conforming to the {[ct]Comparator} type.
+      {[DC,5]} A generic {[cf]sort} function abstracts list ordering by re&shy;ceiving a callback conforming to the {[ct]Comparator} type.
 
-      {[dc,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
+      {[DC,6]} The {[cf]idxCompare}{[ct]Comparator} sorts by {[ct]Data}.{[cn]idx}.
 
-      {[dc,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value derived from each {[ct]Data} node.
+      {[DC,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value derived from each {[ct]Data} node.
 
   - cmds:
       - close 2
@@ -120,17 +120,17 @@ steps:
     text: |
       {[ht,$details]&thinsp;%[cu]ListBench% &ndash; %[cf]run% Details (Search Phase)}
 
-      {[bm,A]} {[cu]ListBench}.{[cf]run} uses its local {[cn]retval} variable to re&shy;cord a {[ct]sum_t} value eventually returned by this function.
+      {[BM,A]} {[cu]ListBench}.{[cf]run} uses its local {[cn]retval} variable to re&shy;cord a {[ct]sum_t} value eventually returned by this function.
 
-      {[bm,B]} The {[cf]run} function also prepares a local variable of type {[ct]Data}, used in subsequent searches.
+      {[BM,B]} The {[cf]run} function also prepares a local variable of type {[ct]Data}, used in subsequent searches.
 
-      {[bm,C]} Note how {[cu]ListBench} seeds this {[ck]for} loop's {[cn]find_cnt} termination value at run-time.
+      {[BM,C]} Note how {[cu]ListBench} seeds this {[ck]for} loop's {[cn]find_cnt} termination value at run-time.
 
-      {[bm,D]} Recall the two forms of {[cf]find} [codescape {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
+      {[BM,D]} Recall the two forms of {[cf]find} [codescape {[dc,4]}], which can match the current {[cn]idx} *or* {[cn]val} field of the {[cn]data} node.
 
-      {[bm,E]} Calling {[cf]reverse} [codescape {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
+      {[BM,E]} Calling {[cf]reverse} [codescape {[dc,4]}] plus modifying the {[cf]idx} and {[cf]val} fields further scrambles searches for {[cn]data}.
 
-      {[bm,F]} {[cu]ListBench} eventually updates {[cn]retval} using its local {[cn]found} and {[cn]missed} tallies.
+      {[BM,F]} {[cu]ListBench} eventually updates {[cn]retval} using its local {[cn]found} and {[cn]missed} tallies.
 
   - cmds:
       - open 1

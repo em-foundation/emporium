@@ -94,7 +94,7 @@ steps:
 
       {[bi,task_alt]} Re-acquaint yourself with the **PulseView** tool.
 
-      {[bi,task_alt]} Use **PulseView** cursors to measure interval {[bm,R]}.
+      {[bi,task_alt]} Use **PulseView** cursors to measure interval {[dc,R]}.
 
       {[bi,task_alt]} Place additional debug toggles inside the algorithms.
 
