@@ -17,7 +17,6 @@ steps:
       {[in]By design, %[cu]StateBench% features "low-level" <b>EMS</b> pointer idioms similar to those found in legacy C code.}
 
   - cmds:
-      - close 2
       - open 1
       - mark 1 A 8
       - mark 1 B 10

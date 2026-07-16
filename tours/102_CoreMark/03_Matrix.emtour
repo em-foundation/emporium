@@ -21,7 +21,6 @@ steps:
       This tour focuses exclusively on {[cu]MatrixBench} &ndash; perhaps the most approachable of the three **CoreMark** algorithms.
 
   - cmds:
-      - close 2
       - open 1
       - mark 1 A 8
       - mark 1 B 15

@@ -24,7 +24,6 @@ steps:
       {[in]%[cu]Crc% and %[cu]Utils% largely mirror design and implementa&shy;tion choices enshrined forever in <b>CoreMark</b>.}
 
   - cmds:
-      - close 5
       - open 1
     focus: [1, 1]
     acts: [$reveal]
@@ -127,10 +126,6 @@ steps:
       {[in]If you haven't already noticed, we've defined a local %[ct]UT% moniker for %[cu]Utils% at line %[bm,A]% to improve readability.}
 
   - cmds:
-      - close 5
-      - close 4
-      - close 3
-      - close 2
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 

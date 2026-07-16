@@ -41,7 +41,6 @@ steps:
       {[in]In our opinion &ndash; not the prettiest C code either 😉}
 
   - cmds:
-      - close 1
       - view 2
     text: |
       {[ht,account_tree]&thinsp;EM&bull;Script Modules}
@@ -56,7 +55,6 @@ steps:
 
       {[in]%[cu]SleepyRunnerP% leads us to <b>EM&bull;Mark</b> &ndash; an MCU bench&shy;mark favoring energy-efficiency over execution-time.}
   - cmds:
-      - close 2
       - open 3
       - mark 3 A 6
       - mark 3 B 11

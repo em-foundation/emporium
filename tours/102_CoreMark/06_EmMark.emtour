@@ -99,8 +99,6 @@ steps:
       {[bi,task_alt]} Place additional debug toggles inside the algorithms.
 
   - cmds:
-      - close 1
-      - close 4
       - view 3
     text: |
       {[ht,$steps]&thinsp;Next Steps}

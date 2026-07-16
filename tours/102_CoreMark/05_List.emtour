@@ -26,8 +26,6 @@ steps:
       Before examining its more complex codebase, we'll first introduce some key internal elements of {[cu]ListBench}.
 
   - cmds:
-      - close 2
-      - close 3
       - view 4
     text: |
       {[ht,$peek]&thinsp;%[cu]ListBench% Codescape}
@@ -47,7 +45,6 @@ steps:
       {[DC,7]} Using <i>other</i>&thinsp;{[ct]BenchI} modules, {[cf]valCompare} sorts the list using a calculated value derived from each {[ct]Data} node.
 
   - cmds:
-      - close 2
       - view 4
       - open 1
       - mark 1 A 8
@@ -207,8 +204,6 @@ steps:
       {[bi,task_alt]} Use the internal {[cf]pr} routine to inspect interim results.
 
   - cmds:
-      - close 1
-      - close 4
       - view 3
     text: |
       {[ht,$steps]&thinsp;Next Steps}
