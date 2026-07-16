@@ -79,13 +79,13 @@ steps:
 
       The left panel shows the ten-second execution span of {[cu]SleepyRunnerP} &ndash; bracketed by the usual {[cx]sysLed} activity.
 
-      The middle panel focuses on *one* active {[cf]tickCB} cycle &ndash; which executes {[cu]CoreBench}.{[cf]run} during interval {[bm,R]}.
+      The middle panel focuses on *one* active {[cf]tickCB} cycle &ndash; which executes {[cu]CoreBench}.{[cf]run} during interval {[dc,R]}.
 
-      {[in] Recall that %[cu]SleepyRunnerP% uses %[cx]dbgD% to bracket %[bm,R]%.}
+      {[in] Recall that %[cu]SleepyRunnerP% uses %[cx]dbgD% to bracket %[dc,R]%.}
 
       The right panel highlights the end of a {[cf]tickCB} cycle &ndash; as it out&shy;puts a `NEWLINE` character before returning to sleep.
 
-      Note how {[cx]dbgB} signals the MCU's *active* {[bm,A]} mode; and how two pulses at {[bm,S]} mark its return to low-power *sleep*.
+      Note how {[cx]dbgB} signals the MCU's *active* {[dc,A]} mode; and how two pulses at {[dc,S]} mark its return to low-power *sleep*.
 
   - cmds:
       - open 2

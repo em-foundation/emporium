@@ -107,15 +107,15 @@ steps:
 
       We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
 
-      {[bm,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
+      {[DC,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
 
-      {[bm,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      {[DC,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
 
-      {[bm,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
+      {[DC,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
 
-      {[bm,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      {[DC,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
 
-      {[bm,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+      {[DC,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
 
   - cmds:
     acts: ["$build"]

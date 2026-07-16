@@ -54,10 +54,10 @@ steps:
 
       The **Outline View** proves invaluable once we start exploring some **EM&bull;Script** source code.
 
-      {[bm,1]} select **View > Open View** from the main menu<br>
-      {[bm,2]} type `Outline` to locate then `<ENTER>` to open<br>
-      {[bm,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
-      {[bm,4]} drop the **OUTLINE** tab just below **CHAT**<br>
+      {[DC,1]} select **View > Open View** from the main menu<br>
+      {[DC,2]} type `Outline` to locate then `<ENTER>` to open<br>
+      {[DC,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
+      {[DC,4]} drop the **OUTLINE** tab just below **CHAT**<br>
 
       Again, suggestions only &ndash; click **Next** to continue&thinsp;....
 
@@ -92,13 +92,9 @@ steps:
 
       As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
 
-      <div class="em-bmlist">
+      {[BM,A]} Boilerplate found in all **EMS** files
 
-      {[bm,A]} Boilerplate found in all **EMS** files
-
-      {[bm,B]} Note the somewhat unusual {[cd]printf} syntax.
-
-      </div>
+      {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
 
       You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
 

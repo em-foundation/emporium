@@ -76,9 +76,9 @@ steps:
 
       You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
 
-      {[BM,A]} select **Import Value Change ...** to locate this file<br>
-      {[BM,B]} set **Downsampling** to **125** before clicking **Ok**<br>
-      {[BM,C]} drag the **UART** signal above the **D0** signal
+      {[DC,A]} select **Import Value Change ...** to locate this file<br>
+      {[DC,B]} set **Downsampling** to **125** before clicking **Ok**<br>
+      {[DC,C]} drag the **UART** signal above the **D0** signal
 
       Feel free to keep **PulseView** active while working with other programs on these tours.
 

@@ -139,10 +139,10 @@ steps:
 
       Let's dive into the implementation of {[cf]put}, which trans&shy;mits 8-bit [{[ct]u8}] {[cn]data} as a framed 10-bit sequence.
 
-      {[bm,A]} {[cn]tx_bits} contains the frame's leading START bits<br>
-      {[bm,B]} a **TS**-style {[ck]for} loop iterating from {[ce]0}..{[cn]bit_cnt}<br>
-      {[bm,C]} {[cf]set}&middot;{[cf]clear} the {[cn]TxPin} GPIO based on {[cn]tx_bits}<br>
-      {[bm,D]} shift {[cn]tx_bits} and {[cf]spin} for {[cn]bit_time} &mu;secs
+      {[BM,A]} {[cn]tx_bits} contains the frame's leading START bits<br>
+      {[BM,B]} &thinsp;a **TS**-style {[ck]for} loop iterating from {[ce]0}..{[cn]bit_cnt}<br>
+      {[BM,C]} {[cf]set}&middot;{[cf]clear} the {[cn]TxPin} GPIO based on {[cn]tx_bits}<br>
+      {[BM,D]} &thinsp;shift {[cn]tx_bits} and {[cf]spin} for {[cn]bit_time} &mu;secs
 
       {[in]Stay seated &ndash; we'll visit %[cu]Common% at our next stop&thinsp;!!}
 
@@ -188,9 +188,9 @@ steps:
 
       {[in]The <span class="em codicon codicon-circuit-board"></span> status item shows the <i>current</i> target board.}
 
-      {[bm,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
-      {[bm,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
-      {[bm,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
+      {[BM,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
+      {[BM,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
+      {[BM,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
 
       The {[cs]em$configure} [**`meta`**] intrinsic often serves as the focal point within this (and other) {[cu]BoardC} **Composites**.
 
@@ -208,10 +208,10 @@ steps:
 
       We've now come to our last flavor of **EMS Unit** &ndash; the **Template**, as exemplified by {[cu]LedT}.
 
-      {[bm,T]} **Templates** feature the **`em$template`** namespace<br>
-      {[bm,M]} **`em$template`** envelopes a **Module** prototype<br>
-      {[bm,I]} this prototype often implements an **Interface**<br>
-      {[bm,C]} **Composites** typically invoke its {[cs]$clone} intrinsic
+      {[BM,T]} **Templates** feature the **`em$template`** namespace<br>
+      {[BM,M]} **`em$template`** envelopes a **Module** prototype<br>
+      {[BM,I]} this prototype often implements an **Interface**<br>
+      {[BM,C]} **Composites** typically invoke its {[cs]$clone} intrinsic
 
       {[in]Go <b>Back</b> one stop to review use of <code class="cmd-cs">$clone</code> in <code class="cmd-cu">BoardC</code>.}
 
