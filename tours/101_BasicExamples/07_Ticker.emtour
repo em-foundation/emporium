@@ -85,8 +85,6 @@ steps:
 
       {[BM,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
 
-      </div>
-
   - cmds:
       - open 2
       - mark 2 A 11

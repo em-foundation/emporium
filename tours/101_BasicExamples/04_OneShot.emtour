@@ -66,8 +66,6 @@ steps:
 
       {[BM,C]} A **_TypeScript_** interface conventionally named {[cs]$I} specifies the signature of every client function.
 
-      </div>
-
       In contrast to a **Module** (which has a _concrete_ imple&shy;mentation), an **EMS Interface** must remain _abstract_.
 
       {[in]<b>Interfaces</b> can't expose %[cs]$config% or %[cs]$proxy% objects &ndash; only abstract methods which suppliers implement.}

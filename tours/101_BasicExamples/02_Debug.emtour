@@ -75,8 +75,6 @@ steps:
 
       In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
 
-      </div>
-
   - cmds:
       - view 2
     text: |
