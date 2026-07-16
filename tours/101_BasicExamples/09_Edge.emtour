@@ -20,7 +20,7 @@ steps:
       {[bi,arrow_circle_right]} {[cu]Button1P}, which uses a primitive _super-loop_<br>
       {[bi,arrow_circle_right]} {[cu]Button2P}, which relies upon _fiber dispatch_
 
-      {[in]An earlier <b>One-Shot Timers</b> tour took a similar ap&shy;proach &ndash; contrasting two similar program designs. }
+      {[in]An earlier tour %[tr,101/04]% took a similar ap&shy;proach &ndash; con&shy;trasting two similar %[cu]OneShot% program designs. }
 
       Looking at the {[cu]Button1P} signal capture, you can press `AppBut` at any point in time and for any duration.
 

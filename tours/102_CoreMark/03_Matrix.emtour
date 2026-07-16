@@ -65,7 +65,7 @@ steps:
 
       The scalar values held in these matrices ultimately derive from special **CoreMark** seed values read here at line {[bm,A]}.
 
-      {[in]Recall that %[cu]UT%.%[cf]getSeed% forcibly reads (at <i>run-time</i>) an unknown constant value bound at <i>build-time</i>.}
+      {[in]Recall that %[cu]UT%.%[cf]getSeed% %[tr,102/02/03]% forcibly reads (at <i>run-time</i>) an unknown constant value bound at <i>build-time</i>.}
 
   - cmds:
       - open 1

@@ -73,7 +73,7 @@ steps:
 
       By convention, {[cu]BoardC} will also {[ck]export} its {[cu]OneShot} {[cs]$delegate} for direct use by clients like {[cu]OneShot3P}.
 
-      {[in]Review the <b>One-Shot Timers</b> tour if needed.}
+      {[in]Review tour %[tr,101/04]% if needed.}
 
   - cmds:
       - view 4

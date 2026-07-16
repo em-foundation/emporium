@@ -43,7 +43,7 @@ steps:
 
       Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
 
-      {[in]Review tour %[tr,101/07]%, which examines %[cu]TickerMgr%.}
+      {[in]Review tour %[tr,101/07/01]%, which examines %[cu]TickerMgr%.}
 
       Inside {[cf]tickCB}, the program brackets {[cu]CoreBench}.{[cf]run} with **EMS** debug toggles and prints the latest checksum.
 
@@ -59,7 +59,7 @@ steps:
 
       Go ahead and **build&thinsp;+&thinsp;load** the {[cu]SleepyRunnerP} program on the **Raspberry Pi Pico** simulator.
 
-      {[in]Refer to the <b>Basic Examples&thinsp;/&thinsp;Blinking LEDs</b> tour for an introduction to this simulated execution environment.}
+      {[in]Refer to tour %[tr,101/01]% for an introduction to this simula&shy;ted execution environment.}
 
       As the program executes (for ten seconds), the block label&shy;ed **Wokwi LOGIC** will blink its LEDs on each iteration.
 
@@ -75,7 +75,7 @@ steps:
     text: |
       {[ht,monitor_heart]&thinsp;%[cu]SleepyRunnerP% &ndash; Signal Capture}
 
-      As we did throughout the **Basic Examples** tour, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunnerP}.
+      As we did throughout the **Basic Examples** tours, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunnerP}.
 
       The left panel shows the ten-second execution span of {[cu]SleepyRunnerP} &ndash; bracketed by the usual {[cx]sysLed} activity.
 

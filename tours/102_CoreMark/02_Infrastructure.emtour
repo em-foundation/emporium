@@ -13,7 +13,7 @@ steps:
     text: |
       {[ht,$start]&thinsp;Benchmark Infrastructure}
 
-      This tour revolves around the {[cu]CoreBench} module &ndash; used earlier within the {[cu]ActiveRunnerP} program.
+      This tour revolves around the {[cu]CoreBench} module &ndash; used earlier {[tr,102/01/04]} by the {[cu]ActiveRunnerP} program.
 
       We'll first examine {[cu]BenchAlgI} &ndash; an **EMS** interface imple&shy;ment&shy;ed by {[cu]CoreBench} and the other algorithm modules.
 

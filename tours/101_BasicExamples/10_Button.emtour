@@ -70,7 +70,7 @@ steps:
 
       {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; Details}
 
-      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour:
+      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour {[tr,101/09/03]}:
 
       {[BM,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
       {[BM,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
