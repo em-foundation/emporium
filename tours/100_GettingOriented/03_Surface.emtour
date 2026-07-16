@@ -29,6 +29,7 @@ steps:
       This tour introduces some core constructs of **EM&bull;Script** [**EMS**] &ndash; but viewed through a **TS** language lens.
 
   - cmds:
+      - open 1
       - mark 1 M 13
       - mark 1 T 19
     focus: [1, 1]
@@ -50,6 +51,7 @@ steps:
       The **TS** namespace at {[bm,M]} contains all of the *meta* code; the special comment at {[bm,T]} begins the *target* code.
 
   - cmds:
+      - open 1
       - mark 1 M 13
       - mark 1 T 19
     focus: [1, 1]
@@ -62,13 +64,14 @@ steps:
       {[cs]em$construct} [**`meta`**]&thinsp; called to initialize private state<br>
       {[cs]em$startup&nbsp;&nbsp;} [**`targ`**]&thinsp; called before program {[cs]em$run}
 
-      {[in]Programs like %[cu]BlinkerP% viewed in earlier tours imple&shy;ment the %[cs]em$run% intrinsic as their main entry-point.}
+      {[in]Programs like %[cu]BlinkerP% viewed earlier %[tr,101/01/02]% imple&shy;ment the %[cs]em$run% intrinsic as their main entry-point.}
 
       The **EMS** translator sequences calls to intrinsic func&shy;tions &ndash; at build-time [**`meta`**] as well as run-time [**`targ`**].
 
       By design, each intrinsic belongs to only *one* **EMS** do&shy;main &ndash; and may apply to only some **EMS Unit** *flavors*.
 
   - cmds:
+      - open 1
       - mark 1 I 5
       - mark 1 E 26
     focus: [1, 1]
@@ -89,6 +92,7 @@ steps:
       Each **EMS Interface** in general defines a *programmatic contract* between **EMS Module** clients and suppliers.
 
   - cmds:
+      - open 1
       - mark 1 C 8
     focus: [1, 1]
     text: |
@@ -108,6 +112,7 @@ steps:
       By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*.
 
   - cmds:
+      - open 1
       - mark 1 P 9
 
     focus: [1, 1]
@@ -128,6 +133,7 @@ steps:
       But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
 
   - cmds:
+      - open 1
       - mark 1 A 30
       - mark 1 B 32
       - mark 1 C 33
@@ -258,6 +264,5 @@ steps:
       {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
       {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
       {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
-
 
       {[hc]}

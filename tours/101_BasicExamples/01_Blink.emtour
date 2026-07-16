@@ -23,6 +23,7 @@ steps:
       To prepare for other **Basic Examples** tours, we'll now pivot to *real-time analysis* [RTA] of **EMS** programs.
 
   - cmds:
+      - open 1
       - mark 1 A 4
       - mark 1 B 7
       - mark 1 C 9

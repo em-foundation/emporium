@@ -25,6 +25,7 @@ steps:
       Because of its similarity to the {[cu]FiberP} program viewed in the prior tour, we'll begin with {[cu]OneShot2P}.
 
   - cmds:
+      - open 1
       - mark 1 A 9
       - mark 1 B 34
       - mark 1 C 39
@@ -34,15 +35,13 @@ steps:
 
       {[ht,$details]&thinsp;%[cu]OneShot2P% &ndash; Details}
 
-      Like our earlier {[cu]FiberP} example, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
+      Like {[cu]FiberP} seen earlier {[tr,101/03/02]}, {[cu]OneShot2P} defines a {[cf]blinkFB} callback dispatched by {[cu]FiberMgr}.
 
       {[BM,A]} The {[cu]OneShot} {[cs]$delegate} exported by {[cu]BoardC} im&shy;plements the {[cu]OneShotI} **Interface** (coming next).
 
       {[BM,B]} {[cf]uenable} arms an underlying HW timer to sleep for *n* &mu;s and trigger a {[cn]handler} callback upon awakening.
 
       {[BM,C]} The {[cf]handler} function itself then calls {[cf]post}, which in turn schedules the next cycle of {[cf]blinkFB}.
-
-      </div>
 
       In this example, {[cu]FiberMgr} detects an *empty* internal {[cn]ready_list} after our {[cf]blinkFB} fiber body returns.
 
@@ -94,6 +93,7 @@ steps:
       {[cu]BoardC} will then explicitly {[ck]export} {[cu]OneShot}{[bm,E]},&thinsp; making its binding visible to clients of this **Composite**.
 
   - cmds:
+      - open 1
       - mark 1 C 38
       - mark 1 D 29
     focus: [1, 1]
@@ -129,6 +129,7 @@ steps:
       Looking closer, we measure 5&thinsp;&mu;s between the {[cd]%%c} at label {[dc,C]} and {[cd]%%d} at {[dc,D]} &ndash; our wakeup overhead.
 
   - cmds:
+      - open 4
       - mark 4 A 10
       - mark 4 B 13
       - mark 4 C 21
@@ -166,6 +167,7 @@ steps:
       {[bi,task_alt]} Quantify (and rationalize) the cost of {[cu]FiberMgr}.
 
   - cmds:
+      - open 2
     focus: [2, 1]
     text: |
 

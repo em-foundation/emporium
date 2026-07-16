@@ -76,6 +76,7 @@ steps:
       {[in]Unlike legacy <b>CoreMark</b> &ndash; which will often run for <i>ten seconds</i> &ndash; a small iteration count proves sufficient.}
 
   - cmds:
+      - open 3
       - mark 3 A 23
       - mark 3 B 27
       - mark 3 C 29
@@ -100,7 +101,7 @@ steps:
 
       {[in]<b>CoreMark</b> defines the algorithm CRCs as invariant re&shy;sults; the final CRC depends on the iteration count.}
 
-  - cmds: []
+  - cmds:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 

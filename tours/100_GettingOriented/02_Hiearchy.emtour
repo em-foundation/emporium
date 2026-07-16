@@ -17,13 +17,14 @@ steps:
       {[bi,arrow_circle_right]} Understanding the elements comprising this view.<br>
       {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
 
-      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
+      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/07]}.
 
       Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
 
       The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
   - cmds:
+      - open 1
       - mark 1 A 2
     focus: [1, 1]
     acts: ["$reveal"]
@@ -42,6 +43,7 @@ steps:
       Let's move on and talk about the **EMS Bucket** associ&shy;ated with our {[cu]Blinker} program.
 
   - cmds:
+      - open 1
     focus: [1, 1]
     acts: ["$reveal"]
     text: |
@@ -63,6 +65,7 @@ steps:
       As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EMS Package** names.
 
   - cmds:
+      - open 1
       - mark 1 B 5
     focus: [1, 1]
     acts: ["$reveal"]
@@ -83,6 +86,7 @@ steps:
       You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
 
   - cmds:
+      - open 1
     focus: [1, 1]
     acts: ["$reveal"]
     text: |
@@ -100,6 +104,7 @@ steps:
       To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
 
   - cmds:
+      - open 1
     focus: [1, 1]
     text: |
 

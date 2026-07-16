@@ -20,11 +20,12 @@ steps:
 
       {[in]Go ahead and build&thinsp;&middot;&thinsp;load %[cb,build]% %[cu]FiberP% at this time.}
 
-      While {[cu]FiberP} also blinks `AppLed` five times, its imple&shy;men&shy;tation lacks the {[ck]for} loop seen earlier in {[cu]BlinkerP}.
+      While {[cu]FiberP} also blinks `AppLed` five times, its imple&shy;men&shy;tation lacks the {[ck]for} loop seen in {[cu]BlinkerP} {[tr,101/01/02]}.
 
       Rather, the {[cu]FiberP} program relies on a sort of "reactive call&shy;back" function triggered under software control.
 
   - cmds:
+      - open 1
       - mark 1 A 6
       - mark 1 B 10
       - mark 1 C 14
@@ -71,6 +72,12 @@ steps:
       {[BM,E]} Another internal {[cs]$struct} which supports the imple&shy;mentation of {[cu]FiberMgr}.
 
   - cmds:
+      - open 2
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
       - mark 2 F 28
       - mark 2 G 31
       - mark 2 H 41
@@ -93,6 +100,16 @@ steps:
       {[in]When used within a function, the %[ct]$$% operator be&shy;haves like the <code>-&gt;</code> dereference operator in C.}
 
   - cmds:
+      - open 2
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
+      - mark 2 F 28
+      - mark 2 G 31
+      - mark 2 H 41
+      - mark 2 I 43
       - mark 2 J 52
       - mark 2 K 57
       - mark 2 L 61
@@ -110,13 +127,12 @@ steps:
 
       {[BM,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
 
-      </div>
-
       The {[ct]List} methods seen here implement a singly-linked chain of {[ct]Fiber} references.
 
       {[in]The %[cs]$null% and %[cs]$ref% intrinics mean what you'd think.}
 
   - cmds:
+      - open 1
     focus: [1, 22]
     text: |
 
@@ -170,6 +186,7 @@ steps:
       This measurement quantifies the overhead of switching threads within {[cu]FiberMgr} as indeed quite small.
 
   - cmds:
+      - open 1
     focus: [1, 1]
     text: |
 
@@ -181,7 +198,8 @@ steps:
 
       {[bi,task_alt]} Add a fiber-based version of your {[cu]Blinky} program.
 
-  - cmds: []
+  - cmds:
+      - open 1
     focus: [1, 1]
     text: |
 
