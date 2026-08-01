@@ -1,12 +1,17 @@
 title: EMS Distro Architecture
 
 files:
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-103-01-02.png
   - .assets/img-103-01-03.png
 
 steps:
-  - text: |
+  - cmds:
+      - open 1
+    text: |
       {[ht,$start]Welcome}
+
+      {[tr,101/01/01]}
 
       {[in]DRAFT}
 
@@ -15,7 +20,7 @@ steps:
       * orientation and vocabulary only
 
   - cmds:
-      - view 1
+      - view 2
     text: |
       {[ht,$look]EMS Distro Architecture}
 
@@ -28,7 +33,7 @@ steps:
       * steady-state architecture
 
   - cmds:
-      - view 2
+      - view 3
     text: |
       {[ht,$look]Inside a Distro Package}
 
@@ -42,7 +47,7 @@ steps:
       * name landmarks without opening sources
 
   - cmds:
-      - view 1
+      - view 2
     text: |
       {[ht,$details]Selecting a Board}
 
@@ -54,7 +59,7 @@ steps:
       * callback to earlier BoardC exposure
 
   - cmds:
-      - view 1
+      - view 2
     text: |
       {[ht,$details]Selecting a Setup}
 
@@ -66,7 +71,7 @@ steps:
       * examples: default, flash, sram
 
   - cmds:
-      - view 1
+      - view 2
     text: |
       {[ht,$details]From Sources to a Build}
 
@@ -78,7 +83,7 @@ steps:
       * keep generated artifacts at map level
 
   - cmds:
-      - view 1
+      - open 1
     text: |
       {[ht,$extra]Extra Credit}
 
@@ -91,7 +96,7 @@ steps:
       * no hardware or execution required
 
   - cmds:
-      - view 1
+      - open 1
     text: |
       {[ht,$steps]Next Steps}
 
