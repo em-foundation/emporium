@@ -4,6 +4,8 @@ files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-103-01-02.png
   - .assets/img-103-01-03.png
+  - .assets/img-103-01-04.png
+  - .assets/img-103-01-05.png
 
 steps:
   - cmds:
@@ -47,9 +49,9 @@ steps:
       * name landmarks without opening sources
 
   - cmds:
-      - view 2
+      - view 4
     text: |
-      {[ht,$details]Selecting a Board}
+      {[ht,$details]Selecting a Board + Setup}
 
       {[in]DRAFT}
 
@@ -59,19 +61,7 @@ steps:
       * callback to earlier BoardC exposure
 
   - cmds:
-      - view 2
-    text: |
-      {[ht,$details]Selecting a Setup}
-
-      {[in]DRAFT}
-
-      * setup is a build option for the board
-      * board narrows available setup choices
-      * point to the setup status item
-      * examples: default, flash, sram
-
-  - cmds:
-      - view 2
+      - view 5
     text: |
       {[ht,$details]From Sources to a Build}
 
@@ -96,7 +86,7 @@ steps:
       * no hardware or execution required
 
   - cmds:
-      - open 1
+      - view 2
     text: |
       {[ht,$steps]Next Steps}
 
