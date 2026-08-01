@@ -1,0 +1,105 @@
+title: EMS Distro Architecture
+
+files:
+  - .assets/img-103-01-02.png
+  - .assets/img-103-01-03.png
+
+steps:
+  - text: |
+      {[ht,$start]Welcome}
+
+      {[in]DRAFT}
+
+      * portable EMS programs so far
+      * distro package supplies target support
+      * orientation and vocabulary only
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$look]EMS Distro Architecture}
+
+      {[in]DRAFT}
+
+      * board and setup status
+      * portable program packages
+      * selected distro package
+      * generated build output
+      * steady-state architecture
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$look]Inside a Distro Package}
+
+      {[in]DRAFT}
+
+      * rpi.2040 as the working example
+      * distro bucket
+      * MCU bucket
+      * gist bucket
+      * setup choices
+      * name landmarks without opening sources
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$details]Selecting a Board}
+
+      {[in]DRAFT}
+
+      * board identifies target hardware
+      * board implies a distro package
+      * point to the board status item
+      * callback to earlier BoardC exposure
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$details]Selecting a Setup}
+
+      {[in]DRAFT}
+
+      * setup is a build option for the board
+      * board narrows available setup choices
+      * point to the setup status item
+      * examples: default, flash, sram
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$details]From Sources to a Build}
+
+      {[in]DRAFT}
+
+      * BoardC binds portable services to target implementations
+      * BuildC drives generated build output
+      * name both bridges without opening either source
+      * keep generated artifacts at map level
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[in]DRAFT}
+
+      * select another board
+      * select another setup
+      * rebuild a familiar portable program
+      * observe status and output changes
+      * no hardware or execution required
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$steps]Next Steps}
+
+      {[in]DRAFT}
+
+      * Tour 1 showed the normal steady-state architecture
+      * Tour 2 introduces bare-metal bring-up
+      * minimal BuildC
+      * Gist01
+      * direct $R access
+      * generated artifacts and Wokwi execution
