@@ -10,16 +10,28 @@ files:
 steps:
   - cmds:
       - open 1
+      - mark 1 A 4
+      - mark 1 B 7
+      - mark 1 C 12
+    focus: [1, 1]
     text: |
-      {[ht,$start]Welcome}
+      {[ht,$start]Distros &ndash; The Portability Substrate}
 
-      {[tr,101/01/01]}
+      Prior tours have focused upon _portable_ **EMS** pro&shy;grams &ndash; from {[cu]BlinkerP} {[tr,101/01/02]}&thinsp; to {[cu]SleepyRunnerP} {[tr,102/06/03]}.
 
-      {[in]DRAFT}
+      By default, these programs execute on a **Raspberry Pi Pico** simulator; in principle, they can run unchanged elsewhere.
 
-      * portable EMS programs so far
-      * distro package supplies target support
-      * orientation and vocabulary only
+      <div class="em-info">
+
+      You'll soon use the clickable <span class="em codicon codicon-circuit-board"></span> {[em]Board} icon in the **Status Bar** to select alternative target platforms.
+
+      </div>
+
+      {[cu]BoardC}{[bm,A]} &ndash; found in a logical {[cs]'@$distro'} bucket &ndash; plays a pivotal role in ensuring portability.
+
+      Besides exporting delegates like {[cn]AppLed}{[bm,B]} , {[cu]BoardC} binds proxies like {[cu]Common}.{[cn]BusyWait}{[bm,C]} to distro-specific code.
+
+      But {[cu]BoardC} remains "the tip of an iceberg" &ndash; the lat&shy;ter lik&shy;ened to a *complete* **EMS** distro introduced by this tour.
 
   - cmds:
       - view 2
