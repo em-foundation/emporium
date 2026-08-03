@@ -107,7 +107,23 @@ steps:
   - cmds:
       - view 5
     text: |
-      {[ht,$build]From Sources to a Build}
+      {[ht,$build]%[cu]BuildC% &ndash; From Source To Output}
+
+      Having selected {[em]nordic.nrf://NRF52_DK} as our target plat&shy;form, let's re-build the portable {[cu]BlinkerP} program.
+
+      <div class="em-info">
+
+      Lacking a {[em]NRF52_DK} board, we'll fallback to using the **Build** command {[dc,1]} from the program's context menu.
+
+      </div>
+
+      As you've seen before, the **OUTPUT** panel {[dc,2]} logs progress of the build &ndash; affirming the current {[em]Board} {[dc,B]} + {[em]Setup} {[dc,S]}.
+
+      In this case, {[cu]BuildC} from {[cs]'@nordic.distro.nrf52'} syn&shy;thesizes artifacts in {[dc,3]} which produce the final executable.
+
+      <div class="em-info">
+
+      The next tour will dive into the details of {[cu]BuildC}.
 
   - cmds:
       - open 1
