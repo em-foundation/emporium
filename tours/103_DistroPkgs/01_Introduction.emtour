@@ -36,34 +36,36 @@ steps:
   - cmds:
       - view 2
     text: |
-      {[ht,$look]EMS Distro Architecture}
+      {[ht,account_tree]EMS Distro Architecture}
 
-      {[in]DRAFT}
+      Whenever building a program, the **EMS** translator requires a _target context_ {[dc,1]} which selects:
 
-      * board and setup status
-      * portable program packages
-      * selected distro package
-      * generated build output
-      * steady-state architecture
+      {[bi,arrow_circle_right]} a {[em]Board}, which identifies a target hardware platform<br>
+      {[bi,arrow_circle_right]} a {[em]Setup}, which defines target program build options
+
+      {[em]Board} in turn binds the logical name {[cs]'@$distro'}{[dc,2]} to a physical folder inside an **EMS** distro package [`rpi.2040`].
+
+      The {[cs]'@$distro/BoardC.em'} composite largely connects platform-specific target modules with portable clients {[dc,3]}.
+
+      The {[cs]'@$distro/BuildC.em'} composite then orchestrates generation of build artifacts {[dc,4]} for the target program.
+
+      <div class="em-info">
+
+      The distro-centric {[cu]BuildC} composite (fundamental to **EMS** translation) will merit its own dedicated tour.
+
+      </div>
 
   - cmds:
       - view 3
     text: |
-      {[ht,$look]Inside a Distro Package}
+      {[ht,snippet_folder]Inside a Distro Package}
 
-      {[in]DRAFT}
-
-      * rpi.2040 as the working example
-      * distro bucket
-      * MCU bucket
-      * gist bucket
-      * setup choices
-      * name landmarks without opening sources
+      Every **EMS** distro package
 
   - cmds:
       - view 4
     text: |
-      {[ht,$details]Selecting a Board + Setup}
+      {[ht,settings]Selecting a Board + Setup}
 
       {[in]DRAFT}
 
@@ -75,7 +77,7 @@ steps:
   - cmds:
       - view 5
     text: |
-      {[ht,$details]From Sources to a Build}
+      {[ht,$build]From Sources to a Build}
 
       {[in]DRAFT}
 
