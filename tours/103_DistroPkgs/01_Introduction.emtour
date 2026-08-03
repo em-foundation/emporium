@@ -1,4 +1,4 @@
-title: EMS Distro Architecture
+title: Introduction
 
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
@@ -60,7 +60,26 @@ steps:
     text: |
       {[ht,snippet_folder]Inside a Distro Package}
 
-      Every **EMS** distro package
+      Each **EMS** distro package contains one required bucket {[dc,D]}, named after the containing package in an obvious manner.
+
+      <div class="em-info">
+
+      The logical bucket name {[cs]'@$distro'} used in **EMS** code in fact resolves to physical bucket {[dc,D]}.
+
+      </div>
+
+      Though not mandated, each distro package will typically feature an `mcu` bucket {[dc,M]} with target-specific content.
+
+      <div class="em-info">
+
+      A quick peek at an earlier tour stop {[tr,101/04/04]} shows how our {[cu]BoardC} composite works with units from {[dc,M]}.
+
+      </div>
+
+      Some **EMS** distro packages will contain additional buckets following the same canonical naming pattern:
+
+      {[bi,arrow_circle_right]} `*.gist.*`<br>
+      {[bi,arrow_circle_right]} `*.radio.*`<br>
 
   - cmds:
       - view 4
