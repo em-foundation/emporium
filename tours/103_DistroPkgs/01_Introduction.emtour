@@ -130,24 +130,27 @@ steps:
     text: |
       {[ht,$extra]Extra Credit}
 
-      {[in]DRAFT}
+      {[bi,task_alt]} Compare `rpi.2040` content with other **EMS** distros.
 
-      * select another board
-      * select another setup
-      * rebuild a familiar portable program
-      * observe status and output changes
-      * no hardware or execution required
+      {[bi,task_alt]} Change {[em]Board}&thinsp;+&thinsp;{[em]Setup} and re-build {[cu]BlinkerP}.
+
+      {[bi,task_alt]} Explore the generated files in **EM&bull;Script Output**.
 
   - cmds:
       - view 2
     text: |
       {[ht,$steps]Next Steps}
 
-      {[in]DRAFT}
+      The next tour will address the most challenging require&shy;ment of any **EMS** distro &ndash; building executable programs.
 
-      * Tour 1 showed the normal steady-state architecture
-      * Tour 2 introduces bare-metal bring-up
-      * minimal BuildC
-      * Gist01
-      * direct $R access
-      * generated artifacts and Wokwi execution
+      We'll also work backwards &ndash; tracing generated artifacts in {[dc,4]} back to their synthesis via the {[cu]BuildC} composite.
+
+      Quite literally, nothing happens without {[cu]BuildC}.
+
+      <div class="em-info">
+
+      <br>&ensp;⚠️ *Buckle up*....&thinsp; The road ahead gets rough&thinsp;!!
+
+      &nbsp;
+
+      </div>
