@@ -86,24 +86,28 @@ steps:
     text: |
       {[ht,settings]Selecting a Board + Setup}
 
-      {[in]DRAFT}
+      Clicking the {[em]Board} icon {[dc,B]} reveals a list of *all* target plat&shy;forms supported within the current workspace.
 
-      * board identifies target hardware
-      * board implies a distro package
-      * point to the board status item
-      * callback to earlier BoardC exposure
+      <div class="em-info">
+
+      **EM&bull;Builder** forms this consolidated list from a distin&shy;guished `em-boards` file {[dc,B]} found in *each* distro package.
+
+      </div>
+
+      After choosing {[em]Board} (and its distro), {[em]Setup} as&shy;sumes a val&shy;ue taken from special `setup-*` files {[dc,S]} in the package.
+
+      By design, every **EMS** distro contains a `setup-default` file &ndash; which may simply defer to (say) `setup-flash`.
+
+      <div class="em-info">
+
+      Clicking the {[em]Setup} icon {[dc,S]} presents a menu of choices supported by the current distro
+
+      </div>
 
   - cmds:
       - view 5
     text: |
       {[ht,$build]From Sources to a Build}
-
-      {[in]DRAFT}
-
-      * BoardC binds portable services to target implementations
-      * BuildC drives generated build output
-      * name both bridges without opening either source
-      * keep generated artifacts at map level
 
   - cmds:
       - open 1
