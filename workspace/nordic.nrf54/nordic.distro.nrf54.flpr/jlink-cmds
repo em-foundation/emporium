@@ -1,9 +1,0 @@
-Device nRF54L15_M33
-SelectInterface SWD
-Speed 4000
-Halt
-Erase
-LoadFile .out/merged.hex
-Reset
-Go
-Exit
