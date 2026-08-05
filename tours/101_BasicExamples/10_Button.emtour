@@ -1,4 +1,4 @@
-title:  Pressing Buttons
+title: Pressing Buttons
 files:
   - em.prog:em.examples.basic/Ex07_Button3P.em.ts
   - em.core:em.hal/ButtonI.em.ts
@@ -7,20 +7,19 @@ files:
   - .assets/img-101-10-01.png
 
 steps:
-
   - cmds:
       - view 5
     text: |
 
-      {[ht,$start] Pressing Buttons}
+      {[ht,$start]&thinsp; Pressing Buttons}
 
       This tour examines {[cu]Button3P}, which uses a **del&shy;egate** implementing a higher-level {[cu]ButtonI} **interface**.
 
       This program can discriminate between different kinds of button presses, based upon their duration:
 
-      {[bm,1]} a _glitch_ press, falling below a minimum duration<br>
-      {[bm,2]} a _short_ press, exceding a minimum duration<br>
-      {[bm,3]} a _long_ press, exceding a maximum duration
+      {[DC,1]} a _glitch_ press, falling below a minimum duration<br>
+      {[DC,2]} a _short_ press, exceding a minimum duration<br>
+      {[DC,3]} a _long_ press, exceding a maximum duration
 
       In the case of {[cu]Button3P}, short [100&thinsp;ms] and long [4&thinsp;s] presses will respectively wink `AppLed` and `SysLed`.
 
@@ -29,34 +28,29 @@ steps:
       - mark 1 A 7
       - mark 1 B 14
       - mark 1 C 20
-    focus: [1,1]
-    acts: [$reveal,$build]
+    focus: [1, 1]
+    acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button3P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button3P% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[BM,A]} {[cu]Button3P} uses an {[cu]AppBut} **delegate** exported by the current {[cu]BoardC} &emsp; <span class="em codicon codicon-circuit-board"></span>&thinsp;**composite**.<br>
 
-      {[bm,A]} {[cu]Button3P} uses an {[cu]AppBut} **delegate** exported by the current {[cu]BoardC} &emsp; <span class="em codicon codicon-circuit-board"></span>&thinsp;**composite**.<br>
+      {[BM,B]} {[cu]AppBut}.{[cf]onPressed} [**`targ`**] binds a local event hand&shy;ler and specifies the [&thinsp;<b>t</b><sup>min</sup>, <b>t</b><sup>max</sup>&thinsp;] press durations.
 
-      {[bm,B]} {[cu]AppBut}.{[cf]onPressed} [**`targ`**] binds a local event hand&shy;ler and specifies the [&thinsp;<b>t</b><sup>min</sup>, <b>t</b><sup>max</sup>&thinsp;] press durations.
-
-      {[bm,C]} {[cu]AppBut}.{[cf]isPressed} tests if this event corresponds to a _long_ press exceeding <b>t</b><sup>max</sup>.
-
-      </div>
+      {[BM,C]} {[cu]AppBut}.{[cf]isPressed} tests if this event corresponds to a _long_ press exceeding <b>t</b><sup>max</sup>.
 
       {[cu]AppBut} will _not_ invoke the {[cf]onPressedH} hand&shy;ler if a 1&thinsp;&rarr;&thinsp;0&thinsp;&rarr;&thinsp;1 pulse on the `AppBut` pin doesn't cross  <b>t</b><sup>min</sup>.
 
       The {[cu]AppBut} **delegate** does invoke {[cf]onPressedH} when the `AppBut` pin returns to 1 _or else_ remains 0 after <b>t</b><sup>max</sup>.
 
-
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]ButtonI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]ButtonI% &ndash; Quick Look}
 
       Reading the {[cu]ButtonI} **interface** should seem second nature to you by now.
 
@@ -70,20 +64,20 @@ steps:
       - mark 4 D 27
       - mark 4 E 32
       - mark 4 F 37
-    focus: [4,9]
+    focus: [4, 9]
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]ButtonT% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; Details}
 
-      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour:
+      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour {[tr,101/09/03]}:
 
-      {[bm,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
-      {[bm,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
-      {[bm,C]}We bind callback functions at build-time [**`meta`**].<br>
-      {[bm,D]}We track the "press" state at run-time [**`targ`**].<br>
-      {[bm,E]}We setup edge detection during {[cs]em$startup}.<br>
-      {[bm,F]}We (conditionally) {[cf]post} our {[ct]Fiber} upon detection.<br>
+      {[BM,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
+      {[BM,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>
+      {[BM,C]}We bind callback functions at build-time [**`meta`**].<br>
+      {[BM,D]}We track the "press" state at run-time [**`targ`**].<br>
+      {[BM,E]}We setup edge detection during {[cs]em$startup}.<br>
+      {[BM,F]}We (conditionally) {[cf]post} our {[ct]Fiber} upon detection.<br>
 
       We further classify the kind of button press &ndash; _glitch_, _short_, _long_ &ndash; using the state variables declared at {[bm,D]}.
 
@@ -100,12 +94,11 @@ steps:
       - mark 4 H 54
       - mark 4 I 65
 
-
-    focus: [4,45]
+    focus: [4, 45]
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]ButtonT% &ndash; More Details}
+      {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; More Details}
 
       When dispatched, {[cf]debounceFB} uses the {[cu]Poller} **module** at {[bm,G]} to iteratively await passage of {[cn]cur_min} msecs.
 
@@ -117,16 +110,15 @@ steps:
 
       After initializing the tracking variables, the {[cf]onPressed} function at {[bm,I]} conditionally enables edge detection.
 
-
   - cmds:
       - open 3
       - mark 3 A 26
       - mark 3 B 59
-    focus: [3,30]
+    focus: [3, 30]
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]BoardC% &ndash; A look back}
+      {[ht,$peek]&thinsp; %[cu]BoardC% &ndash; A Look Back}
 
       In case you don't notice on earlier visits, {[cu]BoardC} first clones {[cu]ButtonT} into the {[cu]AppBut} **delegate**  at {[bm,A]}.
 
@@ -134,10 +126,10 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4,45]
+    focus: [4, 45]
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Quantify the {[cf]debounceFB} overhead at _run-time_.
 
@@ -149,7 +141,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Congratulations&thinsp;&hellip;&nbsp; You've completed the last tour with&shy;in the **Basic Examples** series 🎉.
 
@@ -158,35 +150,3 @@ steps:
       Check back regularly, as more tours come online cover&shy;ing high-level as well as low-level aspects of **EMS**.
 
       {[hc]}
-
-  - cmds:
-      - open 0
-      - view 0
-      - mark 0 A 4
-      - close 0
-    focus: [1,1]
-    acts: [$reveal,$build]
-    text: |
-
-        {[ht,menu_book]%[cu]Unit% &ndash; Cheat Sheet}
-
-        <div class="em-bmlist">
-
-        {[bm,A]}
-
-        </div>
-
-        {[in]An insight}
-
-        {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
-        {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
-
-        {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
-        {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
-        {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
-        
-        <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
-
-        {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
-
-        {[hc]}

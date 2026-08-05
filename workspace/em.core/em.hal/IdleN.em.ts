@@ -11,5 +11,6 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 export function exec() { }
-export function setPauseOnly(pause_only: bool_t) { }
+export function getLevel(): IdleI.SleepLevel { return 0 }
+export function setLevel(level: IdleI.SleepLevel) { }
 export function wakeup() { }

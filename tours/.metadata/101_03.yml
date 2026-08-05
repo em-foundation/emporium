@@ -1,0 +1,187 @@
+tour_id: 101_03
+title: Threading with Fibers
+source_file: tours/101_BasicExamples/03_Fiber.emtour
+
+ground_truth:
+  stop_count: 10
+  screenshots:
+    - tours/.screens/101_03_01.png
+    - tours/.screens/101_03_02.png
+    - tours/.screens/101_03_03.png
+    - tours/.screens/101_03_04.png
+    - tours/.screens/101_03_05.png
+    - tours/.screens/101_03_06.png
+    - tours/.screens/101_03_07.png
+    - tours/.screens/101_03_08.png
+    - tours/.screens/101_03_09.png
+    - tours/.screens/101_03_10.png
+
+overall_assessment:
+  summary: Introduces fibers as a lightweight EMS threading model, then opens FiberMgr to explain its object-factory pattern, internal data structures, ready-list scheduler, and measured dispatch overhead.
+  difficulty: intermediate
+  key_takeaway: FiberMgr provides a compact cooperative scheduling model in which callback-style fiber bodies reschedule themselves with very small run-time overhead.
+
+learning_objectives:
+  - understand FiberP as a fiber-based alternative to the earlier blinker implementation
+  - see how FiberMgr creates and schedules fiber objects across meta and targ domains
+  - learn the EMS data-structure idioms used inside FiberMgr
+  - understand ready-list dispatch and idle sleep behavior
+  - quantify the overhead of thread switching using PulseView
+
+concepts_introduced:
+  - FiberP
+  - FiberMgr
+  - fiber
+  - fiber body
+  - object-factory pattern
+  - ready_list
+  - dispatch
+  - "$struct"
+  - "$table"
+  - "$make"
+  - "$null"
+  - "$ref"
+  - cooperative scheduling
+  - low-power idle
+  - dispatch overhead
+
+concepts_reinforced:
+  - build and load workflow
+  - meta vs targ roles
+  - AppLed
+  - DbgD
+  - PulseView
+  - code-to-signal mapping
+  - active-low debug pins
+
+prerequisites:
+  - 101_01
+  - 101_02
+
+stop_count: 10
+
+stops:
+  - id: 1
+    title: "%[cu]FiberP% &ndash; Threading with Fibers"
+    focus: fiber overview
+    teaching_intent: introduce FiberP and position fibers as a lightweight threading model built on FiberMgr
+    concepts:
+      - FiberP
+      - fiber
+      - FiberMgr
+      - callback-style execution
+    user_takeaway: FiberP achieves familiar blinking behavior without the earlier for-loop structure by relying on software-triggered callbacks
+
+  - id: 2
+    title: "%[cu]FiberP% &ndash; Details"
+    focus: client-side fiber setup
+    teaching_intent: explain how FiberP configures a private FiberMgr object, binds it to a callback body, and schedules it at run-time
+    concepts:
+      - object-factory pattern
+      - "$config"
+      - FiberMgr.Obj
+      - blinkFB
+      - create
+      - post
+    user_takeaway: FiberP owns a private fiber object whose callback body is created at build-time and scheduled at run-time
+
+  - id: 3
+    title: "%[cu]FiberMgr% &ndash; Details"
+    focus: core FiberMgr data types
+    teaching_intent: introduce the FiberMgr callback type, fiber object type, and internal EMS structure definitions
+    concepts:
+      - fiber body type
+      - fiber object type
+      - "$$"
+      - "$struct"
+      - typed fields
+    user_takeaway: FiberMgr exposes typed callback and object abstractions built from EMS data-structure intrinsics
+
+  - id: 4
+    title: "%[cu]FiberMgr% &ndash; More Details"
+    focus: internal scheduler state
+    teaching_intent: explain the static fiber table, defaulted create argument, ready-list allocation, and dispatch loop
+    concepts:
+      - "$table"
+      - fiber_tab
+      - create
+      - arg defaulting
+      - "$make"
+      - ready_list
+      - dispatch
+    user_takeaway: FiberMgr stores fibers in a static table and repeatedly dispatches ready callbacks from a private ready list
+
+  - id: 5
+    title: "%[cu]FiberMgr% &ndash; Still More Details"
+    focus: atomic scheduling and sleep behavior
+    teaching_intent: show how FiberMgr uses interrupt control and an Idle proxy to maintain consistency and sleep when nothing is ready
+    concepts:
+      - GlobalInterrupts proxy
+      - run
+      - Idle proxy
+      - Fiber.post
+      - "$null"
+      - "$ref"
+      - singly-linked list
+    user_takeaway: FiberMgr atomically drains the ready list, sleeps when it empties, and safely re-queues fibers at run-time
+
+  - id: 6
+    title: "%[cu]FiberP% &ndash; Looking Back"
+    focus: end-to-end execution flow
+    teaching_intent: reconnect FiberMgr internals to FiberP by showing how blinkFB keeps reposting itself and prevents the system from sleeping
+    concepts:
+      - run
+      - dispatch flow
+      - blinkFB
+      - self re-scheduling
+      - never-empty ready_list
+    user_takeaway: Because blinkFB reposts blinkF after each callback, the ready list never empties and the system never goes idle
+
+  - id: 7
+    title: "&thinsp;%[cu]FiberP% &ndash; Program Size"
+    focus: memory cost
+    teaching_intent: compare FiberP against BlinkerP and quantify the code and data overhead of adding FiberMgr
+    concepts:
+      - translator stats
+      - readonly memory
+      - readwrite memory
+      - scheduler footprint
+      - program size comparison
+    user_takeaway: FiberMgr adds only a modest memory cost, roughly a 400-byte scheduler, to gain fiber-based scheduling
+
+  - id: 8
+    title: "&thinsp;%[cu]FiberP% &ndash; Signal Capture"
+    focus: measured dispatch overhead
+    teaching_intent: use added DbgD markers and PulseView cursors to measure the cost of switching threads within FiberMgr
+    concepts:
+      - "%%d+"
+      - "%%d-"
+      - DbgD
+      - PulseView cursor
+      - active-low logic
+      - dispatch overhead
+    user_takeaway: Fiber dispatch overhead is directly measurable in PulseView and is very small, about 0.7 microseconds
+
+  - id: 9
+    title: " Extra Credit"
+    focus: experimentation
+    teaching_intent: encourage the user to trace FiberMgr dispatch with printf and build a fiber-based version of their own Blinky program
+    concepts:
+      - Git branch workflow
+      - printf tracing
+      - Blinky extension
+    user_takeaway: I can now explore FiberMgr behavior experimentally and apply fibers to my own programs
+
+  - id: 10
+    title: "Next Steps"
+    focus: series continuation
+    teaching_intent: position FiberMgr as a core EMS design pattern before moving on to peripherals that awaken a sleeping program
+    concepts:
+      - core EMS design pattern
+      - sleeping program
+      - peripheral wakeup
+    user_takeaway: FiberMgr is foundational infrastructure that will matter even more in later tours
+
+issues_and_notes:
+  - stop titles intentionally preserve the exact .emtour text
+  - the signal-capture stop depends heavily on the screenshot because the timing measurement is visual

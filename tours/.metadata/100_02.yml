@@ -1,0 +1,123 @@
+tour_id: 100_02
+title: EM•Script Content Hierarchy
+source_file: tours/100_GettingOriented/02_Hiearchy.emtour
+
+ground_truth:
+  stop_count: 9
+  screenshots:
+    - tours/.screens/100_02_01.png
+    - tours/.screens/100_02_02.png
+    - tours/.screens/100_02_03.png
+    - tours/.screens/100_02_04.png
+    - tours/.screens/100_02_05.png
+    - tours/.screens/100_02_06.png
+    - tours/.screens/100_02_07.png
+    - tours/.screens/100_02_08.png
+    - tours/.screens/100_02_09.png
+
+
+overall_assessment:
+  summary: Explains the EM•Script content hierarchy (packages, buckets, units) and how source files are organized and extended within the workspace.
+  difficulty: introductory
+  key_takeaway: Understand how EMS code is structured and how to navigate and extend the content model.
+
+learning_objectives:
+  - understand EMS hierarchy: package, bucket, unit
+  - recognize how source files map to EMS units
+  - navigate EMS content within the workspace
+  - add and modify EMS source files
+  - understand role of source control
+
+concepts_introduced:
+  - package
+  - bucket
+  - unit
+  - EMS namespace structure
+  - content organization
+
+concepts_reinforced:
+  - workspace navigation
+  - VS Code file structure
+  - EMS code organization
+
+prerequisites:
+  - 100_01
+
+stop_count: 9
+
+stops:
+  - id: 1
+    title: EM&bull;Script Content Hierarchy
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 2
+    title: EM&bull;Script Unit &ndash; source file
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 3
+    title: EM&bull;Script Bucket &ndash; namespace
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 4
+    title: EM&bull;Script Package &ndash; container
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 5
+    title: Files and Folders
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 6
+    title: Adding EM&bull;Script Content
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 7
+    title: Implementing %[cu]Blinky%
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 8
+    title: Source Control
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+  - id: 9
+    title: Next steps
+    focus: content hierarchy
+    teaching_intent: explain structure and organization of EMS content
+    concepts:
+      - hierarchy
+    user_takeaway: understand this part of the EMS content model
+
+issues_and_notes:
+  - foundational tour for understanding EMS structure
+  - prepares user for working with real EMS modules

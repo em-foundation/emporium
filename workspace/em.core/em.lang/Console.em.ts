@@ -21,7 +21,7 @@ export function formatNum(
     width: i8,
     pad: u8
 ): frame_t<u8> {
-    let HEXDIGS = t$`0123456789ABCDEF`
+    const HEXDIGS = t$`0123456789abcdef`
     let idx = buf.$len
     while (true) {
         width -= 1

@@ -10,16 +10,16 @@ export function em$generate() {
         |-> #include <stdbool.h>
         |-> #include <stdint.h>
         |-> 
-        |-> extern uint32_t __bss_addr__;
-        |-> extern uint32_t __bss_size__;
-        |-> extern uint32_t __code_addr__;
-        |-> extern uint32_t __code_load__;
-        |-> extern uint32_t __code_size__;
-        |-> extern uint32_t __data_addr__;
-        |-> extern uint32_t __data_load__;
-        |-> extern uint32_t __data_size__;
-        |-> extern uint32_t __global_pointer__;
-        |-> extern uint32_t __stack_top__;
+        |-> extern "C" uint32_t __bss_addr__;
+        |-> extern "C" uint32_t __bss_size__;
+        |-> extern "C" uint32_t __code_addr__;
+        |-> extern "C" uint32_t __code_load__;
+        |-> extern "C" uint32_t __code_size__;
+        |-> extern "C" uint32_t __data_addr__;
+        |-> extern "C" uint32_t __data_load__;
+        |-> extern "C" uint32_t __data_size__;
+        |-> extern "C" uint32_t __global_pointer__;
+        |-> extern "C" uint32_t __stack_top__;
         |-> 
         |-> extern "C" int main();
         |-> extern "C" bool __is_warm();

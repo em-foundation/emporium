@@ -44,12 +44,14 @@ function dispatch() {
     while (!ready_list.empty()) {
         let fiber = ready_list.take()
         Common.GlobalInterrupts.enable()
+        const p32 = $cast2<ptr_t<u32>>(fiber)
         fiber.$$.body(fiber.$$.arg)
         Common.GlobalInterrupts.disable()
     }
 }
 
 export function run() {
+    const p = $cast2<ptr_t<u32>>($$(fiber_tab[0]))
     Common.GlobalInterrupts.enable()
     while (true) {
         Common.GlobalInterrupts.disable()
@@ -60,7 +62,7 @@ export function run() {
 
 Fiber.prototype.post = function (this: Fiber): void {
     let key = Common.GlobalInterrupts.disable()
-    if (this.link == $null) ready_list.give($ref(this))
+    if (this.link == $null) ready_list.give($$(this))
     Common.GlobalInterrupts.restore(key)
 }
 

@@ -6,11 +6,10 @@ files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
 
 steps:
-
   - cmds:
     text: |
 
-      {[ht,$start]Welcome Aboard}
+      {[ht,$start]&thinsp;Welcome Aboard}
 
       This initial tour has two primary objectives:
 
@@ -18,13 +17,14 @@ steps:
 
       {[bi,arrow_circle_right]} Tweaking the UI to remove some visual clutter.
 
-      To proceed through the current tour, you'll use the five buttons across the top of this view:
+      To proceed through the current tour, you'll use the six buttons across the top of this view:
 
-      {[bm,1]} **Back** &ndash; go to the previous stop on this tour<br>
-      {[bm,2]} **Next** &ndash; go to the next stop on this tour<br>
-      {[bm,3]} **Refresh** &ndash; replay the current stop on this tour<br>
-      {[bm,4]} **Restart** &ndash; rewind to the first stop on this tour <br>
-      {[bm,5]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
+      {[DC,1]} **Refresh** &ndash; replay the current stop on this tour<br>
+      {[DC,2]} **Restart** &ndash; rewind to the first stop on this tour <br>
+      {[DC,3]} **Back** &ndash; go to the previous stop on this tour<br>
+      {[DC,4]} **Next** &ndash; go to the next stop on this tour<br>
+      {[DC,5]} **Screenshot** &ndash; save a screenshot of the this stop<br>
+      {[DC,6]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
 
       Click the **Next** button to continue with **Tour&thinsp;01**&thinsp;....
 
@@ -32,7 +32,7 @@ steps:
       - view 1
     text: |
 
-      {[ht,household_supplies]Tidying up &ndash; Activity Bar}
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Activity Bar}
 
       You can remove some extraneous elements from the **Activity Bar** at the left of the **VS Code** window.
 
@@ -41,118 +41,112 @@ steps:
       We also moved the **EM&bull;Browser** and **EM&bull;Tours** activities to the top and bottom &ndash; for easy reference.
 
       {[in]To zoom in&thinsp;&middot;&thinsp;out within the image's editor tab, press <b>Ctrl</b> (or <b>Cmd</b>) while scrolling your mouse down&thinsp;&middot;&thinsp;up.}
-      
+
       Suggestions only &ndash; click **Next** and let's keep moving&thinsp;....
 
   - cmds:
-      - close 1
       - view 2
     text: |
 
-      {[ht,household_supplies]Tidying up &ndash; Outline View}
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Outline View}
 
       You should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
 
       The **Outline View** proves invaluable once we start exploring some **EM&bull;Script** source code.
 
-      {[bm,1]} select **View > Open View** from the main menu<br>
-      {[bm,2]} type `Outline` to locate then `<ENTER>` to open<br>
-      {[bm,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
-      {[bm,4]} drop the **OUTLINE** tab just below **CHAT**<br>
+      {[DC,1]} select **View > Open View** from the main menu<br>
+      {[DC,2]} type `Outline` to locate then `<ENTER>` to open<br>
+      {[DC,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
+      {[DC,4]} drop the **OUTLINE** tab just below **CHAT**<br>
 
       Again, suggestions only &ndash; click **Next** to continue&thinsp;....
 
   - cmds:
-      - close 2
       - open 3
-    focus: [3,1]
+    focus: [3, 1]
     text: |
 
-        {[ht,front_hand]Hello EM&bull;Script}
+      {[ht,front_hand]&thinsp;Hello EM&bull;Script}
 
-        Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
+      Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
 
-        In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
+      In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
 
-        {[in]We'll start using '<b>EMS</b>' as shorthand for <b>EM&bull;Script</b>. }
+      {[in]We'll start using '<b>EMS</b>' as shorthand for <b>EM&bull;Script</b>. }
 
-        Even if you've never seen **EMS** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
+      Even if you've never seen **EMS** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
 
-        Let's dive in&thinsp;....
+      Let's dive in&thinsp;....
 
   - cmds:
+      - open 3
       - mark 3 A 2
       - mark 3 B 5
-    focus: [3,1]
-    acts: ['$reveal']
+    focus: [3, 1]
+    acts: ["$reveal"]
     text: |
 
-        {[ht,$details]%[cu]HelloP% &ndash; details}
+      {[ht,$details]&thinsp;%[cu]HelloP% &ndash; Details}
 
-        Many tour-stops will examine a particular source file in greater detail.
+      Many tour-stops will examine a particular source file in greater detail.
 
-        As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
+      As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
 
-        <div class="em-bmlist">
+      {[BM,A]} Boilerplate found in all **EMS** files
 
-        {[bm,A]} Boilerplate found in all **EMS** files
+      {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
 
-        {[bm,B]} Note the somewhat unusual {[cd]printf} syntax.
+      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
 
-        </div>
-
-        You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
-
-        And now, let's execute this **EMS** program&thinsp;....
+      And now, let's execute this **EMS** program&thinsp;....
 
   - cmds:
-    focus: [3,1]
+      - open 3
+    focus: [3, 1]
     acts: [$build]
     text: |
 
-        {[ht,$build]%[cu]HelloP% &ndash; build&thinsp;+&thinsp;load}
+      {[ht,$build]&thinsp;%[cu]HelloP% &ndash; Build&thinsp;+&thinsp;Load}
 
-        Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
+      Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
 
-        For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
+      For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
 
-        If you haven't done so already, follow the **Request a Wowki Key** link on the **EM&bull;Home** editor tab.
+      If you haven't done so already, follow the **Request a Wowki Key** link on the **EM&bull;Home** editor tab.
 
-        When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
+      When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
 
-        A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
+      A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
 
-        Close the **Wokwi Simulator** tab before clicking **Next**.
+      Close the **Wokwi Simulator** tab before clicking **Next**.
 
   - cmds:
-    - open 4
-    focus: [4,1]
+      - open 4
+    focus: [4, 1]
     acts: [$build, $reveal]
     text: |
 
-        {[ht,$build]%[cu]BlinkerP% &ndash; build&thinsp;+&thinsp;load}
+      {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
 
-        While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
+      While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
 
-        To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
+      To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
 
-        Over time, you'll run **EMS** programs on a growing list of target platforms featuring a wide range of MCUs.
+      Over time, you'll run **EMS** programs on a growing list of target platforms featuring a wide range of MCUs.
 
-        Before moving on, click the {[em]%[ci,circuit-board]%&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
+      Before moving on, click the {[em]%[ci,circuit-board]%&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
 
   - cmds:
     text: |
 
-        {[ht,$steps]Next steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
-        Congratulations on completing your first tour.&thinsp;🎉
+      Congratulations on completing your first tour.&thinsp;🎉
 
-        After you **End** this tour by clicking the red square, we'll show the **EM&bull;TOURS** view in the **Primary Side Bar**.
+      After you **End** this tour by clicking the red square, we'll show the **EM&bull;TOURS** view in the **Primary Side Bar**.
 
-        From here, proceed to the next tour in the **Orientation** bundle by clicking (once) on **Content Hierarchy**.
+      From here, proceed to the next tour in the **Orientation** bundle by clicking (once) on **Content Hierarchy**.
 
-        And after completing **Content Hierarchy** and then **Language Surface**, have fun with the **Basic Examples**.
+      And after completing **Content Hierarchy** and then **Language Surface**, have fun with the **Basic Examples**.
 
-        {[hc]}
-
-
+      {[hc]}

@@ -1,9 +1,0 @@
-Device EFR32MG22CXXXF512
-SelectInterface SWD
-Speed 4000
-Halt
-Erase
-LoadFile .out/main.out.hex
-Reset
-Go
-Exit

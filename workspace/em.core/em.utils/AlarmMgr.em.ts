@@ -45,16 +45,16 @@ function dispatch(cur_time: T.Secs30p2) {
     let max_wup_time = ~(<T.Secs30p2>0)
     for (const a of alarm_tab) {
         // iterate through all alarms
-        if (a.$$._wup_time == 0) continue // INACTIVE state
-        if (cur_time >= a.$$._wup_time) { // EXPIRED state
-            a.$$._wup_time = 0  // becomes INACTIVE after post
-            a.$$._fiber.$$.post()
+        if (a._wup_time == 0) continue // INACTIVE state
+        if (cur_time >= a._wup_time) { // EXPIRED state
+            a._wup_time = 0  // becomes INACTIVE after post
+            a._fiber.$$.post()
             continue
         }
-        if (a.$$._wup_time <= max_wup_time) {
+        if (a._wup_time <= max_wup_time) {
             // ACTIVE state
-            nxt_alarm = a // best candidate
-            max_wup_time = a.$$._wup_time
+            nxt_alarm = $$(a) // best candidate
+            max_wup_time = a._wup_time
         }
     }
     if (nxt_alarm) {
@@ -87,9 +87,9 @@ Alarm.prototype.isActive = function (this: Alarm): bool_t {
 }
 
 Alarm.prototype.wakeup = function (this: Alarm, delta_qs: T.Secs30p2) {
-    setup($ref(this), delta_qs, false)
+    setup($$(this), delta_qs, false)
 }
 
 Alarm.prototype.wakeupAligned = function (this: Alarm, delta_qs: T.Secs30p2) {
-    setup($ref(this), delta_qs, true)
+    setup($$(this), delta_qs, true)
 }

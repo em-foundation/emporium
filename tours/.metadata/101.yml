@@ -1,0 +1,64 @@
+group_id: 101
+title: Basic Examples
+
+tours:
+  - 101_01
+  - 101_02
+  - 101_03
+  - 101_04
+  - 101_05
+  - 101_06
+  - 101_07
+  - 101_08
+  - 101_09
+  - 101_10
+
+summary:
+  The Basic Examples tours introduce core EMS runtime patterns through small,
+  observable programs. The sequence begins with simple blinking and debug
+  instrumentation, then moves through fibers, one-shot timers, pausing,
+  wakeup alarms, periodic scheduling, real-time clock use, edge detection,
+  and higher-level button handling. Across the group, the emphasis stays on
+  relating EMS abstractions to concrete behavior visible in build output and
+  signal capture.
+
+concepts_progression:
+  - simple blinking behavior and basic timing
+  - debug instrumentation with pins and UART
+  - cooperative scheduling with FiberMgr
+  - one-shot timers and wakeup latency
+  - pausing and polling-based waiting
+  - alarm-driven wakeups against a real-time clock
+  - periodic scheduling with ticker-style abstractions
+  - time-based coordination and clock-aware behavior
+  - asynchronous input through edge detection
+  - higher-level button abstractions built on lower-level interfaces
+
+concepts_introduced:
+  - BlinkerP
+  - BusyWait
+  - DebugP
+  - real-time debug
+  - FiberMgr
+  - fibers
+  - OneShot
+  - OneShotI
+  - Poller
+  - AlarmMgr
+  - wakeup
+  - wakeupAligned
+  - Ticker
+  - Rtc
+  - EdgeI
+  - GpioI
+  - ButtonI
+
+prerequisites:
+  - 100_01
+  - 100_02
+  - 100_03
+
+issues_and_notes:
+  - group summary derived from member tour metadata and verified .emtour structure
+  - the group repeatedly reinforces code-to-signal mapping through PulseView captures
+  - later tours build on earlier abstractions rather than replacing them

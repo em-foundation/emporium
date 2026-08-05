@@ -1,0 +1,119 @@
+tour_id: 100_01
+title: Welcome Aboard
+source_file: tours/100_GettingOriented/01_Welcome.emtour
+
+ground_truth:
+  stop_count: 8
+  screenshots:
+    - tours/.screens/100_01_01.png
+    - tours/.screens/100_01_02.png
+    - tours/.screens/100_01_03.png
+    - tours/.screens/100_01_04.png
+    - tours/.screens/100_01_05.png
+    - tours/.screens/100_01_06.png
+    - tours/.screens/100_01_07.png
+    - tours/.screens/100_01_08.png
+
+overall_assessment:
+  summary: Introduces the Tour Guide interaction model and prepares the VS Code environment, then walks through the first EMS programs (HelloP and BlinkerP) to connect source code to observable behavior.
+  difficulty: introductory
+  key_takeaway: Learn how to navigate tours, streamline the UI, and run your first EMS programs.
+
+learning_objectives:
+  - understand how to navigate tours using the Tour Guide controls
+  - configure VS Code UI for a focused EMS workflow
+  - locate and open EMS units from the workspace
+  - build and load simple EMS programs
+  - connect source code with runtime behavior
+
+concepts_introduced:
+  - Tour Guide navigation model
+  - EM•Browser and EM•Tours views
+  - HelloP program
+  - BlinkerP program
+  - build and load workflow
+
+concepts_reinforced:
+  - VS Code layout customization
+  - editor navigation and file focus
+  - mapping code to observable output
+
+prerequisites: []
+
+stop_count: 8
+
+stops:
+  - id: 1
+    title: Welcome Aboard
+    focus: tour introduction
+    teaching_intent: explain how to operate the Tour Guide and navigate between stops
+    concepts:
+      - navigation controls
+      - tour flow
+    user_takeaway: I know how to move through a tour using Back, Next, Refresh, Restart, and End
+
+  - id: 2
+    title: Tidying up – Activity Bar
+    focus: UI cleanup
+    teaching_intent: reduce visual clutter by removing unused Activity Bar items and organizing EM views
+    concepts:
+      - activity bar configuration
+      - view positioning
+    user_takeaway: I can streamline the Activity Bar and position EM views for quick access
+
+  - id: 3
+    title: Tidying up – Outline View
+    focus: layout optimization
+    teaching_intent: position the Outline View in the secondary sidebar for consistent navigation support
+    concepts:
+      - secondary sidebar
+      - outline view
+    user_takeaway: I understand where to place the Outline View and why it’s useful
+
+  - id: 4
+    title: Hello EM•Script
+    focus: first EMS example
+    teaching_intent: introduce the HelloP program as the simplest EMS unit
+    concepts:
+      - HelloP
+      - basic program structure
+    user_takeaway: I can locate and recognize a minimal EMS program
+
+  - id: 5
+    title: '%[cu]HelloP% – details'
+    focus: code walkthrough
+    teaching_intent: explain the structure and intent of the HelloP implementation
+    concepts:
+      - module structure
+      - entry behavior
+    user_takeaway: I understand what the HelloP code is doing
+
+  - id: 6
+    title: '%[cu]HelloP% – build+load'
+    focus: execution flow
+    teaching_intent: demonstrate building and loading HelloP and observing its output
+    concepts:
+      - build process
+      - load process
+    user_takeaway: I can build and run an EMS program and observe its behavior
+
+  - id: 7
+    title: '%[cu]BlinkerP% – build+load'
+    focus: hardware interaction
+    teaching_intent: introduce BlinkerP and show observable LED behavior
+    concepts:
+      - BlinkerP
+      - timing behavior
+    user_takeaway: I see how EMS code drives real hardware behavior
+
+  - id: 8
+    title: Next steps
+    focus: transition
+    teaching_intent: prepare the user to continue into the next tour
+    concepts:
+      - learning progression
+    user_takeaway: I’m ready to move on to the next tour in the sequence
+
+issues_and_notes:
+  - UI customization steps are optional but improve usability
+  - serves as onboarding foundation for all subsequent tours

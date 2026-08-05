@@ -1,0 +1,35 @@
+group_id: 100
+title: Orientation
+
+tours:
+  - 100_01
+  - 100_02
+  - 100_03
+
+summary:
+  The Orientation tours establish the EMS environment, workflow, and mental model.
+  Users are introduced to EM•Script structure, the VSCode-based experience, and the
+  core idea of observing embedded behavior through build, run, and signal capture.
+
+concepts_progression:
+  - environment setup and navigation
+  - EM•Script program structure
+  - build → load → observe workflow
+  - mapping code to hardware behavior
+  - introduction to signal capture (PulseView, wokwi.vcd)
+
+concepts_introduced:
+  - EM•Script
+  - EM•Builder environment
+  - tours workflow
+  - build and load process
+  - wokwi simulation
+  - PulseView
+  - signal capture
+  - code-to-signal mapping
+
+prerequisites: []
+
+issues_and_notes:
+  - group summary derived from 100_01, 100_02, 100_03 metadata
+  - establishes baseline mental model for all subsequent tours

@@ -1,0 +1,100 @@
+tour_id: 101_10
+title: Buttons
+source_file: tours/101_BasicExamples/10_Button.emtour
+
+ground_truth:
+  stop_count: 6
+  screenshots:
+    - tours/.screens/101_10_01.png
+    - tours/.screens/101_10_02.png
+    - tours/.screens/101_10_03.png
+    - tours/.screens/101_10_04.png
+    - tours/.screens/101_10_05.png
+    - tours/.screens/101_10_06.png
+
+overall_assessment:
+  summary: Introduces a higher-level ButtonI abstraction that builds on prior edge-detection mechanisms, simplifying button handling into a cleaner interface.
+  difficulty: intermediate
+  key_takeaway: ButtonI encapsulates edge detection and event handling behind a simpler, reusable interface.
+
+learning_objectives:
+  - understand ButtonI as a higher-level abstraction over EdgeI
+  - see how button events are exposed as clean callbacks
+  - relate ButtonI to underlying EdgeI and GpioI layers
+  - observe simplified application code using ButtonI
+
+concepts_introduced:
+  - ButtonI
+  - button abstraction
+  - press events
+
+concepts_reinforced:
+  - EdgeI
+  - GpioI
+  - AppButEdge
+  - BoardC
+  - "$proxy"
+  - "$config"
+  - FiberMgr
+  - signal capture
+
+prerequisites:
+  - 101_09
+
+stop_count: 6
+
+stops:
+  - id: 1
+    title: " Buttons"
+    focus: abstraction overview
+    teaching_intent: introduce ButtonI as a simplified interface for handling button input
+    concepts:
+      - ButtonI
+      - abstraction
+    user_takeaway: ButtonI hides lower-level edge detection details
+
+  - id: 2
+    title: " %[cu]ButtonP% &ndash; Details"
+    focus: interface usage
+    teaching_intent: show how ButtonI is used in application code
+    concepts:
+      - ButtonP
+      - callback binding
+    user_takeaway: Button logic becomes simpler using ButtonI
+
+  - id: 3
+    title: " %[cu]ButtonP% &ndash; Operation"
+    focus: runtime behavior
+    teaching_intent: explain how ButtonI maps to underlying edge detection
+    concepts:
+      - EdgeI
+      - event dispatch
+    user_takeaway: ButtonI internally relies on edge detection
+
+  - id: 4
+    title: " %[cu]ButtonP% &ndash; Signal Capture"
+    focus: visualization
+    teaching_intent: correlate button presses with observed signals
+    concepts:
+      - PulseView
+      - event timing
+    user_takeaway: Button events are visible and measurable
+
+  - id: 5
+    title: " Extra Credit"
+    focus: experimentation
+    teaching_intent: encourage modifying button behavior and observing effects
+    concepts:
+      - variation
+    user_takeaway: behavior can be tuned and explored
+
+  - id: 6
+    title: " Next Steps"
+    focus: completion
+    teaching_intent: conclude the Basic Examples series
+    concepts:
+      - wrap-up
+    user_takeaway: ButtonI completes the abstraction stack
+
+issues_and_notes:
+  - titles preserved exactly from .emtour

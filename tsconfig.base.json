@@ -2,14 +2,19 @@
     "compilerOptions": {
         "module": "CommonJS",
         "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
         "target": "ESNext",
         "lib": [
             "ESNext"
         ],
         "outDir": "out",
+        "rootDir": "./workspace",
         "sourceMap": true,
         "strict": true,
         "strictPropertyInitialization": false,
+        "types": [
+            "node"
+        ],
         "esModuleInterop": true
     },
     "include": [

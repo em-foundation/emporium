@@ -1,0 +1,114 @@
+tour_id: 101_01
+title: %[cu]BlinkerP% &ndash; Blinking LEDs
+source_file: tours/101_BasicExamples/01_Blink.emtour
+
+ground_truth:
+  stop_count: 8
+  screenshots:
+    - tours/.screens/101_01_01.png
+    - tours/.screens/101_01_02.png
+    - tours/.screens/101_01_03.png
+    - tours/.screens/101_01_04.png
+    - tours/.screens/101_01_05.png
+    - tours/.screens/101_01_06.png
+    - tours/.screens/101_01_07.png
+    - tours/.screens/101_01_08.png
+
+
+overall_assessment:
+  summary: Introduces a simple blinking application to demonstrate timing, hardware interaction, and the EMS execution model.
+  difficulty: introductory
+  key_takeaway: Understand how EMS code drives periodic hardware behavior.
+
+learning_objectives:
+  - understand basic EMS program structure
+  - observe timing behavior using BusyWait
+  - connect code execution to hardware output
+  - build and run EMS applications
+
+concepts_introduced:
+  - BlinkerP
+  - BusyWait
+  - periodic execution
+  - hardware control
+
+concepts_reinforced:
+  - build and load workflow
+  - code-to-signal mapping
+  - EMS hierarchy
+
+prerequisites:
+  - 100_01
+  - 100_02
+  - 100_03
+
+stop_count: 8
+
+stops:
+  - id: 1
+    title: %[cu]BlinkerP% &ndash; Blinking LEDs
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 2
+    title: %[cu]BlinkerP% &ndash; A Few Details
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 3
+    title: &thinsp;Introducing PulseView
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 4
+    title: &thinsp;PulseView Setup
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 5
+    title: &thinsp;%[cu]BoardC% &ndash; Closer Look
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 6
+    title: &thinsp;%[cu]BlinkerP% &ndash; Signal Capture
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 7
+    title: Extra Credit
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+  - id: 8
+    title: Next steps
+    focus: blinking example
+    teaching_intent: explain timing and hardware behavior
+    concepts:
+      - timing
+    user_takeaway: understand how this part contributes to blinking behavior
+
+issues_and_notes:
+  - first practical EMS example
+  - establishes timing and observation foundation

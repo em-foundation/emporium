@@ -1,0 +1,98 @@
+tour_id: 101_05
+title: Pausing Execution
+source_file: tours/101_BasicExamples/05_Pause.emtour
+
+ground_truth:
+  stop_count: 6
+  screenshots:
+    - tours/.screens/101_05_01.png
+    - tours/.screens/101_05_02.png
+    - tours/.screens/101_05_03.png
+    - tours/.screens/101_05_04.png
+    - tours/.screens/101_05_05.png
+    - tours/.screens/101_05_06.png
+
+overall_assessment:
+  summary: Introduces pausing execution using polling and board-level mechanisms, showing how EMS code can block or idle while waiting for external conditions.
+  difficulty: intermediate
+  key_takeaway: EMS supports controlled pausing through polling and board abstractions, with observable effects in signal traces.
+
+learning_objectives:
+  - understand pausing via polling constructs
+  - examine Poller behavior and implementation
+  - relate pause mechanisms to hardware state
+  - observe effects in signal captures
+
+concepts_introduced:
+  - Poller
+  - pause semantics
+  - polling loop
+  - board interaction
+
+concepts_reinforced:
+  - BoardC
+  - signal capture
+  - build and load workflow
+  - code-to-signal mapping
+
+prerequisites:
+  - 101_01
+  - 101_02
+  - 101_03
+  - 101_04
+
+stop_count: 6
+
+stops:
+  - id: 1
+    title: 'Pausing Execution'
+    focus: pause overview
+    teaching_intent: introduce the idea of pausing execution while waiting for a condition
+    concepts:
+      - pause
+      - polling
+    user_takeaway: execution can be intentionally paused while waiting for events
+
+  - id: 2
+    title: '%[cu]Poller% &ndash; Details'
+    focus: poller implementation
+    teaching_intent: explain how Poller repeatedly checks for a condition
+    concepts:
+      - Poller
+      - loop
+    user_takeaway: Poller implements a simple polling-based wait
+
+  - id: 3
+    title: '&thinsp;Signal Captures'
+    focus: waveform behavior
+    teaching_intent: show how paused execution appears in captured signals
+    concepts:
+      - signal capture
+    user_takeaway: pauses are visible as timing gaps in traces
+
+  - id: 4
+    title: '%[cu]BoardC% &ndash; A Quick Look'
+    focus: board abstraction
+    teaching_intent: show how board-level features support pause behavior
+    concepts:
+      - BoardC
+    user_takeaway: board abstractions influence how pauses are implemented
+
+  - id: 5
+    title: 'Extra Credit'
+    focus: experimentation
+    teaching_intent: encourage extending pause behavior
+    concepts:
+      - experimentation
+    user_takeaway: can modify and explore pause mechanisms
+
+  - id: 6
+    title: 'Next Steps'
+    focus: continuation
+    teaching_intent: transition to next tour
+    concepts:
+      - progression
+    user_takeaway: ready to continue
+
+issues_and_notes:
+  - stop titles preserved exactly from .emtour

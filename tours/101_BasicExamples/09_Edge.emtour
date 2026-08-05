@@ -9,25 +9,22 @@ files:
   - .assets/img-101-09-02.png
 
 steps:
-
   - cmds:
       - view 6
     text: |
 
-      {[ht,$start] Edge Detection}
+      {[ht,$start]&thinsp; Edge Detection}
 
       This tour visits two programs which wink `AppLed` &ndash; but now in response to asynchrnously pressing `AppBut`:
 
       {[bi,arrow_circle_right]} {[cu]Button1P}, which uses a primitive _super-loop_<br>
       {[bi,arrow_circle_right]} {[cu]Button2P}, which relies upon _fiber dispatch_
 
-      {[in]An earlier <b>One-Shot Timers</b> tour took a similar ap&shy;proach &ndash; contrasting two similar program designs. }
+      {[in]An earlier tour %[tr,101/04]% took a similar ap&shy;proach &ndash; con&shy;trasting two similar %[cu]OneShot% program designs. }
 
       Looking at the {[cu]Button1P} signal capture, you can press `AppBut` at any point in time and for any duration.
 
       Here, {[cu]Button1P} winks `AppLed` at the _beginning_ of the button press &ndash; when `AppBut` transitions 1&thinsp;&rarr;&thinsp;0.
-
-
 
   - cmds:
       - open 1
@@ -36,22 +33,21 @@ steps:
       - mark 1 C 20
       - mark 1 D 28
       - mark 1 E 37
-    focus: [1,11]
-    acts: [$reveal,$build]
+    focus: [1, 11]
+    acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button1P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button1P% &ndash; Details}
 
       Like the {[cu]OneShot1P} program seen prior, {[cu]Button1P} main&shy;tains its portability by using an {[cu]AppButEdge} {[cs]$delegate}:
 
-      {[bm,A]} We access `AppBut` via the current {[cu]BoardC} <span class="em codicon codicon-circuit-board"></span>.<br>
-      {[bm,B]} We bind a detection handler at build-time [**`meta`**].<br>
-      {[bm,C]} We setup the `AppBut` pin HW at run-time [**`targ`**].<br>
-      {[bm,D]} We enable `AppBut` detection inside our super-loop.<br>
-      {[bm,E]} We clear dection before signaling {[cn]pressed_flag}.
+      {[BM,A]} We access `AppBut` via the current {[cu]BoardC} <span class="em codicon codicon-circuit-board"></span>.<br>
+      {[BM,B]} We bind a detection handler at build-time [**`meta`**].<br>
+      {[BM,C]} We setup the `AppBut` pin HW at run-time [**`targ`**].<br>
+      {[BM,D]} We enable `AppBut` detection inside our super-loop.<br>
+      {[BM,E]} We clear dection before signaling {[cn]pressed_flag}.
 
       {[in]The <b>EMS</b> translator ensures all %[cs]em$startup% code exe&shy;cutes <i>before</i> the target C++ program reaches %[cs]em$run%.}
-
 
   - cmds:
       - open 2
@@ -60,19 +56,19 @@ steps:
       - mark 2 C 26
       - mark 2 D 29
       - mark 2 E 38
-    focus: [2,8]
-    acts: [$reveal,$build]
+    focus: [2, 8]
+    acts: [$reveal, $build]
     text: |
 
-      {[ht,$details] %[cu]Button2P% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]Button2P% &ndash; Details}
 
       In contrast with {[cu]Button1P}, the {[cu]Button2P} program uses {[cu]FiberMgr} in a conventional manner:
 
-      {[bm,A]} We declare a {[cs]$config} which holds a {[ct]Fiber} object.<br>
-      {[bm,B]} We bind a new {[ct]Fiber} and its callback at build-time.<br>
-      {[bm,C]} We start dispatching {[ct]Fiber} objects at run-time.<br>
-      {[bm,D]} {[cf]blinkFB} winks `AppLed` and re-enables `AppBut`.<br>
-      {[bm,E]} {[cf]handler} invokes {[cf]post} to schedule {[cf]blinkFB}.
+      {[BM,A]} We declare a {[cs]$config} which holds a {[ct]Fiber} object.<br>
+      {[BM,B]} We bind a new {[ct]Fiber} and its callback at build-time.<br>
+      {[BM,C]} We start dispatching {[ct]Fiber} objects at run-time.<br>
+      {[BM,D]} {[cf]blinkFB} winks `AppLed` and re-enables `AppBut`.<br>
+      {[BM,E]} {[cf]handler} invokes {[cf]post} to schedule {[cf]blinkFB}.
 
       {[in]Here again, prefer <i>fiber dispatch</i> over an event <i>super-loop</i> when designing your application code.}
 
@@ -80,16 +76,15 @@ steps:
       - view 7
     text: |
 
-      {[ht,monitor_heart] %[cu]Button2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp; %[cu]Button2P% &ndash; Signal Capture}
 
       Using {[cu]Button2P}, we'll now zoom-in on a single `AppLed` wink triggered by the falling edge of `AppBut`.
 
-      For orientation, labels {[bm,C]} and {[bm,D]} mark execution of {[cd]%%c} and {[cd]%%d} inside {[cf]handler} and {[cf]blinkFB}.
+      For orientation, labels {[dc,C]} and {[dc,D]} mark execution of {[cd]%%c} and {[cd]%%d} inside {[cf]handler} and {[cf]blinkFB}.
 
       The pulses on `DbgB` track program entry into _lite-sleep_ (after {[cf]wink}) versus _deep-sleep_ (after {[cf]enableDetect}).
 
       {[in]Unlike timer events, we see the <i>exact</i> point where `AppBut` falls and can precisely measure latency.}
-
 
   - cmds:
       - open 5
@@ -97,11 +92,11 @@ steps:
       - mark 5 B 28
       - mark 5 C 60
       - mark 5 D 61
-    focus: [5,31]
+    focus: [5, 31]
     acts: [$reveal]
     text: |
 
-      {[ht,$details] %[cu]BoardC% &ndash; Details}
+      {[ht,$details]&thinsp; %[cu]BoardC% &ndash; Details}
 
       The {[cu]BoardC} **composite** instaniates {[cu]AppButEdge}{[bm,A]} and {[cu]AppButPin}{[bm,B]} using {[cs]$clone} with a **template**.
 
@@ -113,15 +108,13 @@ steps:
 
       The {[cu]AppButEdge} and {[cu]AppButPin} **delegates** repsectively implement {[cu]EdgeI} and {[cu]GpioI} **interfaces** &ndash; seen next.
 
-
-
   - cmds:
       - open 3
-    focus: [3,1]
+    focus: [3, 1]
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]EdgeI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]EdgeI% &ndash; Quick Look}
 
       {[cu]Button1P} and {[cu]Button2P} each interact with {[cu]AppButEdge} using meth&shy;ods specified in the {[cu]EdgeI} **interface**.
 
@@ -129,11 +122,11 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4,1]
+    focus: [4, 1]
     acts: [$reveal]
     text: |
 
-      {[ht,$peek] %[cu]GpioI% &ndash; Quick Look}
+      {[ht,$peek]&thinsp; %[cu]GpioI% &ndash; Quick Look}
 
       {[cu]GpioI} provides a "low-level" HW **interface** often hid&shy;den beneath other abstractions &ndash; {[cu]EdgeI}, {[cu]LedI}, etc.
 
@@ -141,13 +134,13 @@ steps:
 
       Unlike other {[cu]GpioI} methods, note that clients can call {[cf]pinId} at _build-time_ [**`meta`**] as well as _run-time_ [**`targ`**].
 
-      {[in]In general, any <b>unit</b> can expose a common suite of getter&thinsp;&middot;&thinsp;setter methods for <i>both</i> <b>EMS</b> domains.} 
+      {[in]In general, any <b>unit</b> can expose a common suite of getter&thinsp;&middot;&thinsp;setter methods for <i>both</i> <b>EMS</b> domains.}
 
   - cmds:
       - view 7
     text: |
 
-      {[ht,$extra] Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Measure HW&thinsp;&rarr;&thinsp;SW detection latency in **PulseView**.
 
@@ -159,7 +152,7 @@ steps:
       - view 6
     text: |
 
-      {[ht,$steps] Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       Almost done with the **Basic Examples** tour bundle&thinsp;&hellip;
 

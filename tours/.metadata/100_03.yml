@@ -1,0 +1,150 @@
+tour_id: 100_03
+title: EM&bull;Script Language Overview
+source_file: tours/100_GettingOriented/03_Surface.emtour
+
+ground_truth:
+  stop_count: 12
+  screenshots:
+    - tours/.screens/100_03_01.png
+    - tours/.screens/100_03_02.png
+    - tours/.screens/100_03_03.png
+    - tours/.screens/100_03_04.png
+    - tours/.screens/100_03_05.png
+    - tours/.screens/100_03_06.png
+    - tours/.screens/100_03_07.png
+    - tours/.screens/100_03_08.png
+    - tours/.screens/100_03_09.png
+    - tours/.screens/100_03_10.png
+    - tours/.screens/100_03_11.png
+    - tours/.screens/100_03_12.png
+
+
+overall_assessment:
+  summary: Introduces the EMS surface layer, including units, interfaces, composites, and bindings, and connects these abstractions to generated C++ and runtime behavior.
+  difficulty: intermediate
+  key_takeaway: Understand how EMS abstractions map to concrete implementation and execution.
+
+learning_objectives:
+  - understand EMS surface constructs (units, interfaces, composites)
+  - recognize how bindings connect components
+  - understand translation from EMS to C++
+  - relate source structure to runtime behavior
+
+concepts_introduced:
+  - unit
+  - interface
+  - composite
+  - binding
+  - translation model
+
+concepts_reinforced:
+  - EMS hierarchy
+  - code-to-runtime mapping
+  - build flow
+
+prerequisites:
+  - 100_01
+  - 100_02
+
+stop_count: 12
+
+stops:
+  - id: 1
+    title: EM&bull;Script Language Overview
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 2
+    title: One Unit &ndash; Two Domains
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 3
+    title: Lifecycle Functions
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 4
+    title: Client&thinsp;&middot;&thinsp;Supplier Relationship
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 5
+    title: Configuration Parameters
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 6
+    title: Client&thinsp;&middot;&thinsp;Supplier Proxies
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 7
+    title: Bit-Banging those Bytes
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 8
+    title: Pluggable Software Backplane
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 9
+    title: Integration &middot; Specialization
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 10
+    title: Templates for Cloning
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 11
+    title: Language Grammar
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+  - id: 12
+    title: Next steps
+    focus: EMS surface layer
+    teaching_intent: explain EMS abstraction and its role
+    concepts:
+      - EMS abstraction
+    user_takeaway: understand this aspect of EMS surface design
+
+issues_and_notes:
+  - bridges conceptual model to generated code
+  - key transition from orientation to practical understanding

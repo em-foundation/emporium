@@ -4,33 +4,33 @@ files:
   - .assets/img-100-02-01.png
 
 steps:
-
- -  cmds:
-     - open 1
-    focus: [1,1]
-    acts: ['$reveal']
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,$start]EM&bull;Script Content Hierarchy}
+      {[ht,$start]&thinsp;EM&bull;Script Content Hierarchy}
 
       This tour has two objectives which revolve around the **EM&bull;Builder Content** view seen in the **Primary Sidebar**:
 
       {[bi,arrow_circle_right]} Understanding the elements comprising this view.<br>
       {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
 
-      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour.
+      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/07]}.
 
       Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
 
       The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
- -  cmds:
+  - cmds:
+      - open 1
       - mark 1 A 2
-    focus: [1,1]
-    acts: ['$reveal']
+    focus: [1, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Unit &ndash; source file}
+      {[ht,account_tree]&thinsp;EM&bull;Script Unit &ndash; Source File}
 
       The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}.
 
@@ -42,12 +42,13 @@ steps:
 
       Let's move on and talk about the **EMS Bucket** associ&shy;ated with our {[cu]Blinker} program.
 
- -  cmds:
-    focus: [1,1]
-    acts: ['$reveal']
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Bucket &ndash; namespace}
+      {[ht,account_tree]&thinsp;EM&bull;Script Bucket &ndash; Namespace}
 
       The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EMS Bucket** named {[cx]em.examples.basic}
 
@@ -63,14 +64,14 @@ steps:
 
       As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EMS Package** names.
 
-      
- -  cmds:
+  - cmds:
+      - open 1
       - mark 1 B 5
-    focus: [1,1]
-    acts: ['$reveal']
+    focus: [1, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,account_tree]EM&bull;Script Package &ndash; container}
+      {[ht,account_tree]&thinsp;EM&bull;Script Package &ndash; Container}
 
       The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
 
@@ -84,12 +85,13 @@ steps:
 
       You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
 
- -  cmds:
-    focus: [1,1]
-    acts: ['$reveal']
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,snippet_folder]Files and Folders}
+      {[ht,snippet_folder]&thinsp;Files and Folders}
 
       We've already mentioned how an **EMS Unit** corres&shy;ponds to a source file of the same name.
 
@@ -101,29 +103,29 @@ steps:
 
       To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
 
- -  cmds:
-    focus: [1,1]
+  - cmds:
+      - view 2
     text: |
 
-      {[ht,note_add]Adding EM&bull;Script Content}
+      {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
 
       We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
 
-      {[bm,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
+      {[DC,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
 
-      {[bm,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      {[DC,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
 
-      {[bm,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
+      {[DC,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
 
-      {[bm,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      {[DC,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
 
-      {[bm,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+      {[DC,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
 
- -  cmds:
-    acts: ['$build']
+  - cmds:
+    acts: ["$build"]
     text: |
 
-      {[ht,note_add]Implementing %[cu]Blinky%}
+      {[ht,note_add]&thinsp;Implementing %[cu]Blinky%}
 
       Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
 
@@ -132,16 +134,16 @@ steps:
       Next, you should *overwrite* your skeletal {[cx]Blinky.em.ts} file with the contents of {[cx]Ex02_BlinkerP.em.ts}.
 
       {[in]<b>VS Code</b> provides familiar <b>Select All · Copy · Paste · Save          commands in its <b>File · Edit · Selection</b> menus.}
-      
+
       Return focus to your enhanced {[cx]Blinky.em.ts} file and now click the **build&thinsp;+&thinsp;load** button.
 
       Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
 
- -  cmds:
-     - view 2
+  - cmds:
+      - view 2
     text: |
 
-      {[ht,rebase]Source Control}
+      {[ht,rebase]&thinsp;Source Control}
 
       Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
 
@@ -158,21 +160,19 @@ steps:
 
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
 
- 
- -  cmds:
-      - close 2
+  - cmds:
     text: |
 
-        {[ht,$steps]Next steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
-        Well done &ndash; you're now officially dangerous.🔥
+      Well done &ndash; you're now officially dangerous.🔥
 
-        Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
+      Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
 
-        While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
+      While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
 
-        To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
+      To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
 
-        And don't forget about that **Discard changes** command we highlighted on the previous tour-stop&thinsp;!!
+      And don't forget about that **Discard changes** command we highlighted on the previous tour-stop&thinsp;!!
 
-        {[hc]}
+      {[hc]}

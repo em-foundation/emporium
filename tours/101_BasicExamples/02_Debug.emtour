@@ -5,176 +5,158 @@ files:
   - em.core/em.lang/Debug.em.ts
 
 steps:
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal"]
+    text: |
+
+      {[ht,$start]&thinsp;%[cu]Debug% &ndash; Real-Time Debug}
+
+      The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
+
+      Building upon {[cd]printf} &ndash; still useful for debugging live code &ndash; **EMS** offers capabilities with far less overhead.
+
+      In practice, some of these lightweight mechanisms can remain _embedded_ within deployed **EMS** applications.
+
+  - cmds:
+    focus: [1, 1]
+    acts: ["$build"]
+    text: |
+
+      {[ht,$build]&thinsp;%[cu]DebugP% &ndash; Build&middot;Load}
+
+      {[in]Observe the LEDs when executing this program.}
+
+      As configured here, {[cu]DebugP} will start toggling [GREEN] `AppLed` &ndash; not unlike our reference {[cu]BlinkerP} program.
+
+      Midway through execution, however, {[cu]DebugP} will a&shy;bruptly {[cd]fail} &ndash; leaving [RED] `SysLed` flashing rapidly.
+
+      To fully appreciate the dynamics of this program, we'll view its real-time signal capture using **PulseView**.
+
+      But first, we'll dive into some new **EMS** language fea&shy;tures used within the {[cu]Debug} program.
 
   - cmds:
       - open 1
-    focus: [1,1]
-    acts: ['$reveal']
-    text: |
-
-        {[ht,$start]%[cu]Debug% &ndash; Real-time Debug}
-
-        The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
-
-        Building upon {[cd]printf} &ndash; still useful for debugging live code &ndash; **EMS** offers capabilities with far less overhead.
-
-        In practice, some of these lightweight mechanisms can remain _embedded_ within deployed **EMS** applications.
-
-  - cmds:
-    focus: [1,1]
-    acts: ['$build']
-    text: |
-
-        {[ht,$build]%[cu]DebugP% &ndash; Build&middot;Load}
-
-        {[in]Observe the LEDs when executing this program.}
-
-        As configured here, {[cu]DebugP} will start toggling [GREEN] `AppLed` &ndash; not unlike our reference {[cu]BlinkerP} program.
-
-        Midway through execution, however, {[cu]DebugP} will a&shy;bruptly {[cd]fail} &ndash; leaving [RED] `SysLed` flashing rapidly.
-
-        To fully appreciate the dynamics of this program, we'll view its real-time signal capture using **PulseView**.
-
-        But first, we'll dive into some new **EMS** language fea&shy;tures used within the {[cu]Debug} program.
-
-
-  - cmds:
       - mark 1 A 16
       - mark 1 B 18
       - mark 1 C 20
       - mark 1 D 21
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Details}
 
-        <div class="em-bmlist">
+      {[BM,A]} This rather concise and distinct **EMS** statement as&shy;serts the (active-low) `DbgD` pin on your board.
 
-        {[bm,A]} This rather concise and distinct **EMS** statement as&shy;serts the (active-low) `DbgD` pin on your board.
+      {[BM,B]} This **EMS** statement then de-asserts `DbgA`, allowing us to easily measure the time consumed by {[cf]wait}.
 
-        {[bm,B]} This **EMS** statement then de-asserts `DbgA`, allowing us to easily measure the time consumed by {[cf]wait}.
+      {[BM,C]} {[cu]DebugP} skips the remaining debug code when its {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
 
-        {[bm,C]} {[cu]DebugP} skips the remaining debug code when its {[cn]dbgFlag} {[ck]config} parameter tests {[ck]false}.
-
-        {[bm,D]} Using a {[cd]fail} statement, {[cu]DebugP} explicitly aborts the program when this condition tests {[ck]true}.
-
-        </div>
+      {[BM,D]} Using a {[cd]fail} statement, {[cu]DebugP} explicitly aborts the program when this condition tests {[ck]true}.
 
   - cmds:
+      - open 1
       - mark 1 E 22
       - mark 1 F 24
       - mark 1 G 25
-    focus: [1,8]
+    focus: [1, 8]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; More Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; More Details}
 
-        <div class="em-bmlist">
+      {[BM,E]} This **EMS** debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
 
-        {[bm,E]} This **EMS** debug statement outputs the (2-byte) bi&shy;nary value of {[cn]cnt} in a very efficient manner.        
+      {[BM,F]} This **EMS** statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
 
-        {[bm,F]} This **EMS** statement likewise outputs the (1-byte) {[cn]bits11} value, defined as the lower 2-bits of {[cn]cnt}.
+      {[BM,G]} With {[cn]bits11} ranging from {[ce]0&ndash;3}, this statement would toggle your board's {[cx]dbgC} pin {[ce]1&ndash;4} times.
 
-        {[bm,G]} With {[cn]bits11} ranging from {[ce]0&ndash;3}, this statement would toggle your board's {[cx]dbgC} pin {[ce]1&ndash;4} times.
+      <div class="em-info">
 
-        </div>
-
-        In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
+      In general, the statement {[cd]%%[_p_:_e_]} toggles debug pin {[cd]_p_} exactly {[ce]_e_+1} times, where {[cd]_e_} defaults to {[ce]0} if absent.
 
   - cmds:
       - view 2
     text: |
 
-        {[ht,monitor_heart]&thinsp;%[cu]DebugP% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;&thinsp;%[cu]DebugP% &ndash; Signal Capture}
 
-        <div class="em-bmlist">
+      {[DC,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
 
-        {[bm,A]} After toggling `AppLed` several times at 2&thinsp;MHz, the 200&thinsp;MHz blinking of `SysLed` marks the {[cd]fail} call.
+      {[DC,B]} At each `AppLed` edge, the current {[ct]u16} value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
 
-        {[bm,B]} At each `AppLed` edge, the current {[ct]u16 value of {[cn]cnt} [{[ce]33&middot;EE}] appears on the **UART** signal.
+      {[DC,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
 
-        {[bm,C]} The {[ct]u8} value of {[cn]bits11} [{[ce]02}] appears next, fol&shy;lowed by {[cd]printf} output `"cnt..."` [{[ce]63&middot;6E&middot;74...}].
+      {[DC,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
 
-        {[bm,D]} The {[cn]bits11} value also drives the {[cd]%%c:} output, re&shy;sulting in three quick toggles of the `DbgC` pin.
+      The {[cd]%%>} intrinsic always outputs a leading <code>0x8<i>n</i></code> con&shy;trol byte to the **UART**, followed 
+      by _n_ bytes of payload.
 
-        </div>
-
-        The {[cd]%%>} intrinsic always outputs a leading <code>0x8<i>n</i></code> con&shy;trol byte to the **UART**, followed 
-        by _n_ bytes of payload.
-
-        {[in]Also note that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
+      {[in]Also note that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
 
   - cmds:
+      - open 1
       - mark 1 H 26
       - mark 1 I 29
-    focus: [1,8]
+    focus: [1, 8]
     text: |
 
-        {[ht,$details]%[cu]DebugP% &ndash; Still More Details}
+      {[ht,$details]&thinsp;%[cu]DebugP% &ndash; Still More Details}
 
-        <div class="em-bmlist">
+      {[BM,H]} **EMS**' {[cd]printf} implements a "practical" subset of the legacy C function, emphasizing efficiency.
 
-        {[bm,H]} **EMS**' {[cd]printf} implements a "practical" subset of the legacy C function, emphasizing efficiency.
+      {[BM,I]} Using a {[cd]halt} statement, {[cu]DebugP} gracefully ter&shy;mi&shy;nates execution at this point in time.
 
-        {[bm,I]} Using a {[cd]halt} statement, {[cu]DebugP} gracefully ter&shy;mi&shy;nates execution at this point in time.
+      **EMS**' {[cd]fail} / {[cd]halt} statements (like {[cd]printf}) serve a more practical role when (say) unit testing a module.
 
-        </div>
+      Compared with {[cd]printf}, however, {[cd]%%[>_e_]} statements have mini&shy;mal (and *determinstic*) run-time overhead.
 
-        **EMS**' {[cd]fail} / {[cd]halt} statements (like {[cd]printf}) serve a more practical role when (say) unit testing a module.
-
-        Compared with {[cd]printf}, however, {[cd]%%[>_e_]} statements have mini&shy;mal (and *determinstic*) run-time overhead.
-
-        **EMS**' {[cd]%%[_p_&hellip;]} debug statements incur even less over&shy;head (&le; 1&mu;s) &ndash; ideal for testing in the factory&thinsp;&middot;&thinsp;field.
+      **EMS**' {[cd]%%[_p_&hellip;]} debug statements incur even less over&shy;head (&le; 1&mu;s) &ndash; ideal for testing in the factory&thinsp;&middot;&thinsp;field.
 
   - cmds:
       - open 3
-    focus: [3,1]
-    acts: ['$reveal']
+    focus: [3, 1]
+    acts: ["$reveal"]
     text: |
 
-        {[ht,$look] Portable Implementation}
+      {[ht,$look]&thinsp; Portable Implementation}
 
-        The portable {[cu]Debug} **Module** shown here provides the underlying implementation for {[cd]%%[_p_&hellip;]} statements.
+      The portable {[cu]Debug} **Module** shown here provides the underlying implementation for {[cd]%%[_p_&hellip;]} statements.
 
-        {[in]Use the %[cb,target]% action button to precisely locate %[cu]Debug% within the <b>Package/Bucket</b> hierarchy.}
+      {[in]Use the %[cb,target]% action button to precisely locate %[cu]Debug% within the <b>Package/Bucket</b> hierarchy.}
 
-        The **EMS** translator *replaces* {[cd]%%[_p_&hellip;]} statements in any source file with calls to these run-time functions.
+      The **EMS** translator *replaces* {[cd]%%[_p_&hellip;]} statements in any source file with calls to these run-time functions.
 
-        {[in]Feel good that you can fully comprehend this code&thinsp;!!}
+      {[in]Feel good that you can fully comprehend this code&thinsp;!!}
 
-        A peer {[cu]Console} <b>Module</b> likewise implements the **EMS** translator's run-time for {[cd]%%[>_e_]} and {[cd]printf}.
-
-
-        
+      A peer {[cu]Console} <b>Module</b> likewise implements the **EMS** translator's run-time for {[cd]%%[>_e_]} and {[cd]printf}.
 
   - cmds:
-    focus: [1,1]
+      - open 1
+    focus: [1, 1]
     text: |
 
-        {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
-        {[bi,task_alt]} Use **PulseView** cursors to measure {[cd]%%[_p_&hellip;]} timings.
+      {[bi,task_alt]} Use **PulseView** cursors to measure {[cd]%%[_p_&hellip;]} timings.
 
-        {[bi,task_alt]} Study the small {[cu]Console}.{[cf]print} implementation.
+      {[bi,task_alt]} Study the small {[cu]Console}.{[cf]print} implementation.
 
-        {[bi,task_alt]} Add some RTA instrincs to your {[cu]Blinky} program.
-
-
-
+      {[bi,task_alt]} Add some RTA instrincs to your {[cu]Blinky} program.
 
   - cmds:
-    focus: [1,1]
+      - open 1
+    focus: [1, 1]
     text: |
 
-        {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
-        The remaining **Basic Examples** tours will use {[cd]%%[_p_]} for RTA with minimal impact on run-time performance.
+      The remaining **Basic Examples** tours will use {[cd]%%[_p_]} for RTA with minimal impact on run-time performance.
 
-        We will, however, shy away from {[cd]printf} &ndash; favoring the more efficient **UART** output available with {[cd]%%[>_e_]}.
+      We will, however, shy away from {[cd]printf} &ndash; favoring the more efficient **UART** output available with {[cd]%%[>_e_]}.
 
-        Unlike "debug" scaffolding, you can *deploy* RTA features intrinsic to **EMS** as part of your production code.
+      Unlike "debug" scaffolding, you can *deploy* RTA features intrinsic to **EMS** as part of your production code.
 
-        As they say &ndash; _test what you fly, fly what you test_.
+      As they say &ndash; _test what you fly, fly what you test_.
 
-        {[hc]}
-
+      {[hc]}

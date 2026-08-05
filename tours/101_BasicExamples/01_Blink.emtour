@@ -7,158 +7,150 @@ files:
   - .assets/img-101-01-03.png
 
 steps:
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+
+      {[ht,$start]&thinsp;%[cu]BlinkerP% &ndash; Blinking LEDs}
+
+      Having completed the **Orientation** tours, you've already viewed (and executed) the {[cu]BlinkerP} program.
+
+      In fact, you also know quite about the other **Units** used by this program &ndash; {[cu]BoardC}, {[cu]Common}, {[cu]AppLed}.
+
+      {[in]We will highlight some other <b>EMS</b> features seen here.}
+
+      To prepare for other **Basic Examples** tours, we'll now pivot to *real-time analysis* [RTA] of **EMS** programs.
 
   - cmds:
       - open 1
-    focus: [1,1]
-    text: |
-
-        {[ht,$start]%[cu]BlinkerP% &ndash; Blinking LEDs}
-
-        Having completed the **Orientation** tours, you've already viewed (and executed) the {[cu]BlinkerP} program.
-
-        In fact, you also know quite about the other **Units** used by this program &ndash; {[cu]BoardC}, {[cu]Common}, {[cu]AppLed}.
-
-        {[in]We will highlight some other <b>EMS</b> features seen here.}
-
-        To prepare for other **Basic Examples** tours, we'll now pivot to *real-time analysis* [RTA] of **EMS** programs.
-
-  - cmds:
       - mark 1 A 4
       - mark 1 B 7
       - mark 1 C 9
       - mark 1 D 11
       - mark 1 E 12
-    focus: [1,1]
-    acts: ['$build']
+    focus: [1, 1]
+    acts: ["$build"]
     text: |
 
-        {[ht,$details]%[cu]BlinkerP% &ndash; A Few Details}
+      {[ht,$details]&thinsp;%[cu]BlinkerP% &ndash; A Few Details}
 
-        More language features you've noticed along the way:
+      More language features you've noticed along the way:
 
-        <div class="em-bmlist">
+      {[BM,A]} The {[ck]import} of {[cu]BoardC} uses {[cs]'@$distro'} to logic&shy;ally name the **Bucket** associated with the current <span class="em codicon codicon-circuit-board"></span>.
 
-        {[bm,A]} The {[ck]import} of {[cu]BoardC} uses {[cs]'@$distro'} to logically name the **Bucket** associated with the current &emsp;&nbsp; <span class="em codicon codicon-circuit-board"></span>.
+      {[BM,B]} Like {[ck]import}, {[cs]$delegate} brings a **Unit** into scope &ndash; but without knowing its `'@bucket/Unit.em'` name.
 
-        {[bm,B]} Like {[ck]import}, {[cs]$delegate} brings a **Unit** into scope &ndash; but without knowing its `'@bucket/Unit.em'` name.
+      {[BM,C]} The {[cs]em$run} intrinsic provides a &laquo;`main`&raquo; program entry-point &ndash; executed after any {[cs]em$startup} calls.
 
-        {[bm,C]} The {[cs]em$run} intrinsic provides a &laquo;`main`&raquo; program entry-point &ndash; executed after any {[cs]em$startup} calls.
+      {[BM,D]} Local identifiers starting with `_` conventionally im&shy;ply their *non-usage* &ndash; silencing some **TS** warnings.
 
-        {[bm,D]} Local identifiers starting with `_` conventionally im&shy;ply their *non-usage* &ndash; silencing some **TS** warnings.
-
-        {[bm,E]} Numeric constants can use `_` for readability &ndash; part of standard **TS** automatically inherited by **EMS**.
-
-        </div>
+      {[BM,E]} Numeric constants can use `_` for readability &ndash; part of standard **TS** automatically inherited by **EMS**.
 
   - cmds:
       - view 2
     text: |
 
-        {[ht,browse_activity]&thinsp;Introducing PulseView}
+      {[ht,browse_activity]&thinsp;&thinsp;Introducing PulseView}
 
-        The **Basic Examples** tours will leverage **PulseView** for real-time analysis [RTA] of **EMS** programs.
+      The **Basic Examples** tours will leverage **PulseView** for real-time analysis [RTA] of **EMS** programs.
 
-        {[in]The <b>EM&bull;Home</b> editor tab contains a link for installing this application on your PC.}
+      {[in]The <b>EM&bull;Home</b> editor tab contains a link for installing this application on your PC.}
 
-        <div class="em-bmlist">
+      {[DC,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
 
-        {[bm,1]} When running, the **Wokwi LOGIC** block wired to our simulated **Pi Pico** board captures signals **D0** - **D7**.
+      {[DC,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
 
-        {[bm,2]} Terminating the simulator with its **Stop ■** button saves a special `wokwi.vcd` file into your workspace.
+      {[DC,3]} Reloading `wokwi.vcd` inside a running **PulseView** win&shy;dow will refresh the application's display.
 
-        {[bm,3]} Reloading `wokwi.vcd` inside a running **PulseView** window will refresh the application's display.
-
-        </div>
-
-        {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
+      {[in]To zoom the image in&middot;out, press <b>Ctrl</b> (or <b>Cmd</b>) within its editor tab while scrolling your mouse down&middot;up.}
 
   - cmds:
       - view 3
     text: |
 
-        {[ht,checklist]&thinsp;PulseView Setup}
+      {[ht,checklist]&thinsp;&thinsp;PulseView Setup}
 
-        You should first **build&middot;load** {[cu]BlinkerP} and then explictly terminate the **Wokwi** Simulator using its **Stop ■** button.
+      You should first **build&middot;load** {[cu]BlinkerP} and then explictly terminate the **Wokwi** Simulator using its **Stop ■** button.
 
-        {[in]Status messages will pop-up in the lower-right corner of your <b>VS Code</b> window.&thinsp; Go <b>Back</b> for reference.}
+      {[in]Status messages will pop-up in the lower-right corner of your <b>VS Code</b> window.&thinsp; Go <b>Back</b> for reference.}
 
-        You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
+      You'll now import `$HOME/EM/repo/emporium/wokwi.vcd` after launching the **PulseView** application.
 
-        {[bm,A]} select **Import Value Change ...** to locate this file<br>
-        {[bm,B]} set **Downsampling** to **125** before clicking **Ok**<br>
-        {[bm,C]} drag the **UART** signal above the **D0** signal
+      {[DC,A]} select **Import Value Change ...** to locate this file<br>
+      {[DC,B]} set **Downsampling** to **125** before clicking **Ok**<br>
+      {[DC,C]} drag the **UART** signal above the **D0** signal
 
-        Feel free to keep **PulseView** active while working with other programs on these tours.
+      Feel free to keep **PulseView** active while working with other programs on these tours.
 
   - cmds:
       - open 4
       - mark 4 A 26
       - mark 4 B 57
 
-    focus: [4,30]
-    acts: ['$reveal']
+    focus: [4, 30]
+    acts: ["$reveal"]
     text: |
 
-        {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Closer Look}
+      {[ht,$details]&thinsp;&thinsp;%[cu]BoardC% &ndash; Closer Look}
 
-        Signals **D0 - D7** first captured by **Wokwi** and then ren&shy;dered by **PulseView** have their origin within {[cu]BoardC}.
+      Signals **D0 - D7** first captured by **Wokwi** and then ren&shy;dered by **PulseView** have their origin within {[cu]BoardC}.
 
-        Starting at line {[bm,A]}, {[cu]BoardC} uses {[cs]$clone} to synthesize these (and other) supporting **Modules**: 
+      Starting at line {[bm,A]}, {[cu]BoardC} uses {[cs]$clone} to synthesize these (and other) supporting **Modules**: 
 
-        &nbsp;&nbsp;**D0**&thinsp;{[cu]AppOutPin}|&thinsp;**D1**&thinsp;{[cu]DbgA}|&thinsp;**D2**&thinsp;{[cu]DbgB}|&thinsp;**D3**&thinsp;{[cu]DbgC}|&thinsp;**D4**&thinsp;{[cu]DbgD}<br>
-        &nbsp;&nbsp;**D5**&thinsp;{[cu]AppButPin}|&thinsp;**D6**&thinsp;{[cu]AppLedPin}|&thinsp;**D7**&thinsp;{[cu]SysLedPin}
+      &nbsp;&nbsp;**D0**&thinsp;{[cu]AppOutPin}|&thinsp;**D1**&thinsp;{[cu]DbgA}|&thinsp;**D2**&thinsp;{[cu]DbgB}|&thinsp;**D3**&thinsp;{[cu]DbgC}|&thinsp;**D4**&thinsp;{[cu]DbgD}<br>
+      &nbsp;&nbsp;**D5**&thinsp;{[cu]AppButPin}|&thinsp;**D6**&thinsp;{[cu]AppLedPin}|&thinsp;**D7**&thinsp;{[cu]SysLedPin}
 
-        Each implementing the {[cu]GpioI} **Interface**, {[cs]em$configure} ultimately binds their {[cn]pin_num} {[cs]$config} parameters.
+      Each implementing the {[cu]GpioI} **Interface**, {[cs]em$configure} ultimately binds their {[cn]pin_num} {[cs]$config} parameters.
 
-        The {[cs]$board} intrinsic at line {[bm,B]} returns a helper object popu&shy;lated by reading a collocated `em-boards` file.
+      The {[cs]$board} intrinsic at line {[bm,B]} returns a helper object popu&shy;lated by reading a collocated `em-boards` file.
 
-        {[in]You'll always find this file in the <code class="cmd-cs">'@$distro'</code> <b>Bucket</b>.}
+      {[in]You'll always find this file in the <code class="cmd-cs">'@$distro'</code> <b>Bucket</b>.}
 
   - cmds:
       - view 5
     text: |
 
-        {[ht,monitor_heart]&thinsp;%[cu]BlinkerP% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;&thinsp;%[cu]BlinkerP% &ndash; Signal Capture}
 
-        At this point, we'll examine the values of signals **D0 - D7** over five seconds of {[cu]BlinkerP} execution time.
+      At this point, we'll examine the values of signals **D0 - D7** over five seconds of {[cu]BlinkerP} execution time.
 
-        Label {[bm,A]} shows two quick winks of the [RED] `SysLed`, which **EMS** will always trigger before entering {[cs]em$run}.
+      Label {[dc,A]} shows two quick winks of the [RED] `SysLed`, which **EMS** will always trigger before entering {[cs]em$run}.
 
-        Label {[bm,B]} uses the **PulseView** cursor to measure the ac&shy;curacy of {[cu]Common}.{[cn]BusyWait} over {[ce]500_000} &mu;seconds.
+      Label {[dc,B]} uses the **PulseView** cursor to measure the ac&shy;curacy of {[cu]Common}.{[cn]BusyWait} over {[ce]500_000} &mu;seconds.
 
-        Label {[bm,C]} show a special {[ce]0x4} byte written to `AppOut` through {[cd]halt}, followed by asserting `SysLed`.
+      Label {[dc,C]} show a special {[ce]0x4} byte written to `AppOut` through {[cd]halt}, followed by asserting `SysLed`.
 
-        {[in]If not called explicitly, the <b>EMS</b> run-time automati&shy;cally invokes <code class="cmd-cd">halt</code> during orderly program shutdown.}
+      {[in]If not called explicitly, the <b>EMS</b> run-time automati&shy;cally invokes <code class="cmd-cd">halt</code> during orderly program shutdown.}
 
-        The next tour shows what happens when calling {[cd]fail}.
-
-  - cmds:
-    focus: [1,1]
-    text: |
-
-        {[ht,$extra]Extra Credit}
-
-        {[bi,task_alt]} Come up to speed on the **PulseView** UI.
-
-        {[bi,task_alt]} Inspect the **UART** signal after running {[cu]HelloP}.
-
-
-
-        {[bi,task_alt]} View captures of your own `zgit.*` programs.
+      The next tour shows what happens when calling {[cd]fail}.
 
   - cmds:
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-        {[ht,$steps]Next steps}
+      {[ht,$extra]&thinsp;Extra Credit}
 
-        The **Basic Examples** tours will present many variants of {[cu]BlinkerP} &ndash; each blinking LEDS, albeit very differently.
+      {[bi,task_alt]} Come up to speed on the **PulseView** UI.
 
-        Along the way, we'll visit some additional (portable) **Units** found in the `em.core` **Package**.
+      {[bi,task_alt]} Inspect the **UART** signal after running {[cu]HelloP}.
 
-        We'll also introduce a few more **EMS** features &ndash; though you've actually seen much of the language already.
 
-        The truly novel aspect of these tours lies in leverag&shy;ing **PulseView** for analyzing real-time program execution.
 
-        {[hc]}
+      {[bi,task_alt]} View captures of your own `zgit.*` programs.
+
+  - cmds:
+    focus: [1, 1]
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      The **Basic Examples** tours will present many variants of {[cu]BlinkerP} &ndash; each blinking LEDS, albeit very differently.
+
+      Along the way, we'll visit some additional (portable) **Units** found in the `em.core` **Package**.
+
+      We'll also introduce a few more **EMS** features &ndash; though you've actually seen much of the language already.
+
+      The truly novel aspect of these tours lies in leverag&shy;ing **PulseView** for analyzing real-time program execution.
+
+      {[hc]}

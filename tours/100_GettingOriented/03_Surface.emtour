@@ -7,15 +7,13 @@ files:
   - .assets/img-100-03-01.png
   - em.prog/em.examples.basic/Ex02_BlinkerP.em.ts
 
-
 steps:
-
   - cmds:
       - open 1
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,$start]EM&bull;Script Language Overview}
+      {[ht,$start]&thinsp;EM&bull;Script Language Overview}
 
       If not already obvious, **EM&bull;Script** ≡ **TypeScript**&thinsp;!!
 
@@ -31,17 +29,18 @@ steps:
       This tour introduces some core constructs of **EM&bull;Script** [**EMS**] &ndash; but viewed through a **TS** language lens.
 
   - cmds:
+      - open 1
       - mark 1 M 13
       - mark 1 T 19
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,splitscreen]One Unit &ndash; Two Domains}
+      {[ht,splitscreen]&thinsp;One Unit &ndash; Two Domains}
 
       The {[cx]em.utils/SoftUart.em.ts} **Unit** implements a low-level (albeit portable) *bit-banged* serial transmitter.
 
       When running on target HW, the {[cf]put} function serializes a single byte of data over some physical GPIO pin.
-  
+
       If used by an **EM&bull;Script** application, however, this **Unit** executes within <i><u>two</u></i> distinct programming domains:
 
       {[bi,counter_1]} *target* domain, where functions like {[cf]put} will run<br>
@@ -52,38 +51,40 @@ steps:
       The **TS** namespace at {[bm,M]} contains all of the *meta* code; the special comment at {[bm,T]} begins the *target* code.
 
   - cmds:
+      - open 1
       - mark 1 M 13
       - mark 1 T 19
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,timeline]Lifecycle Functions}
+      {[ht,timeline]&thinsp;Lifecycle Functions}
 
       The {[cu]SoftUart} **Unit** implements two *intrinsic* functions called during the **EM&bull;Script** program lifecycle:
 
       {[cs]em$construct} [**`meta`**]&thinsp; called to initialize private state<br>
       {[cs]em$startup&nbsp;&nbsp;} [**`targ`**]&thinsp; called before program {[cs]em$run}
 
-      {[in]Programs like %[cu]BlinkerP% viewed in earlier tours imple&shy;ment the %[cs]em$run% intrinsic as their main entry-point.}
+      {[in]Programs like %[cu]BlinkerP% viewed earlier %[tr,101/01/02]% imple&shy;ment the %[cs]em$run% intrinsic as their main entry-point.}
 
       The **EMS** translator sequences calls to intrinsic func&shy;tions &ndash; at build-time [**`meta`**] as well as run-time [**`targ`**].
 
       By design, each intrinsic belongs to only *one* **EMS** do&shy;main &ndash; and may apply to only some **EMS Unit** *flavors*.
 
   - cmds:
+      - open 1
       - mark 1 I 5
       - mark 1 E 26
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,handshake]Client&thinsp;&middot;&thinsp;Supplier Relationship}
+      {[ht,handshake]&thinsp;Client&thinsp;&middot;&thinsp;Supplier Relationship}
 
       The {[ck]import} directives in {[cu]SoftUart} establish a *client&thinsp;&middot;&thinsp;sup&shy;plier* relationship between this and other **Units**.
 
       The {[ck]export} qualifiers in {[cu]SoftUart} make functions like {[cf]flush} and {[cf]put} publically visible to clients of this **Unit**.
 
       All **Units** so far have played the **Module** role &ndash; hiding its *private* implementation of its *public* specification.
-      
+
       In the case of {[cu]SoftUart}, some of its public spec in fact derives from {[cu]ConsoleUartI} &ndash; an **EMS Interface**.
 
       {[in]Select %[cu]ConsoleUartI% on line %[bm,I]% and press <b>F12</b> to see the original "spec-only" definition of %[cf]flush% and %[cf]put%.}
@@ -91,11 +92,12 @@ steps:
       Each **EMS Interface** in general defines a *programmatic contract* between **EMS Module** clients and suppliers.
 
   - cmds:
+      - open 1
       - mark 1 C 8
-    focus: [1,1]
+    focus: [1, 1]
     text: |
 
-      {[ht,settings]Configuration Parameters}
+      {[ht,settings]&thinsp;Configuration Parameters}
 
       Line {[bm,C]} exports an intrinsic **EMS** {[cs]$config} parameter named {[cn]baud_rate} &ndash; which clients can assign as needed.
 
@@ -107,15 +109,16 @@ steps:
 
       Run-time function like {[cf]put} will then use {[cn]bit_time} no differently from any statically initialized constant.
 
-      By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*. 
+      By contrast, legacy UART drivers often execute *run-time* C code to set a baud-rate likely known at *build-time*.
 
   - cmds:
+      - open 1
       - mark 1 P 9
-   
-    focus: [1,1]
+
+    focus: [1, 1]
     text: |
 
-      {[ht,plug_connect]Client&thinsp;&middot;&thinsp;Supplier Proxies}
+      {[ht,plug_connect]&thinsp;Client&thinsp;&middot;&thinsp;Supplier Proxies}
 
       Line {[bm,P]} exports a {[cn]TxPin} {[cs]$proxy} &ndash; which {[cu]SoftUart} clients must bind to a conformant *delegate* **Module**.
 
@@ -130,21 +133,22 @@ steps:
       But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
 
   - cmds:
+      - open 1
       - mark 1 A 30
       - mark 1 B 32
       - mark 1 C 33
       - mark 1 D 39
-    focus: [1,30]
+    focus: [1, 30]
     text: |
 
-      {[ht,electric_bolt]Bit-Banging those Bytes}
+      {[ht,electric_bolt]&thinsp;Bit-Banging Those Bytes}
 
       Let's dive into the implementation of {[cf]put}, which trans&shy;mits 8-bit [{[ct]u8}] {[cn]data} as a framed 10-bit sequence.
 
-      {[bm,A]} {[cn]tx_bits} contains the frame's leading START bits<br>
-      {[bm,B]} a **TS**-style {[ck]for} loop iterating from {[ce]0}..{[cn]bit_cnt}<br>
-      {[bm,C]} {[cf]set}&middot;{[cf]clear} the {[cn]TxPin} GPIO based on {[cn]tx_bits}<br>
-      {[bm,D]} shift {[cn]tx_bits} and {[cf]spin} for {[cn]bit_time} &mu;secs
+      {[BM,A]} {[cn]tx_bits} contains the frame's leading START bits<br>
+      {[BM,B]} &thinsp;a **TS**-style {[ck]for} loop iterating from {[ce]0}..{[cn]bit_cnt}<br>
+      {[BM,C]} {[cf]set}&middot;{[cf]clear} the {[cn]TxPin} GPIO based on {[cn]tx_bits}<br>
+      {[BM,D]} &thinsp;shift {[cn]tx_bits} and {[cf]spin} for {[cn]bit_time} &mu;secs
 
       {[in]Stay seated &ndash; we'll visit %[cu]Common% at our next stop&thinsp;!!}
 
@@ -154,10 +158,10 @@ steps:
 
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
-      {[ht,hub]Pluggable Software Backplane}
+      {[ht,hub]&thinsp;Pluggable Software Backplane}
 
       The rather sparse {[cu]Common} **Module** shown here takes the **EMS** {[cs]$proxy} pattern to an entirely new level.
 
@@ -176,11 +180,11 @@ steps:
       - mark 3 A 8
       - mark 3 B 29
       - mark 3 C 68
-    focus: [3,1]
-    acts: ['$reveal']
+    focus: [3, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,api]Integration &middot; Specialization}
+      {[ht,api]&thinsp;Integration &middot; Specialization}
 
       We'll now introduce a new flavor of **EMS Unit** &ndash; the **Composite**, as exemplified by {[cu]BoardC}.
 
@@ -190,9 +194,9 @@ steps:
 
       {[in]The <span class="em codicon codicon-circuit-board"></span> status item shows the <i>current</i> target board.}
 
-      {[bm,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
-      {[bm,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
-      {[bm,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
+      {[BM,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
+      {[BM,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
+      {[BM,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
 
       The {[cs]em$configure} [**`meta`**] intrinsic often serves as the focal point within this (and other) {[cu]BoardC} **Composites**.
 
@@ -202,18 +206,18 @@ steps:
       - mark 4 T 9
       - mark 4 M 11
       - mark 4 C 65
-    focus: [4,1]
-    acts: ['$reveal']
+    focus: [4, 1]
+    acts: ["$reveal"]
     text: |
 
-      {[ht,control_point_duplicate]Templates for Cloning}
+      {[ht,control_point_duplicate]&thinsp;Templates for Cloning}
 
       We've now come to our last flavor of **EMS Unit** &ndash; the **Template**, as exemplified by {[cu]LedT}.
 
-      {[bm,T]} **Templates** feature the **`em$template`** namespace<br>
-      {[bm,M]} **`em$template`** envelopes a **Module** prototype<br>
-      {[bm,I]} this prototype often implements an **Interface**<br>
-      {[bm,C]} **Composites** typically invoke its {[cs]$clone} intrinsic
+      {[BM,T]} **Templates** feature the **`em$template`** namespace<br>
+      {[BM,M]} **`em$template`** envelopes a **Module** prototype<br>
+      {[BM,I]} this prototype often implements an **Interface**<br>
+      {[BM,C]} **Composites** typically invoke its {[cs]$clone} intrinsic
 
       {[in]Go <b>Back</b> one stop to review use of <code class="cmd-cs">$clone</code> in <code class="cmd-cu">BoardC</code>.}
 
@@ -227,7 +231,7 @@ steps:
       - view 5
     text: |
 
-      {[ht,schema]Language Grammar}
+      {[ht,schema]&thinsp;Language Grammar}
 
       The **EM&bull;porium** includes a complete gram&shy;mar for the **EMS** language &ndash; accessed via the **EM&bull;Home** editor tab.
 
@@ -245,22 +249,20 @@ steps:
 
   - cmds:
       - open 6
-    focus: [6,1]
+    focus: [6, 1]
     text: |
 
-        {[ht,$steps]Next steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
-        We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
+      We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 
-        The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
+      The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
 
-        Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
+      Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
 
-        {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
-        {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
-        {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
-        {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
+      {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
+      {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
+      {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
+      {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
 
-
-        {[hc]}
-
+      {[hc]}

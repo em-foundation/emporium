@@ -46,32 +46,30 @@ namespace em {
     const __CB__ = null
     // #region
 
-    export interface cb_t<A extends any[] = []> {
-        (...args: A): void
-    }
+    // TODO: rename cname to uid in the public/meta descriptor.
+    // The transformer currently injects the translated C++ unit name when omitted.
+    // Prefer injecting the EMS unit UID instead, and let emitters derive their own
+    // target-specific qualified name form.    
 
-    export function $cb<A extends any[]>(
-        fxn: (...args: A) => void,
+    export type cb_t<A extends unknown[] = [], R = void> = (...args: A) => R
+
+    export function $cb<A extends unknown[] = [], R = void>(
+        fxn: ((...args: A) => R) | string | null,
         cname?: string
-    ): cb_t<A> {
-        return new em$cb(fxn, cname!) as unknown as cb_t<A>
-    }
-
-    export function $cb$null() {
-        return new em$cb(undefined, '<undefined')
+    ): cb_t<A, R> {
+        return new em$cb(fxn, cname) as unknown as cb_t<A, R>
     }
 
     class em$cb<A extends any[]> {
         __em$class = 'em$cb'
+        cname: string | undefined
+        fname: string | undefined
         constructor(
-            private fxn: ((...args: A) => void) | undefined,
-            private cname: string
+            fxn: ((...args: A) => void) | string | null,
+            cname: string | undefined
         ) {
-            return new Proxy(this, {
-                apply: (target, thisArg, args: A) => {
-                    return this.fxn!(...args)
-                },
-            }) as any
+            this.cname = cname
+            this.fname = fxn == null ? undefined : typeof fxn == 'string' ? fxn : fxn.name
         }
     }
 
@@ -91,7 +89,7 @@ namespace em {
 
     type em$config_t<T> = T & { $$val: T }
 
-    export function $config<T>(initval?: T, $type?: never, $uid?: never): em$config_t<T> {
+    export function $config<T>(initval: T | undefined = undefined, $acc?: never, $type?: never, $uid?: never): em$config_t<T> {
         const has_uid = $uid !== undefined
         const t = has_uid ? ($type as unknown as string) : (initval as string)
         const u = has_uid ? ($uid as unknown as string) : ($type as unknown as string)
@@ -104,6 +102,7 @@ namespace em {
                 if (prop === Symbol.toPrimitive) return () => curval
                 if (prop === 'valueOf') return () => curval
                 if (prop === 'toString') return () => String(curval)
+                if (prop === '__acc') return $acc
                 return (curval as any)[prop]
             },
             set(_, prop, val) {
@@ -148,6 +147,36 @@ namespace em {
         '%%d+': null as null,
         '%%d-': null as null,
         '%%d:': (val: u8) => null as null,
+    }
+
+    // #endregion
+
+    const __ENUM__ = null
+    // #region
+
+    export type enum_t<E> = E[keyof E]
+
+    export function $enum<Name extends string>(
+        name: Name,
+        names: string[]
+    ): any {
+        const e: any = {}
+
+        names.forEach((sym, value) => {
+            const v: any = {
+                __em$class: 'em$enum',
+                $enum: name,
+                $name: sym,
+                $value: value,
+                valueOf() { return value },
+                toString() { return String(value) },
+            }
+
+            e[sym] = v
+            e[value] = sym
+        })
+
+        return e
     }
 
     // #endregion
@@ -209,7 +238,7 @@ namespace em {
         }
     }
 
-    export function $frame<T>(arr: T[], $type?: never): frame_t<T> {
+    export function $frame<T>(arr: T[] = [], $type?: never): frame_t<T> {
         return new em$frame<T>(arr, 0, 0, <string>($type as unknown))
     }
 
@@ -229,7 +258,7 @@ namespace em {
     const __PROXY__ = null
     // #region
 
-    type em$proxy_t<I> = I & { $$dlg: I }
+    type em$proxy_t<I> = I & { $$dlg: I, $U: Unit | null }
 
     export function $delegate<U extends object>(unit: U): em$proxy_t<U> {
         const prx = $proxy<U>()
@@ -246,6 +275,7 @@ namespace em {
                 if (prop === 'bound') return bound
                 if (prop === '$$dlg') return del
                 if (prop === '$$em$config') return 'proxy'
+                if (prop === '$U') return dunit
                 if (prop === 'toString') return () => dunit?.uid
                 return (del as any)[prop]
             },
@@ -277,9 +307,9 @@ namespace em {
     export type index_t<T> = { [index: number]: T }
 
     export interface ptr_t<T> extends ref_t<T>, index_t<T> {
-        $cur(): u32
         $dec(): void
         $inc(): void
+        $frame(len: u16): frame_t<T>
     }
 
     class em$oref<T> implements ref_t<T> {
@@ -339,14 +369,14 @@ namespace em {
         set $$(v: T) {
             this.arr[this.idx] = v
         }
-        $cur() {
-            return this.idx
-        }
         $dec() {
             this.idx -= 1
         }
         $inc() {
             this.idx += 1
+        }
+        $frame(len: u16) {
+            return frame$create<T>(this.arr, 0, this.idx, len)
         }
     }
 
@@ -361,6 +391,8 @@ namespace em {
     export function $ref<T>(lval: T): ref_t<T> {
         return new em$ref<T>(lval)
     }
+
+    export const $$ = $ref
 
     type eref_t<T> = T & { $test: bool_t }
 
@@ -384,6 +416,10 @@ namespace em {
         return prx
     }
 
+    export function $cast2<T>(val: any): T {
+        return <unknown>val as T
+    }
+
     // #endregion
 
     const __REG__ = null
@@ -405,7 +441,7 @@ namespace em {
 
     const typeDefaults: ReadonlyMap<string, any> = new Map<string, any>([
         ['bool_t', false],
-        ['cb_t', $cb$null()],
+        ['cb_t', $cb(null)],
         ['i8', 0],
         ['i16', 0],
         ['i32', 0],
@@ -553,7 +589,10 @@ namespace em {
         | ptr_t<any>
         | ref_t<any>
 
+    export type const_t<T> = T
     export type volatile_t<T> = T
+
+    export type opaq_t = ptr_t<any> | ref_t<any>
 
     // #endregion
 
@@ -579,7 +618,9 @@ namespace em {
     class em$table_t<T> {
         private $$em$config: string = 'table'
         private elems: T[] = []
-        constructor(readonly access: TableAccess, readonly cname: string, readonly $t: string, readonly $u: string) { }
+        constructor(init: T[], readonly access: TableAccess, readonly cname: string, readonly $t: string, readonly $u: string) {
+            this.elems.push(...init)
+        }
         get $len(): u16 {
             return this.elems.length
         }
@@ -600,17 +641,15 @@ namespace em {
         $ref(idx: u16): ref_t<T> {
             return new em$oref<T>(this.elems, idx, this.cname)
         }
-        [Symbol.iterator](): Iterator<ref_t<T>> {
-            // TODO combine with ARRAY
+        [Symbol.iterator](): Iterator<T> {
             let idx = 0
             let elems = this.elems
-            let cn = this.cname
             return {
-                next(): IteratorResult<ref_t<T>> {
+                next(): IteratorResult<T> {
                     if (idx < elems.length) {
                         let cur = idx
                         idx += 1
-                        return { value: new em$oref<T>(elems, idx, cn), done: false }
+                        return { value: elems[cur], done: false }
                     } else {
                         return { value: undefined as any, done: true }
                     }
@@ -618,7 +657,7 @@ namespace em {
             }
         }
     }
-    export function $table<T>(access?: never, cname?: never, $type?: never, $uid?: never): table_t<T> {
+    export function $table<T>(init: T[] = [], access?: never, cname?: never, $type?: never, $uid?: never): table_t<T> {
         const handler = {
             get(targ: any, prop: string | symbol) {
                 if (typeof prop == 'symbol') return targ[prop]
@@ -640,7 +679,7 @@ namespace em {
         const cn = cname as unknown as string
         const $t = $type as unknown as string
         const $u = $uid as unknown as string
-        return new globalThis.Proxy(new em$table_t(acc, cn, $t, $u), handler)
+        return new globalThis.Proxy(new em$table_t(init, acc, cn, $t, $u), handler)
     }
 
     // #endregion
@@ -836,7 +875,7 @@ namespace em {
             a5?: arg_t,
             a6?: arg_t
         ) {
-            console.log(sprintf(sa[0], a1, a2, a3, a4, a5, a6))
+            process.stdout.write(sprintf(sa[0], a1, a2, a3, a4, a5, a6))
         }
         return fn
     }
@@ -930,6 +969,8 @@ namespace em {
 
     export type dim_t<T, N extends number> = T[]
 
+    export type vec_t<T, N extends number> = frame_t<T>
+
     export class $vector<T> implements frame_t<T> {
         __em$class = 'em$vector'
         $len: u16
@@ -984,6 +1025,9 @@ namespace em {
         $ptr(): ptr_t<T> {
             return new em$ptr<T>(this.items)
         }
+        $$(): ptr_t<T> {
+            return new em$ptr<T>(this.items)
+        }
     }
 
     // #endregion
@@ -992,8 +1036,10 @@ namespace em {
 declare global {
     type arg_t = em.arg_t
     type bool_t = em.bool_t
-    type cb_t<A extends any[] = []> = em.cb_t<A>
+    type cb_t<A extends unknown[] = [], R = void> = em.cb_t<A, R>
+    type const_t<T> = em.const_t<T>
     type dim_t<T, N extends number> = em.dim_t<T, N>
+    type enum_t<T> = em.enum_t<T>
     type frame_t<T> = em.frame_t<T>
     type f32 = em.f32
     type index_t<T> = em.index_t<T>
@@ -1001,28 +1047,35 @@ declare global {
     type i16 = em.i16
     type i32 = em.i32
     type i64 = em.i64
+    type opaq_t = em.opaq_t
     type ptr_t<T> = em.ptr_t<T>
     type ref_t<T> = em.ref_t<T>
     type ref2_t<T> = T & { $obj: T }
     type eref_t<T> = T & {}
     type u8 = em.u8
-    type u16 = em.u8
+    type u16 = em.u16
     type u32 = em.u32
     type u64 = em.u64
+    type table_ro_t<T> = em.table_t<T>
+    type table_rw_t<T> = em.table_t<T>
     type text_t = em.text_t
+    type vec_t<T, N extends number> = em.vec_t<T, N>
     type volatile_t<T> = em.volatile_t<T>
     type $$<T> = em.$$<T>
     type $Reg = em.$Reg
+
     const $: typeof em.$
+    const $$: typeof em.$$
     const $bkpt: typeof em.$bkpt
     const $board: typeof em.$board
+    const $cast2: typeof em.$cast2
     const $cb: typeof em.$cb
-    const $cb$null: typeof em.$cb$null
     const $clone: typeof em.$clone
     const $config: typeof em.$config
     const $declare: typeof em.$declare
     const $default: typeof em.$default
     const $delegate: typeof em.$delegate
+    const $enum: typeof em.$enum
     const $frame: typeof em.$frame
     const $implements: typeof em.$implements
     const $isbare: typeof em.$isbare
@@ -1049,19 +1102,22 @@ declare global {
     const $$tdefs: Map<string, string>
     const $$units: Map<string, any>
     const __$declare: typeof em.__$declare
+
 }
 
 Object.assign(globalThis, {
     $: em.$,
+    $$: em.$$,
     $bkpt: em.$bkpt,
     $board: em.$board,
+    $cast2: em.$cast2,
     $cb: em.$cb,
-    $cb$null: em.$cb$null,
     $clone: em.$clone,
     $config: em.$config,
     $declare: em.$declare,
     $default: em.$default,
     $delegate: em.$delegate,
+    $enum: em.$enum,
     $frame: em.$frame,
     $implements: em.$implements,
     $isbare: em.$isbare,

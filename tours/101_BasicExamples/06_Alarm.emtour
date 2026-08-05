@@ -6,65 +6,57 @@ files:
   - .assets/img-101-06-02.png
 
 steps:
-
   - cmds:
       - view 3
     text: |
 
-      {[ht,$start]Wakeup Alarms}
+      {[ht,$start]&thinsp;Wakeup Alarms}
 
       This tour details two similar programs &ndash; both of which use a portable {[cu]AlarmMgr} to schedule wakeup events.
 
       Looking first at their signal captures, each program winks `AppLed` five times before halting:
 
-      <div class="em-bmlist">
+      {[bi,counter_1]}{[cu]Alarm1P} alternately awakens every 0.75 or 2.00 sec&shy;onds, winking `AppLed` for 100 msecs.
 
-      &emsp;&ensp;&thinsp;{[bi,counter_1]}{[cu]Alarm1P} alternately awakens every 0.75 or 2.00 seconds, winking `AppLed` for 100 msecs.
+      {[bi,counter_2]}{[cu]Alarm2P} awakens on _aligned_ 1.50 second intervals, alternately winking `AppLed` for 5 or 100 msecs.
 
-      &emsp;&ensp;&thinsp;{[bi,counter_2]}{[cu]Alarm2P} awakens on _aligned_ 1.50 second intervals, alternately winking `AppLed` for 5 or 100 msecs.
 
-      </div>
 
       In fact, {[cu]AlarmMgr} uses a _real-time clock_ to track elapsed time from HW reset with 0.25 seconds of precision.
 
   - cmds:
-      - close 3
       - open 1
       - mark 1 A 4
       - mark 1 B 11
       - mark 1 C 17
       - mark 1 D 35
 
-    focus: [1,1]
-    acts: [$reveal,$build]
+    focus: [1, 1]
+    acts: [$reveal, $build]
     text: |
-      
-      {[ht,$details]%[cu]Alarm1P% &ndash; Details}
 
-      <div class="em-bmlist">
+      {[ht,$details]&thinsp;%[cu]Alarm1P% &ndash; Details}
 
-      {[bm,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object-factory_.
+      {[BM,A]} The {[cu]Alarm1P} program uses the {[cu]AlarmMgr} in a man&shy;ner not unlike the {[cu]FiberMgr} &ndash; as an _object-factory_.
 
-      {[bm,B]} {[cu]Alarm1P} first declares {[cn]alarm} &ndash; a private {[cs]$config} parameter with a value of type {[ct]AlarmMgr}.{[ct]Obj}.
+      {[BM,B]} {[cu]Alarm1P} first declares {[cn]alarm} &ndash; a private {[cs]$config} parameter with a value of type {[ct]AlarmMgr}.{[ct]Obj}.
 
-      {[bm,C]} After assigning {[cn]blinkF}, we bind {[cn]alarm} to the new object returned by {[cu]AlarmMgr}.{[cf]create} [**`meta`**].
+      {[BM,C]} After assigning {[cn]blinkF}, we bind {[cn]alarm} to the new object returned by {[cu]AlarmMgr}.{[cf]create} [**`meta`**].
 
-      {[bm,D]} {[cu]Alarm1P} calls {[cf]wakeup} on its {[cn]alarm} object at run-time &ndash; scheduling a future {[cn]blinkF}.{[cf]post} dispatch.
-
-      </div>
+      {[BM,D]} {[cu]Alarm1P} calls {[cf]wakeup} on its {[cn]alarm} object at run-time &ndash; scheduling a future {[cn]blinkF}.{[cf]post} dispatch.
 
       Indeed, the {[cu]AlarmMgr} implementation will itself {[ck]import} the {[cu]FiberMg} &ndash; a common **EMS** design pattern.
 
   - cmds:
       - open 2
       - mark 2 D 35
-    focus: [2,1]
-    acts: [$reveal,$build]
+    focus: [2, 1]
+    acts: [$reveal, $build]
     text: |
-      
-      {[ht,$details]%[cu]Alarm2P% &ndash; Details}
 
-      Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned} {[bm,D]} on its {[cn]alarm} object.
+      {[ht,$details]&thinsp;%[cu]Alarm2P% &ndash; Details}
+
+      Virtually identical to {[cu]Alarm1P}, the {[cu]Alarm2P} program instead calls {[cf]wakeupAligned}{[bm,D]} on its {[cn]alarm} object.
 
       {[cf]wakeup} [{[cu]Alarm1P}] versus {[cf]wakeupAligned} [{[cu]Alarm2P}] use their _dt_ arg differently in scheduing future wakeup _t_:
 
@@ -80,46 +72,43 @@ steps:
       - view 4
     text: |
 
-        {[ht,monitor_heart]%[cu]Alarm2P% &ndash; Signal Capture}
+      {[ht,monitor_heart]&thinsp;%[cu]Alarm2P% &ndash; Signal Capture}
 
-        Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
+      Zooming-in after 3000&thinsp;ms of execution time, {[cu]Alarm2P} awakens from MCU sleep to wink `AppLed` for 5&thinsp;ms.
 
-        By using {[cf]wakeupAligned}, the `AppLed` winks will start precisely after &lbrace;1500, 3000, 4500, &hellip;&thinsp;&rbrace;&thinsp;ms from reset.
+      By using {[cf]wakeupAligned}, the `AppLed` winks will start precisely after &lbrace;1500, 3000, 4500, &hellip;&thinsp;&rbrace;&thinsp;ms from reset.
 
-        {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
+      {[cu]Alarm2P} in fact enters _two_ distinct modes of sleep:
 
-        {[bm,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
-        {[bm,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
+      {[DC,D]} a _deep_ [&mu;J] sleep, for intervals measured in secs<br>
+      {[DC,L]} a _lite_ [mJ] sleep, for intervals measured in msecs
 
-        While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
+      While _deep-sleep_ yields 10× savings in energy con&shy;sumption, _lite-sleep_ wakeups happen 10× faster.
 
-        {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[bm,L]% or <i>twice</i> %[bm,D]% when entering lite-sleep or deep-sleep mode.}
-
-  - cmds:
-      - open 2
-    focus: [2,1]
-    text: |
-
-        {[ht,$extra] Extra Credit}
-
-        {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
-
-        {[bi,task_alt]} Vary the durations (in msecs) used by {[cu]Alarm2P}
-
-        {[bi,task_alt]} Switch to {[cf]wakeup} and study the signal capture.
-
+      {[in]Finally, note how <code>DbgB</code> pulses <i>once</i> %[dc,L]% or <i>twice</i> %[dc,D]% when entering lite-sleep or deep-sleep mode.}
 
   - cmds:
       - open 2
-    focus: [2,1]
+    focus: [2, 1]
     text: |
 
-        {[ht,$steps] Next Steps}
+      {[ht,$extra]&thinsp;Extra Credit}
 
-        Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
+      {[bi,task_alt]} Use **F12** to view the {[cf]Secs30p2_initMsecs} code.
 
-        To simplify this design, the next tour examines a port&shy;able solution building upon {[cu]AlarmMgr} and {[cu]FiberMgr}.
+      {[bi,task_alt]} Vary the durations (in msecs) used by {[cu]Alarm2P}
 
-        {[hc]} 
+      {[bi,task_alt]} Switch to {[cf]wakeup} and study the signal capture.
 
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    text: |
 
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Imagine _two_ fibers inside the {[cu]Alarm2P} pro&shy;gram &ndash; each performing a different function at a different rate.
+
+      To simplify this design, the next tour examines a port&shy;able solution building upon {[cu]AlarmMgr} and {[cu]FiberMgr}.
+
+      {[hc]}

@@ -1,0 +1,130 @@
+tour_id: 101_06
+title: Wakeup Alarms
+source_file: tours/101_BasicExamples/06_Alarm.emtour
+
+ground_truth:
+  stop_count: 6
+  screenshots:
+    - tours/.screens/101_06_01.png
+    - tours/.screens/101_06_02.png
+    - tours/.screens/101_06_03.png
+    - tours/.screens/101_06_04.png
+    - tours/.screens/101_06_05.png
+    - tours/.screens/101_06_06.png
+
+overall_assessment:
+  summary: Introduces AlarmMgr through two related programs, contrasting relative wakeups with aligned wakeups and tying those scheduling choices to observable sleep modes and wakeup timing.
+  difficulty: intermediate
+  key_takeaway: AlarmMgr lets EMS code schedule future wakeups against a real-time clock, and the choice between wakeup and wakeupAligned has visible behavioral consequences.
+
+learning_objectives:
+  - understand AlarmMgr as a portable wakeup scheduler built on a real-time clock
+  - see how Alarm1P uses wakeup to schedule future callbacks relative to now
+  - see how Alarm2P uses wakeupAligned to align wakeups to fixed time boundaries
+  - relate aligned wakeups to observable timing in signal captures
+  - understand the distinction between lite-sleep and deep-sleep behavior
+
+concepts_introduced:
+  - AlarmMgr
+  - Alarm1P
+  - Alarm2P
+  - wakeup
+  - wakeupAligned
+  - real-time clock precision
+  - aligned wakeup scheduling
+  - deep sleep
+  - lite sleep
+
+concepts_reinforced:
+  - object-factory pattern
+  - "$config"
+  - FiberMgr
+  - AppLed.wink
+  - Poller
+  - PulseView
+  - DbgB sleep markers
+  - code-to-signal mapping
+
+prerequisites:
+  - 101_03
+  - 101_04
+  - 101_05
+
+stop_count: 6
+
+stops:
+  - id: 1
+    title: "Wakeup Alarms"
+    focus: alarm overview
+    teaching_intent: introduce AlarmMgr through two similar blinking programs and frame the tour around their different wakeup behavior
+    concepts:
+      - AlarmMgr
+      - Alarm1P
+      - Alarm2P
+      - real-time clock
+      - wakeup events
+    user_takeaway: Both programs use AlarmMgr to schedule future wakeups, but they do so with different timing semantics
+
+  - id: 2
+    title: "%[cu]Alarm1P% &ndash; Details"
+    focus: relative wakeup scheduling
+    teaching_intent: explain Alarm1P as an AlarmMgr client that allocates an alarm object at build-time and calls wakeup at run-time
+    concepts:
+      - object-factory pattern
+      - "$config"
+      - AlarmMgr.Obj
+      - create
+      - wakeup
+      - blinkF.post
+    user_takeaway: Alarm1P creates a private alarm object and uses wakeup to schedule a future dispatch relative to the current time
+
+  - id: 3
+    title: "%[cu]Alarm2P% &ndash; Details"
+    focus: aligned wakeup scheduling
+    teaching_intent: contrast wakeup with wakeupAligned and explain how Alarm2P aligns future wakeups to fixed time boundaries
+    concepts:
+      - wakeupAligned
+      - aligned scheduling
+      - dt
+      - now
+      - ceil(now / dt) * dt
+      - Poller
+    user_takeaway: Alarm2P differs mainly in using wakeupAligned, which snaps future wakeups to aligned time intervals from reset
+
+  - id: 4
+    title: "%[cu]Alarm2P% &ndash; Signal Capture"
+    focus: aligned timing and sleep modes
+    teaching_intent: use PulseView to show precise aligned wakeups and distinguish lite-sleep from deep-sleep through DbgB patterns
+    concepts:
+      - signal capture
+      - aligned wakeups
+      - deep sleep
+      - lite sleep
+      - DbgB
+      - energy savings
+      - wakeup speed
+    user_takeaway: Alarm2P wakes exactly on aligned boundaries and exhibits two distinct sleep modes, each with different energy and latency tradeoffs
+
+  - id: 5
+    title: " Extra Credit"
+    focus: experimentation
+    teaching_intent: encourage the user to inspect helper code, vary durations, and compare wakeupAligned against wakeup
+    concepts:
+      - Secs30p2_initMsecs
+      - duration variation
+      - comparative analysis
+    user_takeaway: I can explore how changing timing parameters affects aligned wakeups and captured behavior
+
+  - id: 6
+    title: " Next Steps"
+    focus: series continuation
+    teaching_intent: prepare the user for the next tour by extending the AlarmMgr model to programs with multiple fibers at different rates
+    concepts:
+      - multiple fibers
+      - different rates
+      - AlarmMgr and FiberMgr composition
+    user_takeaway: The next step is using AlarmMgr and FiberMgr together to coordinate more than one periodic activity
+
+issues_and_notes:
+  - stop titles intentionally preserve the exact .emtour text
+  - the signal-capture stop depends heavily on the screenshot because the aligned wakeups and DbgB sleep patterns are primarily visual

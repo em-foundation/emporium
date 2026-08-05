@@ -1,6 +1,7 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', IrqI)
 
+import * as IrqI from '@em.hal/IrqI.em'
 import * as IsrI from '@em.arch.arm/IsrI.em'
 
 export const IsrDefault = $proxy<IsrI.$I>()
@@ -45,7 +46,7 @@ export namespace em$meta {
                         |-> typedef void( *intfunc )( void );
                         |-> typedef union { intfunc fxn; void* ptr; } intvec_elem;
                         |-> 
-                        |-> extern uint32_t __stack_top__;
+                        |-> extern "C" uint32_t __stack_top__;
                         |-> extern "C" void em__start( void );
                         |-> 
                         |-> extern "C" void DEFAULT_isr$$( void );
@@ -112,4 +113,23 @@ export function DEFAULT_isr$$() {
     fail()
 }
 
-function emptyIsr() { }
+// IrqI implementation
+
+export function clear(irq: u16) {
+    NVIC_clear(irq)
+}
+
+export function disable(irq: u16) {
+    NVIC_disable(irq)
+}
+
+export function enable(irq: u16) {
+    NVIC_enable(irq)
+}
+
+export function isEnabled(irq: u16): bool_t {
+    return false
+}
+
+export function setPriority(irq: u16, pri: u8) {
+}
