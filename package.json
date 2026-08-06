@@ -11,7 +11,7 @@
         "intel-hex": "^0.2.0",
         "js-yaml": "^5.2.1",
         "node-screenshots": "^0.2.8",
-        "segger-arm": "https://github.com/em-foundation/npm-packages/releases/download/resources/segger-arm-8.22.1-v26.3-a.tgz",
+        "segger-arm": "https://github.com/em-foundation/npm-packages/releases/download/resources/segger-arm-8.22.1-v26.3-b.tgz",
         "segger-jlink": "https://github.com/em-foundation/npm-packages/releases/download/resources/segger-jlink-8.40.0-a.tgz",
         "sprintf-js": "^1.1.3",
         "ti-uniflash": "https://github.com/em-foundation/npm-packages/releases/download/resources/ti-uniflash-8.7.0-a.tgz",
