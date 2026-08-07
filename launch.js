@@ -1,60 +1,50 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const { spawnSync } = require("child_process");
+const Cp = require('child_process')
+const Fs = require('fs')
+const Path = require('path')
 
-const root = __dirname;
-const dataDir = path.join(root, ".data");
-const extensionsDir = path.join(root, ".extensions");
+const ROOT = __dirname
+const DATA = Path.join(ROOT, '.data')
+const EXTS = Path.join(ROOT, '.extensions')
 
-const code = "code";
+const EXT_BUILDER = 'the-em-foundation.em-builder@26.1.1'
+const EXT_WOKWI = 'Wokwi.wokwi-vscode'
 
-fs.mkdirSync(dataDir, { recursive: true });
-fs.mkdirSync(extensionsDir, { recursive: true });
-
-function run(args) {
-    console.log(`> code ${args.join(" ")}`);
-
-    const result = spawnSync(code, args, {
-        cwd: root,
-        stdio: "inherit"
-    });
-
-    if (result.error) {
-        console.error(result.error.message);
-        process.exit(1);
+function run(cli) {
+    console.log(`> ${cli.join(' ')}`)
+    const r = Cp.spawnSync(cli[0], cli.slice(1), {
+        cwd: ROOT,
+        shell: process.platform === 'win32',
+        stdio: 'inherit'
+    })
+    if (r.error) {
+        console.error(`couldn't run '${cli[0]}': ${r.error.message}`)
+        process.exit(1)
     }
-
-    if (result.status !== 0) {
-        process.exit(result.status ?? 1);
-    }
+    if (r.status) process.exit(r.status)
 }
 
-// Certified EM•Builder for this Emporium state.
-run([
-    "--install-extension",
-    "the-em-foundation.em-builder@26.1.1",
-    "--extensions-dir",
-    extensionsDir,
-    "--force"
-]);
+Fs.mkdirSync(DATA, { recursive: true })
+Fs.mkdirSync(EXTS, { recursive: true })
 
-// External simulator dependency.
-// We can pin an exact Wokwi version once we decide that policy.
 run([
-    "--install-extension",
-    "Wokwi.wokwi-vscode",
-    "--extensions-dir",
-    extensionsDir
-]);
+    'code',
+    '--install-extension', EXT_BUILDER,
+    '--extensions-dir', EXTS,
+    '--force'
+])
 
-// Launch this Emporium in its clone-local VS Code environment.
 run([
-    "--skip-welcome",
-    "--user-data-dir",
-    dataDir,
-    "--extensions-dir",
-    extensionsDir,
-    root
-]);
+    'code',
+    '--install-extension', EXT_WOKWI,
+    '--extensions-dir', EXTS
+])
+
+run([
+    'code',
+    '--skip-welcome',
+    '--user-data-dir', DATA,
+    '--extensions-dir', EXTS,
+    ROOT
+])
