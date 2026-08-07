@@ -21,5 +21,8 @@
         "@prantlf/railroad-diagrams": {
             "js-yaml": "^4.1.1"
         }
+    },
+    "scripts": {
+        "launch": "node launch.js"
     }
 }
