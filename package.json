@@ -23,6 +23,6 @@
         }
     },
     "scripts": {
-        "launch": "node launch.js"
+        "start": "node launch.js"
     }
 }
