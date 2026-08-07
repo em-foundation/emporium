@@ -8,38 +8,64 @@ const ROOT = __dirname
 const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
 
-const EXT_BUILDER = 'the-em-foundation.em-builder@26.1.1'
-const EXT_WOKWI = 'Wokwi.wokwi-vscode'
+const EXTENSIONS = [
+    'the-em-foundation.em-builder@26.1.1',
+    'Wokwi.wokwi-vscode@3.6.0'
+]
 
-function run(cli) {
-    console.log(`> ${cli.join(' ')}`)
+const VERBOSE = process.argv.includes('--verbose')
+const REFRESH = process.argv.includes('--refresh')
+
+function run(cli, quiet = false) {
+    if (VERBOSE) console.log(`> ${cli.join(' ')}`)
     const r = Cp.spawnSync(cli[0], cli.slice(1), {
         cwd: ROOT,
         shell: process.platform === 'win32',
-        stdio: 'inherit'
+        encoding: quiet ? 'utf8' : undefined,
+        stdio: quiet ? undefined : 'inherit'
     })
     if (r.error) {
         console.error(`couldn't run '${cli[0]}': ${r.error.message}`)
         process.exit(1)
     }
-    if (r.status) process.exit(r.status)
+    if (r.status) {
+        if (quiet) console.error((r.stderr || r.stdout || '').trim())
+        process.exit(r.status)
+    }
+    return quiet ? r.stdout ?? '' : ''
+}
+
+function installedExtensions() {
+    const txt = run([
+        'code',
+        '--list-extensions',
+        '--show-versions',
+        '--extensions-dir', EXTS
+    ], true)
+    return new Set(txt.trim().split(/\r?\n/).filter(Boolean).map(s => s.toLowerCase()))
 }
 
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
 
-run([
-    'code',
-    '--install-extension', EXT_BUILDER,
-    '--extensions-dir', EXTS,
-    '--force'
-])
+const installed = REFRESH ? new Set() : installedExtensions()
+const missing = EXTENSIONS.filter(ext => !installed.has(ext.toLowerCase()))
 
-run([
-    'code',
-    '--install-extension', EXT_WOKWI,
-    '--extensions-dir', EXTS
-])
+if (missing.length) {
+    console.log('EM•porium: configuring VS Code environment…')
+    for (const ext of missing) {
+        run([
+            'code',
+            '--install-extension', ext,
+            '--extensions-dir', EXTS,
+            '--force'
+        ], !VERBOSE)
+    }
+}
+
+if (VERBOSE || missing.length) {
+    console.log('EM•porium: launching VS Code…')
+}
 
 run([
     'code',
