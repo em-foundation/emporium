@@ -20,127 +20,70 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 <a id="preparing"></a>
 ## Preparing the environment
 
-#### 🟠&ensp;register at [**GitHub**](https://github.com/signup)
+Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, a **Wokwi** account, and **Git** available from your command-line shell.
 
-&emsp;&emsp;&emsp;If you don't have an account, the **GitHub Free** plan would suffice for working with the **EM&bull;porium** repository.
+> [!IMPORTANT]
+> **Windows** users should first install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a command-line environment comparable to those found on **Linux** and **macOS**.&thinsp; Use **Git Bash** for all shell commands presented throughout the **EM&bull;porium**.
 
 #### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
 
-&emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify you have **VS Code** version 1.90 or later.
+&emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify **VS Code** version 1.90 or later.
 
 #### 🟠&ensp;download [**Node.js**](https://nodejs.org/en/download)
 
-&emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify you have **Node.js** version 22 or later.
-
-#### 🟠&ensp;register at [**Wokwi**](https://wokwi.com/)
-
-&emsp;&emsp;&emsp;An sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Builder**
+&emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify **Node.js** version 22 or later.
 
 > [!IMPORTANT]
-> **MS Windows** users should also install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a comparable command-line environment to what you'd find on **Linux** or **MacOS**.&thinsp; Ensure that you can execute the `code --version` and `node --version` commands from the shell.
->
-> You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
+> **Windows** users should now configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
 >
 > <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
+#### 🟠&ensp;register at [**Wokwi**](https://wokwi.com/)
+
+&emsp;&emsp;&emsp;This sophisticated simulator supports several popular MCUs.&thinsp; You'll obtain a free license key later during the **Getting Ready** tour.
+
+#### 🟠&ensp;verify **Git** installation
+
+&emsp;&emsp;&emsp;Enter `git --version` from the shell and verify **Git** version 2.50 or later.
+
+> [!NOTE]
+> If `git --version` fails on **macOS**, enter `xcode-select --install` to install Apple's Command Line Tools.<br>
+> If `git --version` fails on **Linux**, install **Git** through your distribution's package manager.
+
 <a id="installing"></a>
-## Installing its components
+## Installing the **EM&bull;porium**
 
-As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
+As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
-<details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which brings up this dialogue&thinsp;....</p>
-<p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
+<details><summary>&ensp;✅&ensp;clone the <code>emporium</code> repository</summary><br>
+<p>Clone the public <b>EM•porium</b> repository into your current folder:</p>
+<pre><code>git clone https://github.com/em-foundation/emporium.git</code></pre>
 </details>
 
-<details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
-<pre><code>mkdir $HOME/EM; cd $HOME/EM; mkdir data exts repo</code></pre>
-<p>&emsp;&emsp;<b>➜</b>&ensp;From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
-<pre><code>code --install-extension the-em-foundation.em-builder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
-<pre><code>code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
-</details>
-
-<details><summary>&ensp;✅&ensp;prepare to interact with <b>GitHub</b></summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Perform this sequence of actions using the <b>Source Control</b> activity found in <b>VS Code Activity Bar</b>&thinsp;....</p>
-<p align="center"><img src="images/fig-2.png" alt="" width="900"><p
-<p>&emsp;&emsp;<b>➜</b>&ensp;The <b>GitHub</b> extension now needs your credentials&thinsp;....</p>
-<p align="center"><img src="images/fig-3.png" alt="" width="900"><p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Sign in to your account on <code>github.com</code>&thinsp;....</p>
-<p align="center"><img src="images/fig-4.png" alt="" width="900"></p>
-<p&emsp;&emsp;<b>➜</b>&ensp;Just dismiss this dialogue and return to your <b>VS Code</b> window&thinsp;....</p>
-<p align="center"><img src="images/fig-5.png" alt="" width="900"></p>
-</details>
-
-<details><summary>&ensp;✅&ensp;clone your <code>emporium</code> fork to <code>~/EM/repo</code></summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Back in <b>VS Code</b> now, continue your <b>Source Control</b> activity by now selecting <code>&lt;USERNAME&gt;/emporium</code></p>
-<p align="center"><img src="images/fig-6.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;<b>VS Code</b> will next prompt you to locate your (now empty) <code>~/EM/repo</code> folder</p>
-<p align="center"><img src="images/fig-7.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Time for a short break&thinsp;.... <b>☕</b></p>
-<p align="center"><img src="images/fig-8.png" alt="" width="900"></p>
-</details>
-
-<details><summary>&ensp;✅&ensp;populate your <b>VS Code</b> workspace</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Click through the prompts on the next two screens&thinsp;....</p>
-<p align="center"><img src="images/fig-9.png" alt="" width="900"></p>
-<p align="center"><img src="images/fig-10.png" alt="" width="900"><p>
+<details><summary>&ensp;✅&ensp;start the <b>EM&bull;porium</b> environment</summary><br>
+<p>Enter the newly-created <code>emporium</code> folder and launch the environment:</p>
+<pre><code>cd emporium
+npm start</code></pre>
+<p>Use <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;You've arrived&thinsp;.... ✨</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;You've arrived at the <b>EM•porium</b>&thinsp;.... ✨</p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"></p>
 </details>
 
 <a id="learning"></a>
 ## Learning about **EM&bull;Script**
 
-With your **EM&bull;porium** environment up and running, we'll now pivot towards exploring its *software content* written in the **EM&bull;Script** program&shy;ming language.&thinsp; To that end, this environment features an ever-growing set of **EM&bull;Tours** &ndash; self-paced learning modules that bring you face-to-face with working **EM&bull;Script** code that you can *cut &middot; copy &middot; paste* to your heart's content.
+With your **EM&bull;porium** environment now running, we'll continue inside **EM&bull;Tours** &ndash; self-paced guides that lead you through its workspace of **EM&bull;Script** programs and introduce the tooling you'll use along the way.
 
-> 🎬 [Preview](images/tour-ani.md) &nbsp;**➜**&nbsp; a 54-second video drive-by of your first **EM&bull;Tour**
+Start with **Getting Ready**, which completes a few one-time setup tasks before moving directly into our **First Programs**.
 
-<a id="tour-preview"></a>
-
-Before you can launch any **EM&bull;Tours**, however, you'll need to perform two more tasks *inside* **VS Code**.&thinsp; If you've already closed **VS Code** after installing the **EM&bull;porium** components, you can always re-open the environment using a shell script we've provisioned&thinsp;....
-
-<pre><code>$HOME/EM/launch.sh</code></pre>
-
-<details><summary>&ensp;✅&ensp;request a (free) <b>Wokwi</b> simulator key</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Assuming you've already registered at <a href="https://wokwi.com/"><b>Wokwi</b></a>, initiate the process from the <b>EM&bull;Home</b> welcome view&thinsp;....</p>  
-<p align="center"><img src="images/fig-12.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Then select&thinsp;....</p>
-<p align="center"><img src="images/fig-13.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Cancel this dialogue&thinsp;....</p>
-<p align="center"><img src="images/fig-14.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Copy your key to the clipboard&thinsp;....</p>
-<p align="center"><img src="images/fig-15.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Execute <b>Manually Enter License Key</b> from the <b>Command Palette</b> and then paste your key&thinsp;....</p>
-<p align="center"><img src="images/fig-16.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Voilà&thinsp;....</p>
-<p align="center"><img src="images/fig-17.png" alt="" width="900"></p>
-</details>
-
-<details><summary>&ensp;✅&ensp;rearrange the UI for optimal viewing</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Go ahead and launch the first tour from the <b>EM&bull;Home</b> page&thinsp;....</p>
-<p align="center"><img src="images/fig-18.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Drag &middot; Drop the <b>TOUR GUIDE</b> view between the primary and secondary side-panels&thinsp;....</p>
-<p align="center"><img src="images/fig-19.png" alt="" width="900"></p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Refresh the <b>TOUR GUIDE</b> text and widen the secondary side-panel&thinsp;....</p>
-<p align="center"><img src="images/fig-20.png" alt="" width="900"></p>
-</details>
-
-Going forward, we'll leverage the **EM&bull;porium** itself to learn more about **EM&bull;Script** &ndash; starting with the **Welcome Aboard** tour you've already launched.&thinsp; Use the **Back &middot; Next &middot; Refresh &middot; Restart &middot; End** buttons atop the **TOUR GUIDE** for navigation and control.
-
-As a "best practice", the **EM&bull;Tours** will encourage use of the built-in **Source Control** activity &ndash; to *commit* any changes you might have made to your local workspace, as well as to *sync* the workspace with your personal `em-foundation/emporium` fork stored at **GitHub**.
-
-With our work done here, we'll meet up again *inside* the **EM&bull;porium** environment &ndash; where our **EM&bull;Script** journey formally begins.&thinsp;🧭
+From **EM&bull;Home**, click **Take your first EM&bull;Tour** and we'll take it from there.&thinsp;🧭
 
 <a id="contributing"></a>
-## Contributing to the cause
+## Join the Conversation
 
-🚀 We've just opened the doors to the **EM&bull;porium**, so things may seem a little skeletal right now&thinsp;&hellip;
+Have a question, found something confusing, or have an idea for improving the **EM•porium**?&thinsp; Start a conversation on our [**GitHub Discussions**](https://github.com/em-foundation/emporium/discussions) page &ndash; the best place to ask questions, offer feedback, or explore possible contributions.
 
-💬 If you have any questions &middot; comments &middot; suggestions, speak your mind at our [Discussions](https://github.com/em-foundation/emporium/discussions) page.
-
+If you find the project useful, please also consider **starring** or **watching** the repository.&thinsp; We’ll cover the mechanics of creating your own fork and contributing changes later within our **Source Control** tour.
