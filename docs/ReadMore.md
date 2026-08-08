@@ -20,29 +20,33 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 <a id="preparing"></a>
 ## Preparing the environment
 
+Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, a **Wokwi** account, and **Git** available from your command-line shell.
+
+> [!IMPORTANT]
+> **MS Windows** users should first install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a command-line environment comparable to those found on **Linux** and **macOS**.&thinsp; Use **Git Bash** for all shell commands presented throughout the **EM&bull;porium**.
+>
+> You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
+>
+> <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
+
 #### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
 
-&emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify you have **VS Code** version 1.90 or later.
+&emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify **VS Code** version 1.90 or later.
 
 #### 🟠&ensp;download [**Node.js**](https://nodejs.org/en/download)
 
-&emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify you have **Node.js** version 22 or later.
+&emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify **Node.js** version 22 or later.
 
 #### 🟠&ensp;register at [**Wokwi**](https://wokwi.com/)
 
-&emsp;&emsp;&emsp;A sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Builder**
+&emsp;&emsp;&emsp;This sophisticated simulator supports several popular MCUs; you'll later obtain a free license key from inside **EM&bull;Builder**.
 
 #### 🟠&ensp;verify **Git** installation
 
-&emsp;&emsp;&emsp;Often pre-installed on your host computer, enter `git --version` from the shell and very you have **Git** version 2.50 or later.
+&emsp;&emsp;&emsp;Enter `git --version` from the shell and verify **Git** version 2.50 or later.
 
-
-> [!IMPORTANT]
-> **MS Windows** users should also install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a comparable command-line environment to what you'd find on **Linux** or **MacOS**.&thinsp; Ensure that you can execute the `code --version` and `node --version` commands from the shell.
->
-> You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
->
-> <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
+> [!NOTE]
+> If `git --version` fails on **macOS**, enter `xcode-select --install` to install Apple's Command Line Tools.&thinsp; On **Linux**, install **Git** through your distribution's package manager.
 
 <a id="installing"></a>
 ## Installing its components
