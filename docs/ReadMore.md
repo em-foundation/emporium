@@ -24,10 +24,6 @@ Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, 
 
 > [!IMPORTANT]
 > **Windows** users should first install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a command-line environment comparable to those found on **Linux** and **macOS**.&thinsp; Use **Git Bash** for all shell commands presented throughout the **EM&bull;porium**.
->
-> You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
->
-> <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
 #### 🟠&ensp;download [**VS Code**](https://code.visualstudio.com/download)
 
@@ -36,6 +32,11 @@ Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, 
 #### 🟠&ensp;download [**Node.js**](https://nodejs.org/en/download)
 
 &emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify **Node.js** version 22 or later.
+
+> [!IMPORTANT]
+> **Windows** users should now configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
+>
+> <pre><code>npm config set script-shell 'C:\Program Files\Git\usr\bin\bash'</code></pre>
 
 #### 🟠&ensp;register at [**Wokwi**](https://wokwi.com/)
 
