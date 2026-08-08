@@ -138,9 +138,10 @@ As a "best practice", the **EM&bull;Tours** will encourage use of the built-in *
 With our work done here, we'll meet up again *inside* the **EM&bull;porium** environment &ndash; where our **EM&bull;Script** journey formally begins.&thinsp;🧭
 
 <a id="contributing"></a>
-## Contributing to the cause
+## Join the Conversation
 
-🚀 We've just opened the doors to the **EM&bull;porium**, so things may seem a little skeletal right now&thinsp;&hellip;
+Have a question, found something confusing, or have an idea for improving the **EM•porium**? Start a conversation on our [**GitHub Discussions**](https://github.com/em-foundation/emporium/discussions) page &ndash; the best place to ask questions, offer feedback, or explore possible contributions.
 
-💬 If you have any questions &middot; comments &middot; suggestions, speak your mind at our [Discussions](https://github.com/em-foundation/emporium/discussions) page.
+If you find the project useful, please also consider **starring** or **watching** the repository. We’ll cover the mechanics of creating your own fork and contributing changes later inside the **EM•porium** tours.
+
 
