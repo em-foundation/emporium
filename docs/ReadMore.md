@@ -46,12 +46,13 @@ Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, 
 &emsp;&emsp;&emsp;Enter `git --version` from the shell and verify **Git** version 2.50 or later.
 
 > [!NOTE]
-> If `git --version` fails on **macOS**, enter `xcode-select --install` to install Apple's Command Line Tools.&thinsp; On **Linux**, install **Git** through your distribution's package manager.
+> If `git --version` fails on **macOS**, enter `xcode-select --install` to install Apple's Command Line Tools.<br>
+> If `git --version` fails on **Linux**, install **Git** through your distribution's package manager.
 
 <a id="installing"></a>
-## Installing its components
+## Installing the **EM&bull;porium**
 
-As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
+As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
 <details><summary>&ensp;✅&ensp;clone the <code>emporium</code> repository</summary><br>
 <p>Clone the public <b>EM•porium</b> repository into your current folder:</p>
@@ -73,7 +74,7 @@ npm start</code></pre>
 <a id="learning"></a>
 ## Learning about **EM&bull;Script**
 
-With your **EM&bull;porium** environment now running, we'll continue inside **EM&bull;Tours** &ndash; self-paced guides that lead you through the workspace, working **EM&bull;Script** programs, and the tools you'll use along the way.
+With your **EM&bull;porium** environment now running, we'll continue inside **EM&bull;Tours** &ndash; self-paced guides which lead you through its workspace of **EM&bull;Script** programs, as well as introduce the tooling you'll use along the way.
 
 Start with **Getting Ready**, which completes a few one-time setup tasks before moving directly into our **First Programs**.
 
