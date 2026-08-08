@@ -32,6 +32,11 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 &emsp;&emsp;&emsp;A sophisticated simulator for several popular MCUs, you'll later obtain a (free) license key inside **EM&bull;Builder**
 
+#### 🟠&ensp;verify **Git** installation
+
+&emsp;&emsp;&emsp;Often pre-installed on your host computer, enter `git --version` from the shell and very you have **Git** version 2.50 or later.
+
+
 > [!IMPORTANT]
 > **MS Windows** users should also install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a comparable command-line environment to what you'd find on **Linux** or **MacOS**.&thinsp; Ensure that you can execute the `code --version` and `node --version` commands from the shell.
 >
@@ -53,7 +58,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p>Enter the newly-created <code>emporium</code> folder and launch the environment:</p>
 <pre><code>cd emporium
 npm start</code></pre>
-<p>Use the same <code>npm start</code> command to re-launch the <b>EM•porium</b> later on.</p>
+<p>Use the <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
