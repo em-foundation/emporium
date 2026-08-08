@@ -23,7 +23,7 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, a **Wokwi** account, and **Git** available from your command-line shell.
 
 > [!IMPORTANT]
-> **MS Windows** users should first install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a command-line environment comparable to those found on **Linux** and **macOS**.&thinsp; Use **Git Bash** for all shell commands presented throughout the **EM&bull;porium**.
+> **Windows** users should first install [**Git for Windows**](https://gitforwindows.org/), which includes the **Git Bash** shell &ndash; a command-line environment comparable to those found on **Linux** and **macOS**.&thinsp; Use **Git Bash** for all shell commands presented throughout the **EM&bull;porium**.
 >
 > You must also configure the **Node.js** `npm` utility to use **Git Bash** as its default shell.&thinsp; Enter the following command, which reflects the default installation directory for **Git Bash**:
 >
@@ -39,7 +39,7 @@ Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, 
 
 #### 🟠&ensp;register at [**Wokwi**](https://wokwi.com/)
 
-&emsp;&emsp;&emsp;This sophisticated simulator supports several popular MCUs; you'll later obtain a free license key from inside **EM&bull;Builder**.
+&emsp;&emsp;&emsp;This sophisticated simulator supports several popular MCUs.&thinsp; You'll obtain a free license key later during the **Getting Ready** tour.
 
 #### 🟠&ensp;verify **Git** installation
 
@@ -63,7 +63,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p>Enter the newly-created <code>emporium</code> folder and launch the environment:</p>
 <pre><code>cd emporium
 npm start</code></pre>
-<p>Use the <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
+<p>Use <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
@@ -74,7 +74,7 @@ npm start</code></pre>
 <a id="learning"></a>
 ## Learning about **EM&bull;Script**
 
-With your **EM&bull;porium** environment now running, we'll continue inside **EM&bull;Tours** &ndash; self-paced guides which lead you through its workspace of **EM&bull;Script** programs, as well as introduce the tooling you'll use along the way.
+With your **EM&bull;porium** environment now running, we'll continue inside **EM&bull;Tours** &ndash; self-paced guides that lead you through its workspace of **EM&bull;Script** programs and introduce the tooling you'll use along the way.
 
 Start with **Getting Ready**, which completes a few one-time setup tasks before moving directly into our **First Programs**.
 
@@ -86,5 +86,3 @@ From **EM&bull;Home**, click **Take your first EM&bull;Tour** and we'll take it 
 Have a question, found something confusing, or have an idea for improving the **EM•porium**?&thinsp; Start a conversation on our [**GitHub Discussions**](https://github.com/em-foundation/emporium/discussions) page &ndash; the best place to ask questions, offer feedback, or explore possible contributions.
 
 If you find the project useful, please also consider **starring** or **watching** the repository.&thinsp; We’ll cover the mechanics of creating your own fork and contributing changes later within our **Source Control** tour.
-
-
