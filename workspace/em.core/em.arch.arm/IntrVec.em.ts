@@ -32,7 +32,7 @@ export namespace em$meta {
     const used_set = new Set<string>()
 
     export function em$init() {
-        for (let name of core_intrs) addIntr(name)
+        for (const name of core_intrs) addIntr(name)
     }
 
     export function em$generate() {
@@ -55,7 +55,7 @@ export namespace em$meta {
                         |->     { .ptr = (void*)&__stack_top__ },
                         |->     { .fxn = em__start },
         `)
-        for (let n of intr_list) {
+        for (const n of intr_list) {
             const s =
                 n == NO_VEC
                     ? '0'

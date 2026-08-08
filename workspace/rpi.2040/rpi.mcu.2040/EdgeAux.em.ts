@@ -33,7 +33,7 @@ export function em$startup() {
 
 export function IO_IRQ_BANK0_isr$$() {
     IntrVec.NVIC_clear(e$`IO_IRQ_BANK0_IRQn`)
-    for (let hi of handler_info_tab) {
+    for (const hi of handler_info_tab) {
         if (hi.handler != $null) {
             hi.handler()
         }

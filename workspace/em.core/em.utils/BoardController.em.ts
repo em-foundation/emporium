@@ -29,7 +29,7 @@ export function em$ready(): void {
     Common.ConsoleUart.flush()
     Common.ConsoleUart.put(0x00)
     Common.ConsoleUart.put(0x00)
-    for (let i of $range(SOT_COUNT)) {
+    for (const _ of $range(SOT_COUNT)) {
         Common.ConsoleUart.put(SOT_BYTE)
     }
     Common.ConsoleUart.flush()
