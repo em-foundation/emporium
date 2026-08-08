@@ -44,23 +44,20 @@ The **EM&bull;porium** serves as a central repository for open-source firmware w
 
 As you work through the steps presented here, click each &thinsp;▶︎&thinsp; arrow to reveal the details &ndash; including screen-shots taken enroute.&thinsp; When finished with each step, click its &thinsp;▼&thinsp; arrow to hide the details.
 
-<details><summary>&ensp;✅&ensp;fork the <code>emporium</code> repository</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Navigate to <a href="https://github.com/em-foundation/emporium/fork">em-foundation/emporium/fork</a>, which brings up this dialogue&thinsp;....</p>
-<p align="center"><img src="images/fig-1.png" alt="" width="900"><p>
-<p>&emsp;&emsp;<b>➜</b>&ensp;After selecting yourself as the new owner, verify that you can find the newly-created fork at <code>github.com/&lt;USERNAME&gt;/emporium</code>.</p>
+<details><summary>&ensp;✅&ensp;clone the <code>emporium</code> repository</summary><br>
+<p>Clone the public <b>EM•porium</b> repository into your current folder:</p>
+<pre><code>git clone https://github.com/em-foundation/emporium.git</code></pre>
 </details>
 
-<details><summary>&ensp;✅&ensp;launch <b>VS Code</b> from the command-line</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;We'll first create a special <code>EM</code> folder in your home directory, which in turn contains empty <code>data</code>, <code>exts</code>, and <code>repo</code> sub-folders&thinsp;....</p>
-<pre><code>mkdir $HOME/EM; cd $HOME/EM; mkdir data exts repo</code></pre>
-<p>&emsp;&emsp;<b>➜</b>&ensp;From inside this newly-created <code>$HOME/EM</code> folder, you'll next install two extensions into <b>VS Code</b> using the <code>code</code> command&thinsp;....</p>
-<pre><code>code --install-extension the-em-foundation.em-builder --install-extension Wokwi.wokwi-vscode --extensions-dir exts</code></pre>
-<p>&emsp;&emsp;<b>➜</b>&ensp;Finally, we'll launch a pristine instance of <b>VS Code</b> &ndash; sandboxed from any other local <b>VS Code</b> projects on your computer&thinsp;....</p>
-<pre><code>code --skip-welcome --user-data-dir data --extensions-dir exts</code></pre>  
+<details><summary>&ensp;✅&ensp;start the <b>EM&bull;porium</b> environment</summary><br>
+<p>Enter the newly-created <code>emporium</code> folder and launch the environment:</p>
+<pre><code>cd emporium
+npm start</code></pre>
+<p>Use the same <code>npm start</code> command to re-launch the <b>EM•porium</b> later on.</p>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
-<p>&emsp;&emsp;<b>➜</b>&ensp;You've arrived&thinsp;.... ✨</p>
+<p>&emsp;&emsp;<b>➜</b>&ensp;You've arrived at the <b>EM•porium</b>&thinsp;.... ✨</p>
 <p align="center"><img src="images/fig-11.png" alt="" width="900"></p>
 </details>
 
