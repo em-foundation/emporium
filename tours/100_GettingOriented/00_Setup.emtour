@@ -1,4 +1,4 @@
-title: Welcome Aboard
+title: Getting Ready
 files:
   - .assets/img-100-01-01.png
   - .assets/img-100-01-02.png
@@ -60,81 +60,6 @@ steps:
       {[DC,4]} drop the **OUTLINE** tab just below **CHAT**<br>
 
       Again, suggestions only &ndash; click **Next** to continue&thinsp;....
-
-  - cmds:
-      - open 3
-    focus: [3, 1]
-    text: |
-
-      {[ht,front_hand]&thinsp;Hello EM&bull;Script}
-
-      Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
-
-      In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
-
-      {[in]We'll start using '<b>EMS</b>' as shorthand for <b>EM&bull;Script</b>. }
-
-      Even if you've never seen **EMS** code before, you can probably guess what the {[cu]HelloP} program does&thinsp;!!
-
-      Let's dive in&thinsp;....
-
-  - cmds:
-      - open 3
-      - mark 3 A 2
-      - mark 3 B 5
-    focus: [3, 1]
-    acts: ["$reveal"]
-    text: |
-
-      {[ht,$details]&thinsp;%[cu]HelloP% &ndash; Details}
-
-      Many tour-stops will examine a particular source file in greater detail.
-
-      As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
-
-      {[BM,A]} Boilerplate found in all **EMS** files
-
-      {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
-
-      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
-
-      And now, let's execute this **EMS** program&thinsp;....
-
-  - cmds:
-      - open 3
-    focus: [3, 1]
-    acts: [$build]
-    text: |
-
-      {[ht,$build]&thinsp;%[cu]HelloP% &ndash; Build&thinsp;+&thinsp;Load}
-
-      Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
-
-      For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
-
-      If you haven't done so already, follow the **Request a Wowki Key** link on the **EM&bull;Home** editor tab.
-
-      When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
-
-      A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
-
-      Close the **Wokwi Simulator** tab before clicking **Next**.
-
-  - cmds:
-      - open 4
-    focus: [4, 1]
-    acts: [$build, $reveal]
-    text: |
-
-      {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
-
-      While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
-
-      To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
-
-      Over time, you'll run **EMS** programs on a growing list of target platforms featuring a wide range of MCUs.
-
-      Before moving on, click the {[em]%[ci,circuit-board]%&thinsp;Board} status item at the bottom of the **VS Code** window for a preview.
 
   - cmds:
     text: |

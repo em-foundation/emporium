@@ -229,9 +229,9 @@ namespace em {
         ref_t<T> $null() { return ref_t<T>(); }
         ptr_t<T> $ptr() { return ptr_t<T>($$); }
         struct Iterator {
-            const T *ptr;
-            constexpr Iterator(const T *ptr) : ptr(ptr) {}
-            const T &operator*() const { return *ptr; }
+            T *ptr;
+            constexpr Iterator(T *ptr) : ptr(ptr) {}
+            T &operator*() const { return *ptr; }
             Iterator &operator++() {
                 ++ptr;
                 return *this;
@@ -240,8 +240,8 @@ namespace em {
                 return ptr != other.ptr;
             }
         };
-        constexpr Iterator begin() const { return Iterator($$); }
-        constexpr Iterator end() const { return Iterator($$ + $len); }
+        constexpr Iterator begin() { return Iterator($$); }
+        constexpr Iterator end() { return Iterator($$ + $len); }
     };
 
     template <typename T, u16 N = 0> struct vec_t {

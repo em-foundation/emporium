@@ -38,7 +38,7 @@ function doPause() {
 }
 
 function doSleep() {
-    for (let cb of sleep_enter_tab) cb()
+    for (const cb of sleep_enter_tab) cb()
     $['%%b:'](2)
     $['%%b-']
     Debug.reset()
@@ -47,7 +47,7 @@ function doSleep() {
     e$`asm volatile ("wfi")`
     Debug.startup()
     $['%%b+']
-    for (let cb of sleep_leave_tab) cb()
+    for (const cb of sleep_leave_tab) cb()
     IntrVec.PRIMASK_set(0)
 }
 
