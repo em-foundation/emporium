@@ -65,6 +65,10 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <pre><code>cd emporium
 npm start</code></pre>
 <p>Use <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
+<p><b>💡 Tip:</b> For a convenient shortcut, add the following alias to your shell initialization file, replacing <code>/path/to</code> with the folder containing your <code>emporium</code> repository:</p>
+<pre><code>alias emp='pushd /path/to/emporium && npm start && popd'</code></pre>
+<p>You can then launch the <b>EM•porium</b> from any folder with:</p>
+<pre><code>emp</code></pre>
 </details>
 
 <details><summary>&ensp;✅&ensp;congratulations &ndash; and welcome aboard</summary><br>
