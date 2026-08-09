@@ -21,10 +21,10 @@ steps:
 
       But why **TypeScript** [**TS**] &ndash; especially when targeting embed&shy;ded HW typically programmed in C&thinsp;??
 
-      {[bi,arrow_circle_right]} start with a stable, widely-deployed language&thinsp;....<br>
-      {[bi,arrow_circle_right]} leverage its robust support within **VS Code**&thinsp;....<br>
-      {[bi,arrow_circle_right]} add a novel back-end program translator&thinsp;....<br>
-      {[bi,arrow_circle_right]} generate highly-optimized target C/C++&thinsp;....
+      {[bi,arrow_circle_right]} start with a stable, widely-deployed language&thinsp;&hellip<br>
+      {[bi,arrow_circle_right]} leverage its robust support within **VS Code**&thinsp;&hellip<br>
+      {[bi,arrow_circle_right]} add a novel back-end program translator&thinsp;&hellip<br>
+      {[bi,arrow_circle_right]} generate highly-optimized target C/C++&thinsp;&hellip
 
       This tour introduces some core constructs of **EM&bull;Script** [**EMS**] &ndash; but viewed through a **TS** language lens.
 

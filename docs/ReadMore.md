@@ -83,7 +83,13 @@ With your **EM&bull;porium** environment now running, we'll continue inside **EM
 
 Start with **Getting Ready**, which completes a few one-time setup tasks before moving directly into our **First Programs**.
 
-From **EM&bull;Home**, click **Take your first EM&bull;Tour** and we'll take it from there.&thinsp;🧭
+From **EM&bull;Home**, click **Take your first EM&bull;Tour** and we'll take it from there.
+
+<details><summary>&ensp;👀&ensp;a quick heads up&hellip;</summary><br>
+<p>&emsp;&emsp;When you launch your first <b>EM•Tour</b>, the TOUR GUIDE may initially appear in the left sidebar.<br>&emsp;&emsp;Follow the on-screen steps to move it into the secondary sidebar before continuing.</p>
+<p align="center"><img src="../tours/.assets/img-100-00-01.png" alt="" width="900"></p>
+</details>
+
 
 <a id="contributing"></a>
 ## Join the Conversation
