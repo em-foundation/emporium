@@ -15,6 +15,7 @@ const EXTENSIONS = [
 
 const VERBOSE = process.argv.includes('--verbose')
 const REFRESH = process.argv.includes('--refresh')
+const RESET = process.argv.includes('--reset')
 
 function run(cli, quiet = false) {
     if (VERBOSE) console.log(`> ${cli.join(' ')}`)
@@ -45,10 +46,15 @@ function installedExtensions() {
     return new Set(txt.trim().split(/\r?\n/).filter(Boolean).map(s => s.toLowerCase()))
 }
 
+if (RESET) {
+    console.log('EM•porium: removing old VS Code environment…')
+    Fs.rmSync(DATA, { recursive: true, force: true })
+    Fs.rmSync(EXTS, { recursive: true, force: true })
+}
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
 
-const installed = REFRESH ? new Set() : installedExtensions()
+const installed = (REFRESH || RESET) ? new Set() : installedExtensions()
 const missing = EXTENSIONS.filter(ext => !installed.has(ext.toLowerCase()))
 
 if (missing.length) {
