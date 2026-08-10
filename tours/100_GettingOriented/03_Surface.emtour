@@ -256,13 +256,16 @@ steps:
 
       We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 
+      <div class="em-info">
+
       The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
 
-      Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
+      </div>
 
-      {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
-      {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
-      {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
-      {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
+      Before moving on, however, we'll review some **Git** "best practices" when working with your `emporium` clone.
+
+      See you in the **Source Control** tour&thinsp;&hellip;
+
+
 
       {[hc]}
