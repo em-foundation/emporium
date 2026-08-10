@@ -8,7 +8,6 @@ const ROOT = __dirname
 const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
 const NODE_MODULES = Path.join(ROOT, 'node_modules')
-const TOOLS = Path.join(ROOT, 'tools')
 
 const EXTENSIONS = [
     'the-em-foundation.em-builder@26.2.1',
