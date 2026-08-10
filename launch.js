@@ -7,6 +7,7 @@ const Path = require('path')
 const ROOT = __dirname
 const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
+const NODE_MODULES = Path.join(ROOT, 'node_modules')
 
 const EXTENSIONS = [
     'the-em-foundation.em-builder@26.2.0',
@@ -50,6 +51,7 @@ if (RESET) {
     console.log('EM•porium: removing old VS Code environment…')
     Fs.rmSync(DATA, { recursive: true, force: true })
     Fs.rmSync(EXTS, { recursive: true, force: true })
+    Fs.rmSync(NODE_MODULES, { recursive: true, force: true })
 }
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
