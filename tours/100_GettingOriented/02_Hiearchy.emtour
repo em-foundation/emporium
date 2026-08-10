@@ -102,7 +102,7 @@ steps:
 
       This pattern continues with each **EMS Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
 
-      To switch perspective, right-click {[dc,1]} on *any* visible icon within the **Content** view and select **Reveal in Explorer** {[dc,2]}.
+      To switch perspective, right-click {[dc,1]} on *any* visible element within the **Content** view and select **Reveal in Explorer** {[dc,2]}.
 
       <div class="em-info">
 
@@ -118,15 +118,16 @@ steps:
 
       {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
 
-      {[DC,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
+      To add new **EMS** elements to the hierarchy, you'll select an act&shy;ion from the right-click context menu of its parent:
 
-      {[DC,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      {[DC,1]}  blah
 
-      {[DC,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
+      {[DC,2]}  blah
 
-      {[DC,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      {[DC,3]}  blah
 
-      {[DC,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+
+
 
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
 
