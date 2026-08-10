@@ -2,6 +2,7 @@ title: Content Hierarchy
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-100-02-01.png
+  - .assets/img-100-02-02.png
 
 steps:
   - cmds:
@@ -112,6 +113,7 @@ steps:
       To return to its **Content** view, click the **EM&bull;Builder** icon {[dc,3]} at the top of the **Activity Bar**.
 
   - cmds:
+      - view 3
     text: |
 
       {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
