@@ -39,7 +39,7 @@ steps:
       Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EMS** language.
 
       <div class="em-info">
-      
+
       You'll also learn why all **EMS Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
 
       </div>
@@ -86,15 +86,13 @@ steps:
       Line {[bm,B]} shows how one **Unit** can import another using only the latter's fully-qualified `bucket/Unit` name.
 
       <div class="em-info">
-      
+
       In fact, **EMS Package** names will rarely appear within **EMS Unit** source code.
 
       </div>
 
   - cmds:
-      - open 1
-    focus: [1, 1]
-    acts: ["$reveal"]
+      - view 2
     text: |
 
       {[ht,snippet_folder]&thinsp;Files and Folders}
@@ -103,7 +101,7 @@ steps:
 
       This pattern continues with each **EMS Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
 
-      To switch perspective, right-click on *any* visible icon within the **Content** view and select **Reveal in Explorer**.
+      To switch perspective, right-click {[dc,1]} on *any* visible icon within the **Content** view and select **Reveal in Explorer** {[dc,2]}.
 
       <div class="em-info">
 
@@ -111,7 +109,7 @@ steps:
 
       </div>
 
-      To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
+      To return to its **Content** view, click the **EM&bull;Builder** icon {[dc,3]} at the top of the **Activity Bar**.
 
   - cmds:
     text: |
