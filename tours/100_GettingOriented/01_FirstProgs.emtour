@@ -9,7 +9,7 @@ steps:
     focus: [1, 1]
     text: |
 
-      {[ht,front_hand]&thinsp;Hello EM&bull;Script}
+      {[ht,$start]&thinsp;Hello EM&bull;Script}
 
       Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
 
@@ -23,7 +23,7 @@ steps:
 
       Even if you've never seen **EMS** code before, you can prob&shy;ably guess what the {[cu]HelloP} program does&thinsp;!!
 
-      Let's dive in&thinsp;....
+      Let's dive in&thinsp;&hellip;
 
   - cmds:
       - open 1
@@ -37,15 +37,15 @@ steps:
 
       Many tour-stops will examine a particular source file in greater detail.
 
-      As needed, we'll add lettered "bookmarks" to these files along with corresponding commetary:
+      As needed, we'll add lettered "bookmarks" to these files along with corresponding commentary:
 
       {[BM,A]} Boilerplate found in all **EMS** files
 
       {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
 
-      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hiearchy.
+      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hierarchy.
 
-      And now, let's execute this **EMS** program&thinsp;....
+      And now, let's execute this **EMS** program&thinsp;&hellip;
 
   - cmds:
       - open 1
@@ -59,7 +59,11 @@ steps:
 
       For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
 
-      If you haven't done so already, follow the **Request a Wowki Key** link on the **EM&bull;Home** editor tab.
+      <div class="em-info">
+
+      You should have followed the **Request a Wokwi Key** proce&shy;dure.&thinsp; Click the orange flag [&thinsp;{[tr,100/00/05]}&thinsp;] to review.
+
+      </div>
 
       When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
 
@@ -75,7 +79,7 @@ steps:
 
       {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
 
-      While some **EMS** programs will rely upon{[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
+      While some **EMS** programs will rely upon {[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
 
       To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
 
@@ -86,12 +90,10 @@ steps:
 
       {[ht,$steps]&thinsp;Next Steps}
 
-      Congratulations on completing your first tour.&thinsp;🎉
+      Congratulations on finishing your first **EMS** tour 🎉&thinsp;&hellip;
 
       After you **End** this tour by clicking the red square, we'll show the **EM&bull;TOURS** view in the **Primary Side Bar**.
 
-      From here, proceed to the next tour in the **Orientation** bundle by clicking (once) on **Content Hierarchy**.
-
-      And after completing **Content Hierarchy** and then **Language Surface**, have fun with the **Basic Examples**.
+      From here, proceed to the next tour in the **Welcome Aboard** bundle by clicking (once) on **Content Hierarchy**.
 
       {[hc]}

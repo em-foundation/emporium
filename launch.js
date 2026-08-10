@@ -9,7 +9,7 @@ const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
 
 const EXTENSIONS = [
-    'the-em-foundation.em-builder@26.1.1',
+    'the-em-foundation.em-builder@26.2.0',
     'Wokwi.wokwi-vscode@3.6.0'
 ]
 
