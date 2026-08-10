@@ -17,7 +17,7 @@ steps:
 
       If not already obvious, **EM&bull;Script** ≡ **TypeScript**&thinsp;!!
 
-      Using *progrmming conventions* reinenforced visually by **EM&bull;Browser**, **TypeScript** effectively "hosts" **EM&bull;Script**.
+      Using *programming conventions* reinforced visually by **EM&bull;Browser**, **TypeScript** effectively "hosts" **EM&bull;Script**.
 
       But why **TypeScript** [**TS**] &ndash; especially when targeting embed&shy;ded HW typically programmed in C&thinsp;??
 
@@ -81,7 +81,7 @@ steps:
 
       The {[ck]import} directives in {[cu]SoftUart} establish a *client&thinsp;&middot;&thinsp;sup&shy;plier* relationship between this and other **Units**.
 
-      The {[ck]export} qualifiers in {[cu]SoftUart} make functions like {[cf]flush} and {[cf]put} publically visible to clients of this **Unit**.
+      The {[ck]export} qualifiers in {[cu]SoftUart} make functions like {[cf]flush} and {[cf]put} publicly visible to clients of this **Unit**.
 
       All **Units** so far have played the **Module** role &ndash; hiding its *private* implementation of its *public* specification.
 
@@ -126,11 +126,11 @@ steps:
 
       As such, each {[cs]$proxy} serves as a place&shy;holder for some *concrete* **Module** &ndash; but from an unknown supplier.
 
-      {[in]Select %[cu]GpioI% at its %[ck]import% statement and press <bf>F12</b> to see the functions callable through %[cs]$proxy% %[cn]TxPin%.}
+      {[in]Select %[cu]GpioI% at its %[ck]import% statement and press <b>F12</b> to see the functions callable through %[cs]$proxy% %[cn]TxPin%.}
 
       At run-time [**`targ`**], calls to {[cn]TxPin}**.**{[cf]set} behave as if {[cu]SoftUart} had directly imported the delegate **Module**.
 
-      But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) functions calls.
+      But thanks to the **EMS** translator, these apparent in&shy;directions "melt away" to (inlined) function calls.
 
   - cmds:
       - open 1
@@ -223,9 +223,7 @@ steps:
 
       **Templates** (like **Composites**) only exist at *build-time* on your PC &ndash; instantiated very early by the **EMS** translator.
 
-      Clones of the **Module** prototype, of course, will have a presence at build-time [**`meta`**] *and* run-time [**`targ`**]. 
-
-      {[in] Try clicking <b>New Template</b> on your <code>zgit.*</code> <b>Bucket</b>. }
+      Clones of the **Module** prototype, of course, will have a presence at build-time [**`meta`**] *and* run-time [**`targ`**].
 
   - cmds:
       - view 5
@@ -256,13 +254,16 @@ steps:
 
       We've now come full circle back to {[cu]BlinkerP} &ndash; and with more knowledge of its EMS underpinnings.
 
-      The next group of **Basic Examples** tours in fact presents a dozen different variations of our {[cu]BlinkerP} theme.
+      <div class="em-info">
 
-      Before proceeding onward, however, reinforce what you've already absorbed about the **EMS** language:
+      The next group of **Basic Examples** tours in fact presents many different variations of our {[cu]BlinkerP} theme.
 
-      {[bi,arrow_circle_right]} use **VS Code Intellisense** to explore `.em.ts` files<br>
-      {[bi,arrow_circle_right]} descend into each **CATEGORY** within its grammar<br>
-      {[bi,arrow_circle_right]} use **Search** to find examples of some &laquo;{[cs]intrinsic}&raquo;<br>
-      {[bi,arrow_circle_right]} expand **EM&bull;Script Output** and relish its translator
+      </div>
+
+      Before moving on, however, we'll review some **Git** "best practices" when working with your `emporium` clone.
+
+      See you in the **Source Control** tour&thinsp;&hellip;
+
+
 
       {[hc]}

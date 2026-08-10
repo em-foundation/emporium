@@ -2,6 +2,7 @@ title: Content Hierarchy
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - .assets/img-100-02-01.png
+  - .assets/img-100-02-02.png
 
 steps:
   - cmds:
@@ -17,7 +18,7 @@ steps:
       {[bi,arrow_circle_right]} Understanding the elements comprising this view.<br>
       {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
 
-      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/07]}.
+      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/04]}.
 
       Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
 
@@ -36,9 +37,13 @@ steps:
 
       The statement labeled {[bm,A]} declares the _flavor_ of this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
 
-      Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EMS** language.
+      Upcoming tours will encounter other **Unit** flavors, as we dive deeper into the **EMS** language.
+
+      <div class="em-info">
 
       You'll also learn why all **EMS Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
+
+      </div>
 
       Let's move on and talk about the **EMS Bucket** associ&shy;ated with our {[cu]Blinker} program.
 
@@ -81,14 +86,14 @@ steps:
 
       Line {[bm,B]} shows how one **Unit** can import another using only the latter's fully-qualified `bucket/Unit` name.
 
+      <div class="em-info">
+
       In fact, **EMS Package** names will rarely appear within **EMS Unit** source code.
 
-      You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
+      </div>
 
   - cmds:
-      - open 1
-    focus: [1, 1]
-    acts: ["$reveal"]
+      - view 2
     text: |
 
       {[ht,snippet_folder]&thinsp;Files and Folders}
@@ -97,65 +102,37 @@ steps:
 
       This pattern continues with each **EMS Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
 
-      To switch perspective, right-click on *any* visible icon within the **Content** view and select **Reveal in Explorer**.
+      To switch perspective, right-click {[dc,1]} on *any* visible element within the **Content** view and select **Reveal in Explorer** {[dc,2]}.
 
-      You'll now see the same as a file or folder within your local **Git** clone of the `emporium` repository.
+      <div class="em-info">
 
-      To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
+      You'll now see the same element as a file or folder with&shy;in your local **Git** clone of the `emporium` repository.
+
+      </div>
+
+      To return to its **Content** view, click the **EM&bull;Builder** icon {[dc,3]} at the top of the **Activity Bar**.
 
   - cmds:
-      - view 2
+      - view 3
     text: |
 
       {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
 
-      We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
+      To add new **EMS** elements to the hierarchy, you'll select an act&shy;ion from the right-click context menu of its parent:
 
-      {[DC,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
+      {[DC,1]}  select **New Package** under the hierarchy's root
 
-      {[DC,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      {[DC,2]}  select **New Bucket** under any existing **Package**
 
-      {[DC,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
+      {[DC,3]}  select **New &lt;Unit&gt;** under any existing **Bucket**
 
-      {[DC,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      <div class="em-info">
 
-      {[DC,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+      The next tour introduces **Composite**, **Interface**, etc.
 
-  - cmds:
-    acts: ["$build"]
-    text: |
+      </div>
 
-      {[ht,note_add]&thinsp;Implementing %[cu]Blinky%}
 
-      Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
-
-      At this stage, our skeletal {[cu]Blinky} program simply halts execution  &ndash; indicated by  `SysLed` remaining lit.
-
-      Next, you should *overwrite* your skeletal {[cx]Blinky.em.ts} file with the contents of {[cx]Ex02_BlinkerP.em.ts}.
-
-      {[in]<b>VS Code</b> provides familiar <b>Select All · Copy · Paste · Save          commands in its <b>File · Edit · Selection</b> menus.}
-
-      Return focus to your enhanced {[cx]Blinky.em.ts} file and now click the **build&thinsp;+&thinsp;load** button.
-
-      Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
-
-  - cmds:
-      - view 2
-    text: |
-
-      {[ht,rebase]&thinsp;Source Control}
-
-      Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
-
-      In general, you have multiple **Git** commands at your disposal to manage workspace changes:
-
-      {[bi,arrow_circle_right]} **Commit** the changes on your local `dev` branch<br>
-      {[bi,arrow_circle_right]} **Push** your local `dev` branch content up to **GitHub**<br>
-      {[bi,arrow_circle_right]} **Checkout** a new branch and *commit* the changes<br>
-      {[bi,arrow_circle_right]} **Publish** the new branch to your `emporium` fork<br>
-      {[bi,arrow_back]} **Discard changes** &ndash; whether intentional or accidental
-
-      {[in]Hit <b>F1</b> and type <b>Git&thinsp;&hellip;</b> for a list of all such commands.}
 
 
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
@@ -165,14 +142,16 @@ steps:
 
       {[ht,$steps]&thinsp;Next Steps}
 
-      Well done &ndash; you're now officially dangerous.🔥
+      This tour took a *macroscopic* perspective of **EMS** &ndash; illus&shy;trating its hierarchy of **Package &middot; Bucket &middot; Unit** content.
 
-      Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
+      The next tour takes a more *microscopic* view &ndash; ex&shy;plor&shy;ing the **EMS** language surface via individual source files.
 
-      While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
+      <div class="em-info">
 
-      To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
+      Take your time on the upcoming tour &ndash; and don't shy away from pressing the **Back** button.
 
-      And don't forget about that **Discard changes** command we highlighted on the previous tour-stop&thinsp;!!
+      So let's move on with the **Language Overview**&thinsp;&hellip;
+
+      </div>
 
       {[hc]}
