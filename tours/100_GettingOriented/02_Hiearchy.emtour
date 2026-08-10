@@ -120,11 +120,17 @@ steps:
 
       To add new **EMS** elements to the hierarchy, you'll select an act&shy;ion from the right-click context menu of its parent:
 
-      {[DC,1]}  blah
+      {[DC,1]}  select **New Package** under the hierarchy's root
 
-      {[DC,2]}  blah
+      {[DC,2]}  select **New Bucket** under any existing **Package**
 
-      {[DC,3]}  blah
+      {[DC,3]}  select **New &lt;Unit&gt;** under any existing **Bucket**
+
+      <div class="em-info">
+
+      The next tour introduces **Composite**, **Interface**, etc.
+
+      </div>
 
 
 
@@ -136,14 +142,16 @@ steps:
 
       {[ht,$steps]&thinsp;Next Steps}
 
-      Well done &ndash; you're now officially dangerous.🔥
+      This tour took a *macroscopic* perspective of **EMS** &ndash; illus&shy;trating its hierarchy of **Package &middot; Bucket &middot; Unit** content.
 
-      Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
+      The next tour takes a more *microscopic* view &ndash; ex&shy;plor&shy;ing the **EMS** language surface via individual source files.
 
-      While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
+      <div class="em-info">
 
-      To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
+      Take your time on the upcoming tour &ndash; and don't shy away from pressing the **Back** button.
 
-      And don't forget about that **Discard changes** command we highlighted on the previous tour-stop&thinsp;!!
+      So let's move on with the **Language Overview**&thinsp;&hellip;
+
+      </div>
 
       {[hc]}
