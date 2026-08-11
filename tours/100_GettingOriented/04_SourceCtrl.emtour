@@ -1,178 +1,84 @@
 title: Source Control
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
-  - .assets/img-100-02-01.png
+  - .assets/img-100-04-01.png
 
 steps:
   - cmds:
       - open 1
+      - mark 1 A 12
     focus: [1, 1]
-    acts: ["$reveal"]
+    acts: ["$reveal", "$build"]
     text: |
 
-      {[ht,$start]&thinsp;EM&bull;Script Content Hierarchy}
+      {[ht,$start]&thinsp;Experimenting with EM&bull;Script}
 
-      This tour has two objectives which revolve around the **EM&bull;Builder Content** view seen in the **Primary Sidebar**:
+      Going forward, we'll regularly encourage you to not only explore **EMS** content but *modify* it as well.
 
-      {[bi,arrow_circle_right]} Understanding the elements comprising this view.<br>
-      {[bi,arrow_circle_right]} Showing how to add *new* elements to the hierarchy.
+      <div class="em-info">
 
-      As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/07]}.
+      Don't you want to change that constant on line {[bm,A]} ??
 
-      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
+      </div>
 
-      The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
+      This tour therefore recommends some "best practices" using **Git** source control to sandbox your own work.
 
-  - cmds:
-      - open 1
-      - mark 1 A 2
-    focus: [1, 1]
-    acts: ["$reveal"]
-    text: |
+      Once in place, you can start experimenting 🧪&thinsp;&hellip;
 
-      {[ht,account_tree]&thinsp;EM&bull;Script Unit &ndash; Source File}
-
-      The program informally named {[cu]BlinkerP} actually re&shy;sides in a **Unit** source file named {[cx]Ex02_BlinkerP.em.ts}.
-
-      The statement labeled {[bm,A]} declares the _flavor_ of this particular **Unit** &ndash; here, of an **EM&bull;Script Module**.
-
-      Upcoming tours will visit encounter other **Unit** flavors, as we dive deeper into the **EMS** language.
-
-      You'll also learn why all **EMS Unit** source files end with a {[cx].ts} extension.&thinsp;  [Can you guess why&thinsp;??]
-
-      Let's move on and talk about the **EMS Bucket** associ&shy;ated with our {[cu]Blinker} program.
-
-  - cmds:
-      - open 1
-    focus: [1, 1]
-    acts: ["$reveal"]
-    text: |
-
-      {[ht,account_tree]&thinsp;EM&bull;Script Bucket &ndash; Namespace}
-
-      The **Unit** corresponding to our {[cu]BlinkerP} program lives inside an **EMS Bucket** named {[cx]em.examples.basic}
-
-      Logically a namespace (and physically a folder), a **Unit** of the *same* name can reside in more than one **Bucket**.
-
-      As a rule, each **EMS Bucket** has a *globally unique* name comprising multiple identifiers joined by dots.
-
-      In fact, its first identifier alone defines a unique scope:
-
-      {[bi,arrow_circle_right]} <code>em.&ast;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **EM Foundation** content<br>
-      {[bi,arrow_circle_right]} <code>nordic.&ast;&nbsp;</code>&mdash; **Nordic Semiconductor** content<br>
-      {[bi,arrow_circle_right]} <code>rpi.&ast;&nbsp;&nbsp;&nbsp;&nbsp;</code>&mdash; **Raspberry Pi** content<br>
-
-      As you'll now see, the _same_ set of prefixes also ensure the uniqueness of **EMS Package** names.
-
-  - cmds:
-      - open 1
-      - mark 1 B 5
-    focus: [1, 1]
-    acts: ["$reveal"]
-    text: |
-
-      {[ht,account_tree]&thinsp;EM&bull;Script Package &ndash; Container}
-
-      The **Bucket &middot; Unit** elements named {[cx]em.examples.basic/} {[cx]Ex02_BlinkerP.em.ts} live inside the  {[cx]em.prog} **Package**.
-
-      Seemingly redundant, an **EMS Package** serves as a uniquely-named *container* for **Bucket &middot; Unit** *content*.
-
-      A prefixed naming scheme enables us to identify the content *supplier* independent of the content itself.
-
-      Line {[bm,B]} shows how one **Unit** can import another using only the latter's fully-qualified `bucket/Unit` name.
-
-      In fact, **EMS Package** names will rarely appear within **EMS Unit** source code.
-
-      You'll later learn how *different* **Package**(s) can deliver separate versions of the *same* `bucket/Unit` content.
-
-  - cmds:
-      - open 1
-    focus: [1, 1]
-    acts: ["$reveal"]
-    text: |
-
-      {[ht,snippet_folder]&thinsp;Files and Folders}
-
-      We've already mentioned how an **EMS Unit** corres&shy;ponds to a source file of the same name.
-
-      This pattern continues with each **EMS Package &middot; Bucket** as well &ndash; mapping to similarly named folders.
-
-      To switch perspective, right-click on *any* visible icon within the **Content** view and select **Reveal in Explorer**.
-
-      You'll now see the same as a file or folder within your local **Git** clone of the `emporium` repository.
-
-      To return to its **Content** view, click the **EM&bull;Builder** icon at the top of the **Activity Bar**.
 
   - cmds:
       - view 2
     text: |
 
-      {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
+      {[ht,rebase]&thinsp;Source Control &ndash; A Branch for Work}
 
-      We'll now copy the {[cu]BlinkerP} program into your *own* **Package &middot; Bucket &middot; Unit** &ndash; so you can edit&thinsp;+&thinsp;run its code.
+      Initially running the <code>git clone&thinsp;&hellip;</code> command from your shell has defined a relation between a pair of repos:
 
-      {[DC,1]} Right-click on the **Content** view's **EM&bull;Script Source** item and select its **New Package** command.
+      {[DC,1]} a *remote* `emporium` repo housed at **GitHub**<br>
+      {[DC,2]} a *local* `emporium` repo residing on your PC
 
-      {[DC,2]} When prompted, give the new **Package** a simple  yet unique name of the form <code>zgit.&lt;username&gt;</code>.
+      Repo {[dc,2]} typically refers to repo {[dc,1]} as its `origin` &ndash; with its local `main` branch automatically tracking `origin:main`.
 
-      {[DC,3]} Now, right-click on the new **Package** once it appears and select its **New Bucket** command.
+      <div class="em-info">
 
-      {[DC,4]} When prompted, give the new **Bucket** a unique name such as <code>zgit.&lt;username&gt;.mystuff</code>.
+      `origin:main` holds the latest *stable* `emporium` release.
 
-      {[DC,5]}Finally, select **New Program** after right-clicking the new **Bucket** &ndash; and name your program `Blinky`.
+      </div>
+
+      From here, you'll enter one essential command at the shell in&shy;side the `~/path/to/emporium` folder on your PC:
+
+      ```bash
+          git switch -c work
+      ```
+
+      And voilà &ndash; you now have a local sandbox name `work`&thinsp;&hellip;
 
   - cmds:
-    acts: ["$build"]
+      - view 2
     text: |
+      {[ht,rebase]&thinsp;Source Control &ndash; Commit or Discard}
 
-      {[ht,note_add]&thinsp;Implementing %[cu]Blinky%}
+      a
 
-      Give our {[cx]Blinky.em.ts} file focus by clicking its editor tab; and then click the orange **build&thinsp;+&thinsp;load** button.
-
-      At this stage, our skeletal {[cu]Blinky} program simply halts execution  &ndash; indicated by  `SysLed` remaining lit.
-
-      Next, you should *overwrite* your skeletal {[cx]Blinky.em.ts} file with the contents of {[cx]Ex02_BlinkerP.em.ts}.
-
-      {[in]<b>VS Code</b> provides familiar <b>Select All · Copy · Paste · Save          commands in its <b>File · Edit · Selection</b> menus.}
-
-      Return focus to your enhanced {[cx]Blinky.em.ts} file and now click the **build&thinsp;+&thinsp;load** button.
-
-      Try varying the `AppLed` pattern &ndash; or adding a {[cd]printf}!!
+  - cmds:
+      - view 2
+    text: |
+      {[ht,rebase]&thinsp;Source Control &ndash; Push&thinsp;&middot;&thinsp;Pull&thinsp;&middot;&thinsp;Merge}
 
   - cmds:
       - view 2
     text: |
 
-      {[ht,rebase]&thinsp;Source Control}
+      {[ht,rebase]&thinsp;Source Control &ndash; Contributing Content}
 
-      Adding {[cx]Blinky.em.ts} to your **VS Code** workspace will trigger a notification from the **Source Control** activity.
+  - cmds:
+    text: |
 
-      In general, you have multiple **Git** commands at your disposal to manage workspace changes:
-
-      {[bi,arrow_circle_right]} **Commit** the changes on your local `dev` branch<br>
-      {[bi,arrow_circle_right]} **Push** your local `dev` branch content up to **GitHub**<br>
-      {[bi,arrow_circle_right]} **Checkout** a new branch and *commit* the changes<br>
-      {[bi,arrow_circle_right]} **Publish** the new branch to your `emporium` fork<br>
-      {[bi,arrow_back]} **Discard changes** &ndash; whether intentional or accidental
-
-      {[in]Hit <b>F1</b> and type <b>Git&thinsp;&hellip;</b> for a list of all such commands.}
-
-
-      To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
+      {[ht,$extra]&thinsp;Extra Credit}
 
   - cmds:
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}
-
-      Well done &ndash; you're now officially dangerous.🔥
-
-      Feel free to scavenge the {[cx]em.examples.basic} **Bucket** for more **EMS** code you can copy&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;build.
-
-      While covered by the **Basic Examples** tours, why not get familiar with this "starter-ware" right now&thinsp;??
-
-      To explore an example, first open its `.em.ts` file and then click the **Build&thinsp;&middot;&thinsp;Load** button in the **Content** view.
-
-      And don't forget about that **Discard changes** command we highlighted on the previous tour-stop&thinsp;!!
 
       {[hc]}
