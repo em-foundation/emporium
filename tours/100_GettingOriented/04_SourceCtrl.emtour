@@ -51,19 +51,56 @@ steps:
           git switch -c work
       ```
 
-      And voilà &ndash; you now have a local sandbox name `work`&thinsp;&hellip;
+      Voilà &ndash; you've created {[dc,3]} a local sandbox name `work`&thinsp;&hellip;
 
   - cmds:
       - view 2
     text: |
       {[ht,rebase]&thinsp;Source Control &ndash; Commit or Discard}
 
-      a
+      You can always identify the current branch in local repo {[dc,2]} by entering `git status` at the command-line.
+
+      <div class="em-info">
+
+      Alternatively, use the [Source Control](https://code.visualstudio.com/docs/sourcecontrol/overview) features already inte&shy;grated with **VS Code** for a richer user experience.
+
+      </div>
+
+      On the `work` branch, you can add&thinsp;&middot;&thinsp;edit&thinsp;&middot;&thinsp;remove indi&shy;vid&shy;ual **EMS** source files &ndash; plus create *new* <b>Packages&thinsp;&middot;&thinsp;Buckets</b>.
+
+      The **Source Control** view found on the **VS Code Primary Sidebar** clearly summarizes changes you've made.
+
+      From here, you can elect to either **commit** or **discard** any changes as appropriate.
+
+      <div class="em-info">
+
+      Just remember &ndash; always "work" on your `work` branch&thinsp;&hellip;
+
+      </div>
 
   - cmds:
       - view 2
     text: |
-      {[ht,rebase]&thinsp;Source Control &ndash; Push&thinsp;&middot;&thinsp;Pull&thinsp;&middot;&thinsp;Merge}
+      {[ht,rebase]&thinsp;Source Control &ndash; Pull&thinsp;&middot;&thinsp;Merge}
+
+      In steady state, `main` in {[dc,2]} tracks `origin:main` in {[dc,1]}; and local `work` {[dc,3]} holds commits you wish to retain.
+
+      Eventually, `origin:main` grows to include the next stable release of the **EM&bull;porium** environment at its tip.
+
+      Use the following `git` commands to first sync local `main` and then merge {[dc,4]} the new release into `work`:
+
+      ```bash
+          git switch main; git pull
+          git switch work; git merge main
+      ```
+
+      Review the changes back in the **Source Control** view, re&shy;solve any source file conflicts, and then commit to `work`.
+
+      <div class="em-info">
+
+      ⚠️ <u><i>Always</i></u> relaunch the environment with your `emp` shell alias when moving to a new **EM&bull;porium** release.
+
+      </div>
 
   - cmds:
       - view 2
