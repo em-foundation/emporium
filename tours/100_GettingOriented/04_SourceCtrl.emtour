@@ -106,7 +106,54 @@ steps:
       - view 2
     text: |
 
+      {[ht,rebase]&thinsp;Source Control &ndash; Persisting Your Work}
+
+      With commits accumulating on your `work` branch {[dc,4]}, con&shy;sider creating a persistant remote repo {[dc,5]} at **GitHub**.
+
+      Open a **GitHub** account if necessary and then create an *empty* (private) repo named `emporium`.
+
+      Once in place, the following `git` commands bind your `work` branch to `downstream:work` in remote repo {[dc,5]}:
+
+      ```bash
+          REPO=<your-account>/emporium.git
+          URL=https://github.com/$REPO
+          git remote add downstream $URL
+          git push -u downstream work  
+      ```
+
+      <div class="em-info">
+
+      Supply your **GitHub** login credentials if prompted.
+
+      </div>
+
+      **VS Code** can manage the `work` branch from here.
+
+  - cmds:
+      - view 2
+    text: |
+
       {[ht,rebase]&thinsp;Source Control &ndash; Contributing Content}
+
+      While `origin:main` in {[dc,1]} holds stable **EM&bull;porium** re&shy;leases, its `dev` branch collects up-and-coming content.
+
+      At regular intervals, `dev` branch content finds it way onto `origin:main` as the *next* stable (and tagged) version.
+
+      <div class="em-info">
+
+      Use the **Source Control** view to manage local working branches created from `origin:release-YY.MM` tags.
+
+      </div>
+
+      Completing the cycle, your own `downstream:work` branch in {[dc,5]} can potentially contribute context to `origin:main`:
+
+      {[bi,arrow_circle_right]} Add a `dev` branch to {[dc,5]} which tracks `upstream` {[dc,1]}.<br>
+      {[bi,arrow_circle_right]} Merge content from `downstream:work` into `dev` {[dc,6]}.<br>
+      {[bi,arrow_circle_right]} Submit a *pull request* to `em-foundation` for review.
+
+      Ideally, you've done this before and know the drill&thinsp;😉&thinsp;&hellip;
+
+
 
   - cmds:
     text: |
