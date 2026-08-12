@@ -1,0 +1,39 @@
+import '@$$emscript'
+export const $U = $declare('MODULE')
+
+import * as BoardC from '@$distro/BoardC.em'
+import * as FiberMgr from '@em.utils/FiberMgr.em'
+
+export const AppButEdge = $delegate(BoardC.AppButEdge)
+export const AppLed = $delegate(BoardC.AppLed)
+
+const blinkF = $config<FiberMgr.Obj>()
+
+export namespace em$meta {
+    export function em$construct() {
+        AppButEdge.em$meta.setDetectHandler($cb(handler))
+        blinkF.$$val = FiberMgr.em$meta.create($cb(blinkFB))
+    }
+}
+
+export function em$startup() {
+    AppButEdge.init(true)
+    AppButEdge.setDetectFalling()
+}
+
+export function em$run() {
+    AppButEdge.enableDetect()
+    FiberMgr.run()
+}
+
+function blinkFB(a: arg_t) {
+    $['%%d']
+    AppLed.wink(5)
+    AppButEdge.enableDetect()
+}
+
+function handler() {
+    $['%%c']
+    AppButEdge.clearDetect()
+    blinkF.$$.post()
+}

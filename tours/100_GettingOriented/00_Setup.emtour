@@ -1,0 +1,153 @@
+title: Getting Ready
+files:
+  - .assets/img-100-00-01.png
+  - .assets/img-100-00-02.png
+  - .assets/img-100-00-03.png
+  - .assets/img-100-00-04.png
+  - .assets/img-100-00-05.png
+  - .assets/ani-100-00-06.gif
+
+steps:
+  - cmds:
+      - view 1
+    text: |
+
+      {[ht,construction]&thinsp;Getting Ready}
+
+      <div class="em-info"
+
+      Arrange your screen as show.
+
+      Click the **Next** button when done.
+
+      </div>
+
+  - cmds:
+    text: |
+
+      {[ht,$start]&thinsp;Welcome Aboard}
+
+      This initial tour has three primary objectives:
+
+      {[bi,arrow_circle_right]} Learning how to use the **TOUR GUIDE**.<br>
+      {[bi,arrow_circle_right]} Removing some visual clutter from the UI.<br>
+      {[bi,arrow_circle_right]} Request a key to unlock the **Wokwi** simulator.
+
+      To proceed through the current tour, you'll use the six buttons across the top of this view:
+
+      {[DC,1]} **Refresh** &ndash; replay the current stop on this tour<br>
+      {[DC,2]} **Restart** &ndash; rewind to the first stop on this tour <br>
+      {[DC,3]} **Back** &ndash; go to the previous stop on this tour<br>
+      {[DC,4]} **Next** &ndash; go to the next stop on this tour<br>
+      {[DC,5]} **Screenshot** &ndash; save a screenshot of the this stop<br>
+      {[DC,6]} **End** &ndash; stop this tour and close the **TOUR GUIDE**<br>
+
+      Click the **Next** button to continue with **Tour&thinsp;00**&thinsp;&hellip;
+
+  - cmds:
+      - view 2
+    text: |
+
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Activity Bar}
+
+      You can remove some extraneous elements from the **Activity Bar** at the left of the **VS Code** window.
+
+      Right-click inside the **Activity Bar** and uncheck the items suggested in the screenshot.
+
+      We also moved the **EM&bull;Browser** and **EM&bull;Tours** activities to the top and bottom &ndash; for easy reference.
+
+      {[in]To zoom in&thinsp;&middot;&thinsp;out within the image's editor tab, press <b>Ctrl</b> (or <b>Cmd</b>) while scrolling your mouse down&thinsp;&middot;&thinsp;up.}
+
+      Suggestions only &ndash; click **Next** and let's keep moving&thinsp;&hellip;
+
+  - cmds:
+      - view 3
+    text: |
+
+      {[ht,household_supplies]&thinsp;Tidying Up &ndash; Outline View}
+
+      You should place the **Outline View** in the **Secondary Side Bar** &ndash; even if it has nothing to show.
+
+      The **Outline View** proves invaluable once we start exploring some **EM&bull;Script** source code.
+
+      {[DC,1]} select **View > Open View** from the main menu<br>
+      {[DC,2]} type `Outline` to locate then `<ENTER>` to open<br>
+      {[DC,3]} drag the **OUTLINE** tab to the **Secondary Side Bar**<br>
+      {[DC,4]} drop the **OUTLINE** tab just below **CHAT**<br>
+
+      Again, suggestions only &ndash; click **Next** to continue&thinsp;&hellip;
+
+  - cmds:
+      - view 4
+    text: |
+
+      {[ht,key]&thinsp;Wokwi Simulator &ndash; Request a Key}
+
+      To streamline entry into the **EM&bull;porium**, we'll use the **Wokwi Simulator** already present in the environment.
+
+      Switch to the **EM&bull;Home** editor tab and click **Request a Wokwi Key** {[dc,1]}.&thinsp; Then select **Open** {[dc,2]} to visit the website.
+
+      <div class="em-info">
+
+      We assume you've already registered at [wokwi.com](https://wokwi.com).
+
+      </div>
+
+      You'll then **SIGN IN** {[dc,3]} and choose **GET YOUR LICENSE** {[dc,4]}.
+
+      Click **NEXT** to continue the process&thinsp;&hellip;
+
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,content_copy]&thinsp;Wokwi Simulator &ndash; Copy&middot;Paste the Key}
+
+      **GET YOUR LICENSE** displays a dialog offering to open **VS Code**.&thinsp; Click **Cancel** {[dc,5]} to dismiss.
+
+      Instead, you'll **Copy** {[dc,6]} the complete license key to the clipboard and then return to the **EM&bull;porium** window.
+
+      <div class="em-info">
+
+      Back in **VS Code**, launch its **Command Palette** [press **F1**] and then type `wokwi` to display a drop-down menu.
+
+      </div>
+
+      Choose **Manually Enter License Key** {[dc,7]} to reveal an in&shy;put box (not shown), where you can **Paste** the clipboard's key.
+
+      If successful, the **Wokwi** extension confirms {[dc,8]} activation.
+
+  - cmds:
+      - view 6
+    text: |
+
+      {[ht,movie]&thinsp;Enjoy the Show}
+
+      Sit back and relax&thinsp;&hellip;&thinsp; This animation gives you a "sneak pre&shy;view" of the **First Examples** tour you'll take next.
+
+      You'll first select the tour from the **EM&bull;TOURS** view, and then use the familiar **TOUR GUIDE** button between stops.
+
+      <div class="em-info">
+
+      At one point in the animation, we'll actually pop back to *this* tour to review setup of **Wokwi Simulator**.
+
+      </div>
+
+      Bottom line &ndash; **Wokwi** will serve (for now) as default *target HW platform* as you learn more about **EM&bull;Script**.
+
+      <div class="em-info">
+
+      Click **Refresh** to replay this 30-second animation.
+
+  - cmds:
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      With setup now behind us, let the learning begin 📚&thinsp;&hellip;
+
+      After you **End** this tour by clicking the red square, we'll show the **EM&bull;TOURS** view in the **Primary Side Bar**.
+
+      From here, proceed to the next tour in the **Welcome Aboard** bundle by clicking (once) on **First Programs**.
+
+      {[hc]}

@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "author": "you",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-pi-pico",
+      "id": "pico",
+      "top": 54.45,
+      "left": 166.8,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 178.8,
+      "left": 119,
+      "attrs": {
+        "color": "red"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": 82.8,
+      "left": 119,
+      "attrs": {
+        "color": "green"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text1",
+      "top": 182.4,
+      "left": 67.2,
+      "attrs": {
+        "text": "SysLed"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text2",
+      "top": 86.4,
+      "left": 67.2,
+      "attrs": {
+        "text": "AppLed"
+      }
+    },
+    {
+      "type": "wokwi-logic-analyzer",
+      "id": "logic1",
+      "top": 173.15,
+      "left": 393.6,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-uart-terminal",
+      "id": "term",
+      "top": 40,
+      "left": 420,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 93.8,
+      "left": 259.2,
+      "attrs": {
+        "color": "grey",
+        "xray": "1",
+        "bounce": "0"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text3",
+      "top": 86.4,
+      "left": 297.6,
+      "attrs": {
+        "text": "AppBut"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text4",
+      "top": 163.2,
+      "left": 268.8,
+      "attrs": {
+        "text": "Dbg [A-D]"
+      }
+    },
+    {
+      "type": "wokwi-text",
+      "id": "text5",
+      "top": 9.6,
+      "left": 182.4,
+      "attrs": {
+        "text": "AppOut"
+      }
+    }
+  ],
+  "connections": [
+    [
+      "pico:GP0",
+      "$serialMonitor:RX",
+      "",
+      []
+    ],
+    [
+      "pico:GND.4",
+      "led1:C",
+      "gray",
+      [
+        "h-42.45",
+        "v-13.45"
+      ]
+    ],
+    [
+      "led1:A",
+      "pico:GP13",
+      "white",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led2:C",
+      "pico:GND.2",
+      "gray",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "led2:A",
+      "pico:GP5",
+      "white",
+      [
+        "v0"
+      ]
+    ],
+    [
+      "logic1:GND",
+      "pico:GND.5",
+      "gray",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D6",
+      "pico:GP5",
+      "blue",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D0",
+      "pico:GP0",
+      "black",
+      [
+        "v-144",
+        "h-178.35"
+      ]
+    ],
+    [
+      "logic1:D1",
+      "pico:GP21",
+      "#8f4814",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D2",
+      "pico:GP20",
+      "red",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D3",
+      "pico:GP19",
+      "orange",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D4",
+      "pico:GP18",
+      "gold",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D5",
+      "btn1:2.r",
+      "green",
+      [
+        "h-28.8",
+        "v-115.6"
+      ]
+    ],
+    [
+      "pico:GP28",
+      "btn1:2.l",
+      "gray",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "pico:GND.8",
+      "btn1:1.l",
+      "gray",
+      [
+        "h0"
+      ]
+    ],
+    [
+      "logic1:D7",
+      "pico:GP13",
+      "violet",
+      [
+        "h0"
+      ]
+    ]
+  ],
+  "dependencies": {}
+}

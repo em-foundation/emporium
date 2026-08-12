@@ -1,0 +1,102 @@
+title: Pausing Execution
+files:
+  - em.prog:em.examples.basic/Ex10_OneShot3P.em.ts
+  - em.core:em.mcu/Poller.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - .assets/img-101-05-01.png
+
+steps:
+  - cmds:
+      - open 1
+      - mark 1 A 6
+      - mark 1 B 32
+    focus: [1, 1]
+    acts: [$reveal, $build]
+    text: |
+
+      {[ht,$start]&thinsp;Pausing Execution}
+
+      Another variation on using the {[cu]OneShot} {[cs]$delegate} and {[cu]FiberMgr} &ndash; with a signal capture showing the impact.
+
+      Almost identical to the {[cu]OneShot2P} program from the last tour, {[cu]OneShot3P} does _not_ use {[cu]Common}.{[cn]BusyWait}.
+
+      Rather, {[cn]OneShot3P} imports {[cs]'@em.mcu/Poller.em'} at line {[bm,A]} and then calls its {[cf]upause} function at line {[bm,B]}.
+
+      Use the &nbsp;{[cb,build]}&nbsp; button to run the program:&nbsp;  `AppLed` still winks for 5&thinsp;ms [5000&thinsp;&mu;s]  per 1&thinsp;s [1,000,000&thinsp;&mu;s] cycle.
+
+  - cmds:
+      - open 2
+      - mark 2 A 7
+      - mark 2 B 11
+      - mark 2 C 17
+      - mark 2 D 17
+    focus: [2, 1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]Poller% &ndash; Details}
+
+      {[BM,A]} The {[cu]Poller} implementation stays _portable_  by de&shy;claring a {[cs]$proxy} which conforms to {[cu]OneShotI}.
+
+      {[BM,B]} Like {[cu]OneShot1P} from the last tour, {[cu]Poller} also de&shy;clares a (volatile) {[cn]done_flag} for synchronization.
+
+      {[BM,C]} The client-visible {[cf]pause} function simply defers to {[cf]upause} &ndash; scaling its parameter from msecs to &mu;secs.
+
+      {[BM,D]} The {[cf]upause} implementation should remind you of the super-loop design employed by {[cu]OneShot1P}.
+
+      Unlike {[cu]OneShot1P}, however, {[cu]Poller} _localizes_ this pat&shy;tern to smoothly coexist with designs using {[cu]FiberMgr}.
+
+  - cmds:
+      - view 4
+    text: |
+
+      {[ht,monitor_heart]&thinsp;&thinsp;Signal Captures}
+
+      The {[cu]OneShot3P} capture on the left reveals an important difference from {[cu]OneShot2P} on the right.
+
+      For orientation, labels {[dc,C]} and {[dc,D]} mark execution of the {[cd]%%c} and {[cd]%%d} statements at run-time.
+
+      Unlike {[cu]OneShot2P} &ndash; where the MCU stays _active_ while busy-waiting &ndash; {[cu]OneShot3P} quickly goes back to _sleep_.
+
+      {[in]Targeting "tiny chips" where every &mu;J of energy mat&shy;ters, prefer %[cu]Poller% for <i>short</i> (synchronous) delays.}
+
+  - cmds:
+      - open 3
+      - mark 3 P 84
+    focus: [3, 84]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}
+
+      The {[cu]BoardC} **Composite** will bind a conformant {[cu]OneShot} **Module** to the {[cu]Poller}{[cs]$proxy}{[bm,P]}.
+
+      By convention, {[cu]BoardC} will also {[ck]export} its {[cu]OneShot} {[cs]$delegate} for direct use by clients like {[cu]OneShot3P}.
+
+      {[in]Review tour %[tr,101/04]% if needed.}
+
+  - cmds:
+      - view 4
+    text: |
+
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Explore the {[cu]OneShot} for the current &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp;.
+
+      {[bi,task_alt]} Find {[cu]OneShot} **Modules** in _other_  &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp; distros.
+
+      {[bi,task_alt]} See how {[cu]Common}.{[cn]Idle} uses {[cd]%%b} for signaling.
+
+  - cmds:
+      - view 4
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      In practice, the {[cu]OneShot} timer works best for _short_ dur&shy;ations of &mu;secs up to a small number of msecs.
+
+      The next tour will cover a more efficient way to enter a _deeper_ sleep for much _longer_ period of time.
+
+      {[in]And we'll finally explain that single pulse you've likely noticed on the %[cu]OneShot3P% <code>DbgB</code> pin.}
+
+      {[hc]}

@@ -1,0 +1,23 @@
+import '@$$emscript'
+export const $U = $declare('INTERFACE')
+
+export interface em$meta {
+    pinId(): i16
+}
+
+export interface $I {
+    em$meta: em$meta
+    clear(): void
+    functionSelect(select: u8): void
+    get(): bool_t
+    isInput(): bool_t
+    isOutput(): bool_t
+    makeInput(): void
+    makeOutput(): void
+    pinId(): i16
+    reset(): void
+    set(): void
+    setInternalPulldown(enable: bool_t): void
+    setInternalPullup(enable: bool_t): void
+    toggle(): void
+}

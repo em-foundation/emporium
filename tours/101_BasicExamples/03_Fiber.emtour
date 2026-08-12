@@ -1,0 +1,212 @@
+title: Threading with Fibers
+files:
+  - em.prog:em.examples.basic/Ex04_FiberP.em.ts
+  - em.core:em.utils/FiberMgr.em.ts
+  - .assets/img-101-03-01.png
+  - .assets/img-101-03-02.png
+
+steps:
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal", "$build"]
+    text: |
+
+      {[ht,$start]&thinsp;%[cu]FiberP% &ndash; Threading with Fibers}
+
+      The {[cu]FiberP} program introduces _fibers_ &ndash; a light&shy;weight threading model at the heart of the **EMS** runtime.
+
+      The {[cs]'@em.utils/FiberMgr.em'} **Module** (which we'll visit short&shy;ly) publicizes features used by our {[cu]FiberP} client.
+
+      {[in]Go ahead and build&thinsp;&middot;&thinsp;load %[cb,build]% %[cu]FiberP% at this time.}
+
+      While {[cu]FiberP} also blinks `AppLed` five times, its imple&shy;men&shy;tation lacks the {[ck]for} loop seen in {[cu]BlinkerP} {[tr,101/01/02]}.
+
+      Rather, the {[cu]FiberP} program relies on a sort of "reactive call&shy;back" function triggered under software control.
+
+  - cmds:
+      - open 1
+      - mark 1 A 6
+      - mark 1 B 10
+      - mark 1 C 14
+      - mark 1 D 24
+      - mark 1 E 27
+    focus: [1, 1]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]FiberP% &ndash; Details}
+
+      {[BM,A]} The {[cu]FiberMgr} module exhibits an _object-factory_ design pattern used elsewhere in the **EMS** runtime.
+
+      {[BM,B]} The {[cn]blinkF} {[cs]$config} holds a private object of type {[cu]FiberMgr}.{[ct]Obj} used in both domains [**`meta`**, **`targ`**].
+
+      {[BM,E]} {[cu]blinkF} will internally reference our private {[cf]blinkFB} function &ndash; termed the *fiber body*.
+
+      {[BM,C]} Using the {[cu]FiberMgr} build-time [**`meta`**] {[cf]create} function, we bind a new fiber object to {[cn]blinkF}.
+
+      {[BM,D]} After starting {[cu]FiberMgr} [**`targ`**], calls to {[cf]post} will schedule execution of {[cf]blinkFB} at run-time.
+
+  - cmds:
+      - open 2
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
+    focus: [2, 6]
+    acts: ["$reveal"]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]FiberMgr% &ndash; Details}
+
+      Several **EMS** data-types which support {[cu]FiberMgr} clients as well as the implementation of this **Module**.
+
+      {[BM,A]} *fiber body* type &ndash; callback function that accepts one scalar {[ct]arg_t} parameter.
+
+      {[BM,B]} *fiber object* type &ndash; reference to an internal {[ct]Fiber} structure; note that {[ct]$$} in **EMS** matches `*` in C.
+
+      {[BM,C]} The **EMS** idiom for defining a (private) structure with a set of typed fields.
+
+      {[BM,D]} An **EMS** {[cs]$struct} can optionally declare methods which operate on instances of this type.
+
+      {[BM,E]} Another internal {[cs]$struct} which supports the imple&shy;mentation of {[cu]FiberMgr}.
+
+  - cmds:
+      - open 2
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
+      - mark 2 F 28
+      - mark 2 G 31
+      - mark 2 H 41
+      - mark 2 I 43
+    focus: [2, 32]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]FiberMgr% &ndash; More Details}
+
+      The implementation of {[cu]FiberMgr} declares a pair of private variables used to maintain internal state.
+
+      {[BM,F]} The {[cs]$table} operator declares a static array of muta&shy;ble {[ct]Fiber} structures.
+
+      {[BM,G]} {[cf]create} adds a new element to {[cn]fiber_tab} at build-time; note that {[cn]arg} (if absent) defaults to `0`.
+
+      {[BM,H]} The {[cs]$make} operator here allocates a {[ct]List} instance, held in the private {[cn]ready_list} variable. 
+
+      {[BM,I]} {[cf]dispatch} repeatedly takes {[ct]Fiber} objects from {[cn]ready_list} and then invokes their {[cf]body} callback.
+
+      {[in]When used within a function, the %[ct]$$% operator be&shy;haves like the <code>-&gt;</code> dereference operator in C.}
+
+  - cmds:
+      - open 2
+      - mark 2 A 6
+      - mark 2 B 7
+      - mark 2 C 9
+      - mark 2 D 14
+      - mark 2 E 18
+      - mark 2 F 28
+      - mark 2 G 31
+      - mark 2 H 41
+      - mark 2 I 43
+      - mark 2 J 52
+      - mark 2 K 57
+      - mark 2 L 61
+
+    focus: [2, 43]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]FiberMgr% &ndash; Still More Details}
+
+      {[cu]FiberMgr} uses methods of the {[cn]GlobalInterrupts} proxy to enforce the consistency of its internal data.
+
+      {[BM,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
+
+      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
+
+      {[BM,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
+
+      The {[ct]List} methods seen here implement a singly-linked chain of {[ct]Fiber} references.
+
+      {[in]The %[cs]$null% and %[cs]$ref% intrinics mean what you'd think.}
+
+  - cmds:
+      - open 1
+    focus: [1, 22]
+    text: |
+
+      {[ht,$peek]&thinsp;%[cu]FiberP% &ndash; Looking Back}
+
+      Knowing how {[cu]FiberMgr} works, its internal {[cn]ready_list} will already contain {[cn]blinkF} when calling {[cf]run}.
+
+      {[cf]run} then calls its private {[cf]dispatch} function &ndash; which in turn passes control to our {[cf]blinkFB} fiber body.
+
+      After conditionally blinking `AppLed`, {[cf]blinkFB} schedules its *next* callback by again invoking {[cf]post} on {[cn]blinkF}.
+
+      Since our fiber body re-schedules itself, {[cn]ready_list} will never empty and the system will never sleep.
+
+      {[in]Toggling <code>DbgD</code> inside %[cf]BlinkFB% will allow us to pre&shy;cisely measure dispatch overhead using <b>PulseView</b>.}
+
+  - cmds:
+      - view 3
+    acts: [$build]
+    text: |
+
+      {[ht,measuring_tape]&thinsp;&thinsp;%[cu]FiberP% &ndash; Program Size}
+
+      Before we turn to a run-time signal capture of {[cu]FiberP}, a few remarks about the *size* of its program image.
+
+      While overtly identical to {[cu]BlinkerP}, the current pro&shy;gram relies upon {[cu]FiberMgr} &ndash; at some additional cost.
+
+      {[in]When using &thinsp;%[cb,build]%&thinsp;, translator stats will briefly appears in the <b>OUTPUT</b> panel &ndash; which you click to regain focus.}
+
+      We've shown the {[cn]FiberP} ({[cn]BlinkerP}) program stats in succes&shy;sion for easy comparision:
+
+      {[bi,arrow_circle_right]} 82 (82) **EMS Units** present during configuration<br>
+      {[bi,arrow_circle_right]} 28 (27) **EMS Units** remaining at compilation<br>
+      {[bi,arrow_circle_right]} 1048+32 (616+0) bytes of readonly memory<br>
+      {[bi,arrow_circle_right]} 16+24 (0+16) bytes of readwrite memory<br>
+      {[bi,recommend]} not bad &ndash; we now have a ≈400B scheduler&thinsp;!!
+
+  - cmds:
+      - view 4
+    text: |
+
+      {[ht,monitor_heart]&thinsp;&thinsp;%[cu]FiberP% &ndash; Signal Capture}
+
+      Looking at {[cu]FiberP} through **PulseView**, the `AppLed` and `SysLed` signals mirror the earlier {[cu]BlinkerP} capture.
+
+      The additional activity on `DbgD` results from the {[cs]%%d+} and {[cs]%%d-} statements added to our {[cf]blinkFB} callback.
+
+      Zooming in, the **PulseView** cursor at {[dc,T]} reports 0.7&thinsp;&mu;s between the falling and rising edge of `DbgD`.
+
+      {[in]Recall that pins <code>Dbg[A-D]</code> use <i>active-low</i> logic.}
+
+      This measurement quantifies the overhead of switching threads within {[cu]FiberMgr} as indeed quite small.
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Hit **F1** and create a new branch with **Git: Checkout**
+
+      {[bi,task_alt]} Trace the {[cu]FiberMgr}.{[cf]dispatch} flow using {[cd]printf}.
+
+      {[bi,task_alt]} Add a fiber-based version of your {[cu]Blinky} program.
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      The {[cu]FiberP} program plus the {[cu]FiberMgr} infrastructure codify a core **EMS** design pattern.
+
+      As we pivot to peripherals awakening a sleeping pro&shy;gram, you'll further appreciate the power of {[cu]FiberMgr}.
+
+      {[hc]}

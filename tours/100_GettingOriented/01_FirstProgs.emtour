@@ -1,0 +1,99 @@
+title: First Programs
+files:
+  - em.prog:em.examples.basic/Ex01_HelloP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+
+steps:
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+
+      {[ht,$start]&thinsp;Hello EM&bull;Script}
+
+      Going forward, most of the tours you'll take will involve examining individual **EM&bull;Script** source files.
+
+      In this case, we've shown you the **EM&bull;Script** source file `Ex01_HelloP.em.ts` within a readonly editor tab.
+
+      <div class="em-info">
+
+      We'll start using '<b>EMS</b>' as shorthand for <b>EM&bull;Script</b>.
+
+      </div>
+
+      Even if you've never seen **EMS** code before, you can prob&shy;ably guess what the {[cu]HelloP} program does&thinsp;!!
+
+      Let's dive in&thinsp;&hellip;
+
+  - cmds:
+      - open 1
+      - mark 1 A 2
+      - mark 1 B 5
+    focus: [1, 1]
+    acts: ["$reveal"]
+    text: |
+
+      {[ht,$details]&thinsp;%[cu]HelloP% &ndash; Details}
+
+      Many tour-stops will examine a particular source file in greater detail.
+
+      As needed, we'll add lettered "bookmarks" to these files along with corresponding commentary:
+
+      {[BM,A]} Boilerplate found in all **EMS** files
+
+      {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
+
+      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hierarchy.
+
+      And now, let's execute this **EMS** program&thinsp;&hellip;
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: [$build]
+    text: |
+
+      {[ht,$build]&thinsp;%[cu]HelloP% &ndash; Build&thinsp;+&thinsp;Load}
+
+      Tours focused on specific **EMS** programs will include a **build&thinsp;+&thinsp;load** stop for running this code on target HW.
+
+      For now, we'll rely upon a **Raspberry Pi Pico** simulator (supported by the **Wokwi** extension) as our target.
+
+      <div class="em-info">
+
+      You should have followed the **Request a Wokwi Key** proce&shy;dure.&thinsp; Click the orange flag [&thinsp;{[tr,100/00/05]}&thinsp;] to review.
+
+      </div>
+
+      When ready, click the {[cb,build]} *action button* to initiate **build&thinsp;+&thinsp;load** of our {[cu]HelloP} program.
+
+      A **Wokwi Simulator** tab will open in the editor &ndash; with `hello world` output seen in a **Wokwi Terminal** pane.
+
+      Close the **Wokwi Simulator** tab before clicking **Next**.
+
+  - cmds:
+      - open 2
+    focus: [2, 1]
+    acts: [$build, $reveal]
+    text: |
+
+      {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}
+
+      While some **EMS** programs will rely upon {[cd]printf} out&shy;put, many more will simply blink LEDs as their UI.
+
+      To that end, glance at the {[cu]BlinkerP} program shown here.&thinsp; Then click {[cb,build]} and enjoy the show&thinsp;!!
+
+      Over time, you'll run **EMS** programs on a growing list of target platforms featuring a wide range of MCUs.
+
+  - cmds:
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Congratulations on finishing your first **EMS** tour 🎉&thinsp;&hellip;
+
+      After you **End** this tour by clicking the red square, we'll show the **EM&bull;TOURS** view in the **Primary Side Bar**.
+
+      From here, proceed to the next tour in the **Welcome Aboard** bundle by clicking (once) on **Content Hierarchy**.
+
+      {[hc]}

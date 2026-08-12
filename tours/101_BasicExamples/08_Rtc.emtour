@@ -1,0 +1,194 @@
+title: Real-Time Clock
+files:
+  - em.core:em.hal/RtcI.em.ts
+  - em.core:em.utils/TimeTypes.em.ts
+  - em.core:em.utils/AlarmMgr.em.ts
+  - em.core:em.utils/UptimerRtc.em.ts
+  - .assets/img-101-08-01.png
+
+steps:
+  - cmds:
+      - view 5
+    text: |
+
+      {[ht,$start]&thinsp; Real-Time Clock}
+
+      The {[cu]AlarmMgr} implementation covered in this tour lev&shy;erages a {[cs]$proxy} conforming to the {[cu]RtcI} interface.
+
+      We'll initially visit {[cu]RtcI} before pivoting to {[cu]TimeTypes} definitions &ndash; used throughout this design.
+
+      After exploring {[cu]AlarmMgr}, we'll visit {[cu]UptimerRtc} &ndash; a bridge between the {[cu]UptimerI} and {[cu]RtcI} abstractions.
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$peek]&thinsp; %[cu]RtcI% &ndash; Quick Look }
+
+      The {[cu]RtcI} interface exposes methods reflecting differ&shy;ent aspects of MCU real-time clock [RTC] peripherals:
+
+      {[bi,arrow_circle_right]} {[cf]enable}&middot;{[cf]disable} capture timer-like RTC behavior<br>
+      {[bi,arrow_circle_right]} {[cf]getRawTime} captures clock-like RTC behavior<br>
+      {[bi,arrow_circle_right]} {[cf]toThresh} maps to an internal RTC timebase
+
+      All of these methods rely upon a set of _time types_ defined in our conventionally-named module {[cu]T}.
+
+      {[in]Unlike other <code>em.hal</code> interfaces we've seen, %[cu]RtcI% im&shy;plementations can vary considerably between MCUs.}
+
+  - cmds:
+      - open 2
+      - mark 2 A 11
+      - mark 2 B 24
+      - mark 2 C 28
+    focus: [2, 1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details]&thinsp; %[cu]TimeTypes% &ndash; Details }
+
+      You've already seen many of these types and functions used by {[cu]RtcI} as well as by clients of {[cu]AlarmMgr}.
+
+      {[BM,A]} {[ct]RawTime} represents the current time since reset as the fixed-point value {[cn]secs}.{[cn]subs} in Q32.32 format.
+
+      {[BM,B]} These three 32-bit types represent different _time deltas_ &ndash; each with their own range and precision.
+
+      {[BM,C]} A set of helper functions for converting between time types and for obtaining a type's zero value.
+
+      The <i>accuracy</i> of these time values depends upon the underlying RTC HW &ndash; and can vary considerably.
+
+      {[in]If you have already guessed, the type %[ct]Secs30p2% re&shy;presents a 0.25&thinsp;second interval.}
+
+  - cmds:
+      - open 3
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+    focus: [3, 1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; Details }
+
+      After declaring the all-important {[cu]RtcI}{[cs]$proxy} at {[bm,A]}, {[cu]AlarmMgr} follows the _object-factory_ design pattern:
+
+      {[BM,B]} We name the type of an {[ct]Alarm} reference.<br>
+      {[BM,C]} We define the private fields of an {[ct]Alarm}.<br>
+      {[BM,D]} We specify the public methods of an {[ct]Alarm}.<br>
+      {[BM,E]} We declare a {[cs]$table} to store {[ct]Alarm} instances.<br>
+      {[BM,F]} We fabricate new {[ct]Alarm} objects in {[cf]create} [**`meta`**].
+
+      You'll next see how {[cu]AlarmMgr} manipulates these {[ct]Alarm} objects at run-time [**`targ`**].
+
+  - cmds:
+      - open 3
+
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+
+      - mark 3 G 39
+      - mark 3 H 45
+      - mark 3 I 49
+      - mark 3 J 54
+      - mark 3 K 60
+
+    focus: [3, 39]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; More Details }
+
+      Central to its implementation, {[cu]AlarmMgr} enables mul&shy;tiple {[ct]Alarm} instances to _share_ the underlying {[cn]Rtc} HW.
+
+      To that end, its {[cf]dispatch} function continually searches for the "next" {[ct]Alarm} (if any) granted access to the RTC:
+
+      {[BM,G]} {[cn]nxt_alarm} tracks the result of the search.<br>
+      {[BM,H]} {[cn]max_wup_time} provides the search threshold.<br>
+      {[BM,I]} Invoke {[cf]post} on the fiber of any expired {[ct]Alarm}.<br>
+      {[BM,J]} Consider this {[ct]Alarm} as a potential candidate.<br>
+      {[BM,K]} Conditionally schedule the next {[cn]Rtc} wakeup event.
+
+      You'll see calls to the internal {[cf]dispatch} function, as we next implement the client-visible {[ct]Alarm} methods.
+
+  - cmds:
+      - open 3
+
+      - mark 3 A 9
+      - mark 3 B 11
+      - mark 3 C 13
+      - mark 3 D 18
+      - mark 3 E 25
+      - mark 3 F 28
+
+      - mark 3 G 39
+      - mark 3 H 45
+      - mark 3 I 49
+      - mark 3 J 54
+      - mark 3 K 60
+
+      - mark 3 L 66
+      - mark 3 M 71
+      - mark 3 N 74
+      - mark 3 O 78
+
+    focus: [3, 64]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$details]&thinsp; %[cu]AlarmMgr% &ndash; Still More Details }
+
+      The {[cf]wakeup} and {[cf]wakeupAligned} methods call {[cf]setup}, which adds an {[ct]Alarm} object to the scheduling mix:
+
+      {[BM,L]} We convert current {[ct]RawTime} to a {[ct]Secs30p2} value.<br>
+      {[BM,M]} We calculate {[cn]wup_time} and convert to {[ct]RtcThresh}.<br>
+      {[BM,N]} We invoke {[cf]dispatch} with {[cn]cur_time} in {[ct]Secs30p2}.
+
+      In steady state, the {[cf]wakeupHandler} event prepared after line {[bm,K]} will start the next {[cf]dispatch} cycle at line {[bm,O]}.
+
+  - cmds:
+      - open 4
+    focus: [4, 1]
+    acts: [$reveal]
+    text: |
+
+      {[ht,$peek]&thinsp; %[cu]UptimerRtc% &ndash; Quick Look }
+
+      We previously saw a call to {[cu]Common}.{[cn]Uptimer}.{[cf]raw} in our {[cu]AlarmMgr} implementation.
+
+      Our current &thinsp;<span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; uses this (portable) implemen&shy;tation of the {[cu]UptimerI} interface as the delegate.
+
+      {[cu]UptimerRtc} declares it own {[cu]RtcI}{[cs]$proxy} and simply forwards the prescribed {[cf]read} function accordingly.
+
+  - cmds:
+      - open 3
+    focus: [3, 39]
+    text: |
+
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Enable {[cn]DBG_FLAG} and run {[cu]AlarmMgr} client programs.
+
+      {[bi,task_alt]} Push {[cf]dispatch} harder using more {[cu]TickerP} threads.
+
+      {[bi,task_alt]} Find {[cn]Rtc} delegates for different &thinsp;{[em]%[ci,circuit-board]%&nbsp;Board}&thinsp; distros.
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+
+      {[ht,$steps]&thinsp;Next Steps}
+
+      This tour completes our forary into _timed_ wakeup from deep-sleep using the [{[cu]RtcI}] abstraction.
+
+      From here we'll pivot to edge detection &ndash; _asynchronous_ wakeup from deep-sleep triggered by pressing `AppBut`.
+
+      {[hc]}

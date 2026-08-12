@@ -1,0 +1,13 @@
+PI_PICO-sim$$:
+    activeLowLeds:    false
+    baudRate:         115200
+    clockFreq:        48000000
+    pins:
+        appBut:       28
+        appLed:       5
+        appOut:       0
+        sysDbgA:      21
+        sysDbgB:      20
+        sysDbgC:      19
+        sysDbgD:      18
+        sysLed:       13
