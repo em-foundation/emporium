@@ -15,7 +15,7 @@ steps:
 
       The {[cu]AlarmMgr} implementation covered in this tour lev&shy;erages a {[cs]$proxy} conforming to the {[cu]RtcI} interface.
 
-      We'll initially visit {[cu]RtcI} before pivoting to {[cu]TimerTypes} definitions &ndash; used throughout this design.
+      We'll initially visit {[cu]RtcI} before pivoting to {[cu]TimeTypes} definitions &ndash; used throughout this design.
 
       After exploring {[cu]AlarmMgr}, we'll visit {[cu]UptimerRtc} &ndash; a bridge between the {[cu]UptimerI} and {[cu]RtcI} abstractions.
 

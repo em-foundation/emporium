@@ -15,7 +15,7 @@ steps:
 
       {[ht,$start]&thinsp; Edge Detection}
 
-      This tour visits two programs which wink `AppLed` &ndash; but now in response to asynchrnously pressing `AppBut`:
+      This tour visits two programs which wink `AppLed` &ndash; but now in response to asynchronously pressing `AppBut`:
 
       {[bi,arrow_circle_right]} {[cu]Button1P}, which uses a primitive _super-loop_<br>
       {[bi,arrow_circle_right]} {[cu]Button2P}, which relies upon _fiber dispatch_
@@ -45,7 +45,7 @@ steps:
       {[BM,B]} We bind a detection handler at build-time [**`meta`**].<br>
       {[BM,C]} We setup the `AppBut` pin HW at run-time [**`targ`**].<br>
       {[BM,D]} We enable `AppBut` detection inside our super-loop.<br>
-      {[BM,E]} We clear dection before signaling {[cn]pressed_flag}.
+      {[BM,E]} We clear detection before signaling {[cn]pressed_flag}.
 
       {[in]The <b>EMS</b> translator ensures all %[cs]em$startup% code exe&shy;cutes <i>before</i> the target C++ program reaches %[cs]em$run%.}
 
@@ -98,7 +98,7 @@ steps:
 
       {[ht,$details]&thinsp; %[cu]BoardC% &ndash; Details}
 
-      The {[cu]BoardC} **composite** instaniates {[cu]AppButEdge}{[bm,A]} and {[cu]AppButPin}{[bm,B]} using {[cs]$clone} with a **template**.
+      The {[cu]BoardC} **composite** instantiates {[cu]AppButEdge}{[bm,A]} and {[cu]AppButPin}{[bm,B]} using {[cs]$clone} with a **template**.
 
       {[in]The next tour will add %[cu]AppBut% to the mix.}
 
@@ -106,7 +106,7 @@ steps:
 
       {[cu]AppButEdge} and {[cu]AppButPin} assign {[bm,D]} their {[cn]pin_num} **config** parameters a board-specific value for `AppBut`
 
-      The {[cu]AppButEdge} and {[cu]AppButPin} **delegates** repsectively implement {[cu]EdgeI} and {[cu]GpioI} **interfaces** &ndash; seen next.
+      The {[cu]AppButEdge} and {[cu]AppButPin} **delegates** respectively implement {[cu]EdgeI} and {[cu]GpioI} **interfaces** &ndash; seen next.
 
   - cmds:
       - open 3
