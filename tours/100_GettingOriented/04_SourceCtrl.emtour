@@ -94,7 +94,7 @@ steps:
           git switch work; git merge main
       ```
 
-      Review the changes back in the **Source Control** view, re&shy;solve any source file conflicts, and then commit to `work`.
+      Review the changes in the **Source Control** view, resolve any source file conflicts there, and then commit to `work`.
 
       <div class="em-info">
 
@@ -141,11 +141,11 @@ steps:
 
       <div class="em-info">
 
-      Use the **Source Control** view to manage local working branches created from `origin:release-YY.MM` tags.
+      Use the **Source Control** view to manage local working branches created from `release-YY.MM` tags in {[dc,1]}.
 
       </div>
 
-      Completing the cycle, your own `downstream:work` branch in {[dc,5]} can potentially contribute to `origin:main` in {[dc,1]}:
+      Completing the cycle, your own `downstream:work` branch in {[dc,5]} can potentially contribute to `origin:dev` in {[dc,1]}:
 
       {[bi,arrow_circle_right]} Add a `dev` branch to {[dc,5]} which tracks `origin:dev` {[dc,1]}.<br>
       {[bi,arrow_circle_right]} Merge content from `downstream:work` into `dev` {[dc,6]}.<br>
@@ -166,7 +166,7 @@ steps:
       Switch to your `work` branch and just go for it&thinsp;!!
 
       {[bi,arrow_circle_right]} Make {[cu]BlinkerP} blink faster and longer.<br>
-      {[bi,arrow_circle_right]} Select an identifer, hit **F12**, and see where you land.<br>
+      {[bi,arrow_circle_right]} Select an identifier, hit **F12**, and see where you land.<br>
       {[bi,arrow_circle_right]} Find all `em.ts` files containing a {[cs]$proxy} declaration.<br>
       {[bi,arrow_circle_right]} Add some {[cd]printf} statements to trace execution.<br>
       {[bi,arrow_circle_right]} Create a new **Package&thinsp;&middot;&thinsp;Bucket** as seen earlier {[tr,100/02/06]}.<br>
