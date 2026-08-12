@@ -108,9 +108,9 @@ steps:
 
       {[ht,rebase]&thinsp;Source Control &ndash; Persisting Your Work}
 
-      With commits accumulating on your `work` branch {[dc,4]}, con&shy;sider creating a persistant remote repo {[dc,5]} at **GitHub**.
+      With commits accumulating on your `work` branch {[dc,4]}, con&shy;sider creating a persistent remote repo {[dc,5]} at **GitHub**.
 
-      Open a **GitHub** account if necessary and then create an *empty* (private) repo named `emporium`.
+      Open a **GitHub** account if necessary and then create an *empty* repo (private if you prefer) named `emporium`.
 
       Once in place, the following `git` commands bind your `work` branch to `downstream:work` in remote repo {[dc,5]}:
 
@@ -137,7 +137,7 @@ steps:
 
       While `origin:main` in {[dc,1]} holds stable **EM&bull;porium** re&shy;leases, its `dev` branch collects up-and-coming content.
 
-      At regular intervals, `dev` branch content finds it way onto `origin:main` as the *next* stable (and tagged) version.
+      At regular intervals, `dev` branch content finds its way onto `origin:main` as the *next* stable (and tagged) version.
 
       <div class="em-info">
 
@@ -145,24 +145,53 @@ steps:
 
       </div>
 
-      Completing the cycle, your own `downstream:work` branch in {[dc,5]} can potentially contribute context to `origin:main`:
+      Completing the cycle, your own `downstream:work` branch in {[dc,5]} can potentially contribute to `origin:main` in {[dc,1]}:
 
-      {[bi,arrow_circle_right]} Add a `dev` branch to {[dc,5]} which tracks `upstream` {[dc,1]}.<br>
+      {[bi,arrow_circle_right]} Add a `dev` branch to {[dc,5]} which tracks `origin:dev` {[dc,1]}.<br>
       {[bi,arrow_circle_right]} Merge content from `downstream:work` into `dev` {[dc,6]}.<br>
-      {[bi,arrow_circle_right]} Submit a *pull request* to `em-foundation` for review.
+      {[bi,arrow_circle_right]} Submit a *pull request* {[dc,7]} to `em-foundation` for review.
 
       Ideally, you've done this before and know the drill&thinsp;😉&thinsp;&hellip;
 
 
 
   - cmds:
+      - open 1
+    focus: [1, 1]
+    acts: ["$reveal", "$build"]
     text: |
 
-      {[ht,$extra]&thinsp;Extra Credit}
+      {[ht,experiment]&thinsp;Start Experimenting}
+
+      Switch to your `work` branch and just go for it&thinsp;!!
+
+      {[bi,arrow_circle_right]} Make {[cu]BlinkerP} blink faster and longer.<br>
+      {[bi,arrow_circle_right]} Select an identifer, hit **F12**, and see where you land.<br>
+      {[bi,arrow_circle_right]} Find all `em.ts` files containing a {[cs]$proxy} declaration.<br>
+      {[bi,arrow_circle_right]} Add some {[cd]printf} statements to trace execution.<br>
+      {[bi,arrow_circle_right]} Create a new **Package&thinsp;&middot;&thinsp;Bucket** as seen earlier {[tr,100/02/06]}.<br>
+      {[bi,arrow_circle_right]} Create a new (empty) **Program** in some **Bucket**.<br>
+      {[bi,arrow_circle_right]} Add some code to this **Program**'s {[cs]em$run} function.<br>
+      {[bi,arrow_circle_right]} Run your new program on the **Wokwi Simulator**.<br>
+      {[bi,arrow_circle_right]} Explore generated files in the **EM&bull;Script Output** folder.<br>
+      {[bi,arrow_circle_right]} Try to grok what the **EMS** translator actually does.
+
+      <div class="em-info">
+
+      Of course, you can *always* discard *any* changes to `work`.
+
+      </div>
+
 
   - cmds:
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}
+
+      Congratulations&thinsp;&hellip;&nbsp; We've reached the final stop on our **Welcome Aboard** group of preparatory tours.
+
+      Armed with an **EM&bull;Script** overview plus a working know&shy;ledge of the **EM&bull;porium** environment, let's get going&thinsp;!!
+
+      See you on the first **Basic Examples** tour&thinsp;&hellip;
 
       {[hc]}
