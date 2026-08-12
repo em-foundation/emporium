@@ -71,7 +71,7 @@ if (RESET) {
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
 
-console.log('EM•porium: checking npm dependencies…')
+console.log('EM•porium: updating npm dependencies (this may take a while)…')
 run(['npm', 'install', '--loglevel=error'], !VERBOSE)
 
 const installed = (REFRESH || RESET) ? new Set() : installedExtensions()
