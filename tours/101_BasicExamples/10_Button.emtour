@@ -18,8 +18,8 @@ steps:
       This program can discriminate between different kinds of button presses, based upon their duration:
 
       {[DC,1]} a _glitch_ press, falling below a minimum duration<br>
-      {[DC,2]} a _short_ press, exceding a minimum duration<br>
-      {[DC,3]} a _long_ press, exceding a maximum duration
+      {[DC,2]} a _short_ press, exceeding a minimum duration<br>
+      {[DC,3]} a _long_ press, exceeding a maximum duration
 
       In the case of {[cu]Button3P}, short [100&thinsp;ms] and long [4&thinsp;s] presses will respectively wink `AppLed` and `SysLed`.
 
@@ -70,7 +70,7 @@ steps:
 
       {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; Details}
 
-      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2} program of the prior tour {[tr,101/09/03]}:
+      The **module** cloned via {[cu]ButtonT} employs a design not unlike the {[cu]Button2P} program of the prior tour {[tr,101/09/03]}:
 
       {[BM,A]}We use an {[cu]EdgeI} **proxy** (not a named **delegate**).<br>
       {[BM,B]}We use an internal {[ct]Fiber} to debounce (not blink).<br>

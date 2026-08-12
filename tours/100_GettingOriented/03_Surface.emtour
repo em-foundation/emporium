@@ -195,7 +195,7 @@ steps:
       {[in]The <span class="em codicon codicon-circuit-board"></span> status item shows the <i>current</i> target board.}
 
       {[BM,A]}{[cu]BoardC} imports portable & non-portable **Modules**<br>
-      {[BM,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone} [TBD]<br>
+      {[BM,B]}{[cu]BoardC} creates *new* **Modules** using {[cs]$clone}<br>
       {[BM,C]}{[cu]BoardC} binds {[cs]$proxy} delegates and {[cs]$config} values
 
       The {[cs]em$configure} [**`meta`**] intrinsic often serves as the focal point within this (and other) {[cu]BoardC} **Composites**.

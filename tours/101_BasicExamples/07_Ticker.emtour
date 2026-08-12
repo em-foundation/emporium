@@ -9,7 +9,7 @@ steps:
       - view 3
     text: |
 
-      {[ht,$start]&thinsp; Home}
+      {[ht,$start]&thinsp; Cyclic Tasks}
 
       This tour examines the {[cu]TickerP} program, which winks `AppLed` [1.0&thinsp;s] &thinsp;_and_ `SysLed` [1.5&thinsp;s] at different rates.
 
@@ -83,7 +83,7 @@ steps:
 
       {[BM,E]} {[cu]FiberMgr}.{[cf]create} receives the _index_ of our new {[ct]Ticker} as the arg value passed to this fiber's body.
 
-      {[BM,F]} {[cu]AlarmMgr}.{[cf]create} connecs {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
+      {[BM,F]} {[cu]AlarmMgr}.{[cf]create} connects {[cn]fiber} to {[cn]alarm} &ndash; with both references then retained in our new {[ct]Ticker}.
 
   - cmds:
       - open 2
@@ -119,7 +119,7 @@ steps:
 
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]} Add a {[cd]%%a} pulse to {[cf]alarmFB} and re-run {[cu]PollerP}.
+      {[bi,task_alt]} Add a {[cd]%%a} pulse to {[cf]alarmFB} and re-run {[cu]TickerP}.
 
       {[bi,task_alt]} Do {[ct]Ticker} objects really need to retain a {[ct]Fiber}.
 
