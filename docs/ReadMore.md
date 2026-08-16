@@ -64,6 +64,7 @@ As you work through the steps presented here, click each &thinsp;▶︎&thinsp; 
 <p>Enter the newly-created <code>emporium</code> folder and launch the environment:</p>
 <pre><code>cd emporium
 npm start</code></pre>
+<p>☕ The first launch may take several minutes to download required packages and tools.&thinsp; Subsequent launches normally complete much faster.</p>
 <p>Use <code>npm start</code> whenever you return to the <b>EM•porium</b>.</p>
 <p>💡 For convenience, add this alias to your shell's initialization file &ndash; replacing <code>/path/to</code> with the folder containing your <code>emporium</code> clone:</p>
 <pre><code>alias emp='pushd /path/to/emporium && npm start && popd'</code></pre>

@@ -8,6 +8,7 @@ const ROOT = __dirname
 const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
 const NODE_MODULES = Path.join(ROOT, 'node_modules')
+const TOOLS = Path.join(ROOT, 'tools')
 
 const EXTENSIONS = [
     'the-em-foundation.em-builder@26.2.1',
@@ -70,7 +71,7 @@ if (RESET) {
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
 
-console.log('EM•porium: checking npm dependencies…')
+console.log('EM•porium: updating npm dependencies (this may take a while)…')
 run(['npm', 'install', '--loglevel=error'], !VERBOSE)
 
 const installed = (REFRESH || RESET) ? new Set() : installedExtensions()
