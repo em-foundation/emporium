@@ -1,0 +1,160 @@
+title: Introduction
+
+files:
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - .assets/img-103-01-02.png
+  - .assets/img-103-01-03.png
+  - .assets/img-103-01-04.png
+  - .assets/img-103-01-05.png
+
+steps:
+  - cmds:
+      - open 1
+      - mark 1 A 4
+      - mark 1 B 7
+      - mark 1 C 12
+    focus: [1, 1]
+    text: |
+      {[ht,$start]Distros &ndash; The Portability Substrate}
+
+      Prior tours have focused upon _portable_ **EMS** pro&shy;grams &ndash; from {[cu]BlinkerP} {[tr,101/01/02]}&thinsp; to {[cu]SleepyRunnerP} {[tr,102/06/03]}.
+
+      By default, these programs execute on a **Raspberry Pi Pico** simulator; in principle, they can run unchanged elsewhere.
+
+      <div class="em-info">
+
+      You'll soon use the clickable <span class="em codicon codicon-circuit-board"></span> {[em]Board} icon in the **Status Bar** to select alternative target platforms.
+
+      </div>
+
+      {[cu]BoardC}{[bm,A]} &ndash; found in a logical {[cs]'@$distro'} bucket &ndash; plays a pivotal role in ensuring portability.
+
+      Besides exporting delegates like {[cn]AppLed}{[bm,B]} , {[cu]BoardC} binds proxies like {[cu]Common}.{[cn]BusyWait}{[bm,C]} to distro-specific code.
+
+      But {[cu]BoardC} remains "the tip of an iceberg" &ndash; the lat&shy;ter lik&shy;ened to a *complete* **EMS** distro introduced by this tour.
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,account_tree]EMS Distro Architecture}
+
+      Whenever building a program, the **EMS** translator requires a _target context_ {[dc,1]} which selects:
+
+      {[bi,arrow_circle_right]} a {[em]Board}, which identifies a target hardware platform<br>
+      {[bi,arrow_circle_right]} a {[em]Setup}, which defines target program build options
+
+      {[em]Board} in turn binds the logical name {[cs]'@$distro'}{[dc,2]} to a physical folder inside an **EMS** distro package [`rpi.2040`].
+
+      The {[cs]'@$distro/BoardC.em'} composite largely connects platform-specific target modules with portable clients {[dc,3]}.
+
+      The {[cs]'@$distro/BuildC.em'} composite then orchestrates generation of build artifacts {[dc,4]} for the target program.
+
+      <div class="em-info">
+
+      The distro-centric {[cu]BuildC} composite (fundamental to **EMS** translation) will merit its own dedicated tour.
+
+      </div>
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,snippet_folder]Inside a Distro Package}
+
+      Each **EMS** distro package contains one required bucket {[dc,D]}, named after the containing package in an obvious manner.
+
+      <div class="em-info">
+
+      The logical bucket name {[cs]'@$distro'} used in **EMS** code in fact resolves to physical bucket {[dc,D]}.
+
+      </div>
+
+      Though not mandated, each distro package will typically feature an `mcu` bucket {[dc,M]} with target-specific content.
+
+      <div class="em-info">
+
+      A quick peek at an earlier tour stop {[tr,101/04/04]} shows how our {[cu]BoardC} composite works with units from {[dc,M]}.
+
+      </div>
+
+      Some **EMS** distro packages will contain additional buckets following the same canonical naming pattern:
+
+      {[bi,arrow_circle_right]} `*.gist.*`<br>
+      {[bi,arrow_circle_right]} `*.radio.*`<br>
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,settings]Selecting a Board + Setup}
+
+      Clicking the {[em]Board} icon {[dc,B]} reveals a list of *all* target plat&shy;forms supported within the current workspace.
+
+      <div class="em-info">
+
+      **EM&bull;Builder** forms this consolidated list from a distin&shy;guished `em-boards` file {[dc,B]} found in *each* distro package.
+
+      </div>
+
+      After choosing {[em]Board} (and its distro), {[em]Setup} selects one of the `setup-*` choices {[dc,S]} found in the distro package.
+
+      By design, every **EMS** distro contains a `setup-default` file &ndash; which may simply defer to (say) `setup-flash`.
+
+      <div class="em-info">
+
+      Clicking the {[em]Setup} icon {[dc,S]} presents a menu of choices supported by the current distro
+
+      </div>
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,$build]%[cu]BuildC% &ndash; From Source To Output}
+
+      Having selected {[em]nordic.nrf://NRF52_DK} as our target plat&shy;form, let's re-build the portable {[cu]BlinkerP} program.
+
+      <div class="em-info">
+
+      Lacking a {[em]NRF52_DK} board, we'll fallback to using the **Build** command {[dc,1]} from the program's context menu.
+
+      </div>
+
+      As you've seen before, the **OUTPUT** panel {[dc,2]} logs progress of the build &ndash; affirming the current {[em]Board} {[dc,B]} + {[em]Setup} {[dc,S]}.
+
+      In this case, {[cu]BuildC} from {[cs]'@nordic.distro.nrf52'} syn&shy;thesizes artifacts in {[dc,3]} which produce the final executable.
+
+      <div class="em-info">
+
+      The next tour will dive into the details of {[cu]BuildC}.
+
+      </div>
+
+  - cmds:
+      - open 1
+    text: |
+      {[ht,$extra]Extra Credit}
+
+      {[bi,task_alt]} Compare `rpi.2040` content with other **EMS** distros.
+
+      {[bi,task_alt]} Change {[em]Board}&thinsp;+&thinsp;{[em]Setup} and re-build {[cu]BlinkerP}.
+
+      {[bi,task_alt]} Explore the generated files in **EM&bull;Script Output**.
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$steps]Next Steps}
+
+      The next tour will address the most challenging require&shy;ment of any **EMS** distro &ndash; building executable programs.
+
+      We'll also work backwards &ndash; tracing generated artifacts in {[dc,4]} back to their synthesis via the {[cu]BuildC} composite.
+
+      Quite literally, nothing happens without {[cu]BuildC}.
+
+      <div class="em-info">
+
+      <br>&ensp;⚠️ *Buckle up*&thinsp;&hellip;&thinsp; The road ahead gets rough&thinsp;!!
+
+      &nbsp;
+
+      </div>
+
+      {[hc]}

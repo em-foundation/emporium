@@ -1,0 +1,56 @@
+title: Master Template
+files:
+#  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+#  - .assets/img-101-01-01.png
+
+steps:
+  - cmds:
+    text: |
+
+      {[ht,$start]&thinsp; Home}
+
+  - cmds:
+    text: |
+
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]}
+
+  - cmds:
+    text: |
+
+      {[ht,$steps]&thinsp; Next Steps}
+
+      {[hc]}
+
+  - cmds:
+      - open 0
+      - view 0
+      - mark 0 A 4
+      - close 0
+    focus: [1, 1]
+    acts: [$reveal, $build]
+    text: |
+
+      {[ht,menu_book]&thinsp;%[cu]Unit% &ndash; Cheat Sheet}
+
+      <div class="em-bmlist">
+
+      {[bm,A]}
+
+      </div>
+
+      {[in]An insight}
+
+      {[bi,home]} $start&thinsp; {[bi,build]} $build&thinsp; {[bi,description]} $details&thinsp; {[bi,credit_score]} $extra&thinsp; {[bi,search]} $look&thinsp;<br>
+      {[bi,visibility]} $peek&thinsp; {[bi,footprint]} $steps&thinsp; {[bi,assignment_turned_in]} $done&thinsp; {[bi,event_list]} $todo
+
+      {[bi,task_alt]} task_alt&thinsp; {[bi,sentiment_satisfied]} sentiment_satisfied&thinsp; {[bi,arrow_back]} arrow_back<br>
+      {[bi,arrow_circle_right]} arrow_circle_right&thinsp; {[bi,counter_1]} counter_1 {[bi,recommend]} recommend<br>
+      {[bi,monitor_heart]} monitor_heart&thinsp; {[bi,measuring_tape]} measuring_tape&thinsp;
+
+      <span class="em codicon codicon-circuit-board"></span>&thinsp; <span class="em">Board</span>&thinsp; {[cb,target]}&thinsp; {[cb,build]}
+
+      {[cd]cd} {[ce]ce} {[cf]cf} {[ck]ck} {[cn]cn} {[cs]cs} {[ct]ct} {[cu]cu} {[cx]cx} `code`
+
+      {[hc]}

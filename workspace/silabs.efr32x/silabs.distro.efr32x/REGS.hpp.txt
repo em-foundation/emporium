@@ -1,0 +1,6 @@
+#ifndef __REGS_M
+#define __REGS_M
+
+#include "../../silabs.efr32x/silabs.distro.efr32x/inc/efr32mg22e224f512im40.h"
+
+#endif
