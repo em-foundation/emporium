@@ -3,8 +3,8 @@ title: Transforming CoreMark
 files:
   - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
   - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
-  - .assets/img-102-06-01.png
-  - .assets/img-102-06-04.png
+  - .assets/img-102-07-01.png
+  - .assets/img-102-07-04.png
 
 steps:
   - cmds:

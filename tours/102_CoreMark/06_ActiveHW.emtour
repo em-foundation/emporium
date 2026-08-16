@@ -1,0 +1,24 @@
+title: ActiveRunnerP on Hardware
+
+files:
+steps:
+  - cmds:
+    text: |
+      {[ht,$start]&thinsp;Running on Multiple HW Platforms}
+
+  - cmds:
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} blah.
+
+      {[bi,task_alt]} blah.
+
+      {[bi,task_alt]} blah.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}

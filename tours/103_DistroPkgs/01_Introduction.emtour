@@ -15,7 +15,7 @@ steps:
       - mark 1 C 12
     focus: [1, 1]
     text: |
-      {[ht,$start]Distros &ndash; The Portability Substrate}
+      {[ht,$start]&thinsp;Distros &ndash; The Portability Substrate}
 
       Prior tours have focused upon _portable_ **EMS** pro&shy;grams &ndash; from {[cu]BlinkerP} {[tr,101/01/02]}&thinsp; to {[cu]SleepyRunnerP} {[tr,102/06/03]}.
 
@@ -36,7 +36,7 @@ steps:
   - cmds:
       - view 2
     text: |
-      {[ht,account_tree]EMS Distro Architecture}
+      {[ht,account_tree]&thinsp;EMS Distro Architecture}
 
       Whenever building a program, the **EMS** translator requires a _target context_ {[dc,1]} which selects:
 
@@ -58,7 +58,7 @@ steps:
   - cmds:
       - view 3
     text: |
-      {[ht,snippet_folder]Inside a Distro Package}
+      {[ht,snippet_folder]&thinsp;Inside a Distro Package}
 
       Each **EMS** distro package contains one required bucket {[dc,D]}, named after the containing package in an obvious manner.
 
@@ -84,7 +84,7 @@ steps:
   - cmds:
       - view 4
     text: |
-      {[ht,settings]Selecting a Board + Setup}
+      {[ht,settings]&thinsp;Selecting a Board + Setup}
 
       Clicking the {[em]Board} icon {[dc,B]} reveals a list of *all* target plat&shy;forms supported within the current workspace.
 
@@ -130,7 +130,7 @@ steps:
   - cmds:
       - open 1
     text: |
-      {[ht,$extra]Extra Credit}
+      {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} Compare `rpi.2040` content with other **EMS** distros.
 
@@ -141,7 +141,7 @@ steps:
   - cmds:
       - view 2
     text: |
-      {[ht,$steps]Next Steps}
+      {[ht,$steps]&thinsp;Next Steps}
 
       The next tour will address the most challenging require&shy;ment of any **EMS** distro &ndash; building executable programs.
 
