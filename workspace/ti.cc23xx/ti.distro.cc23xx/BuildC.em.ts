@@ -53,6 +53,7 @@ export function em$generate() {
             dmem_sram: { orig: 0x20005000, len: 0x00004000 },
             imem_sram: { orig: 0x20000000, len: 0x00005000 },
             lmem_sram: { orig: 0x00000000, len: 0x00080000 },
+            cmem_sram: LinkerC.MEM_NULL,
         },
         [
             { name: 'FLASH_CCFG', sect: '.ccfg', desc: { orig: 0x4e020000, len: 0x800 } }
