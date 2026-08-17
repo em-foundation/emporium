@@ -19,12 +19,11 @@ import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
-export { CacheStats, OneShot, RadioDriver }
+export { CacheStats, OneShot }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
@@ -87,7 +86,6 @@ export function em$configure(): void {
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
     Poller.OneShot.$$dlg = OneShot
-    RadioDriver.ifs_fence.$$val = 65
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
