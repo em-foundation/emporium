@@ -24,7 +24,7 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-var cur_pause_only = false
+var cur_level: IdleI.SleepLevel = 0
 
 export function em$startup() {
     $['%%b+']
@@ -53,15 +53,19 @@ function doSleep() {
 }
 
 export function exec() {
-    if (cur_pause_only) {
+    if (cur_level > 0) {
         doPause()
     } else {
         doSleep()
     }
 }
 
-export function setPauseOnly(pause_only: bool_t) {
-    cur_pause_only = pause_only
+export function getLevel(): IdleI.SleepLevel {
+    return cur_level
+}
+
+export function setLevel(level: IdleI.SleepLevel) {
+    cur_level = level
 }
 
 export function wakeup() { }
