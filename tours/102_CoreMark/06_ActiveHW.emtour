@@ -6,22 +6,82 @@ files:
   - em.prog:em.examples.basic/Ex01_HelloP.em.ts
   - .assets/img-102-06-01.png
   - .assets/img-102-06-02.png
+  - .assets/img-102-01-03.png
 steps:
   - cmds:
-      - open 1
+      - view 6
     text: |
-      {[ht,$start]&thinsp;Running on Multiple HW Platforms}
+      {[ht,$start]&thinsp;Running on Real HW}
+
+      We've now visited all of the supporting modules called directly&thinsp;/&thinsp;indirectly by the {[cu]ActiveRunnerP} program.
+
+      Before visiting {[cu]SleepyRunnerP} in next tour, let's take a giant step forward in your mastery of **EMS**:
+
+      <div class="em-info">
+      
+      Let's execute {[cu]ActiveRunner} on <u>real</u> hardware&thinsp;!!
+
+      </div>
+
+      Until now, we've used the `rpi.2040://PI_PICO-sim$$` board as our target; review {[tr,102/01/05]} for details. 
+
+      But the **EMS** code you've studied along the **CoreMark** [and **Basic Examples**] tours in fact remains 100% portable.
+
+      So let's give it a go&thinsp;&hellip;
+
+      <div class="em-info">
+
+      </div>
 
   - cmds:
       - view 4
     text: |
       {[ht,developer_board]&thinsp;Choose Your Board}
 
+      We've already pointed out the <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} icon {[dc,1]} found in the **Status Bar** at the bottom of your **VS Code** window.
+
+      Clicking {[dc,1]} reveals a menu {[dc,2]} listing all target boards sup&shy;ported by **EMS distros** present within the **EM&bull;porium**.
+
+      Make your selection and then watch the <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} change:
+
+      {[DC,3]} Nordic's [**NRF52_DK**](https://www.nordicsemi.com/Products/Development-hardware/nRF52-DK) board<br>
+      {[DC,4]} Nordic's [**NRF54L15_DK**](https://www.nordicsemi.com/Products/Development-hardware/nRF54L15-DK) board<br>
+      {[DC,5]} TI's [**LP_EM_CC2340R5**](https://www.ti.com/tool/LP-EM-CC2340R5) board<br>
+
+      You'll also see a picture of the selected board as further confirmation of your choice.
+
+      <div class="em-info">
+
+      Future tours explain the labeling within these pictures.
+
+      </div>
+      
+
   - cmds:
       - open 2
     acts: [$build]
     text: |
       {[ht,detector_smoke]&thinsp;%[cu]BlinkerP% Smoke Test}
+
+      ☑️&thinsp; First, verify you've chosen a supported {[em]Board}.
+
+      ☑️&thinsp; Next, verify you've plugged *real* HW into your PC.
+
+      ☑️&thinsp; Finally, click the {[cb,build]} button and see what happens next.
+
+      <div class="em-info">
+
+      The exact location of `AppLed` varies across boards; and some boards show the &thinsp;[RED]&thinsp;`SysLed` as &thinsp;[GREEN].
+
+      </div>
+
+      If successful, you'll have an experience not unlike the first {[cu]BlinkerP} run {[tr,100/01/04]} on **Pi Pico** simulator.&thinsp; And if not&thinsp;&hellip;
+
+      ❓&thinsp;Review the three ☑️ items above &ndash; just in case&thinsp;&hellip;
+
+      ❓&thinsp;**Build** success / **Load** failure {[em]⇒} HW connection issues.
+
+      ❓&thinsp;Ask for help on the **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions) page.
 
   - cmds:
       - view 5
