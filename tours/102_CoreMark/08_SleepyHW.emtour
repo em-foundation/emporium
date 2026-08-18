@@ -20,9 +20,11 @@ steps:
       
       In fact, you can *already* execute {[cu]SleepyRunnerP} on *any* of the boards presented in an earlier tour {[tr,102/06/02]}.
 
-      But without **PulseView**, you'll miss out on the show&thinsp;&hellip;
+      But without **PulseView**, you'll miss out on lots of details&thinsp;&hellip;
 
-      
+  - cmds:
+    text: |
+      {[ht,monitor_heart]&thinsp;Introducing Saleae}
 
   - cmds:
     text: |
