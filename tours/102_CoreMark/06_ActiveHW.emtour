@@ -27,11 +27,13 @@ steps:
 
       But the **EMS** code you've studied along the **CoreMark** [and **Basic Examples**] tours in fact remains 100% portable.
 
-      So let's give it a go&thinsp;&hellip;
-
       <div class="em-info">
 
+      Skim this tour while awaiting your board's arrival⏳.
+
       </div>
+
+      So let's give it a go&thinsp;&hellip;
 
   - cmds:
       - view 4
