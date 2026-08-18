@@ -1,10 +1,44 @@
 title: ActiveRunnerP on Hardware
 
 files:
+  - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.prog:em.examples.basic/Ex01_HelloP.em.ts
+  - .assets/img-102-06-01.png
+  - .assets/img-102-06-02.png
 steps:
   - cmds:
+      - open 1
     text: |
       {[ht,$start]&thinsp;Running on Multiple HW Platforms}
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,developer_board]&thinsp;Choose Your Board}
+
+  - cmds:
+      - open 2
+    acts: [$build]
+    text: |
+      {[ht,detector_smoke]&thinsp;%[cu]BlinkerP% Smoke Test}
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,cable]&thinsp;Setup the Serial Monitor}
+
+  - cmds:
+      - open 3
+    acts: [$build]
+    text: |
+      {[ht,hand_gesture]&thinsp;Say %[cu]HelloP%}
+
+  - cmds:
+      - open 1
+    acts: [$build]
+    text: |
+      {[ht,celebration]&thinsp;And Now&thinsp;&hellip;}
 
   - cmds:
     text: |
