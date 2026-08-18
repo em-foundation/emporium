@@ -77,24 +77,53 @@ steps:
 
       </div>
 
-      If successful, you'll have an experience not unlike the first {[cu]BlinkerP} run {[tr,100/01/04]} on **Pi Pico** simulator.&thinsp; And if not&thinsp;&hellip;
+      If successful, you'll have an experience similar to earlier runs of {[cu]BlinkerP} on **Pi Pico** simulator.&thinsp; And if not&thinsp;&hellip;
 
-      ❓&thinsp;Review the three ☑️ items above &ndash; just in case&thinsp;&hellip;
-
-      ❓&thinsp;**Build** success / **Load** failure {[em]⇒} HW connection issues.
-
+      💡&thinsp;Review the three ☑️ items above &ndash; just in case&thinsp;&hellip;<br>
+      💡&thinsp;**Build** success / **Load** failure {[em]⇒} HW connection issues.<br>
       ❓&thinsp;Ask for help on the **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions) page.
-
-  - cmds:
-      - view 5
-    text: |
-      {[ht,cable]&thinsp;Setup the Serial Monitor}
 
   - cmds:
       - open 3
     acts: [$build]
     text: |
       {[ht,hand_gesture]&thinsp;Say %[cu]HelloP%}
+
+      You know the drill &ndash; click the {[cb,build]} button&thinsp;&hellip;
+
+      Unlike {[cu]BlinkerP}, the {[cu]HelloP} program terminates almost immediately &ndash; with the [maybe RED] `SysLed` turned on.
+
+      <div class="em-info">
+
+      You'll see {[cu]HelloP} in action on the **Pi Pico** simulator about halfway through the animation at &thinsp;{[tr,100/00/07]}.
+
+      </div>
+
+      But when targeting a real hardware platform, we'll require a **Serial Monitor** to capture any {[cd]printf} output.
+
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,cable]&thinsp;Using the Serial Monitor}
+
+      The **EM&bull;porium** includes an integrated **Serial Monitor** ex&shy;tension &ndash; not unlike your favorite "terminal emulator".
+
+      The **Serial Monitor** tab {[dc,1]} should appear in the bot&shy;tom panel; if not, right-click on *another* tab and check the box.
+
+      A drop-down menu at {[dc,2]} will list *all* serial ports on your PC; select the one corresponding to your board's UART.
+
+      Press button {[dc,3]} &ndash; initially labeled as **Start Monitoring**; you can explore the additional controls at {[dc,4]} later on.
+
+      And voilà &ndash; program output should appear at {[dc,5]}&thinsp;!!&thinsp; If not,
+
+      💡&thinsp;Try again by hitting **RESET** on your board.<br>
+      💡&thinsp;You've possibly selected the wrong **Port**.<br>
+      ❓&thinsp;Ask for help on the [Discussions](https://github.com/em-foundation/emporium/discussions) page.
+
+      </div>
+
+
 
   - cmds:
       - open 1
