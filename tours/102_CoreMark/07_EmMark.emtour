@@ -16,8 +16,12 @@ steps:
 
       In this final tour, we'll examine {[cu]SleepyRunnerP} and how this program transforms the original benchmark.
 
-      {[in]%[cu]SleepyRunnerP% will in fact anchor <b>EM&bull;Mark</b> &ndash; a <i>new</i> benchmark presented in a future tour group.}
+      <div class="em-info">
 
+      If you've chosen a <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} during the prior tour, switch back now to the `rpi.2040://PI_PICO-sim$$` target.
+
+      </div>
+      
   - cmds:
       - open 1
       - mark 1 R 25
@@ -112,6 +116,6 @@ steps:
 
       Apps like {[cu]SleepyRunnerP} spend >&thinsp;90% of the time in low-power sleep &ndash; and draw >&thinsp;90% of their power when active.
 
-      To characterize these **EMS** apps, we also need to bench&shy;mark *energy efficiency* &ndash; which leads us to **EM&bull;Mark**.
+      To eventually measure energy within typical **EMS** apps, however, we must return to *real* hardware platforms.
 
       {[hc]}

@@ -1,10 +1,30 @@
 title: SleepyRunnerP on Hardware
 
 files:
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - .assets/img-101-01-01.png
+
 steps:
   - cmds:
+      - view 2
     text: |
-      {[ht,$start]&thinsp;Running on Multiple HW Platforms}
+      {[ht,$start]&thinsp;Signal Capture on Real Hardware}
+
+      Until now, we've used **PulseView** to view sig&shy;nals captured by the **Wokwi LOGIC** block in the **Pi Pico** simulator.
+
+      <div class="em-info">
+
+      The last tour {[tr,102/07/05]} showed a **PulseView** capture of {[cu]SleepyRunnerP} &ndash; more compelling than {[cu]BlinkerP}.
+
+      </div>
+      
+      In fact, you can *already* execute {[cu]SleepyRunnerP} on *any* of the boards presented in an earlier tour {[tr,102/06/02]}.
+
+      But without **PulseView**, you'll miss out on lots of details&thinsp;&hellip;
+
+  - cmds:
+    text: |
+      {[ht,monitor_heart]&thinsp;Introducing Saleae}
 
   - cmds:
     text: |
