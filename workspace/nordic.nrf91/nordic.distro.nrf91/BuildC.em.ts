@@ -5,8 +5,8 @@ import * as ArmStartupC from '@em.arch.arm/StartupC.em'
 import * as IsrEmpty from '@em.arch.arm/IsrEmpty.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LinkerC from '@em.build.segger/LinkerC.em'
-import * as REGS from '@$distro/REGS.em'
-import * as StartupC from '@$distro/StartupC.em'
+import * as REGS from '@nordic.distro.nrf91/REGS.em'
+import * as StartupC from '@nordic.distro.nrf91/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
 const NVIC_INTRS = <Array<string>>[
@@ -26,11 +26,11 @@ export function em$configure() {
 
 export function em$generate() {
     LinkerC.genScript({
-        dmem_flash: { orig: 0x2003c000, len: 0x00004000 },
+        dmem_flash: { orig: 0x20000000, len: 0x00004000 },
         imem_flash: { orig: 0x00000000, len: 0x00008000 },
-        dmem_sram: { orig: 0x2003c000, len: 0x00004000 },
-        imem_sram: { orig: 0x20008000, len: 0x00008000 },
-        lmem_sram: { orig: 0x00000000, len: 0x00008000 },
+        dmem_sram: LinkerC.MEM_NULL,
+        imem_sram: LinkerC.MEM_NULL,
+        lmem_sram: LinkerC.MEM_NULL,
         cmem_sram: LinkerC.MEM_NULL,
     })
     let opt = $property('em.build.Optimize', 'Oz')
@@ -89,6 +89,7 @@ export function em$generate() {
         |-> CINCS="\\
         |->     -I . \\
         |->     -I $TOOLS/include \\
+        |->     -I ../em.core/em.arch.arm/inc \\
         |-> "
         |-> 
         |-> COPTS="\\
