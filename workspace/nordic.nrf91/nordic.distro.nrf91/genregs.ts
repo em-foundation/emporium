@@ -13,6 +13,11 @@ const AUX_TYPE_IGNORE_SET = new Set<string>([
     'GPIO'
 ])
 
+const INSTS = [
+    ['P0', 'GPIO'],
+    ['UARTE0', 'UARTE'],
+]
+
 let meta = em.$outfile('REGS.em.ts')
 
 function genConsts() {
@@ -102,7 +107,6 @@ export function em$generate() {
 while (true) {
     const sname = scanStruct()
     if (sname === null) break
-    console.log(`sname = ${sname}`)
     meta.genTitle(sname)
     meta.print('export interface %1_t {\n%+', sname)
     for (const [fname, ftype, fdim] of scanFields()) {
@@ -120,11 +124,7 @@ cur_idx = 0
 meta.genTitle('CONSTANTS')
 genConsts()
 meta.genTitle('INSTANCES')
-for (const [ti, tn] of TYPE_MAP) {
+for (const [ti, tn] of INSTS) {
     meta.print('export const %1 = {} as %2_t\n', ti, tn)
 }
-// meta.genTitle('INDICIES')
-// for (const [iname, itype] of INDICIES) {
-//     meta.print('export const %1 = [] as %2_t[]\n', iname, itype)
-// }
 meta.close()

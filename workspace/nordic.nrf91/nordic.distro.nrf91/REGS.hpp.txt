@@ -1,6 +1,7 @@
 #ifndef __REGS_M
 #define __REGS_M
 
+#include "../../nordic.nrf91/nordic.distro.nrf91/inc/nrf9120_bitfields.h"
 #include "../../nordic.nrf91/nordic.distro.nrf91/inc/nrf9120.h"
 
 #include "../../em.core/em.arch.arm/inc/core_cm33.h"

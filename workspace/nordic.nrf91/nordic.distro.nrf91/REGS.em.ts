@@ -1720,5 +1720,5 @@ export const UARTE_CONFIG_HWFC_Enabled: any = '0x1UL'
 
 // -------- INSTANCES -------- //
 
-export const P0_NS = {} as GPIO_t
-export const UARTE0_NS = {} as UARTE_t
+export const P0 = {} as GPIO_t
+export const UARTE0 = {} as UARTE_t

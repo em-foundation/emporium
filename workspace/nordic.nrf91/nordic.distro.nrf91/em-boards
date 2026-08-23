@@ -1,0 +1,11 @@
+NRF9151_DK :
+    activeLowLeds:  false
+    pins:
+        appBut:     8
+        appLed:     0
+        appOut:     27
+        sysDbgA:    25
+        sysDbgB:    24
+        sysDbgC:    23
+        sysDbgD:    22
+        sysLed:     5
