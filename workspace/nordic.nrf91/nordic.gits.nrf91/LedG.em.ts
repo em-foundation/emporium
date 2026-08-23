@@ -6,6 +6,6 @@ export const $U = $declare('MODULE')
 const MASK = 1 << 0
 
 export function em$run() {
-    e$`NRF_P0_NS->DIRSET = MASK`
-    e$`NRF_P0_NS->OUTSET = MASK`
+    e$`NRF_P0_S->DIRSET = MASK`
+    e$`NRF_P0_S->OUTSET = MASK`
 }
