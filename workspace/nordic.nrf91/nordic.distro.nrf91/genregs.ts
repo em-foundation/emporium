@@ -5,6 +5,7 @@ import em from '../../em.core/em.lang/emscript'
 const TYPE_MAP = new Map<string, string>([
     ['NVMC_NS', 'NVMC'],
     ['P0_NS', 'GPIO'],
+    ['TIMER0_NS', 'TIMER'],
     ['UARTE0_NS', 'UARTE']
 ])
 
@@ -17,6 +18,7 @@ const AUX_TYPE_IGNORE_SET = new Set<string>([
 const INSTS = [
     ['NVMC', 'NVMC'],
     ['P0', 'GPIO'],
+    ['TIMER0', 'TIMER'],
     ['UARTE0', 'UARTE'],
 ]
 

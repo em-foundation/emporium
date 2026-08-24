@@ -9,9 +9,14 @@ import * as ConsoleUart from '@nordic.mcu.nrf91/ConsoleUart0.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as GpioT from '@nordic.mcu.nrf91/GpioT.em'
+import * as Idle from '@nordic.mcu.nrf91/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf91/Mcu.em'
+import * as OneShot from '@nordic.mcu.nrf91/OneShotTimer0.em'
+import * as Poller from '@em.mcu/Poller.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
+
+export { OneShot }
 
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
@@ -51,6 +56,7 @@ export function em$configure(): void {
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts
+    Common.Idle.$$dlg = Idle
     Common.Mcu.$$dlg = Mcu
     Common.UsCounter.$$dlg = UsCounter
     ConsoleUart.TxPin.$$dlg = AppOutPin
@@ -62,6 +68,7 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
+    Poller.OneShot.$$dlg = OneShot
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
