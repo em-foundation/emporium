@@ -55,7 +55,7 @@ export namespace em$template {
     }
 
     export function set(): void {
-        // $R.P0.OUTSET.$$ = mask
+        $R.P0.OUTSET.$$ = mask
     }
 
     export function setInternalPulldown(enable: bool_t): void {
