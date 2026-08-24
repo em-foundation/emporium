@@ -2,6 +2,7 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 import * as ArmStartupC from '@em.arch.arm/StartupC.em'
+import * as BoardC from '@nordic.distro.nrf91/BoardC.em'
 import * as IsrEmpty from '@em.arch.arm/IsrEmpty.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LinkerC from '@em.build.segger/LinkerC.em'
@@ -15,6 +16,7 @@ const NVIC_INTRS = <Array<string>>[
 
 export function em$configure() {
     $using(ArmStartupC)
+    $using(BoardC)
     $using(IntrVec)
     $using(LinkerC)
     $using(REGS)

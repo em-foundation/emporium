@@ -13,10 +13,15 @@ export function em$run() {
     $R.UARTE0.ENABLE.$$ = $R.UARTE_ENABLE_ENABLE_Enabled
     $R.UARTE0.TXD.PTR.$$ = $cast2<u32>($$(buf))
     $R.UARTE0.TXD.MAXCNT.$$ = 1
-    put(0xab)
+    for (const i of $range(5)) {
+        put(0xa0 + i)
+    }
 }
 
 function put(b: u8) {
     buf = b
     $R.UARTE0.TASKS_STARTTX.$$ = 1
+    while ($R.UARTE0.EVENTS_TXDRDY.$$ == 0) { }
+    $R.UARTE0.EVENTS_TXDRDY.$$ = 0
+
 }
