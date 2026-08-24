@@ -6,12 +6,20 @@ import * as BusyWait from '@em.utils/BusyWait.em'
 import * as Common from '@em.mcu/Common.em'
 import * as Console from '@em.lang/Console.em'
 import * as ConsoleUart from '@nordic.mcu.nrf91/ConsoleUart0.em'
+import * as Debug from '@em.lang/Debug.em'
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as GpioT from '@nordic.mcu.nrf91/GpioT.em'
 import * as LedT from '@em.utils/LedT.em'
+import * as Mcu from '@nordic.mcu.nrf91/Mcu.em'
+import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
 export const AppLed = $clone(LedT)
 export const AppLedPin = $clone(GpioT)
 export const AppOutPin = $clone(GpioT)
+export const DbgA = $clone(GpioT)
+export const DbgB = $clone(GpioT)
+export const DbgC = $clone(GpioT)
+export const DbgD = $clone(GpioT)
 export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
 
@@ -34,15 +42,26 @@ export function em$configure(): void {
     const brd = $board(DEFAULTS)
     $using(BoardController)
     $using(Console)
-    AppLed.Pin.$$dlg = SysLedPin
+    AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
-    AppLedPin.pin_num.$$val = brd.pins.sysLed
+    AppLedPin.pin_num.$$val = brd.pins.appLed
     AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
-    BusyWait.scalar.$$val = 9
+    BusyWait.scalar.$$val = 13
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart
+    Common.GlobalInterrupts.$$dlg = GlobalInterrupts
+    Common.Mcu.$$dlg = Mcu
+    Common.UsCounter.$$dlg = UsCounter
     ConsoleUart.TxPin.$$dlg = AppOutPin
+    DbgA.pin_num.$$val = brd.pins.sysDbgA
+    DbgB.pin_num.$$val = brd.pins.sysDbgB
+    DbgC.pin_num.$$val = brd.pins.sysDbgC
+    DbgD.pin_num.$$val = brd.pins.sysDbgD
+    Debug.DbgA.$$dlg = DbgA
+    Debug.DbgB.$$dlg = DbgB
+    Debug.DbgC.$$dlg = DbgC
+    Debug.DbgD.$$dlg = DbgD
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
