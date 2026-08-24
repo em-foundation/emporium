@@ -1,6 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', IdleI)
 
+import * as $R from '@nordic.distro.nrf91/REGS.em'
+
 import * as Debug from '@em.lang/Debug.em'
 import * as IdleI from '@em.hal/IdleI.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
@@ -38,11 +40,14 @@ function doPause() {
 }
 
 function doSleep() {
+    // $['%%>']($R.POWER.POWERSTATUS.$$)
+    // halt()
     for (let cb of sleep_enter_tab) cb()
     $['%%b:'](2)
     $['%%b-']
     Debug.reset()
     IntrVec.PRIMASK_set(1)
+    $R.CLOCK.TASKS_HFCLKSTOP.$$ = 1
     e$`asm volatile ("wfi")`
     Debug.startup()
     $['%%b']

@@ -7,6 +7,13 @@ export function em$generate() {
     out.close()
 }
 
+// -------- POWER_LTEMODEM -------- //
+
+export interface POWER_LTEMODEM_t {
+    STARTN: $Reg
+    FORCEOFF: $Reg
+}
+
 // -------- UARTE_PSEL -------- //
 
 export interface UARTE_PSEL_t {
@@ -30,6 +37,88 @@ export interface UARTE_TXD_t {
     PTR: $Reg
     MAXCNT: $Reg
     AMOUNT: $Reg
+}
+
+// -------- REGULATORS -------- //
+
+export interface REGULATORS_t {
+    RESERVED: dim_t<$Reg, 320>
+    SYSTEMOFF: $Reg
+    RESERVED1: dim_t<$Reg, 4>
+    EXTPOFCON: $Reg
+    RESERVED2: dim_t<$Reg, 24>
+    DCDCEN: $Reg
+}
+
+// -------- CLOCK -------- //
+
+export interface CLOCK_t {
+    TASKS_HFCLKSTART: $Reg
+    TASKS_HFCLKSTOP: $Reg
+    TASKS_LFCLKSTART: $Reg
+    TASKS_LFCLKSTOP: $Reg
+    RESERVED: dim_t<$Reg, 28>
+    SUBSCRIBE_HFCLKSTART: $Reg
+    SUBSCRIBE_HFCLKSTOP: $Reg
+    SUBSCRIBE_LFCLKSTART: $Reg
+    SUBSCRIBE_LFCLKSTOP: $Reg
+    RESERVED1: dim_t<$Reg, 28>
+    EVENTS_HFCLKSTARTED: $Reg
+    EVENTS_LFCLKSTARTED: $Reg
+    RESERVED2: dim_t<$Reg, 30>
+    PUBLISH_HFCLKSTARTED: $Reg
+    PUBLISH_LFCLKSTARTED: $Reg
+    RESERVED3: dim_t<$Reg, 94>
+    INTEN: $Reg
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    INTPEND: $Reg
+    RESERVED4: dim_t<$Reg, 62>
+    HFCLKRUN: $Reg
+    HFCLKSTAT: $Reg
+    RESERVED5: $Reg
+    LFCLKRUN: $Reg
+    LFCLKSTAT: $Reg
+    LFCLKSRCCOPY: $Reg
+    RESERVED6: dim_t<$Reg, 62>
+    LFCLKSRC: $Reg
+}
+
+// -------- POWER -------- //
+
+export interface POWER_t {
+    RESERVED: dim_t<$Reg, 28>
+    TASKS_PWMREQSTART: $Reg
+    TASKS_PWMREQSTOP: $Reg
+    TASKS_CONSTLAT: $Reg
+    TASKS_LOWPWR: $Reg
+    RESERVED1: dim_t<$Reg, 28>
+    SUBSCRIBE_PWMREQSTART: $Reg
+    SUBSCRIBE_PWMREQSTOP: $Reg
+    SUBSCRIBE_CONSTLAT: $Reg
+    SUBSCRIBE_LOWPWR: $Reg
+    RESERVED2: dim_t<$Reg, 2>
+    EVENTS_POFWARN: $Reg
+    RESERVED3: dim_t<$Reg, 2>
+    EVENTS_SLEEPENTER: $Reg
+    EVENTS_SLEEPEXIT: $Reg
+    RESERVED4: dim_t<$Reg, 27>
+    PUBLISH_POFWARN: $Reg
+    RESERVED5: dim_t<$Reg, 2>
+    PUBLISH_SLEEPENTER: $Reg
+    PUBLISH_SLEEPEXIT: $Reg
+    RESERVED6: dim_t<$Reg, 89>
+    INTEN: $Reg
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED7: dim_t<$Reg, 61>
+    RESETREAS: $Reg
+    RESERVED8: dim_t<$Reg, 15>
+    POWERSTATUS: $Reg
+    RESERVED9: dim_t<$Reg, 54>
+    GPREGRET: dim_t<$Reg, 2>
+    RESERVED10: dim_t<$Reg, 59>
+    LTEMODEM: POWER_LTEMODEM_t
 }
 
 // -------- UARTE -------- //
@@ -220,6 +309,133 @@ export interface GPIO_t {
 
 // -------- CONSTANTS -------- //
 
+export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Pos: any = '0UL'
+export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Msk: any = '0x1UL << CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Pos'
+export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Trigger: any = '0x1UL'
+export const CLOCK_TASKS_HFCLKSTOP_TASKS_HFCLKSTOP_Pos: any = '0UL'
+export const CLOCK_TASKS_HFCLKSTOP_TASKS_HFCLKSTOP_Msk: any = '0x1UL << CLOCK_TASKS_HFCLKSTOP_TASKS_HFCLKSTOP_Pos'
+export const CLOCK_TASKS_HFCLKSTOP_TASKS_HFCLKSTOP_Trigger: any = '0x1UL'
+export const CLOCK_TASKS_LFCLKSTART_TASKS_LFCLKSTART_Pos: any = '0UL'
+export const CLOCK_TASKS_LFCLKSTART_TASKS_LFCLKSTART_Msk: any = '0x1UL << CLOCK_TASKS_LFCLKSTART_TASKS_LFCLKSTART_Pos'
+export const CLOCK_TASKS_LFCLKSTART_TASKS_LFCLKSTART_Trigger: any = '0x1UL'
+export const CLOCK_TASKS_LFCLKSTOP_TASKS_LFCLKSTOP_Pos: any = '0UL'
+export const CLOCK_TASKS_LFCLKSTOP_TASKS_LFCLKSTOP_Msk: any = '0x1UL << CLOCK_TASKS_LFCLKSTOP_TASKS_LFCLKSTOP_Pos'
+export const CLOCK_TASKS_LFCLKSTOP_TASKS_LFCLKSTOP_Trigger: any = '0x1UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_EN_Pos: any = '31UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_EN_Msk: any = '0x1UL << CLOCK_SUBSCRIBE_HFCLKSTART_EN_Pos'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_EN_Disabled: any = '0x0UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_EN_Enabled: any = '0x1UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_CHIDX_Pos: any = '0UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTART_CHIDX_Msk: any = '0xFFUL << CLOCK_SUBSCRIBE_HFCLKSTART_CHIDX_Pos'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_EN_Pos: any = '31UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_EN_Msk: any = '0x1UL << CLOCK_SUBSCRIBE_HFCLKSTOP_EN_Pos'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_EN_Disabled: any = '0x0UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_EN_Enabled: any = '0x1UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_CHIDX_Pos: any = '0UL'
+export const CLOCK_SUBSCRIBE_HFCLKSTOP_CHIDX_Msk: any = '0xFFUL << CLOCK_SUBSCRIBE_HFCLKSTOP_CHIDX_Pos'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_EN_Pos: any = '31UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_EN_Msk: any = '0x1UL << CLOCK_SUBSCRIBE_LFCLKSTART_EN_Pos'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_EN_Disabled: any = '0x0UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_EN_Enabled: any = '0x1UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_CHIDX_Pos: any = '0UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTART_CHIDX_Msk: any = '0xFFUL << CLOCK_SUBSCRIBE_LFCLKSTART_CHIDX_Pos'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_EN_Pos: any = '31UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_EN_Msk: any = '0x1UL << CLOCK_SUBSCRIBE_LFCLKSTOP_EN_Pos'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_EN_Disabled: any = '0x0UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_EN_Enabled: any = '0x1UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_CHIDX_Pos: any = '0UL'
+export const CLOCK_SUBSCRIBE_LFCLKSTOP_CHIDX_Msk: any = '0xFFUL << CLOCK_SUBSCRIBE_LFCLKSTOP_CHIDX_Pos'
+export const CLOCK_EVENTS_HFCLKSTARTED_EVENTS_HFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_EVENTS_HFCLKSTARTED_EVENTS_HFCLKSTARTED_Msk: any = '0x1UL << CLOCK_EVENTS_HFCLKSTARTED_EVENTS_HFCLKSTARTED_Pos'
+export const CLOCK_EVENTS_HFCLKSTARTED_EVENTS_HFCLKSTARTED_NotGenerated: any = '0x0UL'
+export const CLOCK_EVENTS_HFCLKSTARTED_EVENTS_HFCLKSTARTED_Generated: any = '0x1UL'
+export const CLOCK_EVENTS_LFCLKSTARTED_EVENTS_LFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_EVENTS_LFCLKSTARTED_EVENTS_LFCLKSTARTED_Msk: any = '0x1UL << CLOCK_EVENTS_LFCLKSTARTED_EVENTS_LFCLKSTARTED_Pos'
+export const CLOCK_EVENTS_LFCLKSTARTED_EVENTS_LFCLKSTARTED_NotGenerated: any = '0x0UL'
+export const CLOCK_EVENTS_LFCLKSTARTED_EVENTS_LFCLKSTARTED_Generated: any = '0x1UL'
+export const CLOCK_PUBLISH_HFCLKSTARTED_EN_Pos: any = '31UL'
+export const CLOCK_PUBLISH_HFCLKSTARTED_EN_Msk: any = '0x1UL << CLOCK_PUBLISH_HFCLKSTARTED_EN_Pos'
+export const CLOCK_PUBLISH_HFCLKSTARTED_EN_Disabled: any = '0x0UL'
+export const CLOCK_PUBLISH_HFCLKSTARTED_EN_Enabled: any = '0x1UL'
+export const CLOCK_PUBLISH_HFCLKSTARTED_CHIDX_Pos: any = '0UL'
+export const CLOCK_PUBLISH_HFCLKSTARTED_CHIDX_Msk: any = '0xFFUL << CLOCK_PUBLISH_HFCLKSTARTED_CHIDX_Pos'
+export const CLOCK_PUBLISH_LFCLKSTARTED_EN_Pos: any = '31UL'
+export const CLOCK_PUBLISH_LFCLKSTARTED_EN_Msk: any = '0x1UL << CLOCK_PUBLISH_LFCLKSTARTED_EN_Pos'
+export const CLOCK_PUBLISH_LFCLKSTARTED_EN_Disabled: any = '0x0UL'
+export const CLOCK_PUBLISH_LFCLKSTARTED_EN_Enabled: any = '0x1UL'
+export const CLOCK_PUBLISH_LFCLKSTARTED_CHIDX_Pos: any = '0UL'
+export const CLOCK_PUBLISH_LFCLKSTARTED_CHIDX_Msk: any = '0xFFUL << CLOCK_PUBLISH_LFCLKSTARTED_CHIDX_Pos'
+export const CLOCK_INTEN_LFCLKSTARTED_Pos: any = '1UL'
+export const CLOCK_INTEN_LFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTEN_LFCLKSTARTED_Pos'
+export const CLOCK_INTEN_LFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTEN_LFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTEN_HFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_INTEN_HFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTEN_HFCLKSTARTED_Pos'
+export const CLOCK_INTEN_HFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTEN_HFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTENSET_LFCLKSTARTED_Pos: any = '1UL'
+export const CLOCK_INTENSET_LFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTENSET_LFCLKSTARTED_Pos'
+export const CLOCK_INTENSET_LFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTENSET_LFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTENSET_LFCLKSTARTED_Set: any = '0x1UL'
+export const CLOCK_INTENSET_HFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_INTENSET_HFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTENSET_HFCLKSTARTED_Pos'
+export const CLOCK_INTENSET_HFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTENSET_HFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTENSET_HFCLKSTARTED_Set: any = '0x1UL'
+export const CLOCK_INTENCLR_LFCLKSTARTED_Pos: any = '1UL'
+export const CLOCK_INTENCLR_LFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTENCLR_LFCLKSTARTED_Pos'
+export const CLOCK_INTENCLR_LFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTENCLR_LFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTENCLR_LFCLKSTARTED_Clear: any = '0x1UL'
+export const CLOCK_INTENCLR_HFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_INTENCLR_HFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTENCLR_HFCLKSTARTED_Pos'
+export const CLOCK_INTENCLR_HFCLKSTARTED_Disabled: any = '0x0UL'
+export const CLOCK_INTENCLR_HFCLKSTARTED_Enabled: any = '0x1UL'
+export const CLOCK_INTENCLR_HFCLKSTARTED_Clear: any = '0x1UL'
+export const CLOCK_INTPEND_LFCLKSTARTED_Pos: any = '1UL'
+export const CLOCK_INTPEND_LFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTPEND_LFCLKSTARTED_Pos'
+export const CLOCK_INTPEND_LFCLKSTARTED_NotPending: any = '0x0UL'
+export const CLOCK_INTPEND_LFCLKSTARTED_Pending: any = '0x1UL'
+export const CLOCK_INTPEND_HFCLKSTARTED_Pos: any = '0UL'
+export const CLOCK_INTPEND_HFCLKSTARTED_Msk: any = '0x1UL << CLOCK_INTPEND_HFCLKSTARTED_Pos'
+export const CLOCK_INTPEND_HFCLKSTARTED_NotPending: any = '0x0UL'
+export const CLOCK_INTPEND_HFCLKSTARTED_Pending: any = '0x1UL'
+export const CLOCK_HFCLKRUN_STATUS_Pos: any = '0UL'
+export const CLOCK_HFCLKRUN_STATUS_Msk: any = '0x1UL << CLOCK_HFCLKRUN_STATUS_Pos'
+export const CLOCK_HFCLKRUN_STATUS_NotTriggered: any = '0x0UL'
+export const CLOCK_HFCLKRUN_STATUS_Triggered: any = '0x1UL'
+export const CLOCK_HFCLKSTAT_STATE_Pos: any = '16UL'
+export const CLOCK_HFCLKSTAT_STATE_Msk: any = '0x1UL << CLOCK_HFCLKSTAT_STATE_Pos'
+export const CLOCK_HFCLKSTAT_STATE_NotRunning: any = '0x0UL'
+export const CLOCK_HFCLKSTAT_STATE_Running: any = '0x1UL'
+export const CLOCK_HFCLKSTAT_SRC_Pos: any = '0UL'
+export const CLOCK_HFCLKSTAT_SRC_Msk: any = '0x1UL << CLOCK_HFCLKSTAT_SRC_Pos'
+export const CLOCK_HFCLKSTAT_SRC_HFINT: any = '0x0UL'
+export const CLOCK_HFCLKSTAT_SRC_HFXO: any = '0x1UL'
+export const CLOCK_LFCLKRUN_STATUS_Pos: any = '0UL'
+export const CLOCK_LFCLKRUN_STATUS_Msk: any = '0x1UL << CLOCK_LFCLKRUN_STATUS_Pos'
+export const CLOCK_LFCLKRUN_STATUS_NotTriggered: any = '0x0UL'
+export const CLOCK_LFCLKRUN_STATUS_Triggered: any = '0x1UL'
+export const CLOCK_LFCLKSTAT_STATE_Pos: any = '16UL'
+export const CLOCK_LFCLKSTAT_STATE_Msk: any = '0x1UL << CLOCK_LFCLKSTAT_STATE_Pos'
+export const CLOCK_LFCLKSTAT_STATE_NotRunning: any = '0x0UL'
+export const CLOCK_LFCLKSTAT_STATE_Running: any = '0x1UL'
+export const CLOCK_LFCLKSTAT_SRC_Pos: any = '0UL'
+export const CLOCK_LFCLKSTAT_SRC_Msk: any = '0x3UL << CLOCK_LFCLKSTAT_SRC_Pos'
+export const CLOCK_LFCLKSTAT_SRC_RFU: any = '0x0UL'
+export const CLOCK_LFCLKSTAT_SRC_LFRC: any = '0x1UL'
+export const CLOCK_LFCLKSTAT_SRC_LFXO: any = '0x2UL'
+export const CLOCK_LFCLKSRCCOPY_SRC_Pos: any = '0UL'
+export const CLOCK_LFCLKSRCCOPY_SRC_Msk: any = '0x3UL << CLOCK_LFCLKSRCCOPY_SRC_Pos'
+export const CLOCK_LFCLKSRCCOPY_SRC_RFU: any = '0x0UL'
+export const CLOCK_LFCLKSRCCOPY_SRC_LFRC: any = '0x1UL'
+export const CLOCK_LFCLKSRCCOPY_SRC_LFXO: any = '0x2UL'
+export const CLOCK_LFCLKSRC_SRC_Pos: any = '0UL'
+export const CLOCK_LFCLKSRC_SRC_Msk: any = '0x3UL << CLOCK_LFCLKSRC_SRC_Pos'
+export const CLOCK_LFCLKSRC_SRC_RFU: any = '0x0UL'
+export const CLOCK_LFCLKSRC_SRC_LFRC: any = '0x1UL'
+export const CLOCK_LFCLKSRC_SRC_LFXO: any = '0x2UL'
 export const NVMC_READY_READY_Pos: any = '0UL'
 export const NVMC_READY_READY_Msk: any = '0x1UL << NVMC_READY_READY_Pos'
 export const NVMC_READY_READY_Busy: any = '0x0UL'
@@ -1451,6 +1667,167 @@ export const GPIO_PIN_CNF_DIR_Pos: any = '0UL'
 export const GPIO_PIN_CNF_DIR_Msk: any = '0x1UL << GPIO_PIN_CNF_DIR_Pos'
 export const GPIO_PIN_CNF_DIR_Input: any = '0x0UL'
 export const GPIO_PIN_CNF_DIR_Output: any = '0x1UL'
+export const POWER_TASKS_PWMREQSTART_TASKS_PWMREQSTART_Pos: any = '0UL'
+export const POWER_TASKS_PWMREQSTART_TASKS_PWMREQSTART_Msk: any = '0x1UL << POWER_TASKS_PWMREQSTART_TASKS_PWMREQSTART_Pos'
+export const POWER_TASKS_PWMREQSTART_TASKS_PWMREQSTART_Trigger: any = '0x1UL'
+export const POWER_TASKS_PWMREQSTOP_TASKS_PWMREQSTOP_Pos: any = '0UL'
+export const POWER_TASKS_PWMREQSTOP_TASKS_PWMREQSTOP_Msk: any = '0x1UL << POWER_TASKS_PWMREQSTOP_TASKS_PWMREQSTOP_Pos'
+export const POWER_TASKS_PWMREQSTOP_TASKS_PWMREQSTOP_Trigger: any = '0x1UL'
+export const POWER_TASKS_CONSTLAT_TASKS_CONSTLAT_Pos: any = '0UL'
+export const POWER_TASKS_CONSTLAT_TASKS_CONSTLAT_Msk: any = '0x1UL << POWER_TASKS_CONSTLAT_TASKS_CONSTLAT_Pos'
+export const POWER_TASKS_CONSTLAT_TASKS_CONSTLAT_Trigger: any = '0x1UL'
+export const POWER_TASKS_LOWPWR_TASKS_LOWPWR_Pos: any = '0UL'
+export const POWER_TASKS_LOWPWR_TASKS_LOWPWR_Msk: any = '0x1UL << POWER_TASKS_LOWPWR_TASKS_LOWPWR_Pos'
+export const POWER_TASKS_LOWPWR_TASKS_LOWPWR_Trigger: any = '0x1UL'
+export const POWER_SUBSCRIBE_PWMREQSTART_EN_Pos: any = '31UL'
+export const POWER_SUBSCRIBE_PWMREQSTART_EN_Msk: any = '0x1UL << POWER_SUBSCRIBE_PWMREQSTART_EN_Pos'
+export const POWER_SUBSCRIBE_PWMREQSTART_EN_Disabled: any = '0x0UL'
+export const POWER_SUBSCRIBE_PWMREQSTART_EN_Enabled: any = '0x1UL'
+export const POWER_SUBSCRIBE_PWMREQSTART_CHIDX_Pos: any = '0UL'
+export const POWER_SUBSCRIBE_PWMREQSTART_CHIDX_Msk: any = '0xFFUL << POWER_SUBSCRIBE_PWMREQSTART_CHIDX_Pos'
+export const POWER_SUBSCRIBE_PWMREQSTOP_EN_Pos: any = '31UL'
+export const POWER_SUBSCRIBE_PWMREQSTOP_EN_Msk: any = '0x1UL << POWER_SUBSCRIBE_PWMREQSTOP_EN_Pos'
+export const POWER_SUBSCRIBE_PWMREQSTOP_EN_Disabled: any = '0x0UL'
+export const POWER_SUBSCRIBE_PWMREQSTOP_EN_Enabled: any = '0x1UL'
+export const POWER_SUBSCRIBE_PWMREQSTOP_CHIDX_Pos: any = '0UL'
+export const POWER_SUBSCRIBE_PWMREQSTOP_CHIDX_Msk: any = '0xFFUL << POWER_SUBSCRIBE_PWMREQSTOP_CHIDX_Pos'
+export const POWER_SUBSCRIBE_CONSTLAT_EN_Pos: any = '31UL'
+export const POWER_SUBSCRIBE_CONSTLAT_EN_Msk: any = '0x1UL << POWER_SUBSCRIBE_CONSTLAT_EN_Pos'
+export const POWER_SUBSCRIBE_CONSTLAT_EN_Disabled: any = '0x0UL'
+export const POWER_SUBSCRIBE_CONSTLAT_EN_Enabled: any = '0x1UL'
+export const POWER_SUBSCRIBE_CONSTLAT_CHIDX_Pos: any = '0UL'
+export const POWER_SUBSCRIBE_CONSTLAT_CHIDX_Msk: any = '0xFFUL << POWER_SUBSCRIBE_CONSTLAT_CHIDX_Pos'
+export const POWER_SUBSCRIBE_LOWPWR_EN_Pos: any = '31UL'
+export const POWER_SUBSCRIBE_LOWPWR_EN_Msk: any = '0x1UL << POWER_SUBSCRIBE_LOWPWR_EN_Pos'
+export const POWER_SUBSCRIBE_LOWPWR_EN_Disabled: any = '0x0UL'
+export const POWER_SUBSCRIBE_LOWPWR_EN_Enabled: any = '0x1UL'
+export const POWER_SUBSCRIBE_LOWPWR_CHIDX_Pos: any = '0UL'
+export const POWER_SUBSCRIBE_LOWPWR_CHIDX_Msk: any = '0xFFUL << POWER_SUBSCRIBE_LOWPWR_CHIDX_Pos'
+export const POWER_EVENTS_POFWARN_EVENTS_POFWARN_Pos: any = '0UL'
+export const POWER_EVENTS_POFWARN_EVENTS_POFWARN_Msk: any = '0x1UL << POWER_EVENTS_POFWARN_EVENTS_POFWARN_Pos'
+export const POWER_EVENTS_POFWARN_EVENTS_POFWARN_NotGenerated: any = '0x0UL'
+export const POWER_EVENTS_POFWARN_EVENTS_POFWARN_Generated: any = '0x1UL'
+export const POWER_EVENTS_SLEEPENTER_EVENTS_SLEEPENTER_Pos: any = '0UL'
+export const POWER_EVENTS_SLEEPENTER_EVENTS_SLEEPENTER_Msk: any = '0x1UL << POWER_EVENTS_SLEEPENTER_EVENTS_SLEEPENTER_Pos'
+export const POWER_EVENTS_SLEEPENTER_EVENTS_SLEEPENTER_NotGenerated: any = '0x0UL'
+export const POWER_EVENTS_SLEEPENTER_EVENTS_SLEEPENTER_Generated: any = '0x1UL'
+export const POWER_EVENTS_SLEEPEXIT_EVENTS_SLEEPEXIT_Pos: any = '0UL'
+export const POWER_EVENTS_SLEEPEXIT_EVENTS_SLEEPEXIT_Msk: any = '0x1UL << POWER_EVENTS_SLEEPEXIT_EVENTS_SLEEPEXIT_Pos'
+export const POWER_EVENTS_SLEEPEXIT_EVENTS_SLEEPEXIT_NotGenerated: any = '0x0UL'
+export const POWER_EVENTS_SLEEPEXIT_EVENTS_SLEEPEXIT_Generated: any = '0x1UL'
+export const POWER_PUBLISH_POFWARN_EN_Pos: any = '31UL'
+export const POWER_PUBLISH_POFWARN_EN_Msk: any = '0x1UL << POWER_PUBLISH_POFWARN_EN_Pos'
+export const POWER_PUBLISH_POFWARN_EN_Disabled: any = '0x0UL'
+export const POWER_PUBLISH_POFWARN_EN_Enabled: any = '0x1UL'
+export const POWER_PUBLISH_POFWARN_CHIDX_Pos: any = '0UL'
+export const POWER_PUBLISH_POFWARN_CHIDX_Msk: any = '0xFFUL << POWER_PUBLISH_POFWARN_CHIDX_Pos'
+export const POWER_PUBLISH_SLEEPENTER_EN_Pos: any = '31UL'
+export const POWER_PUBLISH_SLEEPENTER_EN_Msk: any = '0x1UL << POWER_PUBLISH_SLEEPENTER_EN_Pos'
+export const POWER_PUBLISH_SLEEPENTER_EN_Disabled: any = '0x0UL'
+export const POWER_PUBLISH_SLEEPENTER_EN_Enabled: any = '0x1UL'
+export const POWER_PUBLISH_SLEEPENTER_CHIDX_Pos: any = '0UL'
+export const POWER_PUBLISH_SLEEPENTER_CHIDX_Msk: any = '0xFFUL << POWER_PUBLISH_SLEEPENTER_CHIDX_Pos'
+export const POWER_PUBLISH_SLEEPEXIT_EN_Pos: any = '31UL'
+export const POWER_PUBLISH_SLEEPEXIT_EN_Msk: any = '0x1UL << POWER_PUBLISH_SLEEPEXIT_EN_Pos'
+export const POWER_PUBLISH_SLEEPEXIT_EN_Disabled: any = '0x0UL'
+export const POWER_PUBLISH_SLEEPEXIT_EN_Enabled: any = '0x1UL'
+export const POWER_PUBLISH_SLEEPEXIT_CHIDX_Pos: any = '0UL'
+export const POWER_PUBLISH_SLEEPEXIT_CHIDX_Msk: any = '0xFFUL << POWER_PUBLISH_SLEEPEXIT_CHIDX_Pos'
+export const POWER_INTEN_SLEEPEXIT_Pos: any = '6UL'
+export const POWER_INTEN_SLEEPEXIT_Msk: any = '0x1UL << POWER_INTEN_SLEEPEXIT_Pos'
+export const POWER_INTEN_SLEEPEXIT_Disabled: any = '0x0UL'
+export const POWER_INTEN_SLEEPEXIT_Enabled: any = '0x1UL'
+export const POWER_INTEN_SLEEPENTER_Pos: any = '5UL'
+export const POWER_INTEN_SLEEPENTER_Msk: any = '0x1UL << POWER_INTEN_SLEEPENTER_Pos'
+export const POWER_INTEN_SLEEPENTER_Disabled: any = '0x0UL'
+export const POWER_INTEN_SLEEPENTER_Enabled: any = '0x1UL'
+export const POWER_INTEN_POFWARN_Pos: any = '2UL'
+export const POWER_INTEN_POFWARN_Msk: any = '0x1UL << POWER_INTEN_POFWARN_Pos'
+export const POWER_INTEN_POFWARN_Disabled: any = '0x0UL'
+export const POWER_INTEN_POFWARN_Enabled: any = '0x1UL'
+export const POWER_INTENSET_SLEEPEXIT_Pos: any = '6UL'
+export const POWER_INTENSET_SLEEPEXIT_Msk: any = '0x1UL << POWER_INTENSET_SLEEPEXIT_Pos'
+export const POWER_INTENSET_SLEEPEXIT_Disabled: any = '0x0UL'
+export const POWER_INTENSET_SLEEPEXIT_Enabled: any = '0x1UL'
+export const POWER_INTENSET_SLEEPEXIT_Set: any = '0x1UL'
+export const POWER_INTENSET_SLEEPENTER_Pos: any = '5UL'
+export const POWER_INTENSET_SLEEPENTER_Msk: any = '0x1UL << POWER_INTENSET_SLEEPENTER_Pos'
+export const POWER_INTENSET_SLEEPENTER_Disabled: any = '0x0UL'
+export const POWER_INTENSET_SLEEPENTER_Enabled: any = '0x1UL'
+export const POWER_INTENSET_SLEEPENTER_Set: any = '0x1UL'
+export const POWER_INTENSET_POFWARN_Pos: any = '2UL'
+export const POWER_INTENSET_POFWARN_Msk: any = '0x1UL << POWER_INTENSET_POFWARN_Pos'
+export const POWER_INTENSET_POFWARN_Disabled: any = '0x0UL'
+export const POWER_INTENSET_POFWARN_Enabled: any = '0x1UL'
+export const POWER_INTENSET_POFWARN_Set: any = '0x1UL'
+export const POWER_INTENCLR_SLEEPEXIT_Pos: any = '6UL'
+export const POWER_INTENCLR_SLEEPEXIT_Msk: any = '0x1UL << POWER_INTENCLR_SLEEPEXIT_Pos'
+export const POWER_INTENCLR_SLEEPEXIT_Disabled: any = '0x0UL'
+export const POWER_INTENCLR_SLEEPEXIT_Enabled: any = '0x1UL'
+export const POWER_INTENCLR_SLEEPEXIT_Clear: any = '0x1UL'
+export const POWER_INTENCLR_SLEEPENTER_Pos: any = '5UL'
+export const POWER_INTENCLR_SLEEPENTER_Msk: any = '0x1UL << POWER_INTENCLR_SLEEPENTER_Pos'
+export const POWER_INTENCLR_SLEEPENTER_Disabled: any = '0x0UL'
+export const POWER_INTENCLR_SLEEPENTER_Enabled: any = '0x1UL'
+export const POWER_INTENCLR_SLEEPENTER_Clear: any = '0x1UL'
+export const POWER_INTENCLR_POFWARN_Pos: any = '2UL'
+export const POWER_INTENCLR_POFWARN_Msk: any = '0x1UL << POWER_INTENCLR_POFWARN_Pos'
+export const POWER_INTENCLR_POFWARN_Disabled: any = '0x0UL'
+export const POWER_INTENCLR_POFWARN_Enabled: any = '0x1UL'
+export const POWER_INTENCLR_POFWARN_Clear: any = '0x1UL'
+export const POWER_RESETREAS_CTRLAP_Pos: any = '18UL'
+export const POWER_RESETREAS_CTRLAP_Msk: any = '0x1UL << POWER_RESETREAS_CTRLAP_Pos'
+export const POWER_RESETREAS_CTRLAP_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_CTRLAP_Detected: any = '0x1UL'
+export const POWER_RESETREAS_LOCKUP_Pos: any = '17UL'
+export const POWER_RESETREAS_LOCKUP_Msk: any = '0x1UL << POWER_RESETREAS_LOCKUP_Pos'
+export const POWER_RESETREAS_LOCKUP_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_LOCKUP_Detected: any = '0x1UL'
+export const POWER_RESETREAS_SREQ_Pos: any = '16UL'
+export const POWER_RESETREAS_SREQ_Msk: any = '0x1UL << POWER_RESETREAS_SREQ_Pos'
+export const POWER_RESETREAS_SREQ_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_SREQ_Detected: any = '0x1UL'
+export const POWER_RESETREAS_DIF_Pos: any = '4UL'
+export const POWER_RESETREAS_DIF_Msk: any = '0x1UL << POWER_RESETREAS_DIF_Pos'
+export const POWER_RESETREAS_DIF_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_DIF_Detected: any = '0x1UL'
+export const POWER_RESETREAS_OFF_Pos: any = '2UL'
+export const POWER_RESETREAS_OFF_Msk: any = '0x1UL << POWER_RESETREAS_OFF_Pos'
+export const POWER_RESETREAS_OFF_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_OFF_Detected: any = '0x1UL'
+export const POWER_RESETREAS_DOG_Pos: any = '1UL'
+export const POWER_RESETREAS_DOG_Msk: any = '0x1UL << POWER_RESETREAS_DOG_Pos'
+export const POWER_RESETREAS_DOG_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_DOG_Detected: any = '0x1UL'
+export const POWER_RESETREAS_RESETPIN_Pos: any = '0UL'
+export const POWER_RESETREAS_RESETPIN_Msk: any = '0x1UL << POWER_RESETREAS_RESETPIN_Pos'
+export const POWER_RESETREAS_RESETPIN_NotDetected: any = '0x0UL'
+export const POWER_RESETREAS_RESETPIN_Detected: any = '0x1UL'
+export const POWER_POWERSTATUS_LTEMODEM_Pos: any = '0UL'
+export const POWER_POWERSTATUS_LTEMODEM_Msk: any = '0x1UL << POWER_POWERSTATUS_LTEMODEM_Pos'
+export const POWER_POWERSTATUS_LTEMODEM_OFF: any = '0x0UL'
+export const POWER_POWERSTATUS_LTEMODEM_ON: any = '0x1UL'
+export const POWER_GPREGRET_GPREGRET_Pos: any = '0UL'
+export const POWER_GPREGRET_GPREGRET_Msk: any = '0xFFUL << POWER_GPREGRET_GPREGRET_Pos'
+export const POWER_LTEMODEM_STARTN_STARTN_Pos: any = '0UL'
+export const POWER_LTEMODEM_STARTN_STARTN_Msk: any = '0x1UL << POWER_LTEMODEM_STARTN_STARTN_Pos'
+export const POWER_LTEMODEM_STARTN_STARTN_Start: any = '0x0UL'
+export const POWER_LTEMODEM_STARTN_STARTN_Hold: any = '0x1UL'
+export const POWER_LTEMODEM_FORCEOFF_FORCEOFF_Pos: any = '0UL'
+export const POWER_LTEMODEM_FORCEOFF_FORCEOFF_Msk: any = '0x1UL << POWER_LTEMODEM_FORCEOFF_FORCEOFF_Pos'
+export const POWER_LTEMODEM_FORCEOFF_FORCEOFF_Release: any = '0x0UL'
+export const POWER_LTEMODEM_FORCEOFF_FORCEOFF_Hold: any = '0x1UL'
+export const REGULATORS_SYSTEMOFF_SYSTEMOFF_Pos: any = '0UL'
+export const REGULATORS_SYSTEMOFF_SYSTEMOFF_Msk: any = '0x1UL << REGULATORS_SYSTEMOFF_SYSTEMOFF_Pos'
+export const REGULATORS_SYSTEMOFF_SYSTEMOFF_Enable: any = '0x1UL'
+export const REGULATORS_EXTPOFCON_POF_Pos: any = '0UL'
+export const REGULATORS_EXTPOFCON_POF_Msk: any = '0x1UL << REGULATORS_EXTPOFCON_POF_Pos'
+export const REGULATORS_EXTPOFCON_POF_Disabled: any = '0x0UL'
+export const REGULATORS_EXTPOFCON_POF_Enabled: any = '0x1UL'
+export const REGULATORS_DCDCEN_DCDCEN_Pos: any = '0UL'
+export const REGULATORS_DCDCEN_DCDCEN_Msk: any = '0x1UL << REGULATORS_DCDCEN_DCDCEN_Pos'
+export const REGULATORS_DCDCEN_DCDCEN_Disabled: any = '0x0UL'
+export const REGULATORS_DCDCEN_DCDCEN_Enabled: any = '0x1UL'
 export const RTC_TASKS_START_TASKS_START_Pos: any = '0UL'
 export const RTC_TASKS_START_TASKS_START_Msk: any = '0x1UL << RTC_TASKS_START_TASKS_START_Pos'
 export const RTC_TASKS_START_TASKS_START_Trigger: any = '0x1UL'
@@ -2266,8 +2643,11 @@ export const UARTE_CONFIG_HWFC_Enabled: any = '0x1UL'
 
 // -------- INSTANCES -------- //
 
+export const CLOCK = {} as CLOCK_t
 export const NVMC = {} as NVMC_t
 export const P0 = {} as GPIO_t
+export const POWER = {} as POWER_t
+export const REGULATORS = {} as REGULATORS_t
 export const RTC0 = {} as RTC_t
 export const TIMER0 = {} as TIMER_t
 export const UARTE0 = {} as UARTE_t
