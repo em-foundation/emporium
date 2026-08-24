@@ -17,4 +17,5 @@ export function isWarm(): bool_t {
 export function startup(): void {
     Debug.startup()
     $['%%a:'](2)
+    $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
 }

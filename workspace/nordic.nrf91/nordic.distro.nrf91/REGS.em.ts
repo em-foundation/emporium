@@ -104,6 +104,29 @@ export interface UARTE_t {
     CONFIG: $Reg
 }
 
+// -------- NVMC -------- //
+
+export interface NVMC_t {
+    RESERVED: dim_t<$Reg, 256>
+    READY: $Reg
+    RESERVED1: $Reg
+    READYNEXT: $Reg
+    RESERVED2: dim_t<$Reg, 62>
+    CONFIG: $Reg
+    RESERVED3: $Reg
+    ERASEALL: $Reg
+    RESERVED4: dim_t<$Reg, 3>
+    ERASEPAGEPARTIALCFG: $Reg
+    RESERVED5: dim_t<$Reg, 8>
+    ICACHECNF: $Reg
+    RESERVED6: $Reg
+    IHIT: $Reg
+    IMISS: $Reg
+    RESERVED7: dim_t<$Reg, 13>
+    CONFIGNS: $Reg
+    WRITEUICRNS: $Reg
+}
+
 // -------- GPIO -------- //
 
 export interface GPIO_t {
@@ -124,6 +147,49 @@ export interface GPIO_t {
 
 // -------- CONSTANTS -------- //
 
+export const NVMC_READY_READY_Pos: any = '0UL'
+export const NVMC_READY_READY_Msk: any = '0x1UL << NVMC_READY_READY_Pos'
+export const NVMC_READY_READY_Busy: any = '0x0UL'
+export const NVMC_READY_READY_Ready: any = '0x1UL'
+export const NVMC_READYNEXT_READYNEXT_Pos: any = '0UL'
+export const NVMC_READYNEXT_READYNEXT_Msk: any = '0x1UL << NVMC_READYNEXT_READYNEXT_Pos'
+export const NVMC_READYNEXT_READYNEXT_Busy: any = '0x0UL'
+export const NVMC_READYNEXT_READYNEXT_Ready: any = '0x1UL'
+export const NVMC_CONFIG_WEN_Pos: any = '0UL'
+export const NVMC_CONFIG_WEN_Msk: any = '0x7UL << NVMC_CONFIG_WEN_Pos'
+export const NVMC_CONFIG_WEN_Ren: any = '0x0UL'
+export const NVMC_CONFIG_WEN_Wen: any = '0x1UL'
+export const NVMC_CONFIG_WEN_Een: any = '0x2UL'
+export const NVMC_CONFIG_WEN_PEen: any = '0x4UL'
+export const NVMC_ERASEALL_ERASEALL_Pos: any = '0UL'
+export const NVMC_ERASEALL_ERASEALL_Msk: any = '0x1UL << NVMC_ERASEALL_ERASEALL_Pos'
+export const NVMC_ERASEALL_ERASEALL_NoOperation: any = '0x0UL'
+export const NVMC_ERASEALL_ERASEALL_Erase: any = '0x1UL'
+export const NVMC_ERASEPAGEPARTIALCFG_DURATION_Pos: any = '0UL'
+export const NVMC_ERASEPAGEPARTIALCFG_DURATION_Msk: any = '0x7FUL << NVMC_ERASEPAGEPARTIALCFG_DURATION_Pos'
+export const NVMC_ICACHECNF_CACHEPROFEN_Pos: any = '8UL'
+export const NVMC_ICACHECNF_CACHEPROFEN_Msk: any = '0x1UL << NVMC_ICACHECNF_CACHEPROFEN_Pos'
+export const NVMC_ICACHECNF_CACHEPROFEN_Disabled: any = '0x0UL'
+export const NVMC_ICACHECNF_CACHEPROFEN_Enabled: any = '0x1UL'
+export const NVMC_ICACHECNF_CACHEEN_Pos: any = '0UL'
+export const NVMC_ICACHECNF_CACHEEN_Msk: any = '0x1UL << NVMC_ICACHECNF_CACHEEN_Pos'
+export const NVMC_ICACHECNF_CACHEEN_Disabled: any = '0x0UL'
+export const NVMC_ICACHECNF_CACHEEN_Enabled: any = '0x1UL'
+export const NVMC_IHIT_HITS_Pos: any = '0UL'
+export const NVMC_IHIT_HITS_Msk: any = '0xFFFFFFFFUL << NVMC_IHIT_HITS_Pos'
+export const NVMC_IMISS_MISSES_Pos: any = '0UL'
+export const NVMC_IMISS_MISSES_Msk: any = '0xFFFFFFFFUL << NVMC_IMISS_MISSES_Pos'
+export const NVMC_CONFIGNS_WEN_Pos: any = '0UL'
+export const NVMC_CONFIGNS_WEN_Msk: any = '0x3UL << NVMC_CONFIGNS_WEN_Pos'
+export const NVMC_CONFIGNS_WEN_Ren: any = '0x0UL'
+export const NVMC_CONFIGNS_WEN_Wen: any = '0x1UL'
+export const NVMC_CONFIGNS_WEN_Een: any = '0x2UL'
+export const NVMC_WRITEUICRNS_KEY_Pos: any = '4UL'
+export const NVMC_WRITEUICRNS_KEY_Msk: any = '0xFFFFFFFUL << NVMC_WRITEUICRNS_KEY_Pos'
+export const NVMC_WRITEUICRNS_KEY_Keyvalid: any = '0xAFBE5A7UL'
+export const NVMC_WRITEUICRNS_SET_Pos: any = '0UL'
+export const NVMC_WRITEUICRNS_SET_Msk: any = '0x1UL << NVMC_WRITEUICRNS_SET_Pos'
+export const NVMC_WRITEUICRNS_SET_Set: any = '0x1UL'
 export const GPIO_OUT_PIN31_Pos: any = '31UL'
 export const GPIO_OUT_PIN31_Msk: any = '0x1UL << GPIO_OUT_PIN31_Pos'
 export const GPIO_OUT_PIN31_Low: any = '0x0UL'
@@ -1720,5 +1786,6 @@ export const UARTE_CONFIG_HWFC_Enabled: any = '0x1UL'
 
 // -------- INSTANCES -------- //
 
+export const NVMC = {} as NVMC_t
 export const P0 = {} as GPIO_t
 export const UARTE0 = {} as UARTE_t
