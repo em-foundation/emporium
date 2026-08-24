@@ -9,6 +9,8 @@ import * as ConsoleUart from '@nordic.mcu.nrf91/ConsoleUart0.em'
 import * as GpioT from '@nordic.mcu.nrf91/GpioT.em'
 import * as LedT from '@em.utils/LedT.em'
 
+export const AppLed = $clone(LedT)
+export const AppLedPin = $clone(GpioT)
 export const AppOutPin = $clone(GpioT)
 export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
@@ -32,6 +34,9 @@ export function em$configure(): void {
     const brd = $board(DEFAULTS)
     $using(BoardController)
     $using(Console)
+    AppLed.Pin.$$dlg = SysLedPin
+    AppLed.active_low.$$val = brd.activeLowLeds
+    AppLedPin.pin_num.$$val = brd.pins.sysLed
     AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
     BusyWait.scalar.$$val = 9
