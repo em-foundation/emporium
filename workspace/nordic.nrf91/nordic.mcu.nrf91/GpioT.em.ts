@@ -51,7 +51,7 @@ export namespace em$template {
     }
 
     export function reset(): void {
-        // $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_INPUT_Msk
+        $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_INPUT_Msk
     }
 
     export function set(): void {
@@ -59,11 +59,11 @@ export namespace em$template {
     }
 
     export function setInternalPulldown(enable: bool_t): void {
-        // $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_PULL_Pulldown << $R.GPIO_PIN_CNF_PULL_Pos
+        $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_PULL_Pulldown << $R.GPIO_PIN_CNF_PULL_Pos
     }
 
     export function setInternalPullup(enable: bool_t): void {
-        // $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_PULL_Pullup << $R.GPIO_PIN_CNF_PULL_Pos
+        $R.P0.PIN_CNF[pid].$$ = $R.GPIO_PIN_CNF_PULL_Pullup << $R.GPIO_PIN_CNF_PULL_Pos
     }
 
     export function toggle(): void {
