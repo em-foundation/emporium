@@ -6,4 +6,6 @@
 
 #include "../../em.core/em.arch.arm/inc/core_cm33.h"
 
+#define NRF_IPC_S NRF_IPC_NS
+
 #endif

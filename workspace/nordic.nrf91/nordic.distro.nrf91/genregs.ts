@@ -4,11 +4,13 @@ import em from '../../em.core/em.lang/emscript'
 
 const TYPE_MAP = new Map<string, string>([
     ['CLOCK_NS', 'CLOCK'],
+    ['IPC_NS', 'IPC'],
     ['NVMC_NS', 'NVMC'],
     ['P0_NS', 'GPIO'],
     ['POWER_NS', 'POWER'],
     ['REGULATORS_NS', 'REGULATORS'],
     ['RTC0_NS', 'RTC'],
+    ['SPU_S', 'SPU'],
     ['TIMER0_NS', 'TIMER'],
     ['UARTE0_NS', 'UARTE']
 ])
@@ -21,11 +23,13 @@ const AUX_TYPE_IGNORE_SET = new Set<string>([
 
 const INSTS = [
     ['CLOCK', 'CLOCK'],
+    ['IPC', 'IPC'],
     ['NVMC', 'NVMC'],
     ['P0', 'GPIO'],
     ['POWER', 'POWER'],
     ['REGULATORS', 'REGULATORS'],
     ['RTC0', 'RTC'],
+    ['SPU', 'SPU'],
     ['TIMER0', 'TIMER'],
     ['UARTE0', 'UARTE'],
 ]

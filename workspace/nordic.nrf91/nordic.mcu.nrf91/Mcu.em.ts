@@ -19,7 +19,6 @@ export function startup(): void {
     $['%%a:'](2)
     $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
     $R.POWER.TASKS_LOWPWR.$$ = 1
-    $R.POWER.LTEMODEM.FORCEOFF.$$ = 1
     $R.CLOCK.LFCLKSRC.$$ = $R.CLOCK_LFCLKSRCCOPY_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
     while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
