@@ -34,8 +34,9 @@ export function em$startup() {
 }
 
 export function handshake() {
-    transportStart()
-    modemPostInit()
+    if (transportStart()) {
+        modemPostInit()
+    }
 }
 
 export function init() {
@@ -93,20 +94,55 @@ function transportInit() {
     ipcInit()
 }
 
-function transportStart() {
+function transportStart(): bool_t {
     // STARTN is followed by the first modem response on RECEIVE[2].
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    printf`MODEM start: ctrl=%08x g0=%08x\n`(
+        $cast2<u32>(ctrl),
+        $R.IPC.GPMEM[0].$$
+    )
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     $R.POWER.LTEMODEM.STARTN.$$ = 0
-    waitForHandshake()
+    return waitForHandshake()
 }
 
-function waitForHandshake() {
+function waitForHandshake(): bool_t {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
-    while ($R.IPC.EVENTS_RECEIVE[2].$$ == 0) {
+    let fired = false
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[2].$$ != 0) {
+            fired = true
+            break
+        }
     }
-    while (modem.$$.state != 1) {
+    if (!fired) {
+        printf`MODEM timeout: ev2=%x g1=%08x state=%08x\n`(
+            $R.IPC.EVENTS_RECEIVE[2].$$,
+            $R.IPC.GPMEM[1].$$,
+            modem.$$.state
+        )
+        return false
     }
+    let ready = false
+    for (const i of $range(2000000)) {
+        if (modem.$$.state == 1) {
+            ready = true
+            break
+        }
+    }
+    printf`MODEM response: state=%08x ptr0=%08x ptr1=%08x\n`(
+        modem.$$.state,
+        modem.$$.ptr0,
+        modem.$$.ptr1
+    )
+    printf`MODEM response: g0=%08x g1=%08x ready=%x\n`(
+        $R.IPC.GPMEM[0].$$,
+        $R.IPC.GPMEM[1].$$,
+        ready
+    )
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+    return ready
 }
