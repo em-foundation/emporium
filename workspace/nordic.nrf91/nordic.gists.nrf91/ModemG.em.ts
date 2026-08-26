@@ -3,7 +3,6 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf91/REGS.em'
 
-import * as Mem from '@em.utils/Mem.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
@@ -112,55 +111,46 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-// libmodem writes 1 to POWER_NS + 0x68, then waits ~200 us
-// before beginning modem IPC/platform initialization.
-const MODEM_PREP = $cast2<ptr_t<u32>>(0x40005068)
+// POWER and IPC are made non-secure before either peripheral is touched.
+const POWER_PREP = $cast2<ptr_t<u32>>(0x40005068)
+const MODEM_STARTN = $cast2<ptr_t<u32>>(0x40005610)
+const NVIC_ITNS1 = $cast2<ptr_t<u32>>(0xE000E384)
 
 export function em$startup() {
+    // Match the TF-M security attribution before touching POWER or IPC.
+    $R.SPU.PERIPHID[5].PERM.$$ = 0      // POWER -> non-secure
+    $R.SPU.PERIPHID[42].PERM.$$ = 0     // IPC   -> non-secure
 
+    // TF-M maps the NS SRAM as R/W/X, non-secure, and locked.
+    for (const i of $range(4, 32)) {
+        $R.SPU.RAMREGION[i].PERM.$$ = 0x107
+    }
+
+    // IRQ42 is Non-Secure in the TF-M/Zephyr configuration.
+    NVIC_ITNS1[0] |= 1 << 10
+
+    // Enable only after its target security state has been established.
     IntrVec.NVIC_enable(e$`IPC_IRQn`)
 
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    const tx = $$(shmem.$$.tx)
     const rx = $$(shmem.$$.rx)
-
-
 
     ctrl.$$.host.data_base = $cast2<u32>(rx)
     ctrl.$$.host.list_a = $$(ctrl.$$.list_a)
     ctrl.$$.host.list_b = $$(ctrl.$$.list_b)
     ctrl.$$.host.modem_hdr = $cast2<u32>($$(ctrl.$$.modem))
-
-    // for (const i of $range(NUM_DESCS)) {
-    //     ctrl.$$.list_a.descs[i].msg = $$(ctrl.$$.msgs_a[i])
-    //     ctrl.$$.list_b.descs[i].msg = $$(ctrl.$$.msgs_b[i])
-    // }
 }
 
 export function em$run() {
-
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    const tx = $$(shmem.$$.tx)
-    const rx = $$(shmem.$$.rx)
 
-    // libmodem precondition observed in the current Zephyr ELF.
-    MODEM_PREP[0] = 1
+    // libmodem pre-start POWER write, then ~200 us delay.
+    POWER_PREP[0] = 1
     BusyWait.wait(200)
 
-    // $R.IPC refers to the non-secure IPC alias.
-    // Make IPC non-secure before the first $R.IPC access.
-    let ipc_perm = $R.SPU.PERIPHID[42].PERM.$$
-    ipc_perm &= ~0x10
-    $R.SPU.PERIPHID[42].PERM.$$ = ipc_perm
-
-    // SharedMem is at 0x20008000 and spans RAM regions 4..6.
-    for (const i of $range(4, 7)) {
-        $R.SPU.RAMREGION[i].PERM.$$ = 0x06
-    }
-
-    // IPC channel routing.
+    // IPC channel routing used by libmodem.
     $R.IPC.SEND_CNF[1].$$ = 0x02
     $R.IPC.SEND_CNF[3].$$ = 0x08
     $R.IPC.SEND_CNF[5].$$ = 0x20
@@ -173,42 +163,36 @@ export function em$run() {
 
     $R.IPC.INTENSET.$$ = 0xD5
 
-    // Publish CTRL.
+    // Publish CTRL and clear stale startup/error events.
     $R.IPC.GPMEM[0].$$ = $cast2<u32>(ctrl)
     $R.IPC.GPMEM[1].$$ = 0
 
-    // Clear startup and SPU error events.
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     $R.SPU.EVENTS_RAMACCERR.$$ = 0
     $R.SPU.EVENTS_PERIPHACCERR.$$ = 0
 
-    printf`CTRL=%08x TX=%08x RX=%08x\n`(
-        $cast2<u32>(ctrl),
-        $cast2<u32>(tx),
-        $cast2<u32>(rx)
-    )
-    printf`starting modem...\n`()
-
-    const MODEM_STARTN = $cast2<ptr_t<u32>>(0x40005610)
+    // Start the modem through the non-secure POWER alias.
     MODEM_STARTN[0] = 0
 
-    // $R.POWER.LTEMODEM.STARTN.$$ = 0
-
-    while ($R.IPC.EVENTS_RECEIVE[2].$$ == 0) {
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[2].$$ != 0) {
+            printf`modem handshake: state=%08x ptr0=%08x ptr1=%08x\n`(
+                ctrl.$$.modem.state,
+                ctrl.$$.modem.ptr0,
+                ctrl.$$.modem.ptr1
+            )
+            $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+            return
+        }
     }
 
-    printf`modem handshake!\n`()
-    printf`state=%08x ptr0=%08x ptr1=%08x\n`(
-        ctrl.$$.modem.state,
-        ctrl.$$.modem.ptr0,
-        ctrl.$$.modem.ptr1
+    printf`NO HANDSHAKE ramerr=%x peripherr=%x\n`(
+        $R.SPU.EVENTS_RAMACCERR.$$,
+        $R.SPU.EVENTS_PERIPHACCERR.$$
     )
-
-    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
 }
 
 export function IPC_isr$$() {
     IntrVec.NVIC_clear(e$`IPC_IRQn`)
-    printf`*** IPC isr`()
     fail()
 }
