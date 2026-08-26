@@ -35,14 +35,13 @@ export function em$startup() {
 
 export function handshake() {
     transportStart()
+    modemPostInit()
 }
 
 export function init() {
-    // POWER and IPC are assumed to have been attributed non-secure before entry.
+    // POWER/CLOCK and IPC are assumed non-secure before entry.
     modemPrep()
-    osInit()
     platformInit()
-    modemPostInit()
 }
 
 export function IPC_isr$$() {
@@ -65,10 +64,6 @@ function ipcInit() {
     $R.IPC.GPMEM[1].$$ = 0
 }
 
-function libraryHeapInit() {
-    // nrf_modem_os_init(): k_heap_init(..., 0x400)
-}
-
 function modemPostInit() {
     const MODEM_POST = $cast2<ptr_t<u32>>(0x4000506C)
     MODEM_POST[0] = 1
@@ -78,11 +73,6 @@ function modemPrep() {
     const MODEM_PREP = $cast2<ptr_t<u32>>(0x40005068)
     MODEM_PREP[0] = 1
     BusyWait.wait(200)
-}
-
-function osInit() {
-    libraryHeapInit()
-    txHeapInit()
 }
 
 function platformInit() {
@@ -104,16 +94,19 @@ function transportInit() {
 }
 
 function transportStart() {
-    // rpc_transport_ipc_init(): STARTN, then wait for the startup response.
+    // STARTN is followed by the first modem response on RECEIVE[2].
     $R.POWER.LTEMODEM.STARTN.$$ = 0
     waitForHandshake()
 }
 
-function txHeapInit() {
-    // nrf_modem_os_init(): k_heap_init(TX, 0x2080), covering TX + pad.
-}
-
 function waitForHandshake() {
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    const modem = $$(ctrl.$$.modem)
     while ($R.IPC.EVENTS_RECEIVE[2].$$ == 0) {
     }
+    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+    while (modem.$$.state != 1) {
+    }
+    $R.IPC.GPMEM[1].$$ = $cast2<u32>(modem)
 }
