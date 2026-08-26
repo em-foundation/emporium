@@ -17,8 +17,13 @@ export function isWarm(): bool_t {
 export function startup(): void {
     Debug.startup()
     $['%%a:'](2)
+    //
+    $R.SPU.PERIPHID[5].PERM.$$ = 0      // POWER -> Non-Secure
+    $R.SPU.PERIPHID[42].PERM.$$ = 0     // IPC   -> Non-Secure
+    //
     $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
-    // $R.POWER.TASKS_LOWPWR.$$ = 1
+    $R.POWER.TASKS_LOWPWR.$$ = 1
+    //
     $R.CLOCK.LFCLKSRC.$$ = $R.CLOCK_LFCLKSRCCOPY_SRC_LFXO
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
     while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
