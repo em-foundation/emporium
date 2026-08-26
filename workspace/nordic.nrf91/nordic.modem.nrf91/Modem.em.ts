@@ -95,6 +95,7 @@ function transportInit() {
 
 function transportStart() {
     // STARTN is followed by the first modem response on RECEIVE[2].
+    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     $R.POWER.LTEMODEM.STARTN.$$ = 0
     waitForHandshake()
 }
@@ -105,8 +106,7 @@ function waitForHandshake() {
     const modem = $$(ctrl.$$.modem)
     while ($R.IPC.EVENTS_RECEIVE[2].$$ == 0) {
     }
-    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     while (modem.$$.state != 1) {
     }
-    $R.IPC.GPMEM[1].$$ = $cast2<u32>(modem)
+    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
 }
