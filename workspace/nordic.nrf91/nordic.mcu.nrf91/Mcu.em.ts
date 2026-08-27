@@ -18,9 +18,6 @@ export function startup(): void {
     Debug.startup()
     $['%%a:'](2)
     //
-    $R.SPU.PERIPHID[5].PERM.$$ = 0      // POWER -> Non-Secure
-    $R.SPU.PERIPHID[42].PERM.$$ = 0     // IPC   -> Non-Secure
-    //
     $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
     $R.POWER.TASKS_LOWPWR.$$ = 1
     //

@@ -93,10 +93,10 @@ export function em$configure() {
 export function em$generate() {
     LinkerC.genScript({
         dmem_flash: { orig: 0x20008000, len: 0x00008000 },
-        imem_flash: { orig: 0x00000000, len: 0x00008000 },
-        dmem_sram: { orig: 0x20008000, len: 0x00008000 },
-        imem_sram: { orig: 0x20000000, len: 0x00008000 },
-        lmem_sram: { orig: 0x00000000, len: 0x00008000 },
+        imem_flash: { orig: 0x00008000, len: 0x00008000 },
+        dmem_sram: LinkerC.MEM_NULL,
+        imem_sram: LinkerC.MEM_NULL,
+        lmem_sram: LinkerC.MEM_NULL,
         cmem_sram: LinkerC.MEM_NULL,
     })
     let opt = $property('em.build.Optimize', 'Oz')
@@ -117,6 +117,7 @@ export function em$generate() {
         |-> LD=$TOOLS/gcc/arm-none-eabi/bin/ld
         |-> OBJCOPY=$TOOLS/gcc/arm-none-eabi/bin/objcopy
         |-> OBJDUMP=$TOOLS/gcc/arm-none-eabi/bin/objdump
+        |-> SREC=${tools}/srecord/bin/srec_cat
         |-> 
         |-> OUT=.out
         |-> 
@@ -181,7 +182,7 @@ export function em$generate() {
         |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
         |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
         |-> $OBJDUMP -h $OUT/main.out
-
+        |-> $SREC ../nordic.nrf91/nordic.distro.nrf91/tfm_s.hex -Intel $OUT/main.out.hex -Intel -o $OUT/merged.hex -Intel
     `)
     out.close()
     //
