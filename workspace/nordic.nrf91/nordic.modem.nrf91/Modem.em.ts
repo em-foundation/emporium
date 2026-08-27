@@ -146,3 +146,11 @@ function waitForHandshake(): bool_t {
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     return ready
 }
+
+//>> ---- test ---- <<//
+
+export function em$run() {
+    init()
+    handshake()
+}
+
