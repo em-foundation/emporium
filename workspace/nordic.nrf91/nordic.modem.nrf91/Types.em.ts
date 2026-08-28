@@ -31,6 +31,7 @@ export const RPC_AF_INET = 2
 export const RPC_SOCK_DGRAM = 2
 export const RPC_IPPROTO_UDP = 2
 
+export const RPC_PREAMBLE_AT_REQ = 0x00010003
 export const RPC_PREAMBLE_REQ = 0x00050003
 export const RPC_PREAMBLE_RSP = 0x00020003
 export const RPC_KIND_REQ = 2

@@ -41,7 +41,9 @@ export function em$startup() {
 export function handshake() {
     if (transportStart() && rpcAtInit()) {
         modemPostInit()
-        rpcSocketProbe()
+        if (rpcAtCommandProbe()) {
+            rpcSocketProbe()
+        }
     }
 }
 
@@ -86,6 +88,91 @@ function platformInit() {
     transportInit()
 }
 
+
+function rpcAtCommandProbe(): bool_t {
+    // First ordinary AT command: "AT+CFUN=1\0".
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    const modem = $$(ctrl.$$.modem)
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
+    const tx = $cast2<ptr_t<u32>>($$(shmem.$$.tx))
+    tx[0] = 0x432B5441
+    tx[1] = 0x3D4E5546
+    tx[2] = 0x00000031
+    tx_list[1] = T.DESC_DONE
+    tx_list[2] = $cast2<u32>(msg)
+    for (const i of $range(T.MSG_WORDS)) {
+        msg[i] = 0
+    }
+    msg[0] = T.RPC_PREAMBLE_AT_REQ
+    msg[1] = T.RPC_KIND_REQ
+    msg[2] = $cast2<u32>(tx)
+    msg[3] = 10
+    msg[4] = T.RPC_CTRL_SIZE_AT_INIT
+    msg[5] = T.RPC_OP_AT_INIT
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    tx_list[1] = T.DESC_BUSY
+    BusyWait.wait(3)
+    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
+    let fired = false
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
+            fired = true
+            break
+        }
+    }
+    if (!fired) {
+        printf`MODEM AT timeout: txstate=%08x\n`(tx_list[1])
+        return false
+    }
+    const rx_list = $cast2<ptr_t<u32>>(modem.$$.ptr1)
+    const count = rx_list[0]
+    for (const i of $range(16)) {
+        if (i >= count) {
+            break
+        }
+        const state = rx_list[1 + i * 2]
+        if ((state & 0xFF) != T.DESC_BUSY) {
+            continue
+        }
+        const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
+        if ((rsp[5] & 0xFF) != T.RPC_OP_AT_INIT) {
+            continue
+        }
+        printf`MODEM AT rsp: pre=%08x w2=%08x w3=%08x w4=%08x\n`(
+            rsp[0],
+            rsp[2],
+            rsp[3],
+            rsp[4]
+        )
+        printf`MODEM AT rsp2: w5=%08x w6=%08x txstate=%08x\n`(
+            rsp[5],
+            rsp[6],
+            tx_list[1]
+        )
+        if (rsp[2] != 0) {
+            const data = $cast2<ptr_t<u32>>(rsp[2])
+            printf`MODEM AT data: %08x %08x\n`(
+                data[0],
+                data[1]
+            )
+        }
+        rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
+        const tx_state = tx_list[1]
+        if ((tx_state & 0xFF) == T.DESC_DONE) {
+            tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
+        }
+        $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+        return true
+    }
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    printf`MODEM AT bad response: count=%x txstate=%08x\n`(
+        count,
+        tx_list[1]
+    )
+    return false
+}
 
 function rpcAtInit(): bool_t {
     // Reproduce libmodem's first post-handshake AT control RPC.
