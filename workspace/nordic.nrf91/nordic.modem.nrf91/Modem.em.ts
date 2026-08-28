@@ -33,6 +33,7 @@ const AT_CEDRXS_OFF = 3
 const AT_CEREG = 6
 const AT_CFUN_FULL = 5
 const AT_CFUN_OFFLINE = 0
+const AT_CFUN_POWER_OFF = 7
 const AT_CPSMS_ON = 2
 const AT_RAI_ON = 4
 const AT_SYSTEMMODE_NBIOT = 1
@@ -52,6 +53,7 @@ export function handshake() {
         if (networkBringUp()) {
             $['%%d-']
             rpcSocketProbe()
+            modemShutdown()
         }
     }
 }
@@ -80,6 +82,12 @@ function ipcInit() {
     $R.IPC.INTENSET.$$ = 0xD5
     $R.IPC.GPMEM[0].$$ = $cast2<u32>(ctrl)
     $R.IPC.GPMEM[1].$$ = 0
+}
+
+function modemShutdown() {
+    if (rpcAtCommand(AT_CFUN_POWER_OFF, false)) {
+        printf`MODEM CFUN=0\n`()
+    }
 }
 
 function modemPostInit() {
@@ -226,6 +234,12 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
         tx[0] = 0x432B5441
         tx[1] = 0x3D4E5546
         tx[2] = 0x00000031
+        len = 10
+    }
+    else if (kind == AT_CFUN_POWER_OFF) {
+        tx[0] = 0x432B5441
+        tx[1] = 0x3D4E5546
+        tx[2] = 0x00000030
         len = 10
     }
     else {
@@ -404,16 +418,11 @@ function rpcConnectProbe(fd: u32): bool_t {
             continue
         }
         const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
-        printf`MODEM connect rsp: pre=%08x w4=%08x w5=%08x w6=%08x\n`(
-            rsp[0],
-            rsp[4],
+        const okay = rsp[0] == 0x80020004 && rsp[5] == 0
+        printf`MODEM connect: fd=%x status=%x ok=%x\n`(
+            rsp[6],
             rsp[5],
-            rsp[6]
-        )
-        printf`MODEM connect rsp2: w7=%08x w8=%08x txstate=%08x\n`(
-            rsp[7],
-            rsp[8],
-            tx_list[1]
+            okay
         )
         rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
         const tx_state = tx_list[1]
@@ -421,7 +430,7 @@ function rpcConnectProbe(fd: u32): bool_t {
             tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
         }
         $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-        return true
+        return okay
     }
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
     printf`MODEM connect bad response: count=%x txstate=%08x\n`(
