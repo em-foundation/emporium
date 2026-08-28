@@ -113,6 +113,78 @@ function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
     return waitForRpc(opcode)
 }
 
+function rpcConnectProbe(fd: u32): bool_t {
+    // Exact IPv4 connect() request shape from the Zephyr UDP image.
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    const modem = $$(ctrl.$$.modem)
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
+    tx_list[1] = T.DESC_ALLOC
+    tx_list[2] = $cast2<u32>(msg)
+    for (const i of $range(T.MSG_WORDS)) {
+        msg[i] = 0
+    }
+    msg[0] = T.RPC_PREAMBLE_CONNECT_REQ
+    msg[1] = T.DESC_BUSY
+    msg[4] = T.RPC_CTRL_SIZE_CONNECT
+    msg[5] = 0
+    msg[6] = fd
+    msg[7] = 0x0004A509
+    msg[8] = 0x08080808
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    tx_list[1] = T.DESC_BUSY
+    BusyWait.wait(3)
+    $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
+    let fired = false
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
+            fired = true
+            break
+        }
+    }
+    if (!fired) {
+        printf`MODEM connect timeout: txstate=%08x\n`(tx_list[1])
+        return false
+    }
+    const rx_list = $cast2<ptr_t<u32>>(modem.$$.ptr1)
+    const count = rx_list[0]
+    for (const i of $range(16)) {
+        if (i >= count) {
+            break
+        }
+        const state = rx_list[1 + i * 2]
+        if ((state & 0xFF) != T.DESC_BUSY) {
+            continue
+        }
+        const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
+        printf`MODEM connect rsp: pre=%08x w4=%08x w5=%08x w6=%08x\n`(
+            rsp[0],
+            rsp[4],
+            rsp[5],
+            rsp[6]
+        )
+        printf`MODEM connect rsp2: w7=%08x w8=%08x txstate=%08x\n`(
+            rsp[7],
+            rsp[8],
+            tx_list[1]
+        )
+        rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
+        const tx_state = tx_list[1]
+        if ((tx_state & 0xFF) == T.DESC_DONE) {
+            tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
+        }
+        $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+        return true
+    }
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    printf`MODEM connect bad response: count=%x txstate=%08x\n`(
+        count,
+        tx_list[1]
+    )
+    return false
+}
+
 function rpcSocketProbe(): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
     const shmem = $$(shmem_tab[0])
@@ -174,7 +246,10 @@ function rpcSocketProbe(): bool_t {
                 result[0],
                 result[1]
             )
-            return result[1] == 0
+            if (result[1] != 0) {
+                return false
+            }
+            return rpcConnectProbe(result[0])
         }
     }
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0

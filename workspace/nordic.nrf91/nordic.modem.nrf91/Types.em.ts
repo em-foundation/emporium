@@ -22,6 +22,9 @@ export const RPC_KIND_CTRL = 4
 export const RPC_OP_SOCKET = 0x7001
 export const RPC_CTRL_SIZE_SOCKET = 0x14
 export const RPC_PREAMBLE_SOCKET_REQ = 0x70010004
+export const RPC_OP_CONNECT = 0x7002
+export const RPC_CTRL_SIZE_CONNECT = 0x1C
+export const RPC_PREAMBLE_CONNECT_REQ = 0x70020004
 export const RPC_RESULT_PENDING = 0xBC00C1EE
 
 export const RPC_AF_INET = 2
