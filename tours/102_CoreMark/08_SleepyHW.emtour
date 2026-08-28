@@ -1,0 +1,147 @@
+title: SleepyRunnerP on Hardware
+
+files:
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - .assets/img-101-01-01.png
+  - .assets/img-102-08-01.png
+  - .assets/img-102-08-02.png
+  - .assets/img-102-08-03.png
+
+
+steps:
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$start]&thinsp;Signal Capture on Real Hardware}
+
+      Until now, we've used **PulseView** to view sig&shy;nals captured by the **Wokwi LOGIC** block in the **Pi Pico** simulator.
+
+      <div class="em-info">
+
+      The last tour {[tr,102/07/05]} showed a **PulseView** capture of {[cu]SleepyRunnerP} &ndash; more compelling than {[cu]BlinkerP}.
+
+      </div>
+      
+      In fact, you can *already* execute {[cu]SleepyRunnerP} on *any* of the boards presented in an earlier tour {[tr,102/06/02]}.
+
+      But without **PulseView**, you'll miss out on lots of details&thinsp;&hellip;
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,monitor_heart]&thinsp;A Real Hardware Logic Analyzer}
+
+      Good news&thinsp;&hellip;&thinsp; You can purchase a USB logic analyzer for less than many of these inexpensive development boards.
+
+      <div class="em-info">
+
+      [Sparkfun](https://www.sparkfun.com/usb-logic-analyzer-24mhz-8-channel.html) &ndash; at major distributors.&thinsp; Search *"8-channel, 24MHz USB logic analyzer"* for this (and other) products.
+
+      </div>
+
+      After some **PulseView** setup, you'll see the same [`AppOut`, `DbgA`, &thinsp;&hellip; `SysLed`] signals captured from *real* hardware.
+
+      In preparation, review this checklist:
+
+      ☑️&thinsp; **build&thinsp;+&thinsp;load** {[cu]BlinkerP} your board of choice<br>
+      ☑️&thinsp; visually verify that {[cu]BlinkerP} executes on your board<br>
+      ☑️&thinsp; connect the jumper wires to your board's colored pins<br>
+      ☑️&thinsp; also connect analyzer GND to board GND [grey]<br>
+      ☑️&thinsp; plug the USB logic analyzer into your host PC
+
+
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,settings]&thinsp;Configuring PulseView}
+
+      After prepping your board and logic analyzer, configure **PulseView** [**PV**] following the steps highlighted below:
+
+      {[DC,1]}&thinsp; click the **Create New Session** button at the top-left<br>
+      {[DC,2]}&thinsp; click the <b>&lt;No Device&gt;</b> menu in the new tab<br>
+      {[DC,3]}&thinsp; choose the **fx2lafw** driver from the dropdown<br>
+      {[DC,4]}&thinsp; click **Scan** to search and **Ok** to accept the result<br>
+      {[DC,5]}&thinsp; change count to **100 M samples** and rate to **4 MHz**<br>
+      {[DC,6]}&thinsp; restore `saleae.pvs` from your `emporium` folder<br>
+      {[DC,7]}&thinsp; set a falling-edge trigger on the `DbgA` signal<br>
+      {[DC,8]}&thinsp; click the **Run**&thinsp;&middot;&thinsp;**Stop** button to control the capture<br>
+
+      💡&thinsp;When restarting **PV**, all of its state will not persist.<br>
+      💡&thinsp;Always check these steps &ndash; adjusting **PV** as needed.
+
+      ❓&thinsp;Visit **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions) for help with **PV**.
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,cycle]&thinsp;Steady-State Workflow}
+
+      Once you can reliably (re-)launch **PulseView**, your work&shy;flow falls into a regular **edit**&thinsp;&middot;&thinsp;**execute**&thinsp;&middot;&thinsp;**examine** pattern.
+
+      💡&thinsp;Save some setup time by never exiting **PulseView**.
+
+      After choosing a board {[dc,1]}, **Build**&thinsp;+&thinsp;**Load** {[dc,2]} programs of in&shy;terest.&thinsp; You'll see visual evidence of execution on HW {[dc,3]}.
+
+      Hopping into **PulseView**, you'll toggle the **Run** button into its **Stop** mode &ndash; awaiting `DbgA` to trigger the capture.
+
+      <div class="em-info">
+
+      If the **Stop** button shows RED {[dc,4]}, you should **RESET** the board {[dc,3]}; the **Stop** button should turn GREEN {[dc,5]}.
+
+      </div>
+
+      A live capture then unfolds inside **PulseView** &ndash; term&shy;inated by **Stop** or else when exceeding the allotted sample-count.
+
+  - cmds:
+      - open 1
+    acts: ["$build"]
+    text: |
+      {[ht,biotech]&thinsp;Observing %[cu]SleepyRunnerP%}
+
+      The time has come to run {[cu]SleepyRunnerP} on *real* HW &ndash; while tracing its execution (live) with a *real* logic analyzer.
+
+      <div class="em-info">
+
+      If successful, **PulseView** will reveal the same details about {[cu]SleepyRunnerP} seen on an earlier tour {[tr,102/07/05]}&thinsp;.
+
+      </div>
+
+      💡&thinsp;Make yourself comfortable with the **PulseView** UI.
+
+      💡&thinsp;Practice scrolling&thinsp;&middot;&thinsp;zooming within the signal capture.
+
+      ❓&thinsp;And don't hesitate to ask for help at [Discussions](https://github.com/em-foundation/emporium/discussions).
+
+
+
+  - cmds:
+      - open 1
+    acts: ["$build"]
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Run {[cu]SleepyRunnerP} {[tr,102/07/05]}&thinsp; on real HW.
+
+      {[bi,task_alt]} Run {[cu]Alarm2P} {[tr,101/06/04]}&thinsp; or {[cu]Button3P} {[tr,101/10/01]}&thinsp;.
+
+      {[bi,task_alt]} Run the `em.examples.combo` programs on real HW.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      This stop formally ends the **CoreMark** tours &ndash; which have taken you from {[cu]ActiveRunnerP} to {[cu]SleepyRunnerP}.
+
+      <div class="em-info">
+
+      These tours have also taken you from a **Pi Pico** simulator to a choice of real HW platforms for program execution.
+
+      </div>
+
+      Equally important, inexpensive logic analyzers enable our use of **PulseView** for RTA &thinsp;{[tr,101/01/03]}&thinsp; to continue unabated.
+
+      "RTA on real HW" will play a critical role going for&shy;ward &ndash; as future tours tackle porting and benchmarking **EMS**.
+
+      {[hc]}
