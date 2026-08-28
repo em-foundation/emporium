@@ -7,7 +7,18 @@ export const MSG_WORDS = MSG_SIZE / 4
 export const CTRL_SIZE = 0x4E8
 
 export const CTRL_VERSION = 0x00010000
+export const DESC_DONE = 0
+export const DESC_BUSY = 1
 export const DESC_FREE = 3
+
+export const IPC_SEND_RPC = 3
+export const IPC_RECV_RPC = 4
+
+export const RPC_PREAMBLE_REQ = 0x00050003
+export const RPC_PREAMBLE_RSP = 0x00020003
+export const RPC_KIND_REQ = 2
+export const RPC_CTRL_SIZE_AT_INIT = 4
+export const RPC_OP_AT_INIT = 0xA7
 
 export class Msg extends $vector<u32> {
     $len = MSG_WORDS

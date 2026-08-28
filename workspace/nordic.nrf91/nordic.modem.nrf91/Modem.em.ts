@@ -29,6 +29,9 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const RECV_RPC = T.IPC_RECV_RPC
+const SEND_RPC = T.IPC_SEND_RPC
+
 export function em$startup() {
     shmemConstruct()
 }
@@ -83,24 +86,28 @@ function platformInit() {
 
 function rpcAtInit(): bool_t {
     // Reproduce libmodem's first post-handshake AT control RPC.
+    return rpcCall(T.RPC_OP_AT_INIT, T.RPC_CTRL_SIZE_AT_INIT)
+}
+
+function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    list[1] = 0
+    list[1] = T.DESC_DONE
     list[2] = $cast2<u32>(msg)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
-    msg[0] = 0x00050003
-    msg[1] = 0x00000002
-    msg[4] = 0x00000004
-    msg[5] = 0x000000A7
-    $R.IPC.EVENTS_RECEIVE[4].$$ = 0
-    list[1] = 1
+    msg[0] = T.RPC_PREAMBLE_REQ
+    msg[1] = T.RPC_KIND_REQ
+    msg[4] = ctrl_size
+    msg[5] = opcode
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    list[1] = T.DESC_BUSY
     BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[3].$$ = 1
-    return waitForRpcAtInit()
+    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
+    return waitForRpc(opcode)
 }
 
 function shmemConstruct() {
@@ -171,21 +178,21 @@ function waitForHandshake(): bool_t {
 }
 
 
-function waitForRpcAtInit(): bool_t {
+function waitForRpc(opcode: u32): bool_t {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
     const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     let fired = false
     for (const i of $range(2000000)) {
-        if ($R.IPC.EVENTS_RECEIVE[4].$$ != 0) {
+        if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
             fired = true
             break
         }
     }
     if (!fired) {
-        printf`MODEM rpc_at timeout: ev4=%x txstate=%08x\n`(
-            $R.IPC.EVENTS_RECEIVE[4].$$,
+        printf`MODEM rpc timeout: op=%x txstate=%08x\n`(
+            opcode,
             tx_list[1]
         )
         return false
@@ -197,34 +204,33 @@ function waitForRpcAtInit(): bool_t {
             break
         }
         const state = rx_list[1 + i * 2]
-        if ((state & 0xFF) != 1) {
+        if ((state & 0xFF) != T.DESC_BUSY) {
             continue
         }
         const msg = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
         const preamble = msg[0]
-        if ((preamble & 0xFF) == 3 &&
-            ((preamble >> 16) & 0xFFFF) == 2 &&
-            (msg[5] & 0xFF) == 0xA7) {
+        if (preamble == T.RPC_PREAMBLE_RSP &&
+            (msg[5] & 0xFF) == (opcode & 0xFF)) {
             rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
             const tx_state = tx_list[1]
-            if ((tx_state & 0xFF) == 0) {
+            if ((tx_state & 0xFF) == T.DESC_DONE) {
                 tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
             }
-            $R.IPC.EVENTS_RECEIVE[4].$$ = 0
-            printf`MODEM rpc_at response: pre=%08x rxstate=%08x txstate=%08x\n`(
+            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            printf`MODEM rpc response: op=%x pre=%08x txstate=%08x\n`(
+                opcode,
                 preamble,
-                state,
                 tx_state
             )
             return true
         }
     }
-    printf`MODEM rpc_at bad response: ev4=%x count=%x txstate=%08x\n`(
-        $R.IPC.EVENTS_RECEIVE[4].$$,
+    printf`MODEM rpc bad response: op=%x count=%x txstate=%08x\n`(
+        opcode,
         count,
         tx_list[1]
     )
-    $R.IPC.EVENTS_RECEIVE[4].$$ = 0
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
     return false
 }
 
