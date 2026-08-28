@@ -30,7 +30,9 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const RECV_RPC = T.IPC_RECV_RPC
+const SEND_CTRL = T.IPC_SEND_CTRL
 const SEND_RPC = T.IPC_SEND_RPC
+const SOCKET_RSP = 0x80010004
 
 export function em$startup() {
     shmemConstruct()
@@ -39,6 +41,7 @@ export function em$startup() {
 export function handshake() {
     if (transportStart() && rpcAtInit()) {
         modemPostInit()
+        rpcSocketProbe()
     }
 }
 
@@ -108,6 +111,75 @@ function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
     BusyWait.wait(3)
     $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
     return waitForRpc(opcode)
+}
+
+function rpcSocketProbe(): bool_t {
+    // Exact first socket() control request from the Zephyr UDP image.
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    const modem = $$(ctrl.$$.modem)
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
+    const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
+    tx_list[1] = T.DESC_ALLOC
+    tx_list[2] = $cast2<u32>(msg)
+    for (const i of $range(T.MSG_WORDS)) {
+        msg[i] = 0
+    }
+    msg[0] = T.RPC_PREAMBLE_SOCKET_REQ
+    msg[1] = T.DESC_BUSY
+    msg[4] = T.RPC_CTRL_SIZE_SOCKET
+    msg[5] = $cast2<u32>(result)
+    msg[6] = T.RPC_AF_INET
+    msg[7] = T.RPC_SOCK_DGRAM
+    msg[8] = T.RPC_IPPROTO_UDP
+    result[0] = T.RPC_RESULT_PENDING
+    result[1] = 0
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    tx_list[1] = T.DESC_BUSY
+    BusyWait.wait(3)
+    $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
+    let fired = false
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
+            fired = true
+            break
+        }
+    }
+    if (!fired) {
+        printf`MODEM socket timeout: txstate=%08x\n`(tx_list[1])
+        return false
+    }
+    const rx_list = $cast2<ptr_t<u32>>(modem.$$.ptr1)
+    const count = rx_list[0]
+    for (const i of $range(16)) {
+        if (i >= count) {
+            break
+        }
+        const state = rx_list[1 + i * 2]
+        if ((state & 0xFF) != T.DESC_BUSY) {
+            continue
+        }
+        const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
+        if (rsp[0] == SOCKET_RSP && rsp[5] == $cast2<u32>(result)) {
+            result[0] = rsp[6]
+            result[1] = rsp[7]
+            rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
+            const tx_state = tx_list[1]
+            if ((tx_state & 0xFF) == T.DESC_DONE) {
+                tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
+            }
+            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            printf`MODEM socket: fd=%x errno=%x\n`(
+                result[0],
+                result[1]
+            )
+            return result[1] == 0
+        }
+    }
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    printf`MODEM socket bad response: txstate=%08x\n`(tx_list[1])
+    return false
 }
 
 function shmemConstruct() {

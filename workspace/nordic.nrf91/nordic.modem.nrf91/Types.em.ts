@@ -7,12 +7,26 @@ export const MSG_WORDS = MSG_SIZE / 4
 export const CTRL_SIZE = 0x4E8
 
 export const CTRL_VERSION = 0x00010000
-export const DESC_DONE = 0
+export const DESC_ALLOC = 0
 export const DESC_BUSY = 1
+export const DESC_DONE = 2
 export const DESC_FREE = 3
 
 export const IPC_SEND_RPC = 3
 export const IPC_RECV_RPC = 4
+
+export const IPC_SEND_CTRL = 1
+export const IPC_RECV_CTRL = 0
+
+export const RPC_KIND_CTRL = 4
+export const RPC_OP_SOCKET = 0x7001
+export const RPC_CTRL_SIZE_SOCKET = 0x14
+export const RPC_PREAMBLE_SOCKET_REQ = 0x70010004
+export const RPC_RESULT_PENDING = 0xBC00C1EE
+
+export const RPC_AF_INET = 2
+export const RPC_SOCK_DGRAM = 2
+export const RPC_IPPROTO_UDP = 2
 
 export const RPC_PREAMBLE_REQ = 0x00050003
 export const RPC_PREAMBLE_RSP = 0x00020003
