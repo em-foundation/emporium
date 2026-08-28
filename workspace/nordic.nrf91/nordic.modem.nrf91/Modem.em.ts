@@ -48,7 +48,9 @@ export function em$startup() {
 export function handshake() {
     if (transportStart() && rpcAtInit()) {
         modemPostInit()
+        $['%%d+']
         if (networkBringUp()) {
+            $['%%d-']
             rpcSocketProbe()
         }
     }
