@@ -1,32 +1,13 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as $R from '@nordic.distro.nrf91/REGS.em'
-
-import * as BusyWait from '@em.utils/BusyWait.em'
-import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as BoardC from '@nordic.distro.nrf91/BoardC.em'
+import * as Common from '@em.mcu/Common.em'
+import * as Rpc from '@nordic.modem.nrf91/Rpc.em'
 
 import * as T from '@nordic.modem.nrf91/Types.em'
 
-var shmem_tab = $table<T.SharedMem>()
-
-export namespace em$meta {
-    export function em$construct() {
-        IntrVec.em$meta.useIntr('IPC')
-        const shmem = shmem_tab.$$add()
-        const ctrl = shmem.$$.ctrl
-        ctrl.host.version = T.CTRL_VERSION
-        ctrl.list_a.count = T.NUM_DESCS
-        ctrl.list_b.count = T.NUM_DESCS
-        for (const i of $range(T.NUM_DESCS)) {
-            ctrl.list_a.descs[i].state = T.DESC_FREE
-            ctrl.list_b.descs[i].state = T.DESC_FREE
-        }
-        ctrl.host.data_size = T.SHMEM_SIZE
-    }
-}
-
-//>> ---- em$targ ---- <<//
+const AppLed = $delegate(BoardC.AppLed)
 
 const AT_CEDRXS_OFF = 3
 const AT_CEREG = 6
@@ -42,67 +23,80 @@ const AT_FEACONF_031 = 8
 const AT_RAI_ON = 4
 const AT_SYSTEMMODE_NBIOT = 1
 const AT_XCOEX0 = 14
-const RECV_RPC = T.IPC_RECV_RPC
-const SEND_CTRL = T.IPC_SEND_CTRL
-const SEND_RPC = T.IPC_SEND_RPC
 const SEND_RAI_LAST = 0x01000000
 const SEND_REQ = 0x70060004
 const SEND_RSP = 0x80060004
 const SOCKET_RSP = 0x80010004
 
-let rpc_rx_k: u32 = 0
-let rpc_rx_list: ptr_t<u32> = $null
-let rpc_rx_msg: ptr_t<u32> = $null
-let rpc_rx_seq: u32 = 0
-let at_tx_busy_mask: u32 = 0
-let rpc_rx_state: u32 = 0
-let rpc_tx_seq: u32 = 0
-let rpc_tx_slot: u32 = 0
+var enabled: bool_t = false
+var udp_fd: u32 = 0xFFFFFFFF
 
-export function em$startup() {
-    shmemConstruct()
-}
-
-export function handshake() {
-    if (transportStart() && rpcAtInit()) {
-        modemPostInit()
-        $['%%d+']
-        if (networkBringUp()) {
-            $['%%d-']
-            rpcSocketProbe()
-            modemShutdown()
-        }
+export function disable() {
+    if (enabled) {
+        modemShutdown()
+        enabled = false
+        udp_fd = 0xFFFFFFFF
     }
 }
 
+export function enable(): bool_t {
+    if (enabled) {
+        return true
+    }
+    if (!Rpc.start() || !Rpc.atInit()) {
+        return false
+    }
+    modemPostInit()
+    AppLed.on()
+    $['%%d+']
+    if (!networkBringUp()) {
+        return false
+    }
+    AppLed.off()
+    $['%%d-']
+    enabled = true
+    return true
+}
+
+export function openUdp(addr: u32, port: u16): bool_t {
+    if (!enabled) {
+        return false
+    }
+    return openUdpInternal(addr, port)
+}
+
+export function send(data: ptr_t<u8>, len: u32): bool_t {
+    if (udp_fd == 0xFFFFFFFF) {
+        return false
+    }
+    return sendUdp(udp_fd, data, len)
+}
+
+export function handshake() {
+    const payload = $cast2<ptr_t<u8>>(Rpc.txBase())
+    for (const i of $range(20)) {
+        payload[i] = 0
+    }
+    if (!enable()) {
+        fail()
+    }
+    if (!openUdp(0x08080808, 2469)) {
+        fail()
+    }
+    if (!send(payload, 20)) {
+        fail()
+    }
+    disable()
+}
+
 export function init() {
-    // POWER/CLOCK and IPC are assumed non-secure before entry.
+    // POWER/CLOCK are assumed non-secure before entry.
     modemPrep()
-    platformInit()
 }
 
-export function IPC_isr$$() {
-    IntrVec.NVIC_clear(e$`IPC_IRQn`)
-}
-
-function ipcInit() {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    $R.IPC.SEND_CNF[1].$$ = 0x02
-    $R.IPC.SEND_CNF[3].$$ = 0x08
-    $R.IPC.SEND_CNF[5].$$ = 0x20
-    $R.IPC.RECEIVE_CNF[0].$$ = 0x01
-    $R.IPC.RECEIVE_CNF[2].$$ = 0x04
-    $R.IPC.RECEIVE_CNF[4].$$ = 0x10
-    $R.IPC.RECEIVE_CNF[6].$$ = 0x40
-    $R.IPC.RECEIVE_CNF[7].$$ = 0x80
-    $R.IPC.INTENSET.$$ = 0xD5
-    $R.IPC.GPMEM[0].$$ = $cast2<u32>(ctrl)
-    $R.IPC.GPMEM[1].$$ = 0
-}
 
 function modemShutdown() {
-    rpcAtCommand(AT_CFUN_POWER_OFF, false)
+    atCommand(AT_CFUN_POWER_OFF, false)
 }
 
 function modemPostInit() {
@@ -113,26 +107,22 @@ function modemPostInit() {
 function modemPrep() {
     const MODEM_PREP = $cast2<ptr_t<u32>>(0x40005068)
     MODEM_PREP[0] = 1
-    BusyWait.wait(200)
-}
-
-function platformInit() {
-    transportInit()
+    Common.BusyWait.wait(200)
 }
 
 function networkBringUp(): bool_t {
-    if (!rpcAtCommand(AT_XCOEX0, false) ||
-        !rpcAtCommand(AT_SYSTEMMODE_NBIOT, false) ||
-        !rpcAtCommand(AT_CPSMS_ON, false) ||
-        !rpcAtCommand(AT_FEACONF_000, false) ||
-        !rpcAtCommand(AT_FEACONF_031, false) ||
-        !rpcAtCommand(AT_CEDRXS_OFF, false) ||
-        !rpcAtCommand(AT_RAI_ON, false) ||
-        !rpcAtCommand(AT_CEREG_QUERY, true) ||
-        !rpcAtCommand(AT_CFUN_QUERY, true) ||
-        !rpcAtCommand(AT_CEREG_ENABLE, false) ||
-        !rpcAtCommand(AT_CSCON_ON, false) ||
-        !rpcAtCommand(AT_CFUN_FULL, false)) {
+    if (!atCommand(AT_XCOEX0, false) ||
+        !atCommand(AT_SYSTEMMODE_NBIOT, false) ||
+        !atCommand(AT_CPSMS_ON, false) ||
+        !atCommand(AT_FEACONF_000, false) ||
+        !atCommand(AT_FEACONF_031, false) ||
+        !atCommand(AT_CEDRXS_OFF, false) ||
+        !atCommand(AT_RAI_ON, false) ||
+        !atCommand(AT_CEREG_QUERY, true) ||
+        !atCommand(AT_CFUN_QUERY, true) ||
+        !atCommand(AT_CEREG_ENABLE, false) ||
+        !atCommand(AT_CSCON_ON, false) ||
+        !atCommand(AT_CFUN_FULL, false)) {
         return false
     }
     if (!waitForRegistration()) {
@@ -144,18 +134,18 @@ function networkBringUp(): bool_t {
     return true
 }
 
-function rpcDrainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
+function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
     let handled = false
     for (const outer of $range(64)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             break
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             handled = true
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 2) {
@@ -171,16 +161,16 @@ function rpcDrainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<
                     okay[0] = 1
                 }
                 if (rsp[2] != 0) {
-                    rpcRxDataFree(rsp[2])
+                    Rpc.rxDataFree(rsp[2])
                 }
             }
             else if (event == 4) {
                 if (rsp[2] != 0) {
-                    rpcRxDataFree(rsp[2])
+                    Rpc.rxDataFree(rsp[2])
                 }
             }
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
         handled = true
         if (done[0] != 0 && (!want_data || data_seen[0] != 0)) {
             return true
@@ -189,13 +179,11 @@ function rpcDrainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<
     return handled
 }
 
-function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = rpcTxAlloc(tx_list, msgs)
-    const tx = rpcAtTxAlloc()
+function atCommand(kind: u32, want_data: bool_t): bool_t {
+    const tx_list = Rpc.txList()
+    const msgs = Rpc.txMessages()
+    const msg = Rpc.txAlloc(tx_list, msgs)
+    const tx = Rpc.atTxAlloc()
     if (tx == $null) {
         return false
     }
@@ -312,45 +300,21 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
     flags[0] = 0
     flags[1] = 0
     flags[2] = 0
-    $R.IPC.EVENTS_RECEIVE[0].$$ = 0
-    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
-    $R.IPC.EVENTS_RECEIVE[4].$$ = 0
-    $R.IPC.EVENTS_RECEIVE[6].$$ = 0
-    $R.IPC.EVENTS_RECEIVE[7].$$ = 0
-    rpcSendData(tx_list, msg)
+
+
+
+
+    Rpc.sendData(tx_list, msg)
     for (const outer of $range(2000000)) {
-        let fired = false
-        if ($R.IPC.EVENTS_RECEIVE[0].$$ != 0) {
-            $R.IPC.EVENTS_RECEIVE[0].$$ = 0
-            fired = true
-        }
-        if ($R.IPC.EVENTS_RECEIVE[2].$$ != 0) {
-            $R.IPC.EVENTS_RECEIVE[2].$$ = 0
-            fired = true
-        }
-        if ($R.IPC.EVENTS_RECEIVE[4].$$ != 0) {
-            $R.IPC.EVENTS_RECEIVE[4].$$ = 0
-            fired = true
-        }
-        if ($R.IPC.EVENTS_RECEIVE[6].$$ != 0) {
-            $R.IPC.EVENTS_RECEIVE[6].$$ = 0
-            fired = true
-        }
-        if ($R.IPC.EVENTS_RECEIVE[7].$$ != 0) {
-            $R.IPC.EVENTS_RECEIVE[7].$$ = 0
-            fired = true
-        }
-        if (fired) {
-            rpcDrainAt(
-                kind,
-                want_data,
-                $cast2<ptr_t<u32>>($cast2<u32>(flags) + 0),
-                $cast2<ptr_t<u32>>($cast2<u32>(flags) + 4),
-                $cast2<ptr_t<u32>>($cast2<u32>(flags) + 8)
-            )
-        }
+        drainAt(
+            kind,
+            want_data,
+            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 0),
+            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 4),
+            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 8)
+        )
         if (flags[0] != 0 && (!want_data || flags[2] != 0)) {
-            rpcTxFree(tx_list)
+            Rpc.txFree(tx_list)
             return flags[1] != 0
         }
     }
@@ -409,36 +373,11 @@ function registrationReady(addr: u32, len: u32): bool_t {
     return false
 }
 
-function rpcAtInit(): bool_t {
-    // Reproduce libmodem's first post-handshake AT control RPC.
-    return rpcCall(T.RPC_OP_AT_INIT, T.RPC_CTRL_SIZE_AT_INIT)
-}
-
-function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = rpcTxAlloc(list, msgs)
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
-    msg[0] = T.RPC_PREAMBLE_REQ
-    msg[1] = T.RPC_KIND_REQ
-    msg[4] = ctrl_size
-    msg[5] = opcode
-    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    rpcSendData(list, msg)
-    return waitForRpc(opcode)
-}
-
-function rpcConnectProbe(fd: u32): bool_t {
+function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = rpcTxAlloc(tx_list, msgs)
+    const tx_list = Rpc.txList()
+    const msgs = Rpc.txMessages()
+    const msg = Rpc.txAlloc(tx_list, msgs)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
@@ -447,198 +386,50 @@ function rpcConnectProbe(fd: u32): bool_t {
     msg[4] = T.RPC_CTRL_SIZE_CONNECT
     msg[5] = 0
     msg[6] = fd
-    msg[7] = 0x0004A509
-    msg[8] = 0x08080808
-    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    rpcSendData(tx_list, msg)
+    msg[7] = 0x00040000 | (($cast2<u32>(port) & 0xFF) << 8) | (($cast2<u32>(port) >> 8) & 0xFF)
+    msg[8] = addr
+    Rpc.sendData(tx_list, msg)
     for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             continue
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                rpcRxDataFree(rsp[2])
+                Rpc.rxDataFree(rsp[2])
             }
-            rpcRxRetire()
+            Rpc.rxRetire()
             continue
         }
         if (rsp[0] == 0x80020004 && rsp[6] == fd) {
             const okay = rsp[7] == 0
-            rpcRxRetire()
-            rpcTxFree(tx_list)
-            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            Rpc.rxRetire()
+            Rpc.txFree(tx_list)
             return okay
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
     }
     return false
 }
 
-function rpcRxFind(list_addr: u32): bool_t {
-    if (list_addr == 0) {
-        return false
-    }
-    const list = $cast2<ptr_t<u32>>(list_addr)
-    const count = list[0]
-    for (const i of $range(32)) {
-        if (i >= count) {
-            break
-        }
-        const k = 1 + i * 2
-        const state = list[k]
-        if ((state & 0xFF) != T.DESC_BUSY) {
-            continue
-        }
-        if (((state >> 16) & 0xFFFF) != (rpc_rx_seq & 0xFFFF)) {
-            continue
-        }
-        rpc_rx_list = list
-        rpc_rx_k = k
-        rpc_rx_state = state
-        rpc_rx_msg = $cast2<ptr_t<u32>>(list[k + 1])
-        return true
-    }
-    return false
-}
-
-function rpcRxHandleCtrl() {
-    if (!rpcRxIsCtrl()) {
-        return
-    }
-    const type = (rpc_rx_msg[0] >> 16) & 0xFFFF
-    if (type == 2) {
-        rpcAtTxFree(rpc_rx_msg[2])
-    }
-    rpcRxRetire()
-}
-
-function rpcRxIsCtrl(): bool_t {
-    if (rpc_rx_list == $null || rpc_rx_msg == $null) {
-        return false
-    }
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
-    return $cast2<u32>(rpc_rx_list) == modem.$$.ptr0
-}
-
-function rpcRxNext(): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
-    rpc_rx_list = $null
-    rpc_rx_msg = $null
-    if (rpcRxFind(modem.$$.ptr1)) {
-        return true
-    }
-    return rpcRxFind(modem.$$.ptr0)
-}
-
-function rpcRxRetire() {
-    if (rpc_rx_list == $null) {
-        return
-    }
-    rpc_rx_list[rpc_rx_k] = (rpc_rx_state & 0xFFFFFF00) | T.DESC_FREE
-    rpc_rx_seq = (rpc_rx_seq + 1) & 0xFFFF
-    rpc_rx_list = $null
-    rpc_rx_msg = $null
-}
-
-function rpcRxDataFree(data: u32) {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
-    const count = list[0]
-    for (const i of $range(T.NUM_DESCS)) {
-        if (i >= count) {
-            break
-        }
-        let state = list[1 + i * 2]
-        if ((state & 0xFF) == T.DESC_ALLOC) {
-            list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
-            state = list[1 + i * 2]
-        }
-        if ((state & 0xFF) != T.DESC_FREE) {
-            continue
-        }
-        const msg = $cast2<ptr_t<u32>>($cast2<u32>(msgs) + i * T.MSG_WORDS * 4)
-        for (const j of $range(T.MSG_WORDS)) {
-            msg[j] = 0
-        }
-        msg[0] = 0x00020001
-        msg[1] = 1
-        msg[2] = data
-        list[2 + i * 2] = $cast2<u32>(msg)
-        list[1 + i * 2] = ((rpc_tx_seq & 0xFFFF) << 16) | T.DESC_BUSY
-        rpc_tx_seq = (rpc_tx_seq + 1) & 0xFFFF
-        BusyWait.wait(3)
-        $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
-        return
-    }
-}
-
-function rpcTxAlloc(tx_list: ptr_t<u32>, msgs: ptr_t<u32>): ptr_t<u32> {
-    const count = tx_list[0]
-    for (const i of $range(T.NUM_DESCS)) {
-        if (i >= count) {
-            break
-        }
-        const state = tx_list[1 + i * 2]
-        if ((state & 0xFF) == T.DESC_FREE) {
-            rpc_tx_slot = i
-            const msg = $cast2<ptr_t<u32>>($cast2<u32>(msgs) + i * T.MSG_WORDS * 4)
-            tx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_ALLOC
-            tx_list[2 + i * 2] = $cast2<u32>(msg)
-            return msg
-        }
-    }
-    return $null
-}
-
-function rpcTxFree(tx_list: ptr_t<u32>) {
-    const k = 1 + rpc_tx_slot * 2
-    const state = tx_list[k]
-    if ((state & 0xFF) == T.DESC_ALLOC) {
-        tx_list[k] = (state & 0xFFFFFF00) | T.DESC_FREE
-    }
-}
-
-function rpcSendData(tx_list: ptr_t<u32>, msg: ptr_t<u32>) {
-    msg[1] = (msg[1] & 0xFFFFFF00) | 2
-    const k = 1 + rpc_tx_slot * 2
-    const state = tx_list[k]
-    tx_list[k] = ((rpc_tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
-    rpc_tx_seq = (rpc_tx_seq + 1) & 0xFFFF
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
-}
-
-function rpcSendProbe(fd: u32): bool_t {
-    // Fixed connected UDP send: 20-byte payload with RAI_LAST.
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = rpcTxAlloc(tx_list, msgs)
-    const payload = $cast2<ptr_t<u32>>($cast2<u32>($$(shmem.$$.tx)) + 0x44)
+function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
+    // Connected UDP send with RAI_LAST.
+    const tx_list = Rpc.txList()
+    const msgs = Rpc.txMessages()
+    const msg = Rpc.txAlloc(tx_list, msgs)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
-    for (const i of $range(5)) {
-        payload[i] = 0
-    }
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
     msg[0] = SEND_REQ
     msg[1] = 0
-    msg[2] = $cast2<u32>(payload)
-    msg[3] = 20
+    msg[2] = $cast2<u32>(data)
+    msg[3] = len
     msg[4] = 0x0E
     msg[5] = $cast2<u32>(result)
     msg[6] = 0
@@ -646,43 +437,39 @@ function rpcSendProbe(fd: u32): bool_t {
     msg[8] = 0
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
-    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    rpcSendData(tx_list, msg)
+    Rpc.sendData(tx_list, msg)
     for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             continue
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                rpcRxDataFree(rsp[2])
+                Rpc.rxDataFree(rsp[2])
             }
-            rpcRxRetire()
+            Rpc.rxRetire()
             continue
         }
         if (rsp[0] == SEND_RSP) {
-            rpcRxRetire()
-            rpcTxFree(tx_list)
-            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            Rpc.rxRetire()
+            Rpc.txFree(tx_list)
             return true
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
     }
     return false
 }
 
-function rpcSocketProbe(): bool_t {
+function openUdpInternal(addr: u32, port: u16): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = rpcTxAlloc(tx_list, msgs)
+    const tx_list = Rpc.txList()
+    const msgs = Rpc.txMessages()
+    const msg = Rpc.txAlloc(tx_list, msgs)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -697,116 +484,67 @@ function rpcSocketProbe(): bool_t {
     msg[9] = T.RPC_IPPROTO_UDP
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
-    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    rpcSendData(tx_list, msg)
+    Rpc.sendData(tx_list, msg)
     for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             continue
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                rpcRxDataFree(rsp[2])
+                Rpc.rxDataFree(rsp[2])
             }
-            rpcRxRetire()
+            Rpc.rxRetire()
             continue
         }
         if (rsp[0] == SOCKET_RSP && rsp[5] == $cast2<u32>(result)) {
             result[0] = rsp[8]
             result[1] = rsp[7]
-            rpcRxRetire()
-            rpcTxFree(tx_list)
-            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            Rpc.rxRetire()
+            Rpc.txFree(tx_list)
             if (result[1] != 0) {
                 return false
             }
-            if (!rpcConnectProbe(result[0])) {
+            udp_fd = result[0]
+            if (!connectUdp(udp_fd, addr, port)) {
                 return false
             }
-            return rpcSendProbe(result[0])
+            return true
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
     }
     return false
 }
 
-function shmemConstruct() {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const rx = $$(shmem.$$.rx)
-    ctrl.$$.host.data_base = $cast2<u32>(rx)
-    ctrl.$$.host.list_a = $$(ctrl.$$.list_a)
-    ctrl.$$.host.list_b = $$(ctrl.$$.list_b)
-    ctrl.$$.host.modem_hdr = $cast2<u32>($$(ctrl.$$.modem))
-}
-
-function transportInit() {
-    ipcInit()
-}
-
-function transportStart(): bool_t {
-    // STARTN is followed by the first modem response on RECEIVE[2].
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
-    $R.POWER.LTEMODEM.STARTN.$$ = 0
-    return waitForHandshake()
-}
-
-function rpcAtTxAlloc(): ptr_t<u32> {
-    const shmem = $$(shmem_tab[0])
-    const base = $cast2<u32>($$(shmem.$$.tx))
-    for (const i of $range(4)) {
-        const bit = 1 << i
-        if ((at_tx_busy_mask & bit) != 0) {
-            continue
-        }
-        at_tx_busy_mask |= bit
-        return $cast2<ptr_t<u32>>(base + i * 0x100)
-    }
-    return $null
-}
-
-function rpcAtTxFree(addr: u32) {
-    const shmem = $$(shmem_tab[0])
-    const base = $cast2<u32>($$(shmem.$$.tx))
-    for (const i of $range(4)) {
-        if (addr == base + i * 0x100) {
-            at_tx_busy_mask &= ~(1 << i)
-            return
-        }
-    }
-}
-
 function waitForCsconIdle(): bool_t {
     for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             continue
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         let idle = false
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 4) {
                 idle = csconIdle(rsp[2], rsp[3])
                 if (rsp[2] != 0) {
-                    rpcRxDataFree(rsp[2])
+                    Rpc.rxDataFree(rsp[2])
                 }
             }
             else if (event == 3 && rsp[2] != 0) {
-                rpcRxDataFree(rsp[2])
+                Rpc.rxDataFree(rsp[2])
             }
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
         if (idle) {
             return true
         }
@@ -816,82 +554,31 @@ function waitForCsconIdle(): bool_t {
 
 function waitForRegistration(): bool_t {
     for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
+        if (!Rpc.rxNext()) {
             continue
         }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
+        if (Rpc.rxIsCtrl()) {
+            Rpc.rxHandleCtrl()
             continue
         }
-        const rsp = rpc_rx_msg
+        const rsp = Rpc.rxMessage()
         let ready = false
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 4) {
                 ready = registrationReady(rsp[2], rsp[3])
                 if (rsp[2] != 0) {
-                    rpcRxDataFree(rsp[2])
+                    Rpc.rxDataFree(rsp[2])
                 }
             }
             else if (event == 3 && rsp[2] != 0) {
-                rpcRxDataFree(rsp[2])
+                Rpc.rxDataFree(rsp[2])
             }
         }
-        rpcRxRetire()
+        Rpc.rxRetire()
         if (ready) {
             return true
         }
-    }
-    return false
-}
-
-function waitForHandshake(): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
-    let fired = false
-    for (const i of $range(2000000)) {
-        if ($R.IPC.EVENTS_RECEIVE[2].$$ != 0) {
-            fired = true
-            break
-        }
-    }
-    if (!fired) {
-        return false
-    }
-    let ready = false
-    for (const i of $range(2000000)) {
-        if (modem.$$.state == 1) {
-            ready = true
-            break
-        }
-    }
-    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
-    return ready
-}
-
-function waitForRpc(opcode: u32): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    for (const outer of $range(2000000)) {
-        if (!rpcRxNext()) {
-            continue
-        }
-        if (rpcRxIsCtrl()) {
-            rpcRxHandleCtrl()
-            continue
-        }
-        const msg = rpc_rx_msg
-        const preamble = msg[0]
-        if (preamble == T.RPC_PREAMBLE_RSP &&
-            (msg[5] & 0xFF) == (opcode & 0xFF)) {
-            rpcRxRetire()
-            rpcTxFree(tx_list)
-            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-            return true
-        }
-        rpcRxRetire()
     }
     return false
 }
