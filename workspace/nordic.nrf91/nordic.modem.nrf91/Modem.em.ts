@@ -3,7 +3,6 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf91/REGS.em'
 
-import * as Common from '@em.mcu/Common.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
@@ -34,7 +33,6 @@ const AT_CEREG = 6
 const AT_CEREG_ENABLE = 12
 const AT_CEREG_QUERY = 10
 const AT_CFUN_FULL = 5
-const AT_CFUN_OFFLINE = 0
 const AT_CFUN_POWER_OFF = 7
 const AT_CFUN_QUERY = 11
 const AT_CPSMS_ON = 2
@@ -104,9 +102,7 @@ function ipcInit() {
 }
 
 function modemShutdown() {
-    if (rpcAtCommand(AT_CFUN_POWER_OFF, false)) {
-        printf`MODEM CFUN=0\n`()
-    }
+    rpcAtCommand(AT_CFUN_POWER_OFF, false)
 }
 
 function modemPostInit() {
@@ -124,7 +120,6 @@ function platformInit() {
     transportInit()
 }
 
-
 function networkBringUp(): bool_t {
     if (!rpcAtCommand(AT_XCOEX0, false) ||
         !rpcAtCommand(AT_SYSTEMMODE_NBIOT, false) ||
@@ -141,39 +136,12 @@ function networkBringUp(): bool_t {
         return false
     }
     if (!waitForRegistration()) {
-        printf`MODEM registration timeout\n`()
         return false
     }
     if (!waitForCsconIdle()) {
-        printf`MODEM CSCON=0 timeout\n`()
         return false
     }
-    printf`MODEM registered\n`()
     return true
-}
-
-function rpcDumpPreConnect() {
-    const modem_hdr = $cast2<ptr_t<u32>>(0x20008020)
-    const ptr0 = $cast2<ptr_t<u32>>(0x2000A568)
-    const ptr1 = $cast2<ptr_t<u32>>(0x2000A5EC)
-    printf`PRECONNECT hdr0: %08x %08x %08x %08x\n`(
-        modem_hdr[0], modem_hdr[1], modem_hdr[2], modem_hdr[3]
-    )
-    printf`PRECONNECT hdr1: %08x %08x %08x %08x\n`(
-        modem_hdr[4], modem_hdr[5], modem_hdr[6], modem_hdr[7]
-    )
-    printf`PRECONNECT p0a: %08x %08x %08x %08x\n`(
-        ptr0[0], ptr0[1], ptr0[2], ptr0[3]
-    )
-    printf`PRECONNECT p0b: %08x %08x %08x %08x\n`(
-        ptr0[32], ptr0[33], ptr0[34], ptr0[35]
-    )
-    printf`PRECONNECT p1a: %08x %08x %08x %08x\n`(
-        ptr1[0], ptr1[1], ptr1[2], ptr1[3]
-    )
-    printf`PRECONNECT p1b: %08x %08x %08x %08x\n`(
-        ptr1[64], ptr1[65], ptr1[66], ptr1[67]
-    )
 }
 
 function rpcDrainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
@@ -229,7 +197,6 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
     const msg = rpcTxAlloc(tx_list, msgs)
     const tx = rpcAtTxAlloc()
     if (tx == $null) {
-        printf`MODEM AT tx pool full: kind=%x\n`(kind)
         return false
     }
     const flags = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
@@ -354,27 +321,22 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
     for (const outer of $range(2000000)) {
         let fired = false
         if ($R.IPC.EVENTS_RECEIVE[0].$$ != 0) {
-            printf`MODEM AT recv: kind=%x ev=0\n`(kind)
             $R.IPC.EVENTS_RECEIVE[0].$$ = 0
             fired = true
         }
         if ($R.IPC.EVENTS_RECEIVE[2].$$ != 0) {
-            printf`MODEM AT recv: kind=%x ev=2\n`(kind)
             $R.IPC.EVENTS_RECEIVE[2].$$ = 0
             fired = true
         }
         if ($R.IPC.EVENTS_RECEIVE[4].$$ != 0) {
-            printf`MODEM AT recv: kind=%x ev=4\n`(kind)
             $R.IPC.EVENTS_RECEIVE[4].$$ = 0
             fired = true
         }
         if ($R.IPC.EVENTS_RECEIVE[6].$$ != 0) {
-            printf`MODEM AT recv: kind=%x ev=6\n`(kind)
             $R.IPC.EVENTS_RECEIVE[6].$$ = 0
             fired = true
         }
         if ($R.IPC.EVENTS_RECEIVE[7].$$ != 0) {
-            printf`MODEM AT recv: kind=%x ev=7\n`(kind)
             $R.IPC.EVENTS_RECEIVE[7].$$ = 0
             fired = true
         }
@@ -392,10 +354,6 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
             return flags[1] != 0
         }
     }
-    printf`MODEM AT timeout: kind=%x txstate=%08x\n`(
-        kind,
-        tx_list[1 + rpc_tx_slot * 2]
-    )
     return false
 }
 
@@ -478,7 +436,6 @@ function rpcConnectProbe(fd: u32): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
     const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
     const msg = rpcTxAlloc(tx_list, msgs)
@@ -493,8 +450,7 @@ function rpcConnectProbe(fd: u32): bool_t {
     msg[7] = 0x0004A509
     msg[8] = 0x08080808
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    rpcDumpPreConnect()
-    rpcSendDataDump(tx_list, msg)
+    rpcSendData(tx_list, msg)
     for (const outer of $range(2000000)) {
         if (!rpcRxNext()) {
             continue
@@ -514,11 +470,6 @@ function rpcConnectProbe(fd: u32): bool_t {
         }
         if (rsp[0] == 0x80020004 && rsp[6] == fd) {
             const okay = rsp[7] == 0
-            printf`MODEM connect: fd=%x errno=%x ok=%x\n`(
-                fd,
-                rsp[7],
-                okay
-            )
             rpcRxRetire()
             rpcTxFree(tx_list)
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
@@ -526,9 +477,6 @@ function rpcConnectProbe(fd: u32): bool_t {
         }
         rpcRxRetire()
     }
-    printf`MODEM connect timeout: txstate=%08x\n`(
-        tx_list[1 + rpc_tx_slot * 2]
-    )
     return false
 }
 
@@ -672,39 +620,10 @@ function rpcSendData(tx_list: ptr_t<u32>, msg: ptr_t<u32>) {
     $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
 }
 
-function rpcSendDataDump(tx_list: ptr_t<u32>, msg: ptr_t<u32>) {
-    msg[1] = (msg[1] & 0xFFFFFF00) | 2
-    const k = 1 + rpc_tx_slot * 2
-    const state = tx_list[k]
-    tx_list[k] = ((rpc_tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
-    rpc_tx_seq = (rpc_tx_seq + 1) & 0xFFFF
-    printf`CONNECT msg0: %08x %08x %08x %08x %08x\n`(
-        msg[0],
-        msg[1],
-        msg[2],
-        msg[3],
-        msg[4]
-    )
-    printf`CONNECT msg1: %08x %08x %08x %08x\n`(
-        msg[5],
-        msg[6],
-        msg[7],
-        msg[8]
-    )
-    printf`CONNECT desc: k=%x state=%08x ptr=%08x\n`(
-        k,
-        tx_list[k],
-        tx_list[k + 1]
-    )
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
-}
-
 function rpcSendProbe(fd: u32): bool_t {
     // Fixed connected UDP send: 20-byte payload with RAI_LAST.
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
     const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
     const msg = rpcTxAlloc(tx_list, msgs)
@@ -747,23 +666,6 @@ function rpcSendProbe(fd: u32): bool_t {
             continue
         }
         if (rsp[0] == SEND_RSP) {
-            printf`MODEM send rsp: w0=%08x w1=%08x w2=%08x w3=%08x\n`(
-                rsp[0],
-                rsp[1],
-                rsp[2],
-                rsp[3]
-            )
-            printf`MODEM send rsp2: w4=%08x w5=%08x w6=%08x w7=%08x\n`(
-                rsp[4],
-                rsp[5],
-                rsp[6],
-                rsp[7]
-            )
-            printf`MODEM send rsp3: w8=%08x txstate=%08x result=%08x\n`(
-                rsp[8],
-                tx_list[1],
-                result[0]
-            )
             rpcRxRetire()
             rpcTxFree(tx_list)
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
@@ -771,9 +673,6 @@ function rpcSendProbe(fd: u32): bool_t {
         }
         rpcRxRetire()
     }
-    printf`MODEM send timeout: txstate=%08x\n`(
-        tx_list[1 + rpc_tx_slot * 2]
-    )
     return false
 }
 
@@ -781,7 +680,6 @@ function rpcSocketProbe(): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    const modem = $$(ctrl.$$.modem)
     const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
     const msg = rpcTxAlloc(tx_list, msgs)
@@ -824,10 +722,6 @@ function rpcSocketProbe(): bool_t {
             rpcRxRetire()
             rpcTxFree(tx_list)
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-            printf`MODEM socket: fd=%x errno=%x\n`(
-                result[0],
-                result[1]
-            )
             if (result[1] != 0) {
                 return false
             }
@@ -838,9 +732,6 @@ function rpcSocketProbe(): bool_t {
         }
         rpcRxRetire()
     }
-    printf`MODEM socket timeout: txstate=%08x\n`(
-        tx_list[1 + rpc_tx_slot * 2]
-    )
     return false
 }
 
@@ -862,10 +753,6 @@ function transportStart(): bool_t {
     // STARTN is followed by the first modem response on RECEIVE[2].
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
-    printf`MODEM start: ctrl=%08x g0=%08x\n`(
-        $cast2<u32>(ctrl),
-        $R.IPC.GPMEM[0].$$
-    )
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     $R.POWER.LTEMODEM.STARTN.$$ = 0
     return waitForHandshake()
@@ -937,12 +824,6 @@ function waitForRegistration(): bool_t {
             continue
         }
         const rsp = rpc_rx_msg
-        printf`REGWAIT msg0: %08x %08x %08x %08x %08x\n`(
-            rsp[0], rsp[1], rsp[2], rsp[3], rsp[4]
-        )
-        printf`REGWAIT msg1: %08x %08x %08x %08x\n`(
-            rsp[5], rsp[6], rsp[7], rsp[8]
-        )
         let ready = false
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
@@ -976,11 +857,6 @@ function waitForHandshake(): bool_t {
         }
     }
     if (!fired) {
-        printf`MODEM timeout: ev2=%x g1=%08x state=%08x\n`(
-            $R.IPC.EVENTS_RECEIVE[2].$$,
-            $R.IPC.GPMEM[1].$$,
-            modem.$$.state
-        )
         return false
     }
     let ready = false
@@ -990,20 +866,9 @@ function waitForHandshake(): bool_t {
             break
         }
     }
-    printf`MODEM response: state=%08x ptr0=%08x ptr1=%08x\n`(
-        modem.$$.state,
-        modem.$$.ptr0,
-        modem.$$.ptr1
-    )
-    printf`MODEM response: g0=%08x g1=%08x ready=%x\n`(
-        $R.IPC.GPMEM[0].$$,
-        $R.IPC.GPMEM[1].$$,
-        ready
-    )
     $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     return ready
 }
-
 
 function waitForRpc(opcode: u32): bool_t {
     const shmem = $$(shmem_tab[0])
@@ -1021,23 +886,13 @@ function waitForRpc(opcode: u32): bool_t {
         const preamble = msg[0]
         if (preamble == T.RPC_PREAMBLE_RSP &&
             (msg[5] & 0xFF) == (opcode & 0xFF)) {
-            const tx_state = tx_list[1 + rpc_tx_slot * 2]
             rpcRxRetire()
             rpcTxFree(tx_list)
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-            printf`MODEM rpc response: op=%x pre=%08x txstate=%08x\n`(
-                opcode,
-                preamble,
-                tx_state
-            )
             return true
         }
         rpcRxRetire()
     }
-    printf`MODEM rpc timeout: op=%x txstate=%08x\n`(
-        opcode,
-        tx_list[1 + rpc_tx_slot * 2]
-    )
     return false
 }
 
