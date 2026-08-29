@@ -40,7 +40,12 @@ const AT_SYSTEMMODE_NBIOT = 1
 const RECV_RPC = T.IPC_RECV_RPC
 const SEND_CTRL = T.IPC_SEND_CTRL
 const SEND_RPC = T.IPC_SEND_RPC
+const SEND_RAI_LAST = 0x01000000
+const SEND_REQ = 0x70060004
+const SEND_RSP = 0x80060004
 const SOCKET_RSP = 0x80010004
+
+let rpc_tx_seq: u32 = 0
 
 export function em$startup() {
     shmemConstruct()
@@ -248,7 +253,7 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
         tx[2] = 0x0000003F
         len = 10
     }
-    tx_list[1] = T.DESC_DONE
+    tx_list[1] = T.DESC_ALLOC
     tx_list[2] = $cast2<u32>(msg)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -267,9 +272,7 @@ function rpcAtCommand(kind: u32, want_data: bool_t): bool_t {
     $R.IPC.EVENTS_RECEIVE[4].$$ = 0
     $R.IPC.EVENTS_RECEIVE[6].$$ = 0
     $R.IPC.EVENTS_RECEIVE[7].$$ = 0
-    tx_list[1] = T.DESC_BUSY
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
+    rpcSendData(tx_list, msg)
     for (const outer of $range(2000000)) {
         let fired = false
         if ($R.IPC.EVENTS_RECEIVE[0].$$ != 0) {
@@ -357,7 +360,7 @@ function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
     const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    list[1] = T.DESC_DONE
+    list[1] = T.DESC_ALLOC
     list[2] = $cast2<u32>(msg)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -367,9 +370,7 @@ function rpcCall(opcode: u32, ctrl_size: u32): bool_t {
     msg[4] = ctrl_size
     msg[5] = opcode
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    list[1] = T.DESC_BUSY
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
+    rpcSendData(list, msg)
     return waitForRpc(opcode)
 }
 
@@ -378,24 +379,22 @@ function rpcConnectProbe(fd: u32): bool_t {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
-    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
     tx_list[1] = T.DESC_ALLOC
     tx_list[2] = $cast2<u32>(msg)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
     msg[0] = T.RPC_PREAMBLE_CONNECT_REQ
-    msg[1] = T.DESC_BUSY
+    msg[1] = 0
     msg[4] = T.RPC_CTRL_SIZE_CONNECT
     msg[5] = 0
     msg[6] = fd
     msg[7] = 0x0004A509
     msg[8] = 0x08080808
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    tx_list[1] = T.DESC_BUSY
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
+    rpcSendData(tx_list, msg)
     let fired = false
     for (const i of $range(2000000)) {
         if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
@@ -418,10 +417,10 @@ function rpcConnectProbe(fd: u32): bool_t {
             continue
         }
         const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
-        const okay = rsp[0] == 0x80020004 && rsp[5] == 0
-        printf`MODEM connect: fd=%x status=%x ok=%x\n`(
-            rsp[6],
-            rsp[5],
+        const okay = rsp[0] == 0x80020004 && rsp[7] == 0
+        printf`MODEM connect: fd=%x errno=%x ok=%x\n`(
+            fd,
+            rsp[7],
             okay
         )
         rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
@@ -440,13 +439,109 @@ function rpcConnectProbe(fd: u32): bool_t {
     return false
 }
 
+function rpcSendData(tx_list: ptr_t<u32>, msg: ptr_t<u32>) {
+    msg[1] = (msg[1] & 0xFFFFFF00) | 2
+    const state = tx_list[1]
+    tx_list[1] = ((rpc_tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
+    rpc_tx_seq = (rpc_tx_seq + 1) & 0xFFFF
+    BusyWait.wait(3)
+    $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
+}
+
+function rpcSendProbe(fd: u32): bool_t {
+    // Fixed connected UDP send: 20-byte payload with RAI_LAST.
+    const shmem = $$(shmem_tab[0])
+    const ctrl = $$(shmem.$$.ctrl)
+    const modem = $$(ctrl.$$.modem)
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
+    const payload = $cast2<ptr_t<u32>>($cast2<u32>($$(shmem.$$.tx)) + 0x44)
+    const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
+    for (const i of $range(5)) {
+        payload[i] = 0
+    }
+    tx_list[1] = T.DESC_ALLOC
+    tx_list[2] = $cast2<u32>(msg)
+    for (const i of $range(T.MSG_WORDS)) {
+        msg[i] = 0
+    }
+    msg[0] = SEND_REQ
+    msg[1] = 0
+    msg[2] = $cast2<u32>(payload)
+    msg[3] = 20
+    msg[4] = 0x0E
+    msg[5] = $cast2<u32>(result)
+    msg[6] = 0
+    msg[7] = SEND_RAI_LAST
+    msg[8] = 0
+    result[0] = T.RPC_RESULT_PENDING
+    result[1] = 0
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    rpcSendData(tx_list, msg)
+    let fired = false
+    for (const i of $range(2000000)) {
+        if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
+            fired = true
+            break
+        }
+    }
+    if (!fired) {
+        printf`MODEM send timeout: txstate=%08x\n`(tx_list[1])
+        return false
+    }
+    const rx_list = $cast2<ptr_t<u32>>(modem.$$.ptr1)
+    const count = rx_list[0]
+    for (const i of $range(16)) {
+        if (i >= count) {
+            break
+        }
+        const state = rx_list[1 + i * 2]
+        if ((state & 0xFF) != T.DESC_BUSY) {
+            continue
+        }
+        const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
+        if (rsp[0] == SEND_RSP) {
+            printf`MODEM send rsp: w0=%08x w1=%08x w2=%08x w3=%08x\n`(
+                rsp[0],
+                rsp[1],
+                rsp[2],
+                rsp[3]
+            )
+            printf`MODEM send rsp2: w4=%08x w5=%08x w6=%08x w7=%08x\n`(
+                rsp[4],
+                rsp[5],
+                rsp[6],
+                rsp[7]
+            )
+            printf`MODEM send rsp3: w8=%08x txstate=%08x result=%08x\n`(
+                rsp[8],
+                tx_list[1],
+                result[0]
+            )
+            rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
+            const tx_state = tx_list[1]
+            if ((tx_state & 0xFF) == T.DESC_DONE) {
+                tx_list[1] = (tx_state & 0xFFFFFF00) | T.DESC_FREE
+            }
+            $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+            return true
+        }
+    }
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    printf`MODEM send bad response: count=%x txstate=%08x\n`(
+        count,
+        tx_list[1]
+    )
+    return false
+}
+
 function rpcSocketProbe(): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
-    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
-    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
+    const tx_list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     tx_list[1] = T.DESC_ALLOC
     tx_list[2] = $cast2<u32>(msg)
@@ -454,18 +549,17 @@ function rpcSocketProbe(): bool_t {
         msg[i] = 0
     }
     msg[0] = T.RPC_PREAMBLE_SOCKET_REQ
-    msg[1] = T.DESC_BUSY
+    msg[1] = 0
     msg[4] = T.RPC_CTRL_SIZE_SOCKET
     msg[5] = $cast2<u32>(result)
-    msg[6] = T.RPC_AF_INET
-    msg[7] = T.RPC_SOCK_DGRAM
-    msg[8] = T.RPC_IPPROTO_UDP
+    msg[6] = 0xFFFFFFFF
+    msg[7] = 1
+    msg[8] = T.RPC_SOCK_DGRAM
+    msg[9] = T.RPC_IPPROTO_UDP
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    tx_list[1] = T.DESC_BUSY
-    BusyWait.wait(3)
-    $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
+    rpcSendData(tx_list, msg)
     let fired = false
     for (const i of $range(2000000)) {
         if ($R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ != 0) {
@@ -489,7 +583,7 @@ function rpcSocketProbe(): bool_t {
         }
         const rsp = $cast2<ptr_t<u32>>(rx_list[2 + i * 2])
         if (rsp[0] == SOCKET_RSP && rsp[5] == $cast2<u32>(result)) {
-            result[0] = rsp[6]
+            result[0] = rsp[8]
             result[1] = rsp[7]
             rx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
             const tx_state = tx_list[1]
@@ -504,7 +598,10 @@ function rpcSocketProbe(): bool_t {
             if (result[1] != 0) {
                 return false
             }
-            return rpcConnectProbe(result[0])
+            if (!rpcConnectProbe(result[0])) {
+                return false
+            }
+            return rpcSendProbe(result[0])
         }
     }
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
