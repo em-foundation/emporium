@@ -27,7 +27,7 @@ export const RPC_CTRL_SIZE_CONNECT = 0x1C
 export const RPC_PREAMBLE_CONNECT_REQ = 0x70020004
 export const RPC_RESULT_PENDING = 0xBC00C1EE
 
-export const RPC_AF_INET = 2
+export const RPC_AF_INET = 1
 export const RPC_SOCK_DGRAM = 2
 export const RPC_IPPROTO_UDP = 2
 
