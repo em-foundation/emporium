@@ -4,6 +4,54 @@ export const $U = $declare('MODULE')
 import * as Rpc from '@nordic.modem.nrf91/Rpc.em'
 import * as T from '@nordic.modem.nrf91/Types.em'
 
+export type OperationId = u8
+
+class CommandDesc extends $struct {
+    offset: u16
+    length: u8
+    flags: u8
+}
+
+var command_tab = $table<CommandDesc>()
+var data_tab = $table<u8>()
+
+export namespace em$meta {
+    //
+    type CommandSpec = readonly [command: string, flags: u8]
+    type OperationSpec = readonly CommandSpec[]
+    //
+    const op_specs: OperationSpec[] = []
+    //
+    export function declare(spec: OperationSpec): OperationId {
+        op_specs.push(spec)
+        return op_specs.length - 1
+    }
+    //
+    export function em$construct() {
+        const cmd_map = new Map<string, number>()
+        let data_offset = 0
+        for (const op_spec of op_specs) {
+            for (const [command, flags] of op_spec) {
+                const key = `${flags}:${command}`
+                if (cmd_map.has(key)) {
+                    continue
+                }
+                cmd_map.set(key, command_tab.$len)
+                const desc = command_tab.$$add()
+                desc.$$.offset = data_offset
+                desc.$$.length = command.length
+                desc.$$.flags = flags
+                for (let i = 0; i < command.length; i++) {
+                    data_tab.$$add(command.charCodeAt(i))
+                }
+                data_offset += command.length
+            }
+        }
+    }
+}
+
+//>> ---- em$targ ---- <<//
+
 const AT_CEREG = 6
 export const CEDRXS_OFF = 3
 export const CEREG_ENABLE = 12

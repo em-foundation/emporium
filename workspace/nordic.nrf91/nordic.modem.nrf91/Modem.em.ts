@@ -10,6 +10,42 @@ import * as T from '@nordic.modem.nrf91/Types.em'
 
 const AppLed = $delegate(BoardC.AppLed)
 
+const NETWORK_CFG = $config<AtCmd.OperationId>()
+const REGISTER = $config<AtCmd.OperationId>()
+const POWER_OFF = $config<AtCmd.OperationId>()
+
+export namespace em$meta {
+    //
+    export function em$configure() {
+        NETWORK_CFG.$$val = AtCmd.em$meta.declare([
+            ["AT%XCOEX0=1,1,1565,1586", 0],
+            ["AT%XSYSTEMMODE=0,1,0,0", 0],
+            ['AT+CPSMS=1,,,"00100001","00000000"', 0],
+            ["AT%FEACONF=0,0,0", 0],
+            ["AT%FEACONF=0,3,1", 0],
+            ["AT+CEDRXS=3", 0],
+            ["AT%RAI=2", 0],
+        ])
+        REGISTER.$$val = AtCmd.em$meta.declare([
+            ["AT+CEREG?", 1],
+            ["AT+CFUN?", 1],
+            ["AT+CEREG=5", 0],
+            ["AT+CSCON=1", 0],
+            ["AT+CFUN=1", 0],
+        ])
+        POWER_OFF.$$val = AtCmd.em$meta.declare([
+            ["AT+CFUN=0", 0],
+        ])
+
+    }
+    //
+    export function em$construct() {
+
+    }
+}
+
+//>> ---- em$targ ---- <<//
+
 const SEND_RAI_LAST = 0x01000000
 const SEND_REQ = 0x70060004
 const SEND_RSP = 0x80060004
