@@ -83,11 +83,7 @@ export function freeData(data: u32) {
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
     const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
-    let state = list[1]
-    if ((state & 0xFF) == T.DESC_ALLOC) {
-        list[1] = (state & 0xFFFFFF00) | T.DESC_FREE
-        state = list[1]
-    }
+    const state = list[1]
     /// assert (state & 0xFF) == T.DESC_FREE
     Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = 0x00020001
@@ -110,9 +106,7 @@ export function handleCtrl() {
 }
 
 export function isCtrl(): bool_t {
-    if (rx_list == $null || rx_msg == $null) {
-        return false
-    }
+    /// assert rx_list != $null && rx_msg != $null
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
