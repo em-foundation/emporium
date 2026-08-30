@@ -302,8 +302,7 @@ function waitForRpc(opcode: u32): bool_t {
             continue
         }
         const msg = message()
-        const preamble = msg[0]
-        if (preamble == T.RPC_PREAMBLE_RSP &&
+        if (msg[0] == T.RPC_PREAMBLE_RSP &&
             (msg[5] & 0xFF) == (opcode & 0xFF)) {
             retire()
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
