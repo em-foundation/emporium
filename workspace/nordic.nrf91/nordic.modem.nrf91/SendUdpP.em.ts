@@ -26,8 +26,11 @@ export function em$run() {
     if (!Modem.openUdp(SERVER_ADDR, SERVER_PORT)) {
         fail()
     }
-    if (!Modem.send(payload.$ptr(), payload.$len)) {
-        fail()
+    for (const _ of $range(10)) {
+        $['%%c']
+        if (!Modem.send(payload.$ptr(), payload.$len)) {
+            fail()
+        }
     }
     printf`UDP send succeeded\n`()
 }
