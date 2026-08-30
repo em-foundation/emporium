@@ -83,8 +83,7 @@ export function freeData(data: u32) {
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
     const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
-    const state = list[1]
-    /// assert (state & 0xFF) == T.DESC_FREE
+    /// assert (list[1] & 0xFF) == T.DESC_FREE
     Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = 0x00020001
     msg[1] = 1
