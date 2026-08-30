@@ -33,7 +33,7 @@ const RECV_RPC = T.IPC_RECV_RPC
 const SEND_CTRL = T.IPC_SEND_CTRL
 const SEND_RPC = T.IPC_SEND_RPC
 
-let at_tx_busy_mask: u32 = 0
+let at_tx_busy: bool_t = false
 let rx_k: u32 = 0
 let rx_list: ptr_t<u32> = $null
 let rx_msg: ptr_t<u32> = $null
@@ -55,30 +55,18 @@ export function atInit(): bool_t {
 }
 
 export function allocData(): ptr_t<u32> {
-    if (at_tx_busy_mask != 0) {
+    if (at_tx_busy) {
         return $null
     }
-    at_tx_busy_mask = 1
+    at_tx_busy = true
     const shmem = $$(shmem_tab[0])
     return $cast2<ptr_t<u32>>($$(shmem.$$.tx))
 }
 
-export function dataTxBusy(addr: u32): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const base = $cast2<u32>($$(shmem.$$.tx))
-    for (const i of $range(2)) {
-        if (addr == base + i * 0x100) {
-            return (at_tx_busy_mask & (1 << i)) != 0
-        }
-    }
-    return false
-}
-
 function freeDataTx(addr: u32) {
     const shmem = $$(shmem_tab[0])
-    if (addr == $cast2<u32>($$(shmem.$$.tx))) {
-        at_tx_busy_mask = 0
-    }
+    /// assert addr == $cast2<u32>($$(shmem.$$.tx))
+    at_tx_busy = false
 }
 
 export function call(opcode: u32, ctrl_size: u32): bool_t {
