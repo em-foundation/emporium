@@ -77,16 +77,12 @@ export function enable(): bool_t {
 }
 
 export function openUdp(addr: u32, port: u16): bool_t {
-    if (!enabled) {
-        return false
-    }
+    /// assert enabled
     return openUdpInternal(addr, port)
 }
 
 export function send(data: ptr_t<u8>, len: u32): bool_t {
-    if (udp_fd == 0xFFFFFFFF) {
-        return false
-    }
+    /// assert udp_fd != 0xFFFFFFFF
     return sendUdp(udp_fd, data, len)
 }
 
