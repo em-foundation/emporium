@@ -98,8 +98,7 @@ export function freeData(data: u32) {
 
 export function handleCtrl() {
     /// assert isCtrl()
-    const type = (rx_msg[0] >> 16) & 0xFFFF
-    if (type == 2) {
+    if (((rx_msg[0] >> 16) & 0xFFFF) == 2) {
         freeDataTx(rx_msg[2])
     }
     retire()
