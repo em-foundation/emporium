@@ -196,31 +196,45 @@ export function start(): bool_t {
 }
 
 export function alloc(tmplt: ptr_t<u32> = $null, word_cnt: u16 = 0): ptr_t<u32> {
-    const tx_list = txList()
-    const msgs = txMessages()
-    const count = tx_list[0]
-    for (const i of $range(T.NUM_DESCS)) {
-        if (i >= count) {
-            break
-        }
-        const state = tx_list[1 + i * 2]
-        if ((state & 0xFF) != T.DESC_FREE) {
-            continue
-        }
-        tx_slot = i
-        const msg = $cast2<ptr_t<u32>>($cast2<u32>(msgs) + i * T.MSG_WORDS * 4)
-        tx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_ALLOC
-        tx_list[2 + i * 2] = $cast2<u32>(msg)
-        Mem.set(msg, 0, T.MSG_SIZE)
-        if (word_cnt != 0) {
-            Mem.cpy(msg, tmplt, word_cnt * 4)
-        }
-        return msg
+    let msg = alloc0()
+    if (msg == $null) {
+        msg = alloc1()
     }
-    return $null
+    if (msg == $null) {
+        return $null
+    }
+    Mem.set(msg, 0, T.MSG_SIZE)
+    if (word_cnt != 0) {
+        Mem.cpy(msg, tmplt, word_cnt * 4)
+    }
+    return msg
 }
 
+function alloc0(): ptr_t<u32> {
+    const tx_list = txList()
+    const state = tx_list[1]
+    if ((state & 0xFF) != T.DESC_FREE) {
+        return $null
+    }
+    tx_slot = 0
+    const msg = txMessages()
+    tx_list[1] = (state & 0xFFFFFF00) | T.DESC_ALLOC
+    tx_list[2] = $cast2<u32>(msg)
+    return msg
+}
 
+function alloc1(): ptr_t<u32> {
+    const tx_list = txList()
+    const state = tx_list[3]
+    if ((state & 0xFF) != T.DESC_FREE) {
+        return $null
+    }
+    tx_slot = 1
+    const msg = $cast2<ptr_t<u32>>($cast2<u32>(txMessages()) + T.MSG_SIZE)
+    tx_list[3] = (state & 0xFFFFFF00) | T.DESC_ALLOC
+    tx_list[4] = $cast2<u32>(msg)
+    return msg
+}
 
 function txList(): ptr_t<u32> {
     const shmem = $$(shmem_tab[0])
