@@ -40,7 +40,7 @@ let rx_msg: ptr_t<u32> = $null
 let rx_seq: u32 = 0
 let rx_state: u32 = 0
 let tx_seq: u32 = 0
-let tx_slot: u32 = 0
+let tx_k: u32 = 1
 
 export function em$startup() {
     shmemConstruct()
@@ -132,9 +132,8 @@ export function retire() {
 export function send(msg: ptr_t<u32>) {
     const tx_list = txList()
     msg[1] = (msg[1] & 0xFFFFFF00) | 2
-    const k = 1 + tx_slot * 2
-    const state = tx_list[k]
-    tx_list[k] = ((tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
+    const state = tx_list[tx_k]
+    tx_list[tx_k] = ((tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
     tx_seq = (tx_seq + 1) & 0xFFFF
     Common.BusyWait.wait(3)
     $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
@@ -175,7 +174,7 @@ function alloc0(): ptr_t<u32> {
     if ((state & 0xFF) != T.DESC_FREE) {
         return $null
     }
-    tx_slot = 0
+    tx_k = 1
     const msg = txMessages()
     tx_list[1] = (state & 0xFFFFFF00) | T.DESC_ALLOC
     tx_list[2] = $cast2<u32>(msg)
@@ -188,7 +187,7 @@ function alloc1(): ptr_t<u32> {
     if ((state & 0xFF) != T.DESC_FREE) {
         return $null
     }
-    tx_slot = 1
+    tx_k = 3
     const msg = $cast2<ptr_t<u32>>($cast2<u32>(txMessages()) + T.MSG_SIZE)
     tx_list[3] = (state & 0xFFFFFF00) | T.DESC_ALLOC
     tx_list[4] = $cast2<u32>(msg)
