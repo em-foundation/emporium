@@ -88,9 +88,7 @@ export function freeData(data: u32) {
         list[1] = (state & 0xFFFFFF00) | T.DESC_FREE
         state = list[1]
     }
-    if ((state & 0xFF) != T.DESC_FREE) {
-        return
-    }
+    /// assert (state & 0xFF) == T.DESC_FREE
     Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = 0x00020001
     msg[1] = 1
@@ -140,9 +138,7 @@ export function next(): bool_t {
 }
 
 export function retire() {
-    if (rx_list == $null) {
-        return
-    }
+    /// assert rx_list != $null
     rx_list[rx_k] = (rx_state & 0xFFFFFF00) | T.DESC_FREE
     rx_seq = (rx_seq + 1) & 0xFFFF
     rx_list = $null
