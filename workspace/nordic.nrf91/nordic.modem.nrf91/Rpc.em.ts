@@ -68,6 +68,17 @@ export function allocData(): ptr_t<u32> {
     return $null
 }
 
+export function dataTxBusy(addr: u32): bool_t {
+    const shmem = $$(shmem_tab[0])
+    const base = $cast2<u32>($$(shmem.$$.tx))
+    for (const i of $range(2)) {
+        if (addr == base + i * 0x100) {
+            return (at_tx_busy_mask & (1 << i)) != 0
+        }
+    }
+    return false
+}
+
 function freeDataTx(addr: u32) {
     const shmem = $$(shmem_tab[0])
     const base = $cast2<u32>($$(shmem.$$.tx))
