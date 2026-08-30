@@ -11,15 +11,6 @@ import * as T from '@nordic.modem.nrf91/Types.em'
 
 var shmem_tab = $table<T.SharedMem>()
 
-const req_template = $table<u32>([
-    T.RPC_PREAMBLE_REQ,
-    T.RPC_KIND_REQ,
-    0,
-    0,
-    0,
-    0,
-])
-
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('IPC')
@@ -89,7 +80,7 @@ function freeDataTx(addr: u32) {
 }
 
 export function call(opcode: u32, ctrl_size: u32): bool_t {
-    const msg = alloc(req_template.$ptr(), req_template.$len)
+    const msg = alloc(T.RPC_TEMPLATE_REQ.$ptr(), T.RPC_TEMPLATE_REQ.$len)
     msg[4] = ctrl_size
     msg[5] = opcode
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0

@@ -38,6 +38,52 @@ export const RPC_KIND_REQ = 2
 export const RPC_CTRL_SIZE_AT_INIT = 4
 export const RPC_OP_AT_INIT = 0xA7
 
+export const RPC_TEMPLATE_REQ = $table<u32>([
+    RPC_PREAMBLE_REQ,
+    RPC_KIND_REQ,
+])
+
+export const RPC_TEMPLATE_AT_REQ = $table<u32>([
+    RPC_PREAMBLE_AT_REQ,
+    RPC_KIND_REQ,
+    0,
+    0,
+    RPC_CTRL_SIZE_AT_INIT,
+    RPC_OP_AT_INIT,
+])
+
+export const RPC_TEMPLATE_CONNECT_REQ = $table<u32>([
+    RPC_PREAMBLE_CONNECT_REQ,
+    0,
+    0,
+    0,
+    RPC_CTRL_SIZE_CONNECT,
+])
+
+export const RPC_TEMPLATE_SEND_REQ = $table<u32>([
+    0x70060004,
+    0,
+    0,
+    0,
+    0x0E,
+    0,
+    0,
+    0x01000000,
+])
+
+export const RPC_TEMPLATE_SOCKET_REQ = $table<u32>([
+    RPC_PREAMBLE_SOCKET_REQ,
+    0,
+    0,
+    0,
+    RPC_CTRL_SIZE_SOCKET,
+    0,
+    0xFFFFFFFF,
+    1,
+    RPC_SOCK_DGRAM,
+    RPC_IPPROTO_UDP,
+])
+
 export class Msg extends $vector<u32> {
     $len = MSG_WORDS
 }

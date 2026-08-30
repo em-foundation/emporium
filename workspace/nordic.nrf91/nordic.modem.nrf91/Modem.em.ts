@@ -43,42 +43,8 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const SEND_RAI_LAST = 0x01000000
-const SEND_REQ = 0x70060004
 const SEND_RSP = 0x80060004
 const SOCKET_RSP = 0x80010004
-
-const connect_req_template = $table<u32>([
-    T.RPC_PREAMBLE_CONNECT_REQ,
-    0,
-    0,
-    0,
-    T.RPC_CTRL_SIZE_CONNECT,
-])
-
-const send_req_template = $table<u32>([
-    SEND_REQ,
-    0,
-    0,
-    0,
-    0x0E,
-    0,
-    0,
-    SEND_RAI_LAST,
-])
-
-const socket_req_template = $table<u32>([
-    T.RPC_PREAMBLE_SOCKET_REQ,
-    0,
-    0,
-    0,
-    T.RPC_CTRL_SIZE_SOCKET,
-    0,
-    0xFFFFFFFF,
-    1,
-    T.RPC_SOCK_DGRAM,
-    T.RPC_IPPROTO_UDP,
-])
 
 var enabled: bool_t = false
 var udp_fd: u32 = 0xFFFFFFFF
@@ -174,7 +140,7 @@ function networkBringUp(): bool_t {
 
 function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
-    const msg = Rpc.alloc(connect_req_template.$ptr(), connect_req_template.$len)
+    const msg = Rpc.alloc(T.RPC_TEMPLATE_CONNECT_REQ.$ptr(), T.RPC_TEMPLATE_CONNECT_REQ.$len)
     msg[6] = fd
     msg[7] = 0x00040000 | (($cast2<u32>(port) & 0xFF) << 8) | (($cast2<u32>(port) >> 8) & 0xFF)
     msg[8] = addr
@@ -205,7 +171,7 @@ function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
 
 function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     // Connected UDP send with RAI_LAST.
-    const msg = Rpc.alloc(send_req_template.$ptr(), send_req_template.$len)
+    const msg = Rpc.alloc(T.RPC_TEMPLATE_SEND_REQ.$ptr(), T.RPC_TEMPLATE_SEND_REQ.$len)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     msg[2] = $cast2<u32>(data)
     msg[3] = len
@@ -238,7 +204,7 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
 
 function openUdpInternal(addr: u32, port: u16): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
-    const msg = Rpc.alloc(socket_req_template.$ptr(), socket_req_template.$len)
+    const msg = Rpc.alloc(T.RPC_TEMPLATE_SOCKET_REQ.$ptr(), T.RPC_TEMPLATE_SOCKET_REQ.$len)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     msg[5] = $cast2<u32>(result)
     result[0] = T.RPC_RESULT_PENDING

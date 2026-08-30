@@ -23,15 +23,6 @@ const data_tab = $table<u8>()
 const operation_tab = $table<OperationDesc>()
 const operation_cmd_tab = $table<u8>()
 
-const at_req_template = $table<u32>([
-    T.RPC_PREAMBLE_AT_REQ,
-    T.RPC_KIND_REQ,
-    0,
-    0,
-    T.RPC_CTRL_SIZE_AT_INIT,
-    T.RPC_OP_AT_INIT,
-])
-
 export namespace em$meta {
     //
     type CommandSpec = readonly [command: string, flags: u8]
@@ -79,7 +70,7 @@ const FLAG_WANT_DATA = 0x01
 
 function command(cmd_id: u8): bool_t {
     const desc = $$(command_tab[cmd_id])
-    const msg = Rpc.alloc(at_req_template.$ptr(), at_req_template.$len)
+    const msg = Rpc.alloc(T.RPC_TEMPLATE_AT_REQ.$ptr(), T.RPC_TEMPLATE_AT_REQ.$len)
     const tx = Rpc.allocData()
     if (tx == $null) return false
     const state = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
