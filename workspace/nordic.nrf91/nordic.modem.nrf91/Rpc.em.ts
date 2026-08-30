@@ -86,10 +86,6 @@ export function freeData(data: u32) {
 
 export function handleCtrl() {
     /// assert isCtrl()
-    if (((rx_msg[0] >> 16) & 0xFFFF) == 2) {
-        const shmem = $$(shmem_tab[0])
-        /// assert rx_msg[2] == $cast2<u32>($$(shmem.$$.tx))
-    }
     retire()
 }
 
