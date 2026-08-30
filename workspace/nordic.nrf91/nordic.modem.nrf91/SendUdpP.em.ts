@@ -32,5 +32,5 @@ export function em$run() {
             fail()
         }
     }
-    printf`UDP send succeeded\n`()
+    // printf`UDP send succeeded\n`()
 }
