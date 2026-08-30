@@ -3,6 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as BoardC from '@nordic.distro.nrf91/BoardC.em'
 import * as Common from '@em.mcu/Common.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as AtCmd from '@nordic.modem.nrf91/AtCmd.em'
 import * as Rpc from '@nordic.modem.nrf91/Rpc.em'
 
@@ -93,9 +94,7 @@ export function send(data: ptr_t<u8>, len: u32): bool_t {
 
 export function handshake() {
     const payload = $cast2<ptr_t<u8>>(Rpc.txBase())
-    for (const i of $range(20)) {
-        payload[i] = 0
-    }
+    Mem.set(payload, 0, 20)
     if (!enable()) {
         fail()
     }
@@ -144,9 +143,7 @@ function networkBringUp(): bool_t {
 function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
     const msg = Rpc.alloc()
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
+    Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = T.RPC_PREAMBLE_CONNECT_REQ
     msg[1] = 0
     msg[4] = T.RPC_CTRL_SIZE_CONNECT
@@ -183,9 +180,7 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     // Connected UDP send with RAI_LAST.
     const msg = Rpc.alloc()
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
+    Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = SEND_REQ
     msg[1] = 0
     msg[2] = $cast2<u32>(data)
@@ -225,9 +220,7 @@ function openUdpInternal(addr: u32, port: u16): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
     const msg = Rpc.alloc()
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
+    Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = T.RPC_PREAMBLE_SOCKET_REQ
     msg[1] = 0
     msg[4] = T.RPC_CTRL_SIZE_SOCKET

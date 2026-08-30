@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Mem from '@em.utils/Mem.em'
 import * as Rpc from '@nordic.modem.nrf91/Rpc.em'
 import * as T from '@nordic.modem.nrf91/Types.em'
 
@@ -70,26 +71,19 @@ const FLAG_WANT_DATA = 0x01
 function command(cmd_id: u8): bool_t {
     const desc = $$(command_tab[cmd_id])
     const msg = Rpc.alloc()
-    const tx32 = Rpc.allocData()
-    if (tx32 == $null) return false
+    const tx = Rpc.allocData()
+    if (tx == $null) return false
     const state = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
     const len = desc.$$.length
-    const tx = $cast2<ptr_t<u8>>(tx32)
-    for (const i of $range(len)) {
-        tx[i] = data_tab[desc.$$.offset + i]
-    }
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
+    Mem.cpy(tx, $$(data_tab[desc.$$.offset]), len)
+    Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = T.RPC_PREAMBLE_AT_REQ
     msg[1] = T.RPC_KIND_REQ
     msg[2] = $cast2<u32>(tx)
     msg[3] = len
     msg[4] = T.RPC_CTRL_SIZE_AT_INIT
     msg[5] = T.RPC_OP_AT_INIT
-    state[0] = 0
-    state[1] = 0
-    state[2] = 0
+    Mem.set(state, 0, 12)
     Rpc.send(msg)
     const want_data = (desc.$$.flags & FLAG_WANT_DATA) != 0
     for (const outer of $range(2000000)) {
