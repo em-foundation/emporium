@@ -3,12 +3,22 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf91/REGS.em'
 
-import * as BusyWait from '@em.utils/BusyWait.em'
+import * as Common from '@em.mcu/Common.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
+import * as Mem from '@em.utils/Mem.em'
 
 import * as T from '@nordic.modem.nrf91/Types.em'
 
 var shmem_tab = $table<T.SharedMem>()
+
+const req_template = $table<u32>([
+    T.RPC_PREAMBLE_REQ,
+    T.RPC_KIND_REQ,
+    0,
+    0,
+    0,
+    0,
+])
 
 export namespace em$meta {
     export function em$construct() {
@@ -79,12 +89,7 @@ function freeDataTx(addr: u32) {
 }
 
 export function call(opcode: u32, ctrl_size: u32): bool_t {
-    const msg = alloc()
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
-    msg[0] = T.RPC_PREAMBLE_REQ
-    msg[1] = T.RPC_KIND_REQ
+    const msg = alloc(req_template.$ptr(), req_template.$len)
     msg[4] = ctrl_size
     msg[5] = opcode
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
@@ -105,16 +110,14 @@ export function freeData(data: u32) {
     if ((state & 0xFF) != T.DESC_FREE) {
         return
     }
-    for (const i of $range(T.MSG_WORDS)) {
-        msg[i] = 0
-    }
+    Mem.set(msg, 0, T.MSG_SIZE)
     msg[0] = 0x00020001
     msg[1] = 1
     msg[2] = data
     list[2] = $cast2<u32>(msg)
     list[1] = ((tx_seq & 0xFFFF) << 16) | T.DESC_BUSY
     tx_seq = (tx_seq + 1) & 0xFFFF
-    BusyWait.wait(3)
+    Common.BusyWait.wait(3)
     $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
 }
 
@@ -172,7 +175,7 @@ export function send(msg: ptr_t<u32>) {
     const state = tx_list[k]
     tx_list[k] = ((tx_seq & 0xFFFF) << 16) | (state & 0x0000FF00) | T.DESC_BUSY
     tx_seq = (tx_seq + 1) & 0xFFFF
-    BusyWait.wait(3)
+    Common.BusyWait.wait(3)
     $R.IPC.TASKS_SEND[SEND_RPC].$$ = 1
 }
 
@@ -190,7 +193,7 @@ export function start(): bool_t {
     return waitForHandshake()
 }
 
-export function alloc(): ptr_t<u32> {
+export function alloc(tmplt: ptr_t<u32> = $null, word_cnt: u16 = 0): ptr_t<u32> {
     const tx_list = txList()
     const msgs = txMessages()
     const count = tx_list[0]
@@ -204,6 +207,10 @@ export function alloc(): ptr_t<u32> {
             const msg = $cast2<ptr_t<u32>>($cast2<u32>(msgs) + i * T.MSG_WORDS * 4)
             tx_list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_ALLOC
             tx_list[2 + i * 2] = $cast2<u32>(msg)
+            Mem.set(msg, 0, T.MSG_SIZE)
+            if (word_cnt != 0) {
+                Mem.cpy(msg, tmplt, word_cnt * 4)
+            }
             return msg
         }
     }

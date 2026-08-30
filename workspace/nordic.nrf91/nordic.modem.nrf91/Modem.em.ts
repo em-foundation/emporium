@@ -48,6 +48,38 @@ const SEND_REQ = 0x70060004
 const SEND_RSP = 0x80060004
 const SOCKET_RSP = 0x80010004
 
+const connect_req_template = $table<u32>([
+    T.RPC_PREAMBLE_CONNECT_REQ,
+    0,
+    0,
+    0,
+    T.RPC_CTRL_SIZE_CONNECT,
+])
+
+const send_req_template = $table<u32>([
+    SEND_REQ,
+    0,
+    0,
+    0,
+    0x0E,
+    0,
+    0,
+    SEND_RAI_LAST,
+])
+
+const socket_req_template = $table<u32>([
+    T.RPC_PREAMBLE_SOCKET_REQ,
+    0,
+    0,
+    0,
+    T.RPC_CTRL_SIZE_SOCKET,
+    0,
+    0xFFFFFFFF,
+    1,
+    T.RPC_SOCK_DGRAM,
+    T.RPC_IPPROTO_UDP,
+])
+
 var enabled: bool_t = false
 var udp_fd: u32 = 0xFFFFFFFF
 
@@ -142,12 +174,7 @@ function networkBringUp(): bool_t {
 
 function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
-    const msg = Rpc.alloc()
-    Mem.set(msg, 0, T.MSG_SIZE)
-    msg[0] = T.RPC_PREAMBLE_CONNECT_REQ
-    msg[1] = 0
-    msg[4] = T.RPC_CTRL_SIZE_CONNECT
-    msg[5] = 0
+    const msg = Rpc.alloc(connect_req_template.$ptr(), connect_req_template.$len)
     msg[6] = fd
     msg[7] = 0x00040000 | (($cast2<u32>(port) & 0xFF) << 8) | (($cast2<u32>(port) >> 8) & 0xFF)
     msg[8] = addr
@@ -178,18 +205,11 @@ function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
 
 function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     // Connected UDP send with RAI_LAST.
-    const msg = Rpc.alloc()
+    const msg = Rpc.alloc(send_req_template.$ptr(), send_req_template.$len)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
-    Mem.set(msg, 0, T.MSG_SIZE)
-    msg[0] = SEND_REQ
-    msg[1] = 0
     msg[2] = $cast2<u32>(data)
     msg[3] = len
-    msg[4] = 0x0E
     msg[5] = $cast2<u32>(result)
-    msg[6] = 0
-    msg[7] = SEND_RAI_LAST
-    msg[8] = 0
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
     Rpc.send(msg)
@@ -218,17 +238,9 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
 
 function openUdpInternal(addr: u32, port: u16): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
-    const msg = Rpc.alloc()
+    const msg = Rpc.alloc(socket_req_template.$ptr(), socket_req_template.$len)
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
-    Mem.set(msg, 0, T.MSG_SIZE)
-    msg[0] = T.RPC_PREAMBLE_SOCKET_REQ
-    msg[1] = 0
-    msg[4] = T.RPC_CTRL_SIZE_SOCKET
     msg[5] = $cast2<u32>(result)
-    msg[6] = 0xFFFFFFFF
-    msg[7] = 1
-    msg[8] = T.RPC_SOCK_DGRAM
-    msg[9] = T.RPC_IPPROTO_UDP
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
     Rpc.send(msg)
