@@ -33,7 +33,6 @@ const RECV_RPC = T.IPC_RECV_RPC
 const SEND_CTRL = T.IPC_SEND_CTRL
 const SEND_RPC = T.IPC_SEND_RPC
 
-let at_tx_busy: bool_t = false
 let rx_k: u32 = 0
 let rx_list: ptr_t<u32> = $null
 let rx_msg: ptr_t<u32> = $null
@@ -55,8 +54,6 @@ export function atInit(): bool_t {
 }
 
 export function allocData(): ptr_t<u32> {
-    /// assert !at_tx_busy
-    at_tx_busy = true
     const shmem = $$(shmem_tab[0])
     return $cast2<ptr_t<u32>>($$(shmem.$$.tx))
 }
@@ -92,7 +89,6 @@ export function handleCtrl() {
     if (((rx_msg[0] >> 16) & 0xFFFF) == 2) {
         const shmem = $$(shmem_tab[0])
         /// assert rx_msg[2] == $cast2<u32>($$(shmem.$$.tx))
-        at_tx_busy = false
     }
     retire()
 }
