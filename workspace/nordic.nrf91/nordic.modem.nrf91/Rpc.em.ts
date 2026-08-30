@@ -55,9 +55,7 @@ export function atInit(): bool_t {
 }
 
 export function allocData(): ptr_t<u32> {
-    if (at_tx_busy) {
-        return $null
-    }
+    /// assert !at_tx_busy
     at_tx_busy = true
     const shmem = $$(shmem_tab[0])
     return $cast2<ptr_t<u32>>($$(shmem.$$.tx))
