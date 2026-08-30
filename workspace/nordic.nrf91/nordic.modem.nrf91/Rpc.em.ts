@@ -61,12 +61,6 @@ export function allocData(): ptr_t<u32> {
     return $cast2<ptr_t<u32>>($$(shmem.$$.tx))
 }
 
-function freeDataTx(addr: u32) {
-    const shmem = $$(shmem_tab[0])
-    /// assert addr == $cast2<u32>($$(shmem.$$.tx))
-    at_tx_busy = false
-}
-
 export function call(opcode: u32, ctrl_size: u32): bool_t {
     const msg = alloc(T.RPC_TEMPLATE_REQ.$ptr(), T.RPC_TEMPLATE_REQ.$len)
     msg[4] = ctrl_size
@@ -96,7 +90,9 @@ export function freeData(data: u32) {
 export function handleCtrl() {
     /// assert isCtrl()
     if (((rx_msg[0] >> 16) & 0xFFFF) == 2) {
-        freeDataTx(rx_msg[2])
+        const shmem = $$(shmem_tab[0])
+        /// assert rx_msg[2] == $cast2<u32>($$(shmem.$$.tx))
+        at_tx_busy = false
     }
     retire()
 }
