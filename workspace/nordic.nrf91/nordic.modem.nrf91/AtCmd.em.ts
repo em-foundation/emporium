@@ -81,12 +81,7 @@ function command(cmd_id: u8): bool_t {
     Rpc.send(msg)
     const want_data = (desc.$$.flags & FLAG_WANT_DATA) != 0
     for (const outer of $range(2000000)) {
-        drainAt(
-            want_data,
-            $cast2<ptr_t<u32>>($cast2<u32>(state) + 0),
-            $cast2<ptr_t<u32>>($cast2<u32>(state) + 4),
-            $cast2<ptr_t<u32>>($cast2<u32>(state) + 8)
-        )
+        drainAt(want_data, state)
         if (state[0] != 0 && (!want_data || state[2] != 0)) {
             return state[1] != 0
         }
@@ -203,27 +198,25 @@ function csconIdle(addr: u32, len: u32): bool_t {
     return false
 }
 
-function drainAt(want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
-    let handled = false
+function drainAt(want_data: bool_t, state: ptr_t<u32>) {
     for (const outer of $range(64)) {
         if (!Rpc.next()) {
             break
         }
         if (Rpc.isCtrl()) {
             Rpc.handleCtrl()
-            handled = true
             continue
         }
         const rsp = Rpc.message()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 2) {
-                okay[0] = rsp[6] == 0 ? 1 : 0
-                done[0] = 1
+                state[1] = rsp[6] == 0 ? 1 : 0
+                state[0] = 1
             }
             else if (event == 3) {
-                data_seen[0] = 1
-                okay[0] = 1
+                state[2] = 1
+                state[1] = 1
                 if (rsp[2] != 0) {
                     Rpc.freeData(rsp[2])
                 }
@@ -235,12 +228,10 @@ function drainAt(want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_see
             }
         }
         Rpc.retire()
-        handled = true
-        if (done[0] != 0 && (!want_data || data_seen[0] != 0)) {
-            return true
+        if (state[0] != 0 && (!want_data || state[2] != 0)) {
+            return
         }
     }
-    return handled
 }
 
 function registrationReady(addr: u32, len: u32): bool_t {
