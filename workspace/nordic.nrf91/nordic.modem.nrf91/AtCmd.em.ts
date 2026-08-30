@@ -72,7 +72,7 @@ function command(cmd_id: u8): bool_t {
     const desc = $$(command_tab[cmd_id])
     const msg = Rpc.alloc(T.RPC_TEMPLATE_AT_REQ.$ptr(), T.RPC_TEMPLATE_AT_REQ.$len)
     const tx = Rpc.allocData()
-    if (tx == $null) return false
+    /// assert (tx != $null)
     const state = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
     const len = desc.$$.length
     Mem.cpy(tx, $$(data_tab[desc.$$.offset]), len)
