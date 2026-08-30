@@ -53,7 +53,7 @@ export function atInit(): bool_t {
     return call(T.RPC_OP_AT_INIT, T.RPC_CTRL_SIZE_AT_INIT)
 }
 
-export function atTxAlloc(): ptr_t<u32> {
+export function allocData(): ptr_t<u32> {
     const shmem = $$(shmem_tab[0])
     const base = $cast2<u32>($$(shmem.$$.tx))
     for (const i of $range(4)) {
@@ -67,7 +67,7 @@ export function atTxAlloc(): ptr_t<u32> {
     return $null
 }
 
-export function atTxFree(addr: u32) {
+function freeDataTx(addr: u32) {
     const shmem = $$(shmem_tab[0])
     const base = $cast2<u32>($$(shmem.$$.tx))
     for (const i of $range(4)) {
@@ -79,11 +79,7 @@ export function atTxFree(addr: u32) {
 }
 
 export function call(opcode: u32, ctrl_size: u32): bool_t {
-    const shmem = $$(shmem_tab[0])
-    const ctrl = $$(shmem.$$.ctrl)
-    const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
-    const msg = txAlloc(list, msgs)
+    const msg = alloc()
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
@@ -92,11 +88,11 @@ export function call(opcode: u32, ctrl_size: u32): bool_t {
     msg[4] = ctrl_size
     msg[5] = opcode
     $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
-    sendData(list, msg)
+    send(msg)
     return waitForRpc(opcode)
 }
 
-export function rxDataFree(data: u32) {
+export function freeData(data: u32) {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
@@ -130,18 +126,18 @@ export function rxDataFree(data: u32) {
     }
 }
 
-export function rxHandleCtrl() {
-    if (!rxIsCtrl()) {
+export function handleCtrl() {
+    if (!isCtrl()) {
         return
     }
     const type = (rx_msg[0] >> 16) & 0xFFFF
     if (type == 2) {
-        atTxFree(rx_msg[2])
+        freeDataTx(rx_msg[2])
     }
-    rxRetire()
+    retire()
 }
 
-export function rxIsCtrl(): bool_t {
+export function isCtrl(): bool_t {
     if (rx_list == $null || rx_msg == $null) {
         return false
     }
@@ -151,11 +147,11 @@ export function rxIsCtrl(): bool_t {
     return $cast2<u32>(rx_list) == modem.$$.ptr0
 }
 
-export function rxMessage(): ptr_t<u32> {
+export function message(): ptr_t<u32> {
     return rx_msg
 }
 
-export function rxNext(): bool_t {
+export function next(): bool_t {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const modem = $$(ctrl.$$.modem)
@@ -167,7 +163,7 @@ export function rxNext(): bool_t {
     return rxFind(modem.$$.ptr0)
 }
 
-export function rxRetire() {
+export function retire() {
     if (rx_list == $null) {
         return
     }
@@ -177,7 +173,8 @@ export function rxRetire() {
     rx_msg = $null
 }
 
-export function sendData(tx_list: ptr_t<u32>, msg: ptr_t<u32>) {
+export function send(msg: ptr_t<u32>) {
+    const tx_list = txList()
     msg[1] = (msg[1] & 0xFFFFFF00) | 2
     const k = 1 + tx_slot * 2
     const state = tx_list[k]
@@ -201,7 +198,9 @@ export function start(): bool_t {
     return waitForHandshake()
 }
 
-export function txAlloc(tx_list: ptr_t<u32>, msgs: ptr_t<u32>): ptr_t<u32> {
+export function alloc(): ptr_t<u32> {
+    const tx_list = txList()
+    const msgs = txMessages()
     const count = tx_list[0]
     for (const i of $range(T.NUM_DESCS)) {
         if (i >= count) {
@@ -219,7 +218,8 @@ export function txAlloc(tx_list: ptr_t<u32>, msgs: ptr_t<u32>): ptr_t<u32> {
     return $null
 }
 
-export function txFree(tx_list: ptr_t<u32>) {
+export function free() {
+    const tx_list = txList()
     const k = 1 + tx_slot * 2
     const state = tx_list[k]
     if ((state & 0xFF) == T.DESC_ALLOC) {
@@ -227,13 +227,13 @@ export function txFree(tx_list: ptr_t<u32>) {
     }
 }
 
-export function txList(): ptr_t<u32> {
+function txList(): ptr_t<u32> {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     return $cast2<ptr_t<u32>>($$(ctrl.$$.list_b))
 }
 
-export function txMessages(): ptr_t<u32> {
+function txMessages(): ptr_t<u32> {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     return $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_b))
@@ -318,25 +318,24 @@ function waitForHandshake(): bool_t {
 }
 
 function waitForRpc(opcode: u32): bool_t {
-    const tx_list = txList()
     for (const outer of $range(2000000)) {
-        if (!rxNext()) {
+        if (!next()) {
             continue
         }
-        if (rxIsCtrl()) {
-            rxHandleCtrl()
+        if (isCtrl()) {
+            handleCtrl()
             continue
         }
-        const msg = rxMessage()
+        const msg = message()
         const preamble = msg[0]
         if (preamble == T.RPC_PREAMBLE_RSP &&
             (msg[5] & 0xFF) == (opcode & 0xFF)) {
-            rxRetire()
-            txFree(tx_list)
+            retire()
+            free()
             $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
             return true
         }
-        rxRetire()
+        retire()
     }
     return false
 }

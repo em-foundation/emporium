@@ -137,15 +137,15 @@ function networkBringUp(): bool_t {
 function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
     let handled = false
     for (const outer of $range(64)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             break
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             handled = true
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 2) {
@@ -161,16 +161,16 @@ function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32
                     okay[0] = 1
                 }
                 if (rsp[2] != 0) {
-                    Rpc.rxDataFree(rsp[2])
+                    Rpc.freeData(rsp[2])
                 }
             }
             else if (event == 4) {
                 if (rsp[2] != 0) {
-                    Rpc.rxDataFree(rsp[2])
+                    Rpc.freeData(rsp[2])
                 }
             }
         }
-        Rpc.rxRetire()
+        Rpc.retire()
         handled = true
         if (done[0] != 0 && (!want_data || data_seen[0] != 0)) {
             return true
@@ -180,10 +180,8 @@ function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32
 }
 
 function atCommand(kind: u32, want_data: bool_t): bool_t {
-    const tx_list = Rpc.txList()
-    const msgs = Rpc.txMessages()
-    const msg = Rpc.txAlloc(tx_list, msgs)
-    const tx = Rpc.atTxAlloc()
+    const msg = Rpc.alloc()
+    const tx = Rpc.allocData()
     if (tx == $null) {
         return false
     }
@@ -304,7 +302,7 @@ function atCommand(kind: u32, want_data: bool_t): bool_t {
 
 
 
-    Rpc.sendData(tx_list, msg)
+    Rpc.send(msg)
     for (const outer of $range(2000000)) {
         drainAt(
             kind,
@@ -314,7 +312,7 @@ function atCommand(kind: u32, want_data: bool_t): bool_t {
             $cast2<ptr_t<u32>>($cast2<u32>(flags) + 8)
         )
         if (flags[0] != 0 && (!want_data || flags[2] != 0)) {
-            Rpc.txFree(tx_list)
+            Rpc.free()
             return flags[1] != 0
         }
     }
@@ -375,9 +373,7 @@ function registrationReady(addr: u32, len: u32): bool_t {
 
 function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     // Exact IPv4 connect() request shape from the Zephyr UDP image.
-    const tx_list = Rpc.txList()
-    const msgs = Rpc.txMessages()
-    const msg = Rpc.txAlloc(tx_list, msgs)
+    const msg = Rpc.alloc()
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }
@@ -388,40 +384,38 @@ function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     msg[6] = fd
     msg[7] = 0x00040000 | (($cast2<u32>(port) & 0xFF) << 8) | (($cast2<u32>(port) >> 8) & 0xFF)
     msg[8] = addr
-    Rpc.sendData(tx_list, msg)
+    Rpc.send(msg)
     for (const outer of $range(2000000)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             continue
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                Rpc.rxDataFree(rsp[2])
+                Rpc.freeData(rsp[2])
             }
-            Rpc.rxRetire()
+            Rpc.retire()
             continue
         }
         if (rsp[0] == 0x80020004 && rsp[6] == fd) {
             const okay = rsp[7] == 0
-            Rpc.rxRetire()
-            Rpc.txFree(tx_list)
+            Rpc.retire()
+            Rpc.free()
             return okay
         }
-        Rpc.rxRetire()
+        Rpc.retire()
     }
     return false
 }
 
 function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     // Connected UDP send with RAI_LAST.
-    const tx_list = Rpc.txList()
-    const msgs = Rpc.txMessages()
-    const msg = Rpc.txAlloc(tx_list, msgs)
+    const msg = Rpc.alloc()
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -437,39 +431,37 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     msg[8] = 0
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
-    Rpc.sendData(tx_list, msg)
+    Rpc.send(msg)
     for (const outer of $range(2000000)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             continue
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                Rpc.rxDataFree(rsp[2])
+                Rpc.freeData(rsp[2])
             }
-            Rpc.rxRetire()
+            Rpc.retire()
             continue
         }
         if (rsp[0] == SEND_RSP) {
-            Rpc.rxRetire()
-            Rpc.txFree(tx_list)
+            Rpc.retire()
+            Rpc.free()
             return true
         }
-        Rpc.rxRetire()
+        Rpc.retire()
     }
     return false
 }
 
 function openUdpInternal(addr: u32, port: u16): bool_t {
     // Exact first socket() control request from the Zephyr UDP image.
-    const tx_list = Rpc.txList()
-    const msgs = Rpc.txMessages()
-    const msg = Rpc.txAlloc(tx_list, msgs)
+    const msg = Rpc.alloc()
     const result = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x38)
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -484,29 +476,29 @@ function openUdpInternal(addr: u32, port: u16): bool_t {
     msg[9] = T.RPC_IPPROTO_UDP
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
-    Rpc.sendData(tx_list, msg)
+    Rpc.send(msg)
     for (const outer of $range(2000000)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             continue
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if ((event == 3 || event == 4) && rsp[2] != 0) {
-                Rpc.rxDataFree(rsp[2])
+                Rpc.freeData(rsp[2])
             }
-            Rpc.rxRetire()
+            Rpc.retire()
             continue
         }
         if (rsp[0] == SOCKET_RSP && rsp[5] == $cast2<u32>(result)) {
             result[0] = rsp[8]
             result[1] = rsp[7]
-            Rpc.rxRetire()
-            Rpc.txFree(tx_list)
+            Rpc.retire()
+            Rpc.free()
             if (result[1] != 0) {
                 return false
             }
@@ -516,35 +508,35 @@ function openUdpInternal(addr: u32, port: u16): bool_t {
             }
             return true
         }
-        Rpc.rxRetire()
+        Rpc.retire()
     }
     return false
 }
 
 function waitForCsconIdle(): bool_t {
     for (const outer of $range(2000000)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             continue
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         let idle = false
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 4) {
                 idle = csconIdle(rsp[2], rsp[3])
                 if (rsp[2] != 0) {
-                    Rpc.rxDataFree(rsp[2])
+                    Rpc.freeData(rsp[2])
                 }
             }
             else if (event == 3 && rsp[2] != 0) {
-                Rpc.rxDataFree(rsp[2])
+                Rpc.freeData(rsp[2])
             }
         }
-        Rpc.rxRetire()
+        Rpc.retire()
         if (idle) {
             return true
         }
@@ -554,28 +546,28 @@ function waitForCsconIdle(): bool_t {
 
 function waitForRegistration(): bool_t {
     for (const outer of $range(2000000)) {
-        if (!Rpc.rxNext()) {
+        if (!Rpc.next()) {
             continue
         }
-        if (Rpc.rxIsCtrl()) {
-            Rpc.rxHandleCtrl()
+        if (Rpc.isCtrl()) {
+            Rpc.handleCtrl()
             continue
         }
-        const rsp = Rpc.rxMessage()
+        const rsp = Rpc.message()
         let ready = false
         if ((rsp[5] & 0xFF) == T.RPC_OP_AT_INIT) {
             const event = (rsp[0] >> 16) & 0xFF
             if (event == 4) {
                 ready = registrationReady(rsp[2], rsp[3])
                 if (rsp[2] != 0) {
-                    Rpc.rxDataFree(rsp[2])
+                    Rpc.freeData(rsp[2])
                 }
             }
             else if (event == 3 && rsp[2] != 0) {
-                Rpc.rxDataFree(rsp[2])
+                Rpc.freeData(rsp[2])
             }
         }
-        Rpc.rxRetire()
+        Rpc.retire()
         if (ready) {
             return true
         }
