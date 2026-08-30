@@ -78,10 +78,6 @@ function command(cmd_id: u8): bool_t {
     for (const i of $range(len)) {
         tx[i] = data_tab[desc.$$.offset + i]
     }
-    msg[2] = $cast2<u32>(tx)
-    for (const i of $range(len)) {
-        tx[i] = data_tab[desc.$$.offset + i]
-    }
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
     }

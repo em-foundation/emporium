@@ -38,10 +38,6 @@ export namespace em$meta {
         ])
 
     }
-    //
-    export function em$construct() {
-
-    }
 }
 
 //>> ---- em$targ ---- <<//
