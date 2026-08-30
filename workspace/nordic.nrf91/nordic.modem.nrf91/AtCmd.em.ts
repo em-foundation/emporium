@@ -87,9 +87,7 @@ function command(cmd_id: u8): bool_t {
             $cast2<ptr_t<u32>>($cast2<u32>(state) + 4),
             $cast2<ptr_t<u32>>($cast2<u32>(state) + 8)
         )
-        if (state[0] != 0 &&
-            (!want_data || state[2] != 0) &&
-            !Rpc.dataTxBusy($cast2<u32>(tx))) {
+        if (state[0] != 0 && (!want_data || state[2] != 0)) {
             return state[1] != 0
         }
     }
