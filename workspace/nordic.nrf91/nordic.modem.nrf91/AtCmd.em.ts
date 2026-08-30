@@ -12,8 +12,15 @@ class CommandDesc extends $struct {
     flags: u8
 }
 
-var command_tab = $table<CommandDesc>()
-var data_tab = $table<u8>()
+class OperationDesc extends $struct {
+    offset: u8
+    length: u8
+}
+
+const command_tab = $table<CommandDesc>()
+const data_tab = $table<u8>()
+const operation_tab = $table<OperationDesc>()
+const operation_cmd_tab = $table<u8>()
 
 export namespace em$meta {
     //
@@ -31,20 +38,26 @@ export namespace em$meta {
         const cmd_map = new Map<string, number>()
         let data_offset = 0
         for (const op_spec of op_specs) {
+            const op = operation_tab.$$add()
+            op.$$.offset = operation_cmd_tab.$len
+            op.$$.length = op_spec.length
             for (const [command, flags] of op_spec) {
                 const key = `${flags}:${command}`
-                if (cmd_map.has(key)) {
-                    continue
+                let cmd_id = cmd_map.get(key)
+                if (cmd_id === undefined) {
+                    cmd_id = command_tab.$len
+                    cmd_map.set(key, cmd_id)
+                    const desc = command_tab.$$add()
+                    desc.$$.offset = data_offset
+                    desc.$$.length = command.length + 1
+                    desc.$$.flags = flags
+                    for (let i = 0; i < command.length; i++) {
+                        data_tab.$$add(command.charCodeAt(i))
+                    }
+                    data_tab.$$add(0)
+                    data_offset += command.length + 1
                 }
-                cmd_map.set(key, command_tab.$len)
-                const desc = command_tab.$$add()
-                desc.$$.offset = data_offset
-                desc.$$.length = command.length
-                desc.$$.flags = flags
-                for (let i = 0; i < command.length; i++) {
-                    data_tab.$$add(command.charCodeAt(i))
-                }
-                data_offset += command.length
+                operation_cmd_tab.$$add(cmd_id)
             }
         }
     }
@@ -52,127 +65,22 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const AT_CEREG = 6
-export const CEDRXS_OFF = 3
-export const CEREG_ENABLE = 12
-export const CEREG_QUERY = 10
-export const CFUN_FULL = 5
-export const CFUN_POWER_OFF = 7
-export const CFUN_QUERY = 11
-export const CPSMS_ON = 2
-export const CSCON_ON = 13
-export const FEACONF_000 = 9
-export const FEACONF_031 = 8
-export const RAI_ON = 4
-export const SYSTEMMODE_NBIOT = 1
-export const XCOEX0 = 14
+const FLAG_WANT_DATA = 0x01
 
-export function command(kind: u32, want_data: bool_t): bool_t {
+function command(cmd_id: u8): bool_t {
+    const desc = $$(command_tab[cmd_id])
     const msg = Rpc.alloc()
-    const tx = Rpc.allocData()
-    if (tx == $null) {
-        return false
+    const tx32 = Rpc.allocData()
+    if (tx32 == $null) return false
+    const state = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
+    const len = desc.$$.length
+    const tx = $cast2<ptr_t<u8>>(tx32)
+    for (const i of $range(len)) {
+        tx[i] = data_tab[desc.$$.offset + i]
     }
-    const flags = $cast2<ptr_t<u32>>($cast2<u32>(msg) + 0x30)
-    let len = 0
-    for (const i of $range(9)) {
-        tx[i] = 0
-    }
-    if (kind == XCOEX0) {
-        tx[0] = 0x58255441
-        tx[1] = 0x58454F43
-        tx[2] = 0x2C313D30
-        tx[3] = 0x35312C31
-        tx[4] = 0x312C3536
-        tx[5] = 0x00363835
-        len = 24
-    }
-    else if (kind == SYSTEMMODE_NBIOT) {
-        tx[0] = 0x58255441
-        tx[1] = 0x54535953
-        tx[2] = 0x4F4D4D45
-        tx[3] = 0x303D4544
-        tx[4] = 0x302C312C
-        tx[5] = 0x0000302C
-        len = 23
-    }
-    else if (kind == CPSMS_ON) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x534D5350
-        tx[2] = 0x2C2C313D
-        tx[3] = 0x3030222C
-        tx[4] = 0x30303031
-        tx[5] = 0x2C223130
-        tx[6] = 0x30303022
-        tx[7] = 0x30303030
-        tx[8] = 0x00002230
-        len = 35
-    }
-    else if (kind == FEACONF_000) {
-        tx[0] = 0x46255441
-        tx[1] = 0x4F434145
-        tx[2] = 0x303D464E
-        tx[3] = 0x302C302C
-        len = 17
-    }
-    else if (kind == FEACONF_031) {
-        tx[0] = 0x46255441
-        tx[1] = 0x4F434145
-        tx[2] = 0x303D464E
-        tx[3] = 0x312C332C
-        len = 17
-    }
-    else if (kind == CEDRXS_OFF) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x58524445
-        tx[2] = 0x00333D53
-        len = 12
-    }
-    else if (kind == RAI_ON) {
-        tx[0] = 0x52255441
-        tx[1] = 0x323D4941
-        len = 9
-    }
-    else if (kind == CEREG_QUERY || kind == AT_CEREG) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x47455245
-        tx[2] = 0x0000003F
-        len = 10
-    }
-    else if (kind == CFUN_QUERY) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x3F4E5546
-        len = 9
-    }
-    else if (kind == CEREG_ENABLE) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x47455245
-        tx[2] = 0x0000353D
-        len = 11
-    }
-    else if (kind == CSCON_ON) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x4E4F4353
-        tx[2] = 0x0000313D
-        len = 11
-    }
-    else if (kind == CFUN_FULL) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x3D4E5546
-        tx[2] = 0x00000031
-        len = 10
-    }
-    else if (kind == CFUN_POWER_OFF) {
-        tx[0] = 0x432B5441
-        tx[1] = 0x3D4E5546
-        tx[2] = 0x00000030
-        len = 10
-    }
-    else {
-        tx[0] = 0x432B5441
-        tx[1] = 0x3D4E5546
-        tx[2] = 0x00000034
-        len = 10
+    msg[2] = $cast2<u32>(tx)
+    for (const i of $range(len)) {
+        tx[i] = data_tab[desc.$$.offset + i]
     }
     for (const i of $range(T.MSG_WORDS)) {
         msg[i] = 0
@@ -183,24 +91,34 @@ export function command(kind: u32, want_data: bool_t): bool_t {
     msg[3] = len
     msg[4] = T.RPC_CTRL_SIZE_AT_INIT
     msg[5] = T.RPC_OP_AT_INIT
-    flags[0] = 0
-    flags[1] = 0
-    flags[2] = 0
+    state[0] = 0
+    state[1] = 0
+    state[2] = 0
     Rpc.send(msg)
+    const want_data = (desc.$$.flags & FLAG_WANT_DATA) != 0
     for (const outer of $range(2000000)) {
         drainAt(
-            kind,
             want_data,
-            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 0),
-            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 4),
-            $cast2<ptr_t<u32>>($cast2<u32>(flags) + 8)
+            $cast2<ptr_t<u32>>($cast2<u32>(state) + 0),
+            $cast2<ptr_t<u32>>($cast2<u32>(state) + 4),
+            $cast2<ptr_t<u32>>($cast2<u32>(state) + 8)
         )
-        if (flags[0] != 0 && (!want_data || flags[2] != 0)) {
+        if (state[0] != 0 && (!want_data || state[2] != 0)) {
             Rpc.free()
-            return flags[1] != 0
+            return state[1] != 0
         }
     }
     return false
+}
+
+export function run(op_id: OperationId): bool_t {
+    const op = $$(operation_tab[op_id])
+    for (const i of $range(op.$$.length)) {
+        if (!command(operation_cmd_tab[op.$$.offset + i])) {
+            return false
+        }
+    }
+    return true
 }
 
 export function handleAsync(rsp: ptr_t<u32>): bool_t {
@@ -302,7 +220,7 @@ function csconIdle(addr: u32, len: u32): bool_t {
     return false
 }
 
-function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
+function drainAt(want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32>, data_seen: ptr_t<u32>): bool_t {
     let handled = false
     for (const outer of $range(64)) {
         if (!Rpc.next()) {
@@ -322,12 +240,7 @@ function drainAt(kind: u32, want_data: bool_t, done: ptr_t<u32>, okay: ptr_t<u32
             }
             else if (event == 3) {
                 data_seen[0] = 1
-                if (kind == AT_CEREG) {
-                    okay[0] = registrationReady(rsp[2], rsp[3]) ? 1 : 0
-                }
-                else {
-                    okay[0] = 1
-                }
+                okay[0] = 1
                 if (rsp[2] != 0) {
                     Rpc.freeData(rsp[2])
                 }

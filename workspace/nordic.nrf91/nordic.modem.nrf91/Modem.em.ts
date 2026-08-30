@@ -118,7 +118,7 @@ export function init() {
 }
 
 function modemShutdown() {
-    AtCmd.command(AtCmd.CFUN_POWER_OFF, false)
+    AtCmd.run(POWER_OFF)
 }
 
 function modemPostInit() {
@@ -133,18 +133,7 @@ function modemPrep() {
 }
 
 function networkBringUp(): bool_t {
-    if (!AtCmd.command(AtCmd.XCOEX0, false) ||
-        !AtCmd.command(AtCmd.SYSTEMMODE_NBIOT, false) ||
-        !AtCmd.command(AtCmd.CPSMS_ON, false) ||
-        !AtCmd.command(AtCmd.FEACONF_000, false) ||
-        !AtCmd.command(AtCmd.FEACONF_031, false) ||
-        !AtCmd.command(AtCmd.CEDRXS_OFF, false) ||
-        !AtCmd.command(AtCmd.RAI_ON, false) ||
-        !AtCmd.command(AtCmd.CEREG_QUERY, true) ||
-        !AtCmd.command(AtCmd.CFUN_QUERY, true) ||
-        !AtCmd.command(AtCmd.CEREG_ENABLE, false) ||
-        !AtCmd.command(AtCmd.CSCON_ON, false) ||
-        !AtCmd.command(AtCmd.CFUN_FULL, false)) {
+    if (!AtCmd.run(NETWORK_CFG) || !AtCmd.run(REGISTER)) {
         return false
     }
     if (!AtCmd.waitForRegistration()) {
