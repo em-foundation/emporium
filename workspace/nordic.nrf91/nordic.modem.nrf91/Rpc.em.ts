@@ -55,17 +55,12 @@ export function atInit(): bool_t {
 }
 
 export function allocData(): ptr_t<u32> {
-    const shmem = $$(shmem_tab[0])
-    const base = $cast2<u32>($$(shmem.$$.tx))
-    for (const i of $range(2)) {
-        const bit = 1 << i
-        if ((at_tx_busy_mask & bit) != 0) {
-            continue
-        }
-        at_tx_busy_mask |= bit
-        return $cast2<ptr_t<u32>>(base + i * 0x100)
+    if (at_tx_busy_mask != 0) {
+        return $null
     }
-    return $null
+    at_tx_busy_mask = 1
+    const shmem = $$(shmem_tab[0])
+    return $cast2<ptr_t<u32>>($$(shmem.$$.tx))
 }
 
 export function dataTxBusy(addr: u32): bool_t {
@@ -81,12 +76,8 @@ export function dataTxBusy(addr: u32): bool_t {
 
 function freeDataTx(addr: u32) {
     const shmem = $$(shmem_tab[0])
-    const base = $cast2<u32>($$(shmem.$$.tx))
-    for (const i of $range(2)) {
-        if (addr == base + i * 0x100) {
-            at_tx_busy_mask &= ~(1 << i)
-            return
-        }
+    if (addr == $cast2<u32>($$(shmem.$$.tx))) {
+        at_tx_busy_mask = 0
     }
 }
 
