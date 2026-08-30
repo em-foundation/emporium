@@ -161,7 +161,6 @@ function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
         if (rsp[0] == 0x80020004 && rsp[6] == fd) {
             const okay = rsp[7] == 0
             Rpc.retire()
-            Rpc.free()
             return okay
         }
         Rpc.retire()
@@ -194,7 +193,6 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
         }
         if (rsp[0] == SEND_RSP) {
             Rpc.retire()
-            Rpc.free()
             return true
         }
         Rpc.retire()
@@ -227,7 +225,6 @@ function openUdpInternal(addr: u32, port: u16): bool_t {
             result[0] = rsp[8]
             result[1] = rsp[7]
             Rpc.retire()
-            Rpc.free()
             if (result[1] != 0) {
                 return false
             }

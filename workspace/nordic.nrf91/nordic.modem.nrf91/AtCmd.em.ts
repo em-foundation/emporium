@@ -88,7 +88,6 @@ function command(cmd_id: u8): bool_t {
             $cast2<ptr_t<u32>>($cast2<u32>(state) + 8)
         )
         if (state[0] != 0 && (!want_data || state[2] != 0)) {
-            Rpc.free()
             return state[1] != 0
         }
     }
