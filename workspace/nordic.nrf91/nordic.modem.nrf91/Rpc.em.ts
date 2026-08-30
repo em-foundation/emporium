@@ -96,34 +96,26 @@ export function freeData(data: u32) {
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)
     const list = $cast2<ptr_t<u32>>($$(ctrl.$$.list_a))
-    const msgs = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
-    const count = list[0]
-    for (const i of $range(T.NUM_DESCS)) {
-        if (i >= count) {
-            break
-        }
-        let state = list[1 + i * 2]
-        if ((state & 0xFF) == T.DESC_ALLOC) {
-            list[1 + i * 2] = (state & 0xFFFFFF00) | T.DESC_FREE
-            state = list[1 + i * 2]
-        }
-        if ((state & 0xFF) != T.DESC_FREE) {
-            continue
-        }
-        const msg = $cast2<ptr_t<u32>>($cast2<u32>(msgs) + i * T.MSG_WORDS * 4)
-        for (const j of $range(T.MSG_WORDS)) {
-            msg[j] = 0
-        }
-        msg[0] = 0x00020001
-        msg[1] = 1
-        msg[2] = data
-        list[2 + i * 2] = $cast2<u32>(msg)
-        list[1 + i * 2] = ((tx_seq & 0xFFFF) << 16) | T.DESC_BUSY
-        tx_seq = (tx_seq + 1) & 0xFFFF
-        BusyWait.wait(3)
-        $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
+    const msg = $cast2<ptr_t<u32>>($$(ctrl.$$.msgs_a))
+    let state = list[1]
+    if ((state & 0xFF) == T.DESC_ALLOC) {
+        list[1] = (state & 0xFFFFFF00) | T.DESC_FREE
+        state = list[1]
+    }
+    if ((state & 0xFF) != T.DESC_FREE) {
         return
     }
+    for (const i of $range(T.MSG_WORDS)) {
+        msg[i] = 0
+    }
+    msg[0] = 0x00020001
+    msg[1] = 1
+    msg[2] = data
+    list[2] = $cast2<u32>(msg)
+    list[1] = ((tx_seq & 0xFFFF) << 16) | T.DESC_BUSY
+    tx_seq = (tx_seq + 1) & 0xFFFF
+    BusyWait.wait(3)
+    $R.IPC.TASKS_SEND[SEND_CTRL].$$ = 1
 }
 
 export function handleCtrl() {
