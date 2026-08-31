@@ -105,9 +105,51 @@ export function handleAsync(rsp: ptr_t<u32>): bool_t {
     }
     const event = (rsp[0] >> 16) & 0xFF
     if ((event == 3 || event == 4) && rsp[2] != 0) {
+        traceCscon(rsp[2], rsp[3])
         Rpc.freeData(rsp[2])
     }
     return true
+}
+
+export function asyncCsconIdle(rsp: ptr_t<u32>): bool_t {
+    if ((rsp[5] & 0xFF) != T.RPC_OP_AT_INIT) {
+        return false
+    }
+    const event = (rsp[0] >> 16) & 0xFF
+    return event == 4 && csconIdle(rsp[2], rsp[3])
+}
+
+function traceCscon(addr: u32, len: u32) {
+    if (addr == 0 || len < 9) {
+        return
+    }
+    const data = $cast2<ptr_t<u8>>(addr)
+    for (const i of $range(64)) {
+        if (i + 8 >= len) {
+            break
+        }
+        if (data[i + 0] == 0x2B &&
+            data[i + 1] == 0x43 &&
+            data[i + 2] == 0x53 &&
+            data[i + 3] == 0x43 &&
+            data[i + 4] == 0x4F &&
+            data[i + 5] == 0x4E &&
+            data[i + 6] == 0x3A) {
+            let j = i + 7
+            if (j < len && data[j] == 0x20) {
+                j += 1
+            }
+            if (j < len) {
+                const c = data[j]
+                if (c == c$`1`) {
+                    $['%%d+']
+                } else {
+                    $['%%d-']
+                }
+            }
+            return
+        }
+    }
 }
 
 export function waitForCsconIdle(): bool_t {

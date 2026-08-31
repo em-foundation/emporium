@@ -171,9 +171,11 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     msg[2] = $cast2<u32>(data)
     msg[3] = len
     msg[5] = $cast2<u32>(result)
+    msg[7] = 0x01000000
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
     Rpc.send(msg)
+    let sent = false
     for (const outer of $range(2000000)) {
         if (!Rpc.next()) {
             continue
@@ -183,13 +185,18 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
             continue
         }
         const rsp = Rpc.message()
+        const idle = AtCmd.asyncCsconIdle(rsp)
         if (AtCmd.handleAsync(rsp)) {
             Rpc.retire()
+            if (sent && idle) {
+                return true
+            }
             continue
         }
         if (rsp[0] == SEND_RSP) {
+            sent = true
             Rpc.retire()
-            return true
+            continue
         }
         Rpc.retire()
     }
