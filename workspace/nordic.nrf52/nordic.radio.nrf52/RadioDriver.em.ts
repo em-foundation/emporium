@@ -148,11 +148,11 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
 }
 
 export function waitReady() {
-    Idle.setPauseOnly(true)
+    Idle.setLevel(1)
     while (cur_state != State.READY) {
         Idle.exec()
     }
-    Idle.setPauseOnly(false)
+    Idle.setLevel(0)
 }
 
 export function RADIO_isr$$() {
