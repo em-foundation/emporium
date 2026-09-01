@@ -175,6 +175,7 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     result[0] = T.RPC_RESULT_PENDING
     result[1] = 0
     Rpc.send(msg)
+    $['%%d+']
     let sent = false
     for (const outer of $range(2000000)) {
         if (!Rpc.next()) {
@@ -189,6 +190,7 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
         if (AtCmd.handleAsync(rsp)) {
             Rpc.retire()
             if (sent && idle) {
+                $['%%d-']
                 return true
             }
             continue
