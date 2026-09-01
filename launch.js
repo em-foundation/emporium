@@ -11,7 +11,7 @@ const NODE_MODULES = Path.join(ROOT, 'node_modules')
 const TOOLS = Path.join(ROOT, 'tools')
 
 const EXTENSIONS = [
-    'the-em-foundation.em-builder@26.2.1',
+    'the-em-foundation.em-builder@26.2.2',
     'Wokwi.wokwi-vscode@3.6.0',
     'ms-vscode.vscode-serial-monitor@0.13.1',
 ]
