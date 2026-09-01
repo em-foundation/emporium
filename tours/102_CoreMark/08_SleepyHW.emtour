@@ -43,7 +43,7 @@ steps:
 
       Ensure that {[cu]BlinkerP} builds&thinsp;&middot;&thinsp;loads&thinsp;&middot;&thinsp;runs on your board of choice and then:
       
-      ☑️&thinsp; select {[em]Board}&thinsp; **> &thinsp;current ✓** to view the board's picture
+      ☑️&thinsp; select {[em]Board} then **✓&thinsp;current** to view its labeled image<br>
       ☑️&thinsp; connect the jumper wires to your board's colored pins<br>
       ☑️&thinsp; also connect analyzer GND to board GND [grey]<br>
       ☑️&thinsp; plug the USB logic analyzer into your host PC
