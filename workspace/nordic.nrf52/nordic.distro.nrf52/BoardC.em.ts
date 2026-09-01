@@ -67,7 +67,7 @@ export function em$configure(): void {
     AppLedPin.pin_num.$$val = brd.pins.appLed
     AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
-    BusyWait.scalar.$$val = 9
+    BusyWait.scalar.$$val = 11
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts
