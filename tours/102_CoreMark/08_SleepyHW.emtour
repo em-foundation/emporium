@@ -41,10 +41,9 @@ steps:
 
       After some **PulseView** setup, you'll see the same [`AppOut`, `DbgA`, &thinsp;&hellip; `SysLed`] signals captured from *real* hardware.
 
-      In preparation, review this checklist:
-
-      ☑️&thinsp; **build&thinsp;+&thinsp;load** {[cu]BlinkerP} your board of choice<br>
-      ☑️&thinsp; visually verify that {[cu]BlinkerP} executes on your board<br>
+      Ensure that {[cu]BlinkerP} builds&thinsp;&middot;&thinsp;loads&thinsp;&middot;&thinsp;runs on your board of choice and then:
+      
+      ☑️&thinsp; select {[em]Board}&thinsp; **> &thinsp;current ✓** to view the board's picture
       ☑️&thinsp; connect the jumper wires to your board's colored pins<br>
       ☑️&thinsp; also connect analyzer GND to board GND [grey]<br>
       ☑️&thinsp; plug the USB logic analyzer into your host PC
