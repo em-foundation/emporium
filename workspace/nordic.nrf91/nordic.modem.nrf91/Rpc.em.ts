@@ -49,18 +49,13 @@ export function em$startup() {
 
 export function IPC_isr$$() {
     const pend = $R.IPC.INTPEND.$$
-    $['%%>'](pend)
-    $['%%a']
+    if (pend & 0x01) $R.IPC.EVENTS_RECEIVE[0].$$ = 0
+    if (pend & 0x04) $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+    if (pend & 0x10) $R.IPC.EVENTS_RECEIVE[4].$$ = 0
+    if (pend & 0x40) $R.IPC.EVENTS_RECEIVE[6].$$ = 0
+    if (pend & 0x80) $R.IPC.EVENTS_RECEIVE[7].$$ = 0
     done_flag = true
     IntrVec.NVIC_clear(e$`IPC_IRQn`)
-    if (pend & 0x04) {
-        $R.IPC.EVENTS_RECEIVE[2].$$ = 0
-        return
-    }
-    if (pend & 0x10) {
-        $R.IPC.EVENTS_RECEIVE[4].$$ = 0
-        return
-    }
 }
 
 export function atInit(): bool_t {
@@ -116,8 +111,11 @@ export function message(): ptr_t<u32> {
 }
 
 export function wait() {
-    IntrVec.NVIC_enable(e$`IPC_IRQn`)
     done_flag = false
+    $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+    $R.IPC.EVENTS_RECEIVE[RECV_RPC].$$ = 0
+    IntrVec.NVIC_clear(e$`IPC_IRQn`)
+    IntrVec.NVIC_enable(e$`IPC_IRQn`)
     Common.Idle.setLevel(1)
     while (!done_flag) Common.Idle.exec()
     Common.Idle.setLevel(0)
