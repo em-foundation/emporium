@@ -143,6 +143,7 @@ function connectUdp(fd: u32, addr: u32, port: u16): bool_t {
     Rpc.send(msg)
     for (const outer of $range(2000000)) {
         if (!Rpc.next()) {
+            Rpc.wait()
             continue
         }
         if (Rpc.isCtrl()) {

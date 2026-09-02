@@ -33,20 +33,34 @@ const RECV_RPC = T.IPC_RECV_RPC
 const SEND_CTRL = T.IPC_SEND_CTRL
 const SEND_RPC = T.IPC_SEND_RPC
 
-let rx_k: u32 = 0
-let rx_list: ptr_t<u32> = $null
-let rx_msg: ptr_t<u32> = $null
-let rx_seq: u32 = 0
-let rx_state: u32 = 0
-let tx_seq: u32 = 0
-let tx_k: u32 = 1
+var rx_k: u32 = 0
+var rx_list: ptr_t<u32> = $null
+var rx_msg: ptr_t<u32> = $null
+var rx_seq: u32 = 0
+var rx_state: u32 = 0
+var tx_seq: u32 = 0
+var tx_k: u32 = 1
+
+var done_flag: volatile_t<bool_t>
 
 export function em$startup() {
     shmemConstruct()
 }
 
 export function IPC_isr$$() {
+    const pend = $R.IPC.INTPEND.$$
+    $['%%>'](pend)
+    $['%%a']
+    done_flag = true
     IntrVec.NVIC_clear(e$`IPC_IRQn`)
+    if (pend & 0x04) {
+        $R.IPC.EVENTS_RECEIVE[2].$$ = 0
+        return
+    }
+    if (pend & 0x10) {
+        $R.IPC.EVENTS_RECEIVE[4].$$ = 0
+        return
+    }
 }
 
 export function atInit(): bool_t {
@@ -99,6 +113,15 @@ export function isCtrl(): bool_t {
 
 export function message(): ptr_t<u32> {
     return rx_msg
+}
+
+export function wait() {
+    IntrVec.NVIC_enable(e$`IPC_IRQn`)
+    done_flag = false
+    Common.Idle.setLevel(1)
+    while (!done_flag) Common.Idle.exec()
+    Common.Idle.setLevel(0)
+    IntrVec.NVIC_disable(e$`IPC_IRQn`)
 }
 
 export function next(): bool_t {
