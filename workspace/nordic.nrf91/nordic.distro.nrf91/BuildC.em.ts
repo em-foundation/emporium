@@ -94,9 +94,9 @@ export function em$generate() {
     LinkerC.genScript({
         dmem_flash: { orig: 0x20008000, len: 0x00008000 },
         imem_flash: { orig: 0x00008000, len: 0x00008000 },
-        dmem_sram: LinkerC.MEM_NULL,
-        imem_sram: LinkerC.MEM_NULL,
-        lmem_sram: LinkerC.MEM_NULL,
+        dmem_sram: { orig: 0x20008000, len: 0x00006000 },
+        imem_sram: { orig: 0x2000e000, len: 0x00002000 },
+        lmem_sram: { orig: 0x00008000, len: 0x00006000 },
         cmem_sram: LinkerC.MEM_NULL,
     })
     let opt = $property('em.build.Optimize', 'Oz')

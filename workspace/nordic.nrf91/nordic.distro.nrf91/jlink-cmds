@@ -1,7 +1,7 @@
 Device NRF9151_XXCA
 SelectInterface SWD
 Speed 4000
-Halt
+Reset
 Erase
 LoadFile .out/merged.hex
 Reset

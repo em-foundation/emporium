@@ -6,7 +6,13 @@ import * as $R from '@nordic.distro.nrf91/REGS.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as McuI from '@em.hal/McuI.em'
 
-export namespace em$meta { }
+const use_sram = $config<bool_t>()
+
+export namespace em$meta {
+    export function em$construct() {
+        use_sram.$$val = $property('em.build.BootFlash', false)
+    }
+}
 
 //>> ---- em$targ ---- <<//
 
@@ -18,7 +24,9 @@ export function startup(): void {
     Debug.startup()
     $['%%a:'](2)
     //
-    $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
+    if (!use_sram) {
+        $R.NVMC.ICACHECNF.$$ = $R.NVMC_ICACHECNF_CACHEEN_Msk
+    }
     $R.POWER.TASKS_LOWPWR.$$ = 1
     //
     $R.CLOCK.LFCLKSRC.$$ = $R.CLOCK_LFCLKSRCCOPY_SRC_LFXO
