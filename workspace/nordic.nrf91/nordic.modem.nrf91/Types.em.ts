@@ -137,13 +137,19 @@ export class Ctrl extends $struct {
     msgs_b: MsgVec         // +0x2E8, size 0x200
 }
 
-export const SHMEM_SIZE = 0x2000
-export const SHMEM_WORDS = SHMEM_SIZE / 4
-export const TX_RX_PAD_SIZE = 0x80
+export const SHMEM_RX_SIZE = 0x2000
+export const SHMEM_RX_WORDS = SHMEM_RX_SIZE / 4
+export const SHMEM_TX_SIZE = 0x800
+export const SHMEM_TX_WORDS = SHMEM_TX_SIZE / 4
+export const TX_RX_PAD_SIZE = 0x20
 export const TX_RX_PAD_WORDS = TX_RX_PAD_SIZE / 4
 
-export class ShmemArea extends $vector<u32> {
-    $len = SHMEM_WORDS
+export class ShmemTxArea extends $vector<u32> {
+    $len = SHMEM_TX_WORDS
+}
+
+export class ShmemRxArea extends $vector<u32> {
+    $len = SHMEM_RX_WORDS
 }
 
 export class TxRxPad extends $vector<u32> {
@@ -151,10 +157,10 @@ export class TxRxPad extends $vector<u32> {
 }
 
 export class SharedMem extends $struct {
-    ctrl: Ctrl             // +0x0000, size 0x04E8
-    tx: ShmemArea          // +0x04E8, size 0x2000
-    pad: TxRxPad           // +0x24E8, size 0x0080
-    rx: ShmemArea          // +0x2568, size 0x2000
+    ctrl: Ctrl
+    tx: ShmemTxArea
+    pad: TxRxPad
+    rx: ShmemRxArea
 }
 
 export namespace em$meta { }

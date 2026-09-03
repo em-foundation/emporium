@@ -23,7 +23,7 @@ export namespace em$meta {
             ctrl.list_a.descs[i].state = T.DESC_FREE
             ctrl.list_b.descs[i].state = T.DESC_FREE
         }
-        ctrl.host.data_size = T.SHMEM_SIZE
+        ctrl.host.data_size = T.SHMEM_RX_SIZE
     }
 }
 

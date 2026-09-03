@@ -34,8 +34,8 @@ export function startup(): void {
     while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
     $R.CLOCK.EVENTS_LFCLKSTARTED.$$ = 0
     //
-    $R.VMC.RAM[0].POWERCLR.$$ = 0x0f0f
-    for (const i of $range(2, 8)) {
-        $R.VMC.RAM[i].POWERCLR.$$ = 0x0f0f
-    }
+    // $R.VMC.RAM[0].POWERCLR.$$ = 0x0f0f
+    // for (const i of $range(2, 8)) {
+    //     $R.VMC.RAM[i].POWERCLR.$$ = 0x0f0f
+    // }
 }
