@@ -137,11 +137,11 @@ export class Ctrl extends $struct {
     msgs_b: MsgVec         // +0x2E8, size 0x200
 }
 
-export const SHMEM_RX_SIZE = 0x2000
+export const SHMEM_RX_SIZE = 0x1000
 export const SHMEM_RX_WORDS = SHMEM_RX_SIZE / 4
 export const SHMEM_TX_SIZE = 0x800
 export const SHMEM_TX_WORDS = SHMEM_TX_SIZE / 4
-export const TX_RX_PAD_SIZE = 0x20
+export const TX_RX_PAD_SIZE = 0x80
 export const TX_RX_PAD_WORDS = TX_RX_PAD_SIZE / 4
 
 export class ShmemTxArea extends $vector<u32> {
