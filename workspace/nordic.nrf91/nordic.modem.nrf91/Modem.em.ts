@@ -180,6 +180,7 @@ function sendUdp(fd: u32, data: ptr_t<u8>, len: u32): bool_t {
     let sent = false
     for (const outer of $range(2000000)) {
         if (!Rpc.next()) {
+            Rpc.wait()
             continue
         }
         if (Rpc.isCtrl()) {

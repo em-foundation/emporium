@@ -49,6 +49,8 @@ export function em$startup() {
 
 export function IPC_isr$$() {
     const pend = $R.IPC.INTPEND.$$
+    // $['%%a']
+    // $['%%>'](pend)
     if (pend & 0x01) $R.IPC.EVENTS_RECEIVE[0].$$ = 0
     if (pend & 0x04) $R.IPC.EVENTS_RECEIVE[2].$$ = 0
     if (pend & 0x10) $R.IPC.EVENTS_RECEIVE[4].$$ = 0
