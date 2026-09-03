@@ -12,7 +12,8 @@ const TYPE_MAP = new Map<string, string>([
     ['RTC0_NS', 'RTC'],
     ['SPU_S', 'SPU'],
     ['TIMER0_NS', 'TIMER'],
-    ['UARTE0_NS', 'UARTE']
+    ['UARTE0_NS', 'UARTE'],
+    ['VMC_NS', 'VMC'],
 ])
 
 const TYPE_SET = new Set<string>(TYPE_MAP.values())
@@ -32,6 +33,7 @@ const INSTS = [
     ['SPU', 'SPU'],
     ['TIMER0', 'TIMER'],
     ['UARTE0', 'UARTE'],
+    ['VMC', 'VMC'],
 ]
 
 let meta = em.$outfile('REGS.em.ts')

@@ -91,6 +91,15 @@ export interface UARTE_TXD_t {
     AMOUNT: $Reg
 }
 
+// -------- VMC_RAM -------- //
+
+export interface VMC_RAM_t {
+    POWER: $Reg
+    POWERSET: $Reg
+    POWERCLR: $Reg
+    RESERVED: $Reg
+}
+
 // -------- SPU -------- //
 
 export interface SPU_t {
@@ -397,6 +406,13 @@ export interface NVMC_t {
     RESERVED7: dim_t<$Reg, 13>
     CONFIGNS: $Reg
     WRITEUICRNS: $Reg
+}
+
+// -------- VMC -------- //
+
+export interface VMC_t {
+    RESERVED: dim_t<$Reg, 384>
+    RAM: dim_t<VMC_RAM_t, 8>
 }
 
 // -------- GPIO -------- //
@@ -3377,6 +3393,86 @@ export const UARTE_CONFIG_HWFC_Pos: any = '0UL'
 export const UARTE_CONFIG_HWFC_Msk: any = '0x1UL << UARTE_CONFIG_HWFC_Pos'
 export const UARTE_CONFIG_HWFC_Disabled: any = '0x0UL'
 export const UARTE_CONFIG_HWFC_Enabled: any = '0x1UL'
+export const VMC_RAM_POWER_S3RETENTION_Pos: any = '19UL'
+export const VMC_RAM_POWER_S3RETENTION_Msk: any = '0x1UL << VMC_RAM_POWER_S3RETENTION_Pos'
+export const VMC_RAM_POWER_S3RETENTION_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S3RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWER_S2RETENTION_Pos: any = '18UL'
+export const VMC_RAM_POWER_S2RETENTION_Msk: any = '0x1UL << VMC_RAM_POWER_S2RETENTION_Pos'
+export const VMC_RAM_POWER_S2RETENTION_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S2RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWER_S1RETENTION_Pos: any = '17UL'
+export const VMC_RAM_POWER_S1RETENTION_Msk: any = '0x1UL << VMC_RAM_POWER_S1RETENTION_Pos'
+export const VMC_RAM_POWER_S1RETENTION_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S1RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWER_S0RETENTION_Pos: any = '16UL'
+export const VMC_RAM_POWER_S0RETENTION_Msk: any = '0x1UL << VMC_RAM_POWER_S0RETENTION_Pos'
+export const VMC_RAM_POWER_S0RETENTION_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S0RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWER_S3POWER_Pos: any = '3UL'
+export const VMC_RAM_POWER_S3POWER_Msk: any = '0x1UL << VMC_RAM_POWER_S3POWER_Pos'
+export const VMC_RAM_POWER_S3POWER_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S3POWER_On: any = '0x1UL'
+export const VMC_RAM_POWER_S2POWER_Pos: any = '2UL'
+export const VMC_RAM_POWER_S2POWER_Msk: any = '0x1UL << VMC_RAM_POWER_S2POWER_Pos'
+export const VMC_RAM_POWER_S2POWER_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S2POWER_On: any = '0x1UL'
+export const VMC_RAM_POWER_S1POWER_Pos: any = '1UL'
+export const VMC_RAM_POWER_S1POWER_Msk: any = '0x1UL << VMC_RAM_POWER_S1POWER_Pos'
+export const VMC_RAM_POWER_S1POWER_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S1POWER_On: any = '0x1UL'
+export const VMC_RAM_POWER_S0POWER_Pos: any = '0UL'
+export const VMC_RAM_POWER_S0POWER_Msk: any = '0x1UL << VMC_RAM_POWER_S0POWER_Pos'
+export const VMC_RAM_POWER_S0POWER_Off: any = '0x0UL'
+export const VMC_RAM_POWER_S0POWER_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S3RETENTION_Pos: any = '19UL'
+export const VMC_RAM_POWERSET_S3RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERSET_S3RETENTION_Pos'
+export const VMC_RAM_POWERSET_S3RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S2RETENTION_Pos: any = '18UL'
+export const VMC_RAM_POWERSET_S2RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERSET_S2RETENTION_Pos'
+export const VMC_RAM_POWERSET_S2RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S1RETENTION_Pos: any = '17UL'
+export const VMC_RAM_POWERSET_S1RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERSET_S1RETENTION_Pos'
+export const VMC_RAM_POWERSET_S1RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S0RETENTION_Pos: any = '16UL'
+export const VMC_RAM_POWERSET_S0RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERSET_S0RETENTION_Pos'
+export const VMC_RAM_POWERSET_S0RETENTION_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S3POWER_Pos: any = '3UL'
+export const VMC_RAM_POWERSET_S3POWER_Msk: any = '0x1UL << VMC_RAM_POWERSET_S3POWER_Pos'
+export const VMC_RAM_POWERSET_S3POWER_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S2POWER_Pos: any = '2UL'
+export const VMC_RAM_POWERSET_S2POWER_Msk: any = '0x1UL << VMC_RAM_POWERSET_S2POWER_Pos'
+export const VMC_RAM_POWERSET_S2POWER_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S1POWER_Pos: any = '1UL'
+export const VMC_RAM_POWERSET_S1POWER_Msk: any = '0x1UL << VMC_RAM_POWERSET_S1POWER_Pos'
+export const VMC_RAM_POWERSET_S1POWER_On: any = '0x1UL'
+export const VMC_RAM_POWERSET_S0POWER_Pos: any = '0UL'
+export const VMC_RAM_POWERSET_S0POWER_Msk: any = '0x1UL << VMC_RAM_POWERSET_S0POWER_Pos'
+export const VMC_RAM_POWERSET_S0POWER_On: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S3RETENTION_Pos: any = '19UL'
+export const VMC_RAM_POWERCLR_S3RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S3RETENTION_Pos'
+export const VMC_RAM_POWERCLR_S3RETENTION_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S2RETENTION_Pos: any = '18UL'
+export const VMC_RAM_POWERCLR_S2RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S2RETENTION_Pos'
+export const VMC_RAM_POWERCLR_S2RETENTION_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S1RETENTION_Pos: any = '17UL'
+export const VMC_RAM_POWERCLR_S1RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S1RETENTION_Pos'
+export const VMC_RAM_POWERCLR_S1RETENTION_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S0RETENTION_Pos: any = '16UL'
+export const VMC_RAM_POWERCLR_S0RETENTION_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S0RETENTION_Pos'
+export const VMC_RAM_POWERCLR_S0RETENTION_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S3POWER_Pos: any = '3UL'
+export const VMC_RAM_POWERCLR_S3POWER_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S3POWER_Pos'
+export const VMC_RAM_POWERCLR_S3POWER_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S2POWER_Pos: any = '2UL'
+export const VMC_RAM_POWERCLR_S2POWER_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S2POWER_Pos'
+export const VMC_RAM_POWERCLR_S2POWER_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S1POWER_Pos: any = '1UL'
+export const VMC_RAM_POWERCLR_S1POWER_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S1POWER_Pos'
+export const VMC_RAM_POWERCLR_S1POWER_Off: any = '0x1UL'
+export const VMC_RAM_POWERCLR_S0POWER_Pos: any = '0UL'
+export const VMC_RAM_POWERCLR_S0POWER_Msk: any = '0x1UL << VMC_RAM_POWERCLR_S0POWER_Pos'
+export const VMC_RAM_POWERCLR_S0POWER_Off: any = '0x1UL'
 
 // -------- INSTANCES -------- //
 
@@ -3390,3 +3486,4 @@ export const RTC0 = {} as RTC_t
 export const SPU = {} as SPU_t
 export const TIMER0 = {} as TIMER_t
 export const UARTE0 = {} as UARTE_t
+export const VMC = {} as VMC_t

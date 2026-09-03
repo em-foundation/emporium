@@ -25,6 +25,8 @@ export function startup(): void {
     $R.CLOCK.TASKS_LFCLKSTART.$$ = 1
     while ($R.CLOCK.EVENTS_LFCLKSTARTED.$$ == 0) { }
     $R.CLOCK.EVENTS_LFCLKSTARTED.$$ = 0
-
-
+    //
+    for (const i of $range(2, 8)) {
+        $R.VMC.RAM[i].POWERCLR.$$ = 0x0f0f
+    }
 }
