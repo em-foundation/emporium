@@ -1,0 +1,121 @@
+title: Transforming CoreMark
+
+files:
+  - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - .assets/img-102-07-01.png
+  - .assets/img-102-07-04.png
+
+steps:
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$start]&thinsp;Transforming CoreMark}
+
+      Starting with {[cu]ActiveRunnerP}, this tour group has faithful&shy;ly transcribed legacy **CoreMark** into this **EMS** design.
+
+      In this final tour, we'll examine {[cu]SleepyRunnerP} and how this program transforms the original benchmark.
+
+      <div class="em-info">
+
+      If you've chosen a <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} during the prior tour, switch back now to the `rpi.2040://PI_PICO-sim$$` target.
+
+      </div>
+      
+  - cmds:
+      - open 1
+      - mark 1 R 25
+    focus: [1, 1]
+    acts: [$build]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]ActiveRunnerP% &ndash; Quick Review}
+
+      Recall that the {[cu]ActiveRunnerP} program repeatedly in&shy;vokes {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;ten times within a {[ck]for} loop.
+
+      The program then prints the benchmark algorithms' total execution time followed by their cumulative checksums.
+
+      {[in] You can click &thinsp;%[cb,build]%&thinsp; to <b>build&thinsp;+&thinsp;load</b> %[cu]ActiveRunnerP% again.}
+
+  - cmds:
+      - open 2
+      - mark 2 R 32
+    focus: [2, 1]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]SleepyRunnerP% &ndash; Overview}
+
+      In contrast with {[cu]ActiveRunnerP}, the {[cu]SleepyRunnerP} pro&shy;gram calls {[cu]CoreBench}.{[cf]run}{[bm,R]}&thinsp;*once* inside {[cf]tickCB}.
+
+      Using the **EMS** {[cu]TickerMgr}, {[cu]SleepyRunnerP} schedules ex&shy;ecution of the {[cf]tickCB} callback once per second.
+
+      {[in]Review tour %[tr,101/07/01]%, which examines %[cu]TickerMgr%.}
+
+      Inside {[cf]tickCB}, the program brackets {[cu]CoreBench}.{[cf]run} with **EMS** debug toggles and prints the latest checksum.
+
+      Under control of its static {[cn]count} variable, {[cu]SleepyRunnerP} halts the program on the tenth execution of {[cf]tickCB}.
+
+  - cmds:
+      - open 2
+      - mark 2 R 32
+    focus: [2, 1]
+    acts: [$build]
+    text: |
+      {[ht,order_play]&thinsp;%[cu]SleepyRunnerP% &ndash; Program Execution}
+
+      Go ahead and **build&thinsp;+&thinsp;load** the {[cu]SleepyRunnerP} program on the **Raspberry Pi Pico** simulator.
+
+      {[in]Refer to tour %[tr,101/01]% for an introduction to this simula&shy;ted execution environment.}
+
+      As the program executes (for ten seconds), the block label&shy;ed **Wokwi LOGIC** will blink its LEDs on each iteration.
+
+      At the same time, you'll see (ten) interim checksum values printed once per second in the **Wokwi Terminal** panel:<br>
+      <code>&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;...</code><br>
+      <code>&emsp;&emsp;&emsp;&emsp;crc = 7de8</code><br>
+      <code>&emsp;&emsp;&emsp;&emsp;crc = fcaf</code>
+
+      The `fcaf` value printed here by {[cu]SleepyRunnerP} matches the final checksum reported earlier by {[cu]ActiveRunnerP}.
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,monitor_heart]&thinsp;%[cu]SleepyRunnerP% &ndash; Signal Capture}
+
+      As we did throughout the **Basic Examples** tours, we'll turn to **PulseView** for real-time analysis of {[cu]SleepyRunnerP}.
+
+      The left panel shows the ten-second execution span of {[cu]SleepyRunnerP} &ndash; bracketed by the usual {[cx]sysLed} activity.
+
+      The middle panel focuses on *one* active {[cf]tickCB} cycle &ndash; which executes {[cu]CoreBench}.{[cf]run} during interval {[dc,R]}.
+
+      {[in] Recall that %[cu]SleepyRunnerP% uses %[cx]dbgD% to bracket %[dc,R]%.}
+
+      The right panel highlights the end of a {[cf]tickCB} cycle &ndash; as it out&shy;puts a `NEWLINE` character before returning to sleep.
+
+      Note how {[cx]dbgB} signals the MCU's *active* {[dc,A]} mode; and how two pulses at {[dc,S]} mark its return to low-power *sleep*.
+
+  - cmds:
+      - open 2
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Re-acquaint yourself with the **PulseView** tool.
+
+      {[bi,task_alt]} Use **PulseView** cursors to measure interval {[dc,R]}.
+
+      {[bi,task_alt]} Place additional debug toggles inside the algorithms.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Congratulations &ndash; we've just explored two complementary **EMS** applications which re-use a common set of modules:
+
+      {[bi,counter_1]} {[cu]ActiveRunnerP} &ndash; calls {[cf]run} repeatedly in one burst<br>
+      {[bi,counter_2]} {[cu]SleepyRunnerP} &ndash; calls {[cf]run} just once every second
+
+      While {[bi,counter_1]} preserves the intent of **CoreMark** &ndash; measuring CPU performance &ndash; {[bi,counter_2]} reflects more typical use of **EMS**.
+
+      Apps like {[cu]SleepyRunnerP} spend >&thinsp;90% of the time in low-power sleep &ndash; and draw >&thinsp;90% of their power when active.
+
+      To eventually measure energy within typical **EMS** apps, however, we must return to *real* hardware platforms.
+
+      {[hc]}

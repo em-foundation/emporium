@@ -1,10 +1,12 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
-type MemDesc = {
+export type MemDesc = {
     orig: u32
     len: u32
 }
+
+export const MEM_NULL: MemDesc = { orig: 0, len: 0 }
 
 type MemSegs = {
     dmem_flash: MemDesc
@@ -12,6 +14,7 @@ type MemSegs = {
     dmem_sram: MemDesc
     imem_sram: MemDesc
     lmem_sram: MemDesc
+    cmem_sram: MemDesc
 }
 
 type XtraSeg = {
@@ -93,6 +96,7 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
             |->     __bss_addr__ = ADDR(.bss);
             |->     __bss_size__ = SIZEOF(.bss) / 4;
             |->     __code_addr__ = ADDR(.text);
+            |->     __code_copy_addr__ = __code_addr__;
             |->     __data_addr__ = ADDR(.data);
             |->     __data_load__ = LOADADDR(.data);
             |->     __data_size__ = SIZEOF(.data) / 4;
@@ -107,6 +111,8 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
     } else {
         // use_sram
         const stack_top = $sprintf('0x%08x', mem_segs.dmem_sram.orig + mem_segs.dmem_sram.len)
+        const code_copy = mem_segs.cmem_sram.len == 0 ? mem_segs.imem_sram : mem_segs.cmem_sram
+        const code_copy_addr = $sprintf('0x%08x', code_copy.orig)
         out.addFrag(`
             |-> MEMORY {
             |->     DMEM : ${descToString(mem_segs.dmem_sram)}
@@ -160,6 +166,7 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
             |->     __bss_addr__ = ADDR(.bss);
             |->     __bss_size__ = SIZEOF(.bss) / 4;
             |->     __code_addr__ = ADDR(.text);
+            |->     __code_copy_addr__ = ${code_copy_addr};
             |->     __data_addr__ = ADDR(.data);
             |->     __data_load__ = LOADADDR(.data);
             |->     __data_size__ = SIZEOF(.data) / 4;

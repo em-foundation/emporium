@@ -1,0 +1,111 @@
+import '@$$emscript'
+export const $U = $declare('MODULE', RtcI)
+
+import * as $R from '@nordic.distro.nrf54/REGS.em'
+
+import * as Common from '@em.mcu/Common.em'
+import * as RtcI from '@em.hal/RtcI.em'
+import * as T from '@em.utils/TimeTypes.em'
+
+export type Handler = RtcI.Handler
+
+export namespace em$meta {
+    export function em$construct() {
+        Common.Irq.em$meta.useIntr('GRTC_0')
+    }
+}
+
+//>> ---- em$targ ---- <<//
+
+const CHAN_PUB = 0
+const CHAN_AUX = 1
+
+var cur_hlr = <Handler>$null
+var cur_hlr_aux = <Handler>$null
+
+export function em$startup() {
+    $R.GRTC.CLKCFG.$$ = ($R.GRTC_CLKCFG_CLKSEL_LFXO << $R.GRTC_CLKCFG_CLKSEL_Pos) | 1
+    $R.GRTC.MODE.$$ = $R.GRTC_MODE_SYSCOUNTEREN_Msk
+    $R.GRTC.TASKS_START.$$ = 1
+    Common.Irq.enable(e$`GRTC_0_IRQn`)
+}
+
+export function disable() {
+    cur_hlr = $null
+    $R.GRTC.INTENCLR0.$$ = 1 << CHAN_PUB
+}
+
+export function disableAux() {
+    cur_hlr_aux = $null
+    $R.GRTC.INTENCLR0.$$ = 1 << CHAN_AUX
+}
+
+export function enable(thresh: T.RtcThresh, handler: Handler) {
+    cur_hlr = handler
+    enableChan(CHAN_PUB, thresh)
+}
+
+export function enableAux(thresh: T.RtcThresh, handler: Handler) {
+    cur_hlr_aux = handler
+    enableChan(CHAN_AUX, thresh)
+}
+
+function enableChan(chan: u8, thresh: T.RtcThresh) {
+    const hi_lo = readHiLo()
+    const lo_cc = thresh
+    const hi_cc = 0
+    $R.GRTC.EVENTS_COMPARE[chan].$$ = 0
+    $R.GRTC.CC[chan].CCL.$$ = lo_cc
+    $R.GRTC.CC[chan].CCH.$$ = hi_cc
+    $R.GRTC.CC[chan].CCEN.$$ = 1
+    $R.GRTC.INTENSET0.$$ = 1 << chan
+}
+
+export function getRawTime(): T.RawTime {
+    let res = T.RawTime.$make()
+    const hi_low: u64 = readHiLo()
+    res.secs = <u32>(hi_low / 1_000_000)
+    res.subs = T.UsecsToRawSubs(<u32>(hi_low % 1_000_000))
+    return res
+}
+
+export function getRawUsecs(): u32 {
+    const hi_low: u64 = readHiLo()
+    return <u32>(hi_low)
+}
+
+export function toThresh(secs: T.Secs30p2): T.RtcThresh {
+    return T.Secs30p2ToUsecs(secs)
+}
+
+export function GRTC_0_isr$$() {
+    Common.Irq.clear(e$`GRTC_0_IRQn`)
+    const pend = $R.GRTC.INTPEND0.$$
+    if (pend & (1 << CHAN_PUB)) {
+        const hlr = cur_hlr
+        disable()
+        if (hlr != $null) hlr()
+    }
+    if (pend & (1 << CHAN_AUX)) {
+        const hlr = cur_hlr_aux
+        disableAux()
+        if (hlr != $null) hlr()
+    }
+}
+
+export function readHiLo(): u64 {
+    let lo: u32
+    let hi: u32
+    while (true) {
+        lo = $R.GRTC.SYSCOUNTER[0].SYSCOUNTERL.$$
+        const hi_reg = $R.GRTC.SYSCOUNTER[0].SYSCOUNTERH.$$
+        hi = hi_reg & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_VALUE_Msk
+        if ((hi & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_OVERFLOW_Msk) != 0) {
+            hi -= 1
+        }
+        if ((hi_reg & $R.GRTC_SYSCOUNTER_SYSCOUNTERH_BUSY_Msk) == 0) break
+    }
+    $R.GRTC.SYSCOUNTER[0].ACTIVE.$$ = 0
+    const hi_lo: u64 = (<u64>hi << 32) | lo
+    return hi_lo
+}
