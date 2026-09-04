@@ -12,8 +12,9 @@ const TOOLS = Path.join(ROOT, 'tools')
 
 const EXTENSIONS = [
     'the-em-foundation.em-builder@26.2.2',
-    'Wokwi.wokwi-vscode@3.6.0',
+    'Wokwi.wokwi-vscode@3.7.0',
     'ms-vscode.vscode-serial-monitor@0.13.1',
+    'ms-vscode.cpptools-extension-pack@1.5.1',
 ]
 
 const VERBOSE = process.argv.includes('--verbose')
