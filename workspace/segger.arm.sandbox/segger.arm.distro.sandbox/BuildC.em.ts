@@ -21,7 +21,7 @@ export function em$configure() {
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrEmpty
-    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
+    for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {
@@ -29,9 +29,10 @@ export function em$generate() {
         {
             dmem_flash: { orig: 0x20000000, len: 0x00004000 },
             imem_flash: { orig: 0x00000000, len: 0x00008000 },
-            dmem_sram: { orig: 0x20000000, len: 0x00004000 },
-            imem_sram: { orig: 0x00808000, len: 0x00008000 },
-            lmem_sram: { orig: 0x00000000, len: 0x00008000 },
+            dmem_sram: LinkerC.MEM_NULL,
+            imem_sram: LinkerC.MEM_NULL,
+            lmem_sram: LinkerC.MEM_NULL,
+            cmem_sram: LinkerC.MEM_NULL,
         },
     )
     let opt = $property('em.build.Optimize', 'Oz')
