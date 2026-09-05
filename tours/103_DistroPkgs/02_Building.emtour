@@ -1,11 +1,18 @@
 title: Building Programs
 
+files:
+  - .assets/img-103-02-01.png
+
 steps:
-  - text: |
+  - cmds:
+      - view 1
+    text: |
       {[ht,$start]&thinsp;Welcome}
 
-  - text: |
+  - cmds:
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+  - cmds:
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
