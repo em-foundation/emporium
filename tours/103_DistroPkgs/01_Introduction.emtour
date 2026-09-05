@@ -17,13 +17,13 @@ steps:
     text: |
       {[ht,$start]&thinsp;Distros &ndash; The Portability Substrate}
 
-      Prior tours have focused upon _portable_ **EMS** pro&shy;grams &ndash; from {[cu]BlinkerP} {[tr,101/01/02]}&thinsp; to {[cu]SleepyRunnerP} {[tr,102/06/03]}.
+      Prior tours have focused upon _portable_ **EMS** pro&shy;grams &ndash; from {[cu]BlinkerP} {[tr,101/01/02]}&thinsp; to {[cu]SleepyRunnerP} {[tr,102/07/03]}.
 
       By default, these programs execute on a **Raspberry Pi Pico** simulator; in principle, they can run unchanged elsewhere.
 
       <div class="em-info">
 
-      You'll soon use the clickable <span class="em codicon codicon-circuit-board"></span> {[em]Board} icon in the **Status Bar** to select alternative target platforms.
+      You've already used the <span class="em codicon codicon-circuit-board"></span> {[em]Board} icon in the **Status Bar** to select alternative target platforms {[tr,102/06/02]}.
 
       </div>
 
