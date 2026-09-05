@@ -1,0 +1,11 @@
+title: Building a Distro
+
+steps:
+  - text: |
+      {[ht,$start]&thinsp;Welcome}
+
+  - text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+  - text: |
+      {[ht,$steps]&thinsp;Next Steps}
