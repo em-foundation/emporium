@@ -2,12 +2,20 @@ title: Building Programs
 
 files:
   - .assets/img-103-02-01.png
+  - .assets/img-103-02-02.png
 
 steps:
   - cmds:
       - view 1
     text: |
-      {[ht,$start]&thinsp;Welcome}
+      {[ht,$start]&thinsp;Building Programs}
+
+      This tour will focus on building **EMS** programs &ndash; and the special role played by {[cu]BuildC} within this process.
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$build]&thinsp;Generated C++ Project}
 
   - cmds:
     text: |
