@@ -12,6 +12,23 @@ steps:
 
       This tour will focus on building **EMS** programs &ndash; and the special role played by {[cu]BuildC} within this process.
 
+      To that end, we'll dive into a virtually empty {[cu]Gist00} pro&shy;gram targeting an absolutely minimal **EMS** distro.
+
+      For now, go ahead and build the program as follows:
+
+      {[DC,1]} select {[em]Board &ndash; &lt;bare-metal&gt;}<br>
+      {[DC,2]} select {[em]Setup &ndash; segger.arm.sandbox://default}<br>
+      {[DC,3]} locate `segger.arm.gists.sandbox/Gist00.em.ts`<br>
+      {[DC,4]} click the **Build&thinsp;+&thinsp;Load** button and track progress<br>
+
+      The **OUTPUT** panel shows status of the **EMS** translator {[dc,5]}, the backend C++ compiler {[dc,6]}, and the program loader {[dc,7]}.
+
+      <div class="em-info">
+
+      {[cu]Gist00} weighs in at just 156 bytes &ndash; truly tiny code&thinsp;!!
+
+      </div>
+
   - cmds:
       - view 2
     text: |
