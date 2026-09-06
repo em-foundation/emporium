@@ -3,6 +3,7 @@ title: Building Programs
 files:
   - .assets/img-103-02-01.png
   - .assets/img-103-02-02.png
+  - .assets/img-103-02-03.png
 
 steps:
   - cmds:
@@ -33,6 +34,28 @@ steps:
       - view 2
     text: |
       {[ht,$build]&thinsp;Generated C++ Project}
+
+      To best understand the role of {[cu]BuildC}, we'll start by in&shy;specting the special `workspace/.emscript` folder.
+
+      Shown as **EM&bull;Script Output** in **Content** view, this fold&shy;er houses (generated) artifacts of a standalone C++ project.
+
+      {[bi,arrow_circle_right]} `main.cpp` &ndash; the program source itself<br>
+      {[bi,arrow_circle_right]} `build.sh` &ndash; a script to compile the program<br>
+      {[bi,arrow_circle_right]} `linkcmd.ld` the program's memory placement<br>
+      {[bi,arrow_circle_right]} `load.sh` &ndash; a script to load the executable program<br>
+
+      The `.out` sub-folder then contains a typical set of artifacts produced by the underlying build tools.
+
+      <div class="em-info">
+
+      Feel free to try the **Clean&thinsp;&hellip;** and **Reveal&thinsp;&hellip;** commands on the right-click context menu.
+
+      </div>
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,playground]&thinsp;A Distro Playground}
 
   - cmds:
     text: |
