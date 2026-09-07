@@ -4,6 +4,7 @@ files:
   - .assets/img-103-02-01.png
   - .assets/img-103-02-02.png
   - .assets/img-103-02-03.png
+  - .assets/img-103-02-04.png
 
 steps:
   - cmds:
@@ -48,12 +49,37 @@ steps:
 
       <div class="em-info">
 
-      Feel free to try the **Clean&thinsp;&hellip;** and **Reveal&thinsp;&hellip;** commands on the right-click context menu.
+      If you try the right-click **Clean&thinsp;&hellip;** command, remem&shy;ber to  **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program before proceeding.
 
       </div>
 
   - cmds:
       - view 3
+    text: |
+      {[ht,conversion_path]&thinsp;From %[cu]Gist00% to <code>main.cpp</code>}
+
+      Passing `segger.arm.sandbox/Gist00.em.ts` to the **EMS** translator generates a corresponding `main.cpp` program.
+
+      Lines labeled {[bm,G]}&thinsp; in `main.cpp` directly reference the top-level {[cu]Gist00} module &ndash; its header, body, and entry point.
+
+      <div class="em-info">
+
+      But how about the rest of `main.cpp`&hellip;&nbsp; What prompts **EMS** to generate these extra {[ck]#include} directives&thinsp;??
+
+      </div>
+
+      In short, the current distro's {[cu]BuildC} composite &ndash; which the **EMS** translator _automatically_ imports into the mix.
+
+      <div class="em-info">
+
+      Had our {[cu]Gist00} program explicitly {[ck]import}'d other **EMS** modules, these would appear inside `main.cpp` as well.
+
+      </div>
+
+
+
+  - cmds:
+      - view 4
     text: |
       {[ht,playground]&thinsp;A Distro Playground}
 
