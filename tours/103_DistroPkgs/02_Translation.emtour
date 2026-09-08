@@ -1,4 +1,4 @@
-title: Target C++ Projects
+title: Target C++ Project
 
 files:
   - .assets/img-103-01-02.png
@@ -7,6 +7,8 @@ files:
   - .assets/img-103-02-03.png
   - .assets/img-103-02-04.png
   - .assets/img-103-02-05.png
+  - .assets/img-103-02-06.png
+  - .assets/img-103-02-07.png
 
 steps:
   - cmds:
@@ -33,7 +35,7 @@ steps:
     text: |
       {[ht,$start]&thinsp;Minimal Target Program}
 
-      This picture captures the steps required to build virtually empty {[cu]Gist00} pro&shy;gram targeting a skeletal  **EMS** distro.
+      This picture captures the steps required to build a virtually empty {[cu]Gist00} pro&shy;gram targeting a skeletal  **EMS** distro.
 
       {[DC,1]} select {[em]Board &ndash; &lt;bare-metal&gt;}<br>
       {[DC,2]} select {[em]Setup &ndash; segger.arm.sandbox://default}<br>
@@ -83,7 +85,7 @@ steps:
 
       <div class="em-info">
 
-      But how about the rest of `main.cpp`&hellip;&nbsp; What prompts **EMS** to generate these extra {[ck]#include} directives&thinsp;??
+      But how about the rest of `main.cpp`&hellip;&nbsp; What prompts **EMS** to generate those extra {[ck]#include} directives&thinsp;??
 
       </div>
 
@@ -108,9 +110,49 @@ steps:
 
       The `build.sh` script uses an Arm C/C++ compiler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) &ndash; already provisioned by the **EM&bull;porium** {[dc,1]}.
 
-      Defining typical flags {[dc,2]} and options {[dc,3]}, `build.sh` in&shy;vokes **SEGGER** tools {[dc,4]} yielding `.out/main.*` files.
+      Defining typical flags {[dc,2]} and options {[dc,3]}, `build.sh` in&shy;vokes **SEGGER** tools {[dc,4]} which yield `.out/main.*` files.
 
       The (generated) `linkcmd.ld` used at {[dc,4]} in turn defines a target memory map {[dc,5]} that will hold program sections {[dc,6]}.
 
       Finally, `load.sh` uses a provisioned **SEGGER JLink** {[dc,7]} to flash the MCU using the distro's `jlink-cmds`&thinsp;{[dc,8]} file.
 
+  - cmds:
+      - view 7
+    text: |
+      {[ht,$build]&thinsp;Build Properties}
+
+      A (generated) `props.json` file {[dc,P]} defines _build prop&shy;erties_ used by **EMS** when translating the {[cu]Gist00} program.
+
+      Unlike {[cn]"em.build.ToolsHome"} (which **EMS** defines), most of these properties originate in a distro `setup-*.ini` file.
+
+      Looking at `setup-default.ini` {[dc,S]} (your chosen {[em]Setup}), its reflection in `props.json` should appear obvious.
+
+      As you'll learn in next tour, {[cu]BuildC} can read these proper&shy;ties while generating artifacts like `build.sh`.
+
+  - cmds:
+      - view 8
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[DC,1]} Explore the `.out`files again (and again and again)&thinsp;!!
+
+      {[DC,2]} How does the **Build Meta-Program** command differ.
+
+      {[DC,3]} Re-build {[cu]Gist00} for a different {[em]Board} and {[em]Setup}.
+
+      {[DC,4]} Keep exploring with ever-larger **EMS** programs.
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Knowing the eventual outcome {[dc,4]}, we'll finally visit the upstream source for `build.sh`, `linkcmd.ld`, and others.
+
+      Unlike {[cu]BoardC} (encountered throughout these tours), the {[cu]BuildC} unit remains hidden to most **EMS** programs.
+
+      {[cu]BuildC} will also introduce **EMS** meta-functions not seen before &ndash; tailored for generating target program artifacts.
+
+      <br>&ensp;&ensp;⚠️&nbsp; _So keep your seatbelt fastened&thinsp;!!_
+
+      {[hc]}
