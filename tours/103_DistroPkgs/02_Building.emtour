@@ -95,7 +95,7 @@ steps:
 
       Our `..sandbox` {[cu]BuildC} employs an ARM C/C++ com&shy;piler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) already used within other **EMS** distros.
 
-      So let's finally visit {[cu]BoardC} &ndash; well as explore other source files found in our distro playground.
+      So let's finally visit {[cu]BoardC} &ndash; as well as explore other source files found in our distro playground.
 
   - cmds:
       - open 5
@@ -155,7 +155,7 @@ steps:
 
       To illustrate {[cs]em$generate} in action, we'll examine how the {[cu]StartupC} composite generates `startup.cpp`.
 
-      Imported by {[cu]BuildC}, **EMS** invokes this {[cu]StartupC} meta-function as part of the program translation process.
+      Imported by {[cu]BuildC}, **EMS** invokes this {[cu]StartupC} meta-function during its regular program translation process.
 
       Most {[cs]em$generate} definitions leverage {[cs]$outfile} &ndash; an intrinsic utility only available in the **EMS** meta-domain.
 
