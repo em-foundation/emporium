@@ -54,8 +54,6 @@ steps:
     text: |
       {[ht,$build]&thinsp;Generated C++ Project}
 
-      To best understand the role of {[cu]BuildC}, we'll start by in&shy;specting the special `workspace/.emscript` folder.
-
       Shown as **EM&bull;Script Output** in **Content** view, this fold&shy;er houses (generated) artifacts of a standalone C++ project.
 
       {[bi,arrow_circle_right]} `main.cpp` &ndash; the program source itself<br>
@@ -67,9 +65,14 @@ steps:
 
       <div class="em-info">
 
-      If you try the right-click **Clean&thinsp;&hellip;** command, remem&shy;ber to  **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program before proceeding.
+      You can right-click on any file or folder in **Content** view, and select **Reveal in Explorer** from its context menu.
 
       </div>
+
+      Again, we recommend that you locally **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program &ndash; as we next explore its `main.cpp`.
+
+
+
 
   - cmds:
       - view 4
@@ -86,29 +89,9 @@ steps:
 
       </div>
 
-      In short, the current distro's {[cu]BuildC} composite &ndash; which the **EMS** translator _automatically_ imports into the mix.
+      In short, the current distro's {[cu]BuildC} composite &ndash; which the next tour will examine in greater detail.
 
-      <div class="em-info">
+      For now, though, take the time to explore the generated C++ code in your own version of `main.cpp`.
 
-      Had our {[cu]Gist00} program explicitly {[ck]import}'d other **EMS** modules, these would appear inside `main.cpp` as well.
+      💡&thinsp;Try pressing **F12** after selecting an {[ck]#include} path. 
 
-      </div>
-
-  - cmds:
-      - view 5
-    text: |
-      {[ht,playground]&thinsp;A Distro Playground}
-
-      As a rule, _every_&thinsp; **EMS** distro package will contain a {[cu]BuildC} com&shy;posite &ndash; including the skeletal distro illustrated here.
-
-      Stripped to its essentials, `segger.arm.sandbox` provides a "playground" for disecting the **EMS** build flow in isolation.
-
-      <div class="em-info">
-
-      Unlike other distros, our <code>..sandbox</code> distro lacks its own {[cu]BoardC} for configuring a target MCU platform.
-
-      </div>
-
-      Our `..sandbox` {[cu]BuildC} employs an ARM C/C++ com&shy;piler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) already used within other **EMS** distros.
-
-      So let's finally visit {[cu]BoardC} &ndash; as well as explore other source files found in our distro playground.
