@@ -1,0 +1,170 @@
+title: Build Artifact Synthesis
+
+files:
+  - .assets/img-103-02-01.png
+  - .assets/img-103-02-02.png
+  - .assets/img-103-02-03.png
+  - .assets/img-103-02-04.png
+  - segger.arm.sandbox:segger.arm.distro.sandbox/BuildC.em.ts
+  - segger.arm.sandbox:segger.arm.distro.sandbox/StartupC.em.ts
+
+steps:
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$start]&thinsp;Building Programs}
+
+      This tour will focus on building **EMS** programs &ndash; and the special role played by {[cu]BuildC} within this process.
+
+      To that end, we'll dive into a virtually empty {[cu]Gist00} pro&shy;gram targeting an absolutely minimal **EMS** distro.
+
+      For now, go ahead and build the program as follows:
+
+      {[DC,1]} select {[em]Board &ndash; &lt;bare-metal&gt;}<br>
+      {[DC,2]} select {[em]Setup &ndash; segger.arm.sandbox://default}<br>
+      {[DC,3]} locate `segger.arm.gists.sandbox/Gist00.em.ts`<br>
+      {[DC,4]} click the **Build&thinsp;+&thinsp;Load** button and track progress<br>
+
+      The **OUTPUT** panel shows status of the **EMS** translator {[dc,5]}, the backend C++ compiler {[dc,6]}, and the program loader {[dc,7]}.
+
+      <div class="em-info">
+
+      {[cu]Gist00} weighs in at just 156 bytes &ndash; truly tiny code&thinsp;!!
+
+      </div>
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$build]&thinsp;Generated C++ Project}
+
+      To best understand the role of {[cu]BuildC}, we'll start by in&shy;specting the special `workspace/.emscript` folder.
+
+      Shown as **EM&bull;Script Output** in **Content** view, this fold&shy;er houses (generated) artifacts of a standalone C++ project.
+
+      {[bi,arrow_circle_right]} `main.cpp` &ndash; the program source itself<br>
+      {[bi,arrow_circle_right]} `build.sh` &ndash; a script to compile the program<br>
+      {[bi,arrow_circle_right]} `linkcmd.ld` the program's memory placement<br>
+      {[bi,arrow_circle_right]} `load.sh` &ndash; a script to load the executable program<br>
+
+      The `.out` sub-folder then contains a typical set of artifacts produced by the underlying build tools.
+
+      <div class="em-info">
+
+      If you try the right-click **Clean&thinsp;&hellip;** command, remem&shy;ber to  **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program before proceeding.
+
+      </div>
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,conversion_path]&thinsp;From %[cu]Gist00% to <code>main.cpp</code>}
+
+      Passing `segger.arm.sandbox/Gist00.em.ts` to the **EMS** translator generates a corresponding `main.cpp` program.
+
+      Lines labeled {[bm,G]}&thinsp; in `main.cpp` directly reference the top-level {[cu]Gist00} module &ndash; its header, body, and entry point.
+
+      <div class="em-info">
+
+      But how about the rest of `main.cpp`&hellip;&nbsp; What prompts **EMS** to generate these extra {[ck]#include} directives&thinsp;??
+
+      </div>
+
+      In short, the current distro's {[cu]BuildC} composite &ndash; which the **EMS** translator _automatically_ imports into the mix.
+
+      <div class="em-info">
+
+      Had our {[cu]Gist00} program explicitly {[ck]import}'d other **EMS** modules, these would appear inside `main.cpp` as well.
+
+      </div>
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,playground]&thinsp;A Distro Playground}
+
+      As a rule, _every_&thinsp; **EMS** distro package will contain a {[cu]BuildC} com&shy;posite &ndash; including the skeletal distro illustrated here.
+
+      Stripped to its essentials, `segger.arm.sandbox` provides a "playground" for disecting the **EMS** build flow in isolation.
+
+      <div class="em-info">
+
+      Unlike other distros, our <code>..sandbox</code> distro lacks its own {[cu]BoardC} for configuring a target MCU platform.
+
+      </div>
+
+      Our `..sandbox` {[cu]BuildC} employs an ARM C/C++ com&shy;piler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) already used within other **EMS** distros.
+
+      So let's finally visit {[cu]BoardC} &ndash; as well as explore other source files found in our distro playground.
+
+  - cmds:
+      - open 5
+      - mark 5 A 2
+      - mark 5 B 16
+      - mark 5 C 27
+    focus: [5,1]
+    text: |
+      {[ht,eyeglasses_2]&thinsp;%[cu]BuildC% &ndash; Composite Overview}
+
+      The directive at {[bm,A]}&thinsp; declares {[cu]BuildC} as a **Composite** &ndash; the third of four possible roles an **EMS** unit can assume.
+
+      <div class="em-info">
+
+      We first introduced **Composites** in a early tour &thinsp;{[tr,100/03/09]} using the ever-present {[cu]BoardC} as an exemplar.
+
+      </div>
+
+      Unlike the more prevalent **Module** &thinsp;{[tr,100/03/02]}, a **Composite** _only_ exists in the **meta** domain during program build.
+
+      As such, {[cu]BuildC} can define intrinsic meta-functions like {[cs]em$configure}{[bm,B]} outside of a <code class="cmd-cr">namespace</code>**`em$meta`** block.
+
+      The {[cu]BuildC} composite also features {[cs]em$generate}{[bm,C]} &ndash; an intrinsic meta-function for synthesizing build-time files.
+
+  - cmds:
+      - open 5
+      - mark 5 1 4
+      - mark 5 2 6
+      - mark 5 3 8
+      - mark 5 4 9
+      - mark 5 5 10
+    focus: [5,1]
+    text: |
+      {[ht,conversion_path]&thinsp;%[cu]BuildC% &ndash; Generating C++ Code}
+
+      Using their own {[cs]em$generate} meta-functions, several units imported by {[cu]BuildC} synthesize C++ source files:
+
+      {[bm,1]}&thinsp; {[cu]ArmStartupC} &rarr; `em.arch.arm/startup.cpp`<br>
+      {[bm,2]}&thinsp; {[cu]IntrVec} &rarr; `em.arch.arm/intr.cpp`<br>
+      {[bm,3]}&thinsp; {[cu]REGS} &rarr; `segger.arm.distro.sandbox/REGS.hpp`<br>
+      {[bm,4]}&thinsp; {[cu]StartupC} &rarr; `..distro.sandbox/startup.cpp`<br>
+      {[bm,5]}&thinsp; {[cu]TargC} &rarr; `emscript.hpp`<br>
+
+      Our earlier `main.cpp` program corresponding to {[cu]Gist00} will then (in-)directly {[ck]#include} each of these files.
+
+      <div class="em-info">
+
+      If possible, open up the actual `main.cpp` file illustrated in a prior stop {[tr,103/02/03]} on this tour.
+
+      </div>
+
+  - cmds:
+      - open 6
+    focus: [6,1]
+    text: |
+      {[ht,conversion_path]&thinsp;%[cu]StartupC% &ndash; Generating <code>startup.cpp</code>}
+
+      To illustrate {[cs]em$generate} in action, we'll examine how the {[cu]StartupC} composite generates `startup.cpp`.
+
+      Imported by {[cu]BuildC}, **EMS** invokes this {[cu]StartupC} meta-function during its regular program translation process.
+
+      Most {[cs]em$generate} definitions leverage {[cs]$outfile} &ndash; an intrinsic utility only available in the **EMS** meta-domain.
+
+      The object returned by {[cs]$outfile} supports multiple meth&shy;ods for accumulating textual content &ndash; such as {[cf]addFrag}.
+
+      The {[cf]close} method then writes all of this text to the file path originally handed to {[cs]$outfile}.
+
+      <div class="em-info">
+
+      Note that {[cs]$outfile} resolves all output file paths rela&shy;tive to the `workspace/.out` folder.
+
+      </div>
