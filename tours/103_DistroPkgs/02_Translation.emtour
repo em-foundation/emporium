@@ -6,6 +6,7 @@ files:
   - .assets/img-103-02-02.png
   - .assets/img-103-02-03.png
   - .assets/img-103-02-04.png
+  - .assets/img-103-02-05.png
 
 steps:
   - cmds:
@@ -71,9 +72,6 @@ steps:
 
       Again, we recommend that you locally **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program &ndash; as we next explore its `main.cpp`.
 
-
-
-
   - cmds:
       - view 4
     text: |
@@ -94,4 +92,25 @@ steps:
       For now, though, take the time to explore the generated C++ code in your own version of `main.cpp`.
 
       💡&thinsp;Try pressing **F12** after selecting an {[ck]#include} path. 
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$build]&thinsp;Other Build Artifacts}
+
+      While the **EMS** translator outputs `main.cpp`, other gener&shy;ated artifacts originate with {[cu]BuildC} &ndash; as you'll soon see.
+
+      <div class="em-info">
+
+      For now, though, take some time exploring your own local copies of `build.sh`, `linkcmd.ld`, and `load.sh`.
+
+      </div>
+
+      The `build.sh` script uses an Arm C/C++ compiler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) &ndash; already provisioned by the **EM&bull;porium** {[dc,1]}.
+
+      Defining typical flags {[dc,2]} and options {[dc,3]}, `build.sh` in&shy;vokes **SEGGER** tools {[dc,4]} yielding `.out/main.*` files.
+
+      The (generated) `linkcmd.ld` used at {[dc,4]} in turn defines a target memory map {[dc,5]} that will hold program sections {[dc,6]}.
+
+      Finally, `load.sh` uses a provisioned **SEGGER JLink** {[dc,7]} to flash the MCU using the distro's `jlink-cmds`&thinsp;{[dc,8]} file.
 
