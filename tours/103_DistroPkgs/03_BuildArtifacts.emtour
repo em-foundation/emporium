@@ -6,7 +6,8 @@ files:
   - .assets/img-103-03-02.png
   - segger.arm.sandbox:segger.arm.distro.sandbox/BuildC.em.ts
   - segger.arm.sandbox:segger.arm.distro.sandbox/StartupC.em.ts
-
+  - .assets/img-103-01-02.png
+  
 steps:
   - cmds:
       - view 1
@@ -59,7 +60,7 @@ steps:
 
       <div class="em-info">
 
-      We first introduced **Composites** in a early tour &thinsp;{[tr,100/03/09]} using the ever-present {[cu]BoardC} as an exemplar.
+      We first introduced **Composites** in a early tour &thinsp;{[tr,100/03/09]} using the ever-present {[cu]BoardC} as its exemplar.
 
       </div>
 
@@ -88,11 +89,11 @@ steps:
       {[bm,4]}&thinsp; {[cu]StartupC} &rarr; `..distro.sandbox/startup.cpp`<br>
       {[bm,5]}&thinsp; {[cu]TargC} &rarr; `emscript.hpp`<br>
 
-      Our earlier `main.cpp` program corresponding to {[cu]Gist00} will then (in-)directly {[ck]#include} each of these files.
+      The `main.cpp` program corresponding to {[cu]Gist00} will then (in-)directly {[ck]#include} each of these files {[tr,103/02/04]}.
 
       <div class="em-info">
 
-      If possible, open up the actual `main.cpp` file illustrated in a prior stop {[tr,103/02/03]} on this tour.
+      You might want to re-build {[cu]Gist00} {[tr,103/02/02]}, open its `main.cpp` translation, and use **F12** to visit these files.
 
       </div>
 
@@ -102,7 +103,7 @@ steps:
     text: |
       {[ht,conversion_path]&thinsp;%[cu]StartupC% &ndash; Generating <code>startup.cpp</code>}
 
-      To illustrate {[cs]em$generate} in action, we'll examine how the {[cu]StartupC} composite generates `startup.cpp`.
+      To illustrate {[cs]em$generate} in action, let's examine how the distro's {[cu]StartupC} composite generates `startup.cpp`.
 
       Imported by {[cu]BuildC}, **EMS** invokes this {[cu]StartupC} meta-function during its regular program translation process.
 
@@ -117,3 +118,95 @@ steps:
       Note that {[cs]$outfile} resolves all output file paths rela&shy;tive to the `workspace/.out` folder.
 
       </div>
+
+  - cmds:
+      - open 3
+      - mark 3 A 28
+      - mark 3 B 38
+      - mark 3 C 47
+      - mark 3 D 90
+      - mark 3 E 100
+    focus: [3,31]
+    text: |
+      {[ht,conversion_path]&thinsp;%[cu]BuildC% &ndash; Capturing Properties}
+
+      An {[cs]em$generate} meta-function will sometimes _interpo&shy;late_ textual content when synthesizing an artifact.
+
+      {[cu]BuildC} uses the {[cs]$property} intrinsic {[bm,B]} to fetch named property values &ndash; with defaults returned when absent.
+
+      <div class="em-info">
+
+      The `props.json` artifact viewed earlier {[tr,103/02/06]} mirrors the build-time bindings accessible via {[cs]$property}.
+
+      </div>
+
+      With full **TypeScript** available to {[cs]em$generate}, line {[bm,C]}&thinsp; in&shy;terpolates {[cn]tools} within the template passed to {[cf]addFrag}.
+
+      Scrolling down, you'll find intepolations of {[cn]opt}{[bm,D]} and {[cn]libflav}{[bm,E]} within this synthesized `build.sh` script.
+
+      <div class="em-info">
+
+      We'll cover {[cu]LinkerC}.{[cf]genScript}{[bm,A]} at the next stop. 
+
+      </div>
+
+  - cmds:
+      - open 3
+      - mark 3 A 28
+      - mark 3 B 38
+      - mark 3 C 47
+      - mark 3 D 90
+      - mark 3 E 100
+      - mark 3 F 113
+      - mark 3 G 118
+    focus: [3,93]
+    text: |
+      {[ht,conversion_path]&thinsp;%[cu]BuildC% &ndash; Generating Scripts}
+
+      You've undoubtedly noticed the <b><code class="cmd-cs">|&thinsp;-&thinsp;&gt;</code></b> prefix on each line of the **TypeScript** template literal passed to {[cf]addFrag}.
+
+      <div class="em-info">
+
+      To improve client readability, {[cf]addFrag} uses this prefix to mark the "left margin" within its synthesized output.
+
+      </div>
+      
+      After finalizing `build.sh` {[bm,F]}, {[cu]BuildC}.{[cs]em$generate} syn&shy;thesizes the small `load.sh` script viewed earlier {[tr,103/02/05]}.
+
+      Given `load.sh` has only one line, {[cs]em$generate} defers to a simpler {[cf]addText} method {[bm,G]} to source its content.
+
+      Finally, {[cu]BuildC} controls the synthesis of `linkcmd.ld` by calling the {[cu]LinkerC}.{[cf]genScript} meta-function back at {[bm,A]}.
+
+      &ensp;💡&thinsp;Use **F12** to inspect {[cf]genScript} inside {[cu]LinkerC}.
+
+
+  - cmds:
+      - open 3
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Visit the {[cn]out}.{[cf]addFile} method used inside {[cu]TargC}.
+
+      {[bi,task_alt]} How do {[cu]ArmStartupC}&middot;{[cu]IntrVec} support {[cu]StartupC}.
+
+      {[bi,task_alt]} Compare {[cu]BuildC} with its counterpart in other distros.
+
+  - cmds:
+      - open 3
+      - mark 3 R 8
+    focus: [3,1]
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      &ensp;🔓&ensp;_Whew &ndash; you can finally release that seatbelt&thinsp;!!_
+
+      Once again, nothing happens without {[cu]BuildC} &ndash; which generates artifacts required to build **EMS** programs.
+
+      While our `..sandbox` distro lacks target content (hence no {[cu]BoardC}), its {[cu]BuildC} tracks those found in full distros.
+
+      Pivoting towards {[cu]BoardC}, you'll next learn how {[cu]REGS}{[bm,R]} supports platform-specific **EMS** code found in full distros.
+
+      &ensp;🔒&ensp;_So buckle up, because here we go again&thinsp;!!_
+
+      {[hc]}
+
