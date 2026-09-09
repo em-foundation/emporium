@@ -33,7 +33,7 @@ steps:
   - cmds:
       - view 2
     text: |
-      {[ht,$start]&thinsp;Minimal Target Program}
+      {[ht,download]&thinsp;Minimal Target Program}
 
       This picture captures the steps required to build a virtually empty {[cu]Gist00} pro&shy;gram targeting a skeletal  **EMS** distro.
 
