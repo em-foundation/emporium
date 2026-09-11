@@ -1,8 +1,31 @@
 title: Register Access
 
+files:
+
+  - .assets/img-103-04-01.png
+
 steps:
-  - text: |
-      {[ht,$start]&thinsp;Welcome}
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$start]&thinsp;Elevating Register Access}
+
+      Every **EMS** distro eventually delivers target-specific drivers dependent upon memory-mapped MCU registers.
+
+      Each distro therefore bundles vendor-supplied headers {[dc,1]}, forming a "source-of-truth" that defines all MCU registers.
+
+      To streamline register access, every distro contains a spec&shy;ial script {[dc,2]} which _generates_ a matching **EMS** facade {[dc,3]}.
+
+      Named {[cu]REGS}, drivers will conventionally {[ck]import} the gen&shy;erated facade under a local {[cs]$R} alias.
+
+      <div class="em-info"
+
+      Guided by **IntelliSense**, clients can easily form {[cs]$R} selec&shy;tion expressions using vendor-defined register names.
+
+      </div>
+
+      The **EMS** translator {[dc,4]} then _lowers_ {[cs]$R} ex&shy;pressions to tar&shy;get C++ code that uses the original register headers {[dc,1]}.
+
 
   - text: |
       {[ht,$extra]&thinsp;Extra Credit}
