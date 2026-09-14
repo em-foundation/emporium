@@ -3,6 +3,9 @@ title: Register Access
 files:
 
   - .assets/img-103-04-01.png
+  - .assets/img-103-04-02.png
+  - .assets/img-103-04-03.png
+  - nordic.nrf52:nordic.gists.nrf52/UartRegG.em.ts
 
 steps:
   - cmds:
@@ -25,6 +28,78 @@ steps:
       </div>
 
       The **EMS** translator {[dc,4]} then _lowers_ {[cs]$R} ex&shy;pressions to tar&shy;get C++ code that uses the original register headers {[dc,1]}.
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,arrow_circle_right]&thinsp;Register Access &ndash; Vendor Headers}
+
+      When bringing up a new **EMS** distro, toggling a GPIO pin connected to an LED often serves an initial "smoke test".
+
+      <div class="em-info">
+
+      We'll stay with {[em]Board &ndash; &lt;bare-metal&gt;}, but will switch to {[em]Setup &ndash; nordic.nrf52://default} {[dc,1]} as our new target.
+
+      </div>
+
+      The {[cu]GpioNatG} program {[dc,2]} configures {[cn]APP_LED_PIN} as an output GPIO and then lowers its voltage.
+
+      When translating {[cu]GpioNatG}{[dc,3]}, **EMS** retains all {[ct]e$}{[cs]&#96;..&#96;} code snippets within the generated `GpioNatG.cpp` file {[dc,4]}.
+
+      Adding just two instructions to setup and toggle the LED, the {[cu]GpioNatG} programs weighs in at only 168 bytes {[dc,5]}.
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,arrows_left_right_circle]&thinsp;Register Access &ndash; Headers vs Facade}
+
+      To appreciate the {[cu]REGS} facade, let's compare {[cu]GpioNatG} with an alternative {[cu]GpioRegG} program {[dc,2]} that uses {[cs]$R}.
+
+      <div class="em-info">
+
+      {[cs]$R} offers syntactic _and_ semantic sugar &ndash; blending nicely with the **EMS** language services supported by **VS Code**.
+
+      </div>
+
+      But here, the **EMS** translator {[dc,3]} lowers {[cs]$R} expres&shy;sions to C++ equivalents in {[dc,4]} which directly use header symbols.
+
+      Though a bit more stylzed, compilation of {[dc,4]} within the {[cu]GpioRegG} program yields an _identical_ binary image {[dc,5]}.
+
+  - cmds:
+      - open 4
+      - mark 4 A 4
+      - mark 4 B 15
+      - mark 4 C 19
+      - mark 4 D 23
+    focus: [4,1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]UartRegG% &ndash; Transmitting Bytes}
+
+      Like toggling a GPIO, transmitting single bytes over a UART represents an early milestone in supporting any MCU.
+
+      Still working {[em]&lt;bare-metal&gt;} and targeting {[em]nordic.nrf52}, the {[cu]UartRegG} program performs basic output on {[cn]UART0}.
+
+      After declaring {[cs]$R} as the local {[cu]Regs} alias {[bm,A]}, {[cu]UartRegG} initializes {[cn]UART0} and then output a pair of characters.
+
+      {[cs]$R} selections can appear on the right-hand side of as&shy;sign&shy;ments&thinsp;{[bm,B]} &ndash; choosing a vendor-defined symbolic constant.
+
+      <div class="em-info">
+
+      Note the **EMS** syntax {[bm,C]} for denoting character literals.
+
+      </div>
+
+      Finally, the {[cf]put} function {[bm,D]} outputs a single 8-bit value and then polls {[cn]UART0} status flags for completion.
+      
+
+  - cmds:
+    text: |
+      {[ht,sync_arrow_down]&thinsp;Lowering %[cs]$R% Expressions}
+
+
+  - cmds:
+    text: |
+      {[ht,sync_arrow_up]&thinsp;Generating the %[cu]REGS% Facade}
 
 
   - text: |
