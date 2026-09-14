@@ -7,6 +7,7 @@ files:
   - .assets/img-103-04-03.png
   - nordic.nrf52:nordic.gists.nrf52/UartRegG.em.ts
   - .assets/img-103-04-04.png
+  - nordic.nrf52:nordic.distro.nrf52/REGS.em.ts
 
 steps:
   - cmds:
@@ -98,8 +99,40 @@ steps:
     text: |
       {[ht,sync_arrow_down]&thinsp;Lowering %[cs]$R% Expressions}
 
+      **EMS** translates {[cs]$R} expressions into equivalent C++ forms which use definitions from vendor-supplied headers.
+
+      To guide {[cs]$R} translation, **EMS** relies upon *build property* bind&shy;ings typically found in some distro `setup-*.ini` file:
+
+      {[DC,1]}{[cn]ModFmt} matches names of MCU peripherals<br>
+      {[DC,2]}{[cn]SelFmt} matches names of peripheral registers<br>
+      {[DC,3]}{[cn]FldFmt} matches value names of register fields<br>
+
+      Format strings bound to these properties specify a corres&shy;ponding C++ fragment to inject upon matching {[cs]$R} terms.
+
+      <div class="em-info">
+
+      The **EMS** *dereference* operator [{[ct]$$}] maps to a C++ help&shy;er [{[ct]em}::{[cf]$reg32}] defined in `emscript.hpp`&thinsp;{[tr,103/03/04]}.
+
+      </div>
+
+      The next stop explains the supporting role of `REGS.hpp`.
+
+
+
+
+      
 
   - cmds:
+      - open 6
+      - fold 6 9 189
+      - fold 6 190 220
+      - fold 6 228 2897
+      - fold 6 2901 2933
+      - mark 6 A 5
+      - mark 6 B 224
+      - mark 6 C 2899
+      - mark 6 D 2945
+    focus: [6,1]
     text: |
       {[ht,sync_arrow_up]&thinsp;Generating the %[cu]REGS% Facade}
 
