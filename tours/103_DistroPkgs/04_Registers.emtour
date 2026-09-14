@@ -6,6 +6,7 @@ files:
   - .assets/img-103-04-02.png
   - .assets/img-103-04-03.png
   - nordic.nrf52:nordic.gists.nrf52/UartRegG.em.ts
+  - .assets/img-103-04-04.png
 
 steps:
   - cmds:
@@ -93,6 +94,7 @@ steps:
       
 
   - cmds:
+      - view 5
     text: |
       {[ht,sync_arrow_down]&thinsp;Lowering %[cs]$R% Expressions}
 

@@ -1,4 +1,3 @@
-import * as Path from 'path'
 import * as Fs from 'fs'
 
 import em from '../../em.core/em.lang/emscript'
@@ -82,7 +81,6 @@ function scanStruct(): string | null {
             base = tk.substring(0, k)
         }
         if (TYPE_SET.has(base)) {
-            console.log(ln)
             return tk
         }
     }
@@ -126,8 +124,4 @@ meta.genTitle('INSTANCES')
 for (const [ti, tn] of TYPE_MAP) {
     meta.print('export const %1 = {} as %2_t\n', ti, tn)
 }
-// meta.genTitle('INDICIES')
-// for (const [iname, itype] of INDICIES) {
-//     meta.print('export const %1 = [] as %2_t[]\n', iname, itype)
-// }
 meta.close()
