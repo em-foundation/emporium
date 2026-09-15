@@ -8,6 +8,8 @@ files:
   - .assets/img-103-04-04.png
   - nordic.nrf52:nordic.distro.nrf52/REGS.em.ts
   - nordic.nrf52:nordic.distro.nrf52/genregs.ts
+  - .assets/img-103-04-05.png
+  - .assets/img-103-01-02.png
 
 steps:
   - cmds:
@@ -182,8 +184,26 @@ steps:
         💡&thinsp;In practice, you won't need to modify `genreg.ts`.<br>
         ❓&thinsp;Otherwise, seek help at **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions).
 
-  - text: |
+  - cmds:
+      - view 8
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+      Using the `nordic.nrf52` distro as a point of reference:
+
+      {[DC,1]} Compare content across the `*.distro.*` buckets
+
+      {[DC,2]} Explore project output after building these gists.
+
+      {[DC,3]} Trace the impact of `setup-sram` when building.
+
+  - cmds:
+      - view 9
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      Good news&thinsp;&hellip;&thinsp; We've reached the midpoint of the **Distro Packages** tours, having thoroughly explored {[cu]BuildC}.
+
+      Better news&thinsp;&hellip;&thinsp; You'll find the shift in focus from {[cu]BuildC} to {[cu]BoardC} going forward much easier to grasp.
+
+      {[hc]}
