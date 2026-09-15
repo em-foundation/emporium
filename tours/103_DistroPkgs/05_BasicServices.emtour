@@ -3,6 +3,9 @@ title: Basic Services
 files:
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/Mcu.em.ts
+  - rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
+  - rpi.2040:rpi.mcu.2040/GpioT.em.ts
 
 steps:
   - cmds:
@@ -106,6 +109,35 @@ steps:
       Take a peek at {[cu]BoardController}, which invokes several {[cu]Common} proxies during program startup and shutdown.
 
       &nbsp;💡&thinsp;Select any proxy or config name, and then hit **F12**.
+
+  - cmds:
+      - open 3
+    text: |
+      {[ht,$peek]&thinsp;%[cu]Mcu% &ndash; Distro Reset Processing}
+
+      The next three stops on this tour visit target-specific **EMS Modules** which implement abstract **EMS Interfaces**.
+
+      Starting with {[cu]Mcu}, its {[cf]startup} function serves an initial entry-point for preparing target HW.
+
+      <div class="em-info">
+
+      We'll address {[cf]isWarm} on a later tour &ndash; in the context of awakening from a low-power, deep-sleep.
+
+      </div>
+
+      Needless to say, the implementation of {[cf]startup} closely tracks the MCU itself &ndash; and varies widely between distros.
+
+      At the same time, {[cf]startup} invokes its (portable) {[cu]Debug} counterpart when ready &ndash; and signals status using `dbgA`.
+
+  - cmds:
+      - open 4
+    text: |
+      {[ht,$peek]&thinsp;%[cu]ConsoleUart0% &ndash; Distro Byte Output} 
+
+  - cmds:
+      - open 5
+    text: |
+      {[ht,$peek]&thinsp;%[cu]GpioT% &ndash; Distro Pin I/O}
 
   - text: |
       {[ht,$extra]&thinsp;Extra Credit}
