@@ -7,6 +7,7 @@ files:
   - nordic.nrf52:nordic.gists.nrf52/UartRegG.em.ts
   - .assets/img-103-04-04.png
   - nordic.nrf52:nordic.distro.nrf52/REGS.em.ts
+  - nordic.nrf52:nordic.distro.nrf52/genregs.ts
 
 steps:
   - cmds:
@@ -73,6 +74,7 @@ steps:
       - mark 4 C 19
       - mark 4 D 23
     focus: [4, 1]
+    acts: ["$reveal"]
     text: |
       {[ht,$details]&thinsp;%[cu]UartRegG% &ndash; Transmitting Bytes}
 
@@ -127,6 +129,7 @@ steps:
       - mark 6 D 2899
       - mark 6 E 2945
     focus: [6, 1]
+    acts: ["$reveal"]
     text: |
       {[ht,sync_arrow_up]&thinsp;The %[cu]REGS% Facade}
 
@@ -145,8 +148,39 @@ steps:
       The remainder of {[cu]REGS} follows a predictable pattern:
 
       {[BM,C]}peripherals define types that aggregate their registers<br>
-      {[BM,D]}exported constants define register-specific values<br>
-      {[BM,E]}constants define instances of peripheral types<br>
+      {[BM,D]}constants define register-specific symbolic values<br>
+      {[BM,E]}constants declare instances of peripheral types<br>
+
+  - cmds:
+      - open 7
+      - fold 7 5 12
+      - fold 7 17 88
+      - fold 7 104 116
+      - mark 7 A 14
+      - mark 7 B 90
+      - mark 7 C 100
+      - mark 7 D 104
+      - mark 7 E 118
+      - mark 7 F 121
+      - mark 7 G 124
+    focus: [7, 1]
+    text: |
+      {[ht,$peek]&thinsp;<code>genregs.ts</code>}
+
+      Each distro maintains a `genregs.ts` script which synthe&shy;sizes its {[cu]REGS} facade by parsing vendor-supplied headers.
+
+      Specialized per distro and shaped by header file organi&shy;zation, this [**TypeScript**] code follows a common design:
+
+      {[BM,A]}a {[ct]Map} declaring periperal instance&thinsp;&middot;&thinsp;type names<br>
+      {[BM,B]}the prologue of the generated {[cs]'REGS.em.ts'} file<br>
+      {[BM,C]}the {[cs]'inc/nrf52.h'} header text, split line-by-line<br>
+      {[BM,D]}a helper function to output peripheral&thinsp;&middot;&thinsp;register types<br>
+      {[BM,E]}the lines of the {[cs]'inc/nrf52_bitfields.h'} header<br>
+      {[BM,F]}a helper to output per-register symbolic values<br>
+      {[BM,G]}output of declarations tracking {[cn]TYPE_MAP}<br>
+
+        💡&thinsp;In practice, you won't need to modify `genreg.ts`.<br>
+        ❓&thinsp;Otherwise, seek help at **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions).
 
   - text: |
       {[ht,$extra]&thinsp;Extra Credit}
