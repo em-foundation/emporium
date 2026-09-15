@@ -36,7 +36,7 @@ export const DbgD = $clone(GpioT)
 export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
 
-export const DEFAULTS = {
+export const BRD_DEFAULTS = {
     activeLowLeds: false,
     pins: {
         appBut: <i16>-1,
@@ -52,9 +52,9 @@ export const DEFAULTS = {
 
 export function em$configure(): void {
     if ($isbare()) return
+    const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
-    const brd = $board(DEFAULTS)
     AlarmMgr.Rtc.$$dlg = Rtc
     AppBut.Edge.$$dlg = AppButEdge
     AppButEdge.Pin.$$dlg = AppButPin
