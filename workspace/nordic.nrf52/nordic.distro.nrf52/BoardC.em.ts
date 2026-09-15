@@ -39,7 +39,7 @@ export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
 
 export const DEFAULTS = {
-    /** setting applies to {app,com,sys}Led pins */ activeLowLeds: false,
+    activeLowLeds: false,
     pins: {
         appBut: <i16>-1,
         appLed: <i16>-1,
