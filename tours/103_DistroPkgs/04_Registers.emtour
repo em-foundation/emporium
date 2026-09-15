@@ -50,7 +50,7 @@ steps:
 
       When translating {[cu]GpioNatG}{[dc,3]}, **EMS** retains all {[ct]e$}{[cs]&#96;..&#96;} code snippets within the generated `GpioNatG.cpp` file {[dc,4]}.
 
-      Adding just two instructions to setup and toggle the LED, the {[cu]GpioNatG} programs weighs in at only 168 bytes {[dc,5]}.
+      Adding just two instructions to setup and toggle the LED, the {[cu]GpioNatG} program weighs in at only 168 bytes {[dc,5]}.
 
   - cmds:
       - view 3
@@ -67,7 +67,7 @@ steps:
 
       But here, the **EMS** translator {[dc,3]} lowers {[cs]$R} expres&shy;sions to C++ equivalents in {[dc,4]} which directly use header symbols.
 
-      Though a bit more stylzed, compilation of {[dc,4]} within the {[cu]GpioRegG} program yields an _identical_ binary image {[dc,5]}.
+      Though a bit more stylized, compilation of {[dc,4]} within the {[cu]GpioRegG} program yields an _identical_ binary image {[dc,5]}.
 
   - cmds:
       - open 4
@@ -173,7 +173,7 @@ steps:
 
       Specialized per distro and shaped by header file organi&shy;zation, this [**TypeScript**] code follows a common design:
 
-      {[BM,A]}a {[ct]Map} declaring periperal instance&thinsp;&middot;&thinsp;type names<br>
+      {[BM,A]}a {[ct]Map} declaring peripheral instance&thinsp;&middot;&thinsp;type names<br>
       {[BM,B]}the prologue of the generated {[cs]'REGS.em.ts'} file<br>
       {[BM,C]}the {[cs]'inc/nrf52.h'} header text, split line-by-line<br>
       {[BM,D]}a helper function to output peripheral&thinsp;&middot;&thinsp;register types<br>

@@ -29,7 +29,6 @@ steps:
 
       So let's proceed to populate the `.emscript` project&thinsp;&hellip;
 
-
   - cmds:
       - view 2
     text: |
@@ -61,7 +60,7 @@ steps:
 
       {[bi,arrow_circle_right]} `main.cpp` &ndash; the program source itself<br>
       {[bi,arrow_circle_right]} `build.sh` &ndash; a script to compile the program<br>
-      {[bi,arrow_circle_right]} `linkcmd.ld` the program's memory placement<br>
+      {[bi,arrow_circle_right]} `linkcmd.ld` &ndash; the program's memory placement<br>
       {[bi,arrow_circle_right]} `load.sh` &ndash; a script to load the executable program<br>
 
       The `.out` sub-folder then contains a typical set of artifacts produced by the underlying build tools.
@@ -93,7 +92,7 @@ steps:
 
       For now, though, take the time to explore the generated C++ code in your own version of `main.cpp`.
 
-      💡&thinsp;Try pressing **F12** after selecting an {[ck]#include} path. 
+      💡&thinsp;Try pressing **F12** after selecting an {[ck]#include} path.
 
   - cmds:
       - view 6
