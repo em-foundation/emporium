@@ -11,7 +11,7 @@ steps:
     acts: ["$reveal"]
     text: |
 
-      {[ht,$start]&thinsp;%[cu]Debug% &ndash; Real-Time Debug}
+      {[ht,$start]&thinsp;%[cu]DebugP% &ndash; Real-Time Debug}
 
       The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
 
