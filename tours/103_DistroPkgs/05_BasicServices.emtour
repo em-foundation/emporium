@@ -115,9 +115,9 @@ steps:
     text: |
       {[ht,$peek]&thinsp;%[cu]Mcu% &ndash; Distro Reset Processing}
 
-      The next three stops on this tour visit target-specific **EMS Modules** which implement abstract **EMS Interfaces**.
+      The next three stops on this tour visit target-specific **EMS Modules** that implement abstract **EMS Interfaces**.
 
-      Starting with {[cu]Mcu}, its {[cf]startup} function serves an initial entry-point for preparing target HW.
+      Starting with {[cu]Mcu}, its {[cf]startup} function serves an initial entry-point for preparing the target HW device.
 
       <div class="em-info">
 
@@ -132,12 +132,36 @@ steps:
   - cmds:
       - open 4
     text: |
-      {[ht,$peek]&thinsp;%[cu]ConsoleUart0% &ndash; Distro Byte Output} 
+      {[ht,$peek]&thinsp;%[cu]ConsoleUart0% &ndash; Distro Byte Output}
+
+      One of the basic delegates bound to {[cu]Common}, this module implements {[cf]flush} and {[cf]put} using a UART peripheral.
+
+      Given the "poll-per-byte" intent of the {[cu]ConsoleUartI} in&shy;terface, these methods have relatively simple definitions.
+
+      More complexity occurs in {[cs]em$startup} &ndash; during one-time UART initialization happening prior to program {[cs]em$run}:
+
+      {[bi,arrow_circle_right]}&nbsp;run-time configuration of {[cn]TxPin}<br>
+      {[bi,arrow_circle_right]}&nbsp;reset the UART peripheral<br>
+      {[bi,arrow_circle_right]}&nbsp;establish a 115200 baudrate<br>
+      {[bi,arrow_circle_right]}&nbsp;enable UART transmit<br>
+
+      <div class="em-info">
+
+      Recall that {[cu]BoardC} binds its {[cu]AppOutPin} delegate to the {[cn]TxPin} proxy at build-time.
+
+      </div>
 
   - cmds:
       - open 5
+    focus: [5, 1]
     text: |
       {[ht,$peek]&thinsp;%[cu]GpioT% &ndash; Distro Pin I/O}
+
+      Used heavily by {[cu]BuildC}, the {[cu]GpioT} **Template** instantiates a delegate **Module** that implements the {[cu]GpioI} **Interface**.
+
+      Declaring over a dozen methods, we've only shown  
+
+
 
   - text: |
       {[ht,$extra]&thinsp;Extra Credit}
