@@ -25,6 +25,7 @@ const INTERNAL_RELEASE_URL =
 const VERBOSE = process.argv.includes('--verbose')
 const REFRESH = process.argv.includes('--refresh')
 const RESET = process.argv.includes('--reset')
+const EMBUILDER = process.argv.includes('--embuilder')
 
 function run(cli, quiet = false) {
     if (VERBOSE) console.log(`> ${cli.join(' ')}`)
@@ -150,6 +151,28 @@ if (RESET) {
 
 Fs.mkdirSync(DATA, { recursive: true })
 Fs.mkdirSync(EXTS, { recursive: true })
+
+if (EMBUILDER) {
+    const installed = installedExtensions()
+    const embuilder = [...installed].find(ext =>
+        ext.startsWith('the-em-foundation.em-builder@')
+    )
+
+    if (embuilder) {
+        console.log('EM•porium: refreshing EM•Builder…')
+
+        run([
+            'code',
+            '--uninstall-extension', 'the-em-foundation.em-builder',
+            '--extensions-dir', EXTS
+        ], !VERBOSE)
+    }
+
+    for (const name of Fs.readdirSync(DATA)) {
+        if (name.startsWith('em-builder-') && name.endsWith('.installed'))
+            Fs.rmSync(Path.join(DATA, name), { force: true })
+    }
+}
 
 console.log('EM•porium: updating npm dependencies (this may take a while)…')
 run(['npm', 'install', '--loglevel=error'], !VERBOSE)
