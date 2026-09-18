@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/02_Infrastructure.emtour"
 title: "Benchmark Infrastructure"
 
 source_snapshot:
-  git_sha: "551b1eeacbe2d40e580da69f17d5c91a00777510"
-  generated_at: "2026-08-22T23:33:56.717Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.321Z"
 
 ground_truth:
   stop_count: 8
