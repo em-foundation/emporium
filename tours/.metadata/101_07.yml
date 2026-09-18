@@ -7,8 +7,8 @@ source_file: "tours/101_BasicExamples/07_Ticker.emtour"
 title: "Cyclic Tasks"
 
 source_snapshot:
-  git_sha: "167797adec30e163e5ddc831936f7054222106f6"
-  generated_at: "2026-08-12T03:08:23.263Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:44.423Z"
 
 ground_truth:
   stop_count: 7

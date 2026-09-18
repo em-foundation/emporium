@@ -7,8 +7,8 @@ source_file: "tours/100_GettingOriented/02_Hiearchy.emtour"
 title: "Content Hierarchy"
 
 source_snapshot:
-  git_sha: "e7ec041155254082b0fa501ff4522675c8d053e0"
-  generated_at: "2026-08-12T03:32:09.973Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:41.256Z"
 
 ground_truth:
   stop_count: 7
