@@ -1,0 +1,181 @@
+title: ActiveRunnerP on Hardware
+
+files:
+  - em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - em.prog:em.examples.basic/Ex01_HelloP.em.ts
+  - .assets/img-102-06-01.png
+  - .assets/img-102-06-02.png
+  - .assets/img-102-01-03.png
+steps:
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$start]&thinsp;Running on Real HW}
+
+      We've now visited all of the supporting modules called directly&thinsp;/&thinsp;indirectly by the {[cu]ActiveRunnerP} program.
+
+      But before visiting {[cu]SleepyRunnerP} in next tour, let's take a giant step forward in your mastery of **EMS**:
+
+      <div class="em-info">
+      
+      Let's execute {[cu]ActiveRunner} on <u>real</u> hardware&thinsp;!!
+
+      </div>
+
+      Until now, we've used the `rpi.2040://PI_PICO-sim$$` board as our target; review {[tr,102/01/05]} for details. 
+
+      But the **EMS** code you've studied along the **CoreMark** [and **Basic Examples**] tours in fact remains 100% portable.
+
+      <div class="em-info">
+
+      Skim this tour while awaiting your board's arrival⏳.
+
+      </div>
+
+      So let's give it a go&thinsp;&hellip;
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,developer_board]&thinsp;Choose Your Board}
+
+      We've already pointed out the <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} icon {[dc,1]} found in the **Status Bar** at the bottom of your **VS Code** window.
+
+      Clicking {[dc,1]} reveals a menu {[dc,2]} listing all target boards sup&shy;ported by **EMS distros** present within the **EM&bull;porium**.
+
+      Make your selection and then watch the <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} change:
+
+      {[DC,3]} Nordic's [**NRF52_DK**](https://www.nordicsemi.com/Products/Development-hardware/nRF52-DK) board<br>
+      {[DC,4]} Nordic's [**NRF54L15_DK**](https://www.nordicsemi.com/Products/Development-hardware/nRF54L15-DK) board<br>
+      {[DC,5]} TI's [**LP_EM_CC2340R5**](https://www.ti.com/tool/LP-EM-CC2340R5) board<br>
+
+      You'll also see a picture of the selected board as further confirmation of your choice.
+
+      <div class="em-info">
+
+      Future tours explain the labeling within these pictures.
+
+      </div>
+      
+
+  - cmds:
+      - open 2
+    acts: [$build]
+    text: |
+      {[ht,detector_smoke]&thinsp;%[cu]BlinkerP% Smoke Test}
+
+      ☑️&thinsp; First, verify you've chosen a supported {[em]Board}.
+
+      ☑️&thinsp; Next, verify you've plugged *real* HW into your PC.
+
+      ☑️&thinsp; Finally, click the {[cb,build]} button and see what happens next.
+
+      <div class="em-info">
+
+      The exact location of `AppLed` varies across boards; and some boards show the &thinsp;[RED]&thinsp;`SysLed` as &thinsp;[GREEN].
+
+      </div>
+
+      If successful, you'll have an experience similar to earlier runs of {[cu]BlinkerP} on **Pi Pico** simulator.&thinsp; And if not&thinsp;&hellip;
+
+      💡&thinsp;Review the three ☑️ items above &ndash; just in case&thinsp;&hellip;<br>
+      💡&thinsp;**Build** success / **Load** failure {[em]⇒} HW connection issues.<br>
+      ❓&thinsp;Ask for help on the **EM&bull;porium** [Discussions](https://github.com/em-foundation/emporium/discussions) page.
+
+  - cmds:
+      - open 3
+    acts: [$build]
+    text: |
+      {[ht,hand_gesture]&thinsp;Say %[cu]HelloP%}
+
+      You know the drill &ndash; click the {[cb,build]} button&thinsp;&hellip;
+
+      Unlike {[cu]BlinkerP}, the {[cu]HelloP} program terminates almost immediately &ndash; with the [maybe RED] `SysLed` turned on.
+
+      <div class="em-info">
+
+      You'll see {[cu]HelloP} in action on the **Pi Pico** simulator about halfway through the animation at &thinsp;{[tr,100/00/07]}.
+
+      </div>
+
+      But when targeting a real hardware platform, we'll require a **Serial Monitor** to capture any {[cd]printf} output.
+
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,cable]&thinsp;Using the Serial Monitor}
+
+      The **EM&bull;porium** includes an integrated **Serial Monitor** ex&shy;tension &ndash; not unlike your favorite "terminal emulator".
+
+      The **Serial Monitor** tab {[dc,1]} should appear in the bot&shy;tom panel; if not, right-click on *another* tab and check the box.
+
+      A drop-down menu at {[dc,2]} will list *all* serial ports on your PC; select the one corresponding to your board's UART.
+
+      Press button {[dc,3]} &ndash; initially labeled as **Start Monitoring**; you can explore the additional controls at {[dc,4]} later on.
+
+      And voilà &ndash; program output should appear at {[dc,5]}&thinsp;!!&thinsp; If not,
+
+      💡&thinsp;Try again by hitting **RESET** on your board.<br>
+      💡&thinsp;You've possibly selected the wrong **Port**.<br>
+      ❓&thinsp;Ask for help on the [Discussions](https://github.com/em-foundation/emporium/discussions) page.
+
+  - cmds:
+      - open 1
+      - mark 1 C 29
+    acts: [$build]
+    focus: [1,1]
+    text: |
+      {[ht,celebration]&thinsp;And Now&thinsp;&hellip;}
+
+      Time to **Build&thinsp;+&thinsp;Load** the {[cu]ActiveRunnerP} program for the target hardware platform of your choice.
+
+      If all goes well, the program will wink its [GREEN] `AppLed` twice and then {[cd]printf} results such as:
+
+      ```
+        usecs = 123871
+        list crc = e714
+        matrix crc = 1fd7
+        state crc = 8e3a
+        final crc = fcaf
+      ```
+
+      First reported at &thinsp;{[tr,102/01/05]} running on the **Pi Pico** simula&shy;tor, the `usecs` value output at {[bm,C]} will vary across boards.
+
+      <div class="em-info">
+
+      The four `crc` values will remain invariant, however.
+
+      </div>
+
+
+  - cmds:
+      - open 1
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Run some more **Basic Examples** on your chosen board.
+
+      {[bi,task_alt]} See how `usecs` scales when changing {[cn]iterations}.
+
+      {[bi,task_alt]} Compare results across *multiple* HW platforms.
+
+      <div class="em-info">
+
+      The cost of our recommended boards won't break the bank &ndash; so maybe pickup more than one.&nbsp; 🏷️🏷️🏷️
+
+      </div>
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      With real hardware in hand, we'll finish our tour of the (portable) elements of the **EMS** rendition of **CoreMark**.
+
+      From here, we'll pivot to {[cu]SleepyRunnerP} &ndash; a minimal pro&shy;gram which quite literally turns **CoreMark** inside-out.
+
+      We'll continue working with real hardware after exploring {[cu]SleepyRunnerP} &ndash; as a prelude of things to come.
+
+      {[hc]}

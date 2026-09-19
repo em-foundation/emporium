@@ -13,6 +13,7 @@ export function em$generate() {
         |-> extern "C" uint32_t __bss_addr__;
         |-> extern "C" uint32_t __bss_size__;
         |-> extern "C" uint32_t __code_addr__;
+        |-> extern "C" uint32_t __code_copy_addr__;
         |-> extern "C" uint32_t __code_load__;
         |-> extern "C" uint32_t __code_size__;
         |-> extern "C" uint32_t __data_addr__;
@@ -54,7 +55,7 @@ export function em$generate() {
         |-> #if __EM_BOOT_FLASH__ == 1
         |->         sz = (uint32_t)&__code_size__;
         |->         src = &__code_load__;
-        |->         dst = &__code_addr__;
+        |->         dst = &__code_copy_addr__;
         |->         for (uint32_t i = 0; i < sz; i++) {
         |->             dst[i] = src[i];
         |->         }
