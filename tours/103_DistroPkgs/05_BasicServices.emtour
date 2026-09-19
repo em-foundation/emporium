@@ -36,7 +36,6 @@ steps:
       - open 2
       - fold 2 3 4
       - fold 2 6 8
-      - fold 2 6 8
       - fold 2 11 13
       - fold 2 14 15
       - fold 2 17 24
@@ -71,7 +70,6 @@ steps:
   - cmds:
       - open 2
       - fold 2 3 4
-      - fold 2 6 8
       - fold 2 6 8
       - fold 2 11 13
       - fold 2 14 15
@@ -115,7 +113,7 @@ steps:
   - cmds:
       - view 6
     text: |
-      {[ht,developer_board]&thinsp;%[cu]BoardC% &ndash; Ingesting </code>em-boards</code>}
+      {[ht,developer_board]&thinsp;%[cu]BoardC% &ndash; Ingesting <code>em-boards</code>}
 
       Our review of {[cu]BoardC} twice referred to `em-boards` &ndash; a special file co-located in the same `*.distro.*` bucket:
 
@@ -139,7 +137,7 @@ steps:
     text: |
       {[ht,$peek]&thinsp;%[cu]Mcu% &ndash; Distro Reset Processing}
 
-      The next three stops on this tour visit target-specific **EMS Modules** that implement abstract **EMS Interfaces**.
+      The next three stops will visit target-specific **EMS Modules** that implement abstract **EMS Interfaces**.
 
       Starting with {[cu]Mcu}, its {[cf]startup} function serves an initial entry-point for preparing the target HW device.
 
@@ -166,7 +164,7 @@ steps:
 
       {[bi,arrow_circle_right]}&nbsp;run-time configuration of {[cn]TxPin}<br>
       {[bi,arrow_circle_right]}&nbsp;reset the UART peripheral<br>
-      {[bi,arrow_circle_right]}&nbsp;establish a 115200 baudrate<br>
+      {[bi,arrow_circle_right]}&nbsp;establish 115200 baud<br>
       {[bi,arrow_circle_right]}&nbsp;enable UART transmit<br>
 
       <div class="em-info">
@@ -182,7 +180,7 @@ steps:
     text: |
       {[ht,$peek]&thinsp;%[cu]GpioT% &ndash; Distro Pin I/O}
 
-      Used heavily by {[cu]BuildC}, the {[cu]GpioT} **Template** instantiates a delegate **Module** that implements the {[cu]GpioI} **Interface**.
+      Used heavily by {[cu]BoardC}, the {[cu]GpioT} **Template** instantiates a delegate **Module** that implements the {[cu]GpioI} **Interface**.
 
       <div class="em-info">
 
@@ -211,7 +209,7 @@ steps:
 
       {[bi,task_alt]} Use **F12** to visit {[cu]BoardController} and {[cu]Console}.
 
-      {[bi,task_alt]} Find {[cu]BosrdC} and `*.mcu.*` modules in other distros
+      {[bi,task_alt]} Find {[cu]BoardC} and `*.mcu.*` modules in other distros
 
       {[bi,task_alt]} Grok how all this machinery keeps {[cu]DebugP} portable.
 
