@@ -6,6 +6,7 @@ files:
   - rpi.2040:rpi.mcu.2040/Mcu.em.ts
   - rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
   - rpi.2040:rpi.mcu.2040/GpioT.em.ts
+  - .assets/img-103-05-01.png
 
 steps:
   - cmds:
@@ -46,7 +47,7 @@ steps:
       - mark 2 D 55
     focus: [2, 1]
     text: |
-      {[ht,$extra]&thinsp;%[cu]BoardC% &ndash; Import&thinsp;&middot;&thinsp;Export}
+      {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Import&thinsp;&middot;&thinsp;Export}
 
       While supplied by the `rpi.2040` distro in this case, all {[cu]BoardC} composites follow a common design pattern:
 
@@ -89,7 +90,7 @@ steps:
       - mark 2 G 65
     focus: [2, 60]
     text: |
-      {[ht,$extra]&thinsp;%[cu]BoardC% &ndash; Configuration}
+      {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Configuration}
 
       A {[cu]BoardC}{[cs]em$configure} function has four key tasks:
 
@@ -109,6 +110,28 @@ steps:
       Take a peek at {[cu]BoardController}, which invokes several {[cu]Common} proxies during program startup and shutdown.
 
       &nbsp;💡&thinsp;Select any proxy or config name, and then hit **F12**.
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,developer_board]&thinsp;%[cu]BoardC% &ndash; Ingesting </code>em-boards</code>}
+
+      Our review of {[cu]BoardC} twice referred to `em-boards` &ndash; a special file co-located in the same `*.distro.*` bucket:
+
+      {[BM,C]}{[cu]BoardC} defines default values applied to `em-boards`.<br>
+      {[BM,D]}{[cs]$board} finds a selected {[em]Board} in `em-boards`.<br>
+
+      We've already talked about the special roles of {[em]Board} and {[em]Setup} in selecting the current distro package {[tr,103/01/02]}.
+
+      We've also seen how {[cn]"em.lang.BoardKind"}{[dc,1]} finds its way into `props.json` at program build-time {[tr,103/02/06]}.
+
+      In short, the {[cs]$board} intrinsic {[bm,D]} ingests the `em-boards` text [YAML] and returns an initialized object matching {[dc,1]}.
+
+      <div class="em-info">
+
+      **TypeScript** "duck-typing" doesn't require the shape of {[bm,C]} to precisely match an `em-boards` entry.
+
+      </div>
 
   - cmds:
       - open 3
