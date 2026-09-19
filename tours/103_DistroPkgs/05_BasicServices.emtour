@@ -153,13 +153,20 @@ steps:
 
   - cmds:
       - open 5
+      - mark 5 C 11
     focus: [5, 1]
     text: |
       {[ht,$peek]&thinsp;%[cu]GpioT% &ndash; Distro Pin I/O}
 
       Used heavily by {[cu]BuildC}, the {[cu]GpioT} **Template** instantiates a delegate **Module** that implements the {[cu]GpioI} **Interface**.
 
-      Declaring over a dozen methods, we've only shown  
+      <div class="em-info">
+
+      Declaring over a dozen methods, all of their implemen&shy;tations boil down to just one or two register accesses.
+
+      </div>
+
+      Note how the {[cu]GpioI} {[cs]$clone} produced by {[cu]GpioT} defines {[cn]pin_num}{[bm,C]} &ndash; a build-time {[cs]$config} bound by {[cu]BoardC}.
 
 
 
