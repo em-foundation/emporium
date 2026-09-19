@@ -7,6 +7,7 @@ files:
   - rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
   - rpi.2040:rpi.mcu.2040/GpioT.em.ts
   - .assets/img-103-05-01.png
+  - .assets/img-103-05-02.png
 
 steps:
   - cmds:
@@ -36,8 +37,8 @@ steps:
       - fold 2 3 4
       - fold 2 6 8
       - fold 2 6 8
-      - fold 2 12 14
-      - fold 2 15 16
+      - fold 2 11 13
+      - fold 2 14 15
       - fold 2 17 24
       - fold 2 25 28
       - fold 2 55 88
@@ -72,8 +73,8 @@ steps:
       - fold 2 3 4
       - fold 2 6 8
       - fold 2 6 8
-      - fold 2 12 14
-      - fold 2 15 16
+      - fold 2 11 13
+      - fold 2 14 15
       - fold 2 17 24
       - fold 2 25 28
       - fold 2 57 61
@@ -193,8 +194,40 @@ steps:
 
 
 
-  - text: |
+  - cmds:
+    - open 2
+    - fold 2 3 4
+    - fold 2 6 8
+    - fold 2 6 8
+    - fold 2 11 13
+    - fold 2 14 15
+    - fold 2 17 24
+    - fold 2 25 28
+    - fold 2 55 88
+    focus: [2, 1]
+
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+      {[bi,task_alt]} Use **F12** to visit {[cu]BoardController} and {[cu]Console}.
+
+      {[bi,task_alt]} Find {[cu]BosrdC} and `*.mcu.*` modules in other distros
+
+      {[bi,task_alt]} Grok how all this machinery keeps {[cu]DebugP} portable.
+
+  - cmds:
+      - view 7
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      You've now studied enough of {[cu]BoardC} to support a group of our **Basic Examples** {[dc,1]} across multiple distro packages.
+
+      <div class="em-info">
+
+      And we've (almost!) covered all the pieces required to sup&shy;port **CoreMark** {[cu]ActiveRunnerP}&thinsp;{[tr,102/01/01]} as well.
+
+      </div>
+
+      From here, we'll move to {[cu]BoardC} support for programs in group {[dc,2]} &ndash; requiring us to manage HW interrupts.
+
+      {[hc]}
