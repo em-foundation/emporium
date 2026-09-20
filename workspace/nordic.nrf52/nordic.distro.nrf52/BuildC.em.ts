@@ -59,7 +59,7 @@ export function em$configure() {
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrEmpty
-    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
+    for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {
