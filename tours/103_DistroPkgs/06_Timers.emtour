@@ -6,6 +6,8 @@ files:
   - rpi.2040:rpi.mcu.2040/Idle.em.ts
   - rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
   - .assets/img-103-05-02.png
+  - .assets/img-103-06-01.png
+  - .assets/img-103-06-02.png
 
 steps:
 
@@ -33,15 +35,24 @@ steps:
 
   - cmds:
       - open 4
+      - fold 4 18 100
     focus: [4, 1]
     text: |
-      {[ht,$details]&thinsp;%[cu]OneShotI% Implementation}
+      {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$meta</b></code>}
 
   - cmds:
+      - view 6
     text: |
       {[ht,$details]&thinsp;%[cu]BuildC% &ndash; Interrupt Declarations}
 
   - cmds:
+      - open 4
+    focus: [4, 23]
+    text: |
+      {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$targ</b></code>}
+
+  - cmds:
+      - view 7
     text: |
       {[ht,$details]&thinsp;ARM Core Support}
 
