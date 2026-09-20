@@ -8,6 +8,7 @@ files:
   - .assets/img-103-05-02.png
   - .assets/img-103-06-01.png
   - .assets/img-103-06-02.png
+  - em.core:em.arch.arm/IntrVec.em.ts
 
 steps:
 
@@ -66,8 +67,21 @@ steps:
       {[ht,$details]&thinsp;%[cu]IdleI% Implementation}
 
   - cmds:
+      - open 8
+      - fold 8 3 8
+      - fold 8 9 30
+      - fold 8 33 78
+      - fold 8 94 106
+      - fold 8 121 200
+    focus: [8, 1]
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} 
+
+      {[bi,task_alt]} 
+
+      {[bi,task_alt]} 
 
   - cmds:
       - view 5
