@@ -1,11 +1,49 @@
 title: Timers + Interrupts
 
-steps:
-  - text: |
-      {[ht,$start]&thinsp;Welcome}
+files:
+  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/Idle.em.ts
+  - rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
 
-  - text: |
+steps:
+
+  - cmds:
+      - open 1
+    focus: [1, 1]
+    text: |
+      {[ht,$start]&thinsp;Handling One-Shot Interrupts}
+
+  - cmds:
+      - open 2
+      - fold 2 3 7
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+  - cmds:
+      - open 3
+    focus: [3, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]OneShotI% Implementation}
+
+  - cmds:
+    text: |
+      {[ht,$details]&thinsp;%[cu]BuildC% &ndash; Interrupt Declarations}
+
+  - cmds:
+    text: |
+      {[ht,$details]&thinsp;ARM Core Support}
+
+  - cmds:
+      - open 4
+    text: |
+      {[ht,$details]&thinsp;%[cu]IdleI% Implementation}
+
+  - cmds:
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+  - cmds:
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
