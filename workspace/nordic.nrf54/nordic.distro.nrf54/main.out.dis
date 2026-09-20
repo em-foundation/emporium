@@ -1,0 +1,593 @@
+
+.out/main.out:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .armstart     000000a8  00000000  00000000  000000b8  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .text         000008dc  20008000  000000a8  00000160  2**2
+                  CONTENTS, ALLOC, LOAD, CODE
+  2 .const        00000048  200088dc  00000984  00000a3c  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .data         00000000  2003c000  2003c000  00000a84  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .bss          00000018  2003c000  2003c000  00000a84  2**2
+                  ALLOC
+  5 .comment      0000003d  00000000  00000000  00000a84  2**0
+                  CONTENTS, READONLY
+  6 .ARM.attributes 00000044  00000000  00000000  00000ac1  2**0
+                  CONTENTS, READONLY
+
+Disassembly of section .armstart:
+
+00000000 <__em_start_vec>:
+   0:	00 00 04 20 09 00 00 00                             ... ....
+
+00000008 <em__start>:
+   8:	b082      	sub	sp, #8
+   a:	481b      	ldr	r0, [pc, #108]	@ (78 <em__start+0x70>)
+   c:	9001      	str	r0, [sp, #4]
+   e:	bf00      	nop
+  10:	bf00      	nop
+  12:	bf00      	nop
+  14:	2000      	movs	r0, #0
+  16:	9901      	ldr	r1, [sp, #4]
+  18:	4288      	cmp	r0, r1
+  1a:	d205      	bcs.n	28 <em__start+0x20>
+  1c:	491e      	ldr	r1, [pc, #120]	@ (98 <em__start+0x90>)
+  1e:	2200      	movs	r2, #0
+  20:	f841 2020 	str.w	r2, [r1, r0, lsl #2]
+  24:	3001      	adds	r0, #1
+  26:	e7f6      	b.n	16 <em__start+0xe>
+  28:	4814      	ldr	r0, [pc, #80]	@ (7c <em__start+0x74>)
+  2a:	9001      	str	r0, [sp, #4]
+  2c:	2000      	movs	r0, #0
+  2e:	9901      	ldr	r1, [sp, #4]
+  30:	4288      	cmp	r0, r1
+  32:	d207      	bcs.n	44 <em__start+0x3c>
+  34:	4916      	ldr	r1, [pc, #88]	@ (90 <em__start+0x88>)
+  36:	f851 1020 	ldr.w	r1, [r1, r0, lsl #2]
+  3a:	4a16      	ldr	r2, [pc, #88]	@ (94 <em__start+0x8c>)
+  3c:	f842 1020 	str.w	r1, [r2, r0, lsl #2]
+  40:	3001      	adds	r0, #1
+  42:	e7f4      	b.n	2e <em__start+0x26>
+  44:	480e      	ldr	r0, [pc, #56]	@ (80 <em__start+0x78>)
+  46:	9001      	str	r0, [sp, #4]
+  48:	2000      	movs	r0, #0
+  4a:	9901      	ldr	r1, [sp, #4]
+  4c:	4288      	cmp	r0, r1
+  4e:	d207      	bcs.n	60 <em__start+0x58>
+  50:	490d      	ldr	r1, [pc, #52]	@ (88 <em__start+0x80>)
+  52:	f851 1020 	ldr.w	r1, [r1, r0, lsl #2]
+  56:	4a0d      	ldr	r2, [pc, #52]	@ (8c <em__start+0x84>)
+  58:	f842 1020 	str.w	r1, [r2, r0, lsl #2]
+  5c:	3001      	adds	r0, #1
+  5e:	e7f4      	b.n	4a <em__start+0x42>
+  60:	4808      	ldr	r0, [pc, #32]	@ (84 <em__start+0x7c>)
+  62:	6801      	ldr	r1, [r0, #0]
+  64:	f441 0170 	orr.w	r1, r1, #15728640	@ 0xf00000
+  68:	6001      	str	r1, [r0, #0]
+  6a:	f3bf 8f4f 	dsb	sy
+  6e:	f3bf 8f6f 	isb	sy
+  72:	f000 f815 	bl	a0 <__main_veneer>
+  76:	bf00      	nop
+  78:	00000006 	.word	0x00000006
+  7c:	00000000 	.word	0x00000000
+  80:	00000249 	.word	0x00000249
+  84:	e000ed88 	.word	0xe000ed88
+  88:	000000a8 	.word	0x000000a8
+  8c:	20008000 	.word	0x20008000
+  90:	000009cc 	.word	0x000009cc
+  94:	2003c000 	.word	0x2003c000
+  98:	2003c000 	.word	0x2003c000
+  9c:	00000000 	.word	0x00000000
+
+000000a0 <__main_veneer>:
+  a0:	f85f f000 	ldr.w	pc, [pc]	@ a4 <__main_veneer+0x4>
+  a4:	2000851d 	.word	0x2000851d
+
+Disassembly of section .text:
+
+20008000 <__vector_table>:
+20008000:	20040000 00000009 20008479 20008479     ... ....y.. y.. 
+	...
+2000802c:	20008479 00000000 00000000 20008479     y.. ........y.. 
+2000803c:	20008479 00000000 00000000 00000000     y.. ............
+	...
+200080b0:	20008479 20008479 20008479 20008479     y.. y.. y.. y.. 
+	...
+20008140:	20008479 20008479 00000000 00000000     y.. y.. ........
+	...
+20008158:	20008479 20008479 20008479 00000000     y.. y.. y.. ....
+20008168:	20008479 20008479 20008479 00000000     y.. y.. y.. ....
+	...
+20008188:	20008479 00000000 20008479 20008479     y.. ....y.. y.. 
+	...
+20008240:	20008479 00000000 00000000 00000000     y.. ............
+20008250:	00000000 20008479 00000000 20008479     ....y.. ....y.. 
+	...
+20008268:	20008479 20008479 00000000 00000000     y.. y.. ........
+	...
+20008340:	20008479 00000000 00000000 00000000     y.. ............
+	...
+20008358:	20008479 20008479 20008479 20008479     y.. y.. y.. y.. 
+20008368:	20008495 20008479 20008479 20008479     ... y.. y.. y.. 
+20008378:	20008479 00000000 20008479 20008479     y.. ....y.. y.. 
+20008388:	20008479 20008479 20008479 20008479     y.. y.. y.. y.. 
+20008398:	20008479 20008479 00000000 00000000     y.. y.. ........
+200083a8:	20008479 20008479 20008479 20008479     y.. y.. y.. y.. 
+	...
+200083c0:	20008479 20008479 200084d9 20008479     y.. y.. ... y.. 
+200083d0:	20008479 20008479 00000000 00000000     y.. y.. ........
+	...
+20008440:	20008479 00000000 00000000 00000000     y.. ............
+20008450:	20008479 20008479 20008479 00000000     y.. y.. y.. ....
+20008460:	20008479 20008479 00000000 00000000     y.. y.. ........
+20008470:	20008479 20008479                       y.. y.. 
+
+20008478 <DEFAULT_isr$$>:
+20008478:	b082      	sub	sp, #8
+2000847a:	2001      	movs	r0, #1
+2000847c:	f88d 0007 	strb.w	r0, [sp, #7]
+20008480:	f89d 0007 	ldrb.w	r0, [sp, #7]
+20008484:	2800      	cmp	r0, #0
+20008486:	d1fb      	bne.n	20008480 <DEFAULT_isr$$+0x8>
+20008488:	f3ef 8010 	mrs	r0, PRIMASK
+2000848c:	b672      	cpsid	i
+2000848e:	f000 f943 	bl	20008718 <em_utils_BoardController::blink(unsigned char, unsigned int)>
+20008492:	e7fc      	b.n	2000848e <DEFAULT_isr$$+0x16>
+
+20008494 <TIMER20_isr$$>:
+20008494:	b510      	push	{r4, lr}
+20008496:	480d      	ldr	r0, [pc, #52]	@ (200084cc <TIMER20_isr$$+0x38>)
+20008498:	f44f 6180 	mov.w	r1, #1024	@ 0x400
+2000849c:	f8c0 1100 	str.w	r1, [r0, #256]	@ 0x100
+200084a0:	4a0b      	ldr	r2, [pc, #44]	@ (200084d0 <TIMER20_isr$$+0x3c>)
+200084a2:	f44f 3380 	mov.w	r3, #65536	@ 0x10000
+200084a6:	f8c2 3304 	str.w	r3, [r2, #772]	@ 0x304
+200084aa:	2300      	movs	r3, #0
+200084ac:	f8c2 313c 	str.w	r3, [r2, #316]	@ 0x13c
+200084b0:	2401      	movs	r4, #1
+200084b2:	6014      	str	r4, [r2, #0]
+200084b4:	4a07      	ldr	r2, [pc, #28]	@ (200084d4 <TIMER20_isr$$+0x40>)
+200084b6:	7053      	strb	r3, [r2, #1]
+200084b8:	6001      	str	r1, [r0, #0]
+200084ba:	68d1      	ldr	r1, [r2, #12]
+200084bc:	f3bf 8f4f 	dsb	sy
+200084c0:	f3bf 8f6f 	isb	sy
+200084c4:	6890      	ldr	r0, [r2, #8]
+200084c6:	4788      	blx	r1
+200084c8:	bd10      	pop	{r4, pc}
+200084ca:	bf00      	nop
+200084cc:	e000e198 	.word	0xe000e198
+200084d0:	500ca004 	.word	0x500ca004
+200084d4:	2003c000 	.word	0x2003c000
+
+200084d8 <GRTC_0_isr$$>:
+200084d8:	b538      	push	{r3, r4, r5, lr}
+200084da:	480d      	ldr	r0, [pc, #52]	@ (20008510 <GRTC_0_isr$$+0x38>)
+200084dc:	2104      	movs	r1, #4
+200084de:	6001      	str	r1, [r0, #0]
+200084e0:	4c0c      	ldr	r4, [pc, #48]	@ (20008514 <GRTC_0_isr$$+0x3c>)
+200084e2:	6865      	ldr	r5, [r4, #4]
+200084e4:	07e8      	lsls	r0, r5, #31
+200084e6:	d007      	beq.n	200084f8 <GRTC_0_isr$$+0x20>
+200084e8:	2001      	movs	r0, #1
+200084ea:	6020      	str	r0, [r4, #0]
+200084ec:	490a      	ldr	r1, [pc, #40]	@ (20008518 <GRTC_0_isr$$+0x40>)
+200084ee:	6908      	ldr	r0, [r1, #16]
+200084f0:	2200      	movs	r2, #0
+200084f2:	610a      	str	r2, [r1, #16]
+200084f4:	b100      	cbz	r0, 200084f8 <GRTC_0_isr$$+0x20>
+200084f6:	4780      	blx	r0
+200084f8:	07a8      	lsls	r0, r5, #30
+200084fa:	d507      	bpl.n	2000850c <GRTC_0_isr$$+0x34>
+200084fc:	2002      	movs	r0, #2
+200084fe:	6020      	str	r0, [r4, #0]
+20008500:	4905      	ldr	r1, [pc, #20]	@ (20008518 <GRTC_0_isr$$+0x40>)
+20008502:	6948      	ldr	r0, [r1, #20]
+20008504:	2200      	movs	r2, #0
+20008506:	614a      	str	r2, [r1, #20]
+20008508:	b100      	cbz	r0, 2000850c <GRTC_0_isr$$+0x34>
+2000850a:	4780      	blx	r0
+2000850c:	bd38      	pop	{r3, r4, r5, pc}
+2000850e:	bf00      	nop
+20008510:	e000e29c 	.word	0xe000e29c
+20008514:	500e2308 	.word	0x500e2308
+20008518:	2003c000 	.word	0x2003c000
+
+2000851c <main>:
+2000851c:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+2000851e:	486a      	ldr	r0, [pc, #424]	@ (200086c8 <main+0x1ac>)
+20008520:	2101      	movs	r1, #1
+20008522:	f8c0 10e4 	str.w	r1, [r0, #228]	@ 0xe4
+20008526:	2122      	movs	r1, #34	@ 0x22
+20008528:	6001      	str	r1, [r0, #0]
+2000852a:	2115      	movs	r1, #21
+2000852c:	f8c0 11e8 	str.w	r1, [r0, #488]	@ 0x1e8
+20008530:	4c66      	ldr	r4, [pc, #408]	@ (200086cc <main+0x1b0>)
+20008532:	f8d4 1084 	ldr.w	r1, [r4, #132]	@ 0x84
+20008536:	f441 6140 	orr.w	r1, r1, #3072	@ 0xc00
+2000853a:	f8c4 1084 	str.w	r1, [r4, #132]	@ 0x84
+2000853e:	2100      	movs	r1, #0
+20008540:	4a63      	ldr	r2, [pc, #396]	@ (200086d0 <main+0x1b4>)
+20008542:	2940      	cmp	r1, #64	@ 0x40
+20008544:	d00a      	beq.n	2000855c <main+0x40>
+20008546:	f852 3031 	ldr.w	r3, [r2, r1, lsl #3]
+2000854a:	1c5d      	adds	r5, r3, #1
+2000854c:	2d02      	cmp	r5, #2
+2000854e:	d305      	bcc.n	2000855c <main+0x40>
+20008550:	eb02 05c1 	add.w	r5, r2, r1, lsl #3
+20008554:	686d      	ldr	r5, [r5, #4]
+20008556:	601d      	str	r5, [r3, #0]
+20008558:	3101      	adds	r1, #1
+2000855a:	e7f2      	b.n	20008542 <main+0x26>
+2000855c:	495d      	ldr	r1, [pc, #372]	@ (200086d4 <main+0x1b8>)
+2000855e:	f8d1 25f0 	ldr.w	r2, [r1, #1520]	@ 0x5f0
+20008562:	4d5d      	ldr	r5, [pc, #372]	@ (200086d8 <main+0x1bc>)
+20008564:	606a      	str	r2, [r5, #4]
+20008566:	f8d1 25f0 	ldr.w	r2, [r1, #1520]	@ 0x5f0
+2000856a:	07d2      	lsls	r2, r2, #31
+2000856c:	bf1c      	itt	ne
+2000856e:	f06f 0201 	mvnne.w	r2, #1
+20008572:	f8c1 25f0 	strne.w	r2, [r1, #1520]	@ 0x5f0
+20008576:	4a59      	ldr	r2, [pc, #356]	@ (200086dc <main+0x1c0>)
+20008578:	2303      	movs	r3, #3
+2000857a:	6013      	str	r3, [r2, #0]
+2000857c:	2300      	movs	r3, #0
+2000857e:	f8c2 3088 	str.w	r3, [r2, #136]	@ 0x88
+20008582:	4a57      	ldr	r2, [pc, #348]	@ (200086e0 <main+0x1c4>)
+20008584:	2601      	movs	r6, #1
+20008586:	6016      	str	r6, [r2, #0]
+20008588:	4a56      	ldr	r2, [pc, #344]	@ (200086e4 <main+0x1c8>)
+2000858a:	2782      	movs	r7, #130	@ 0x82
+2000858c:	6017      	str	r7, [r2, #0]
+2000858e:	6097      	str	r7, [r2, #8]
+20008590:	60d3      	str	r3, [r2, #12]
+20008592:	6113      	str	r3, [r2, #16]
+20008594:	6193      	str	r3, [r2, #24]
+20008596:	61d3      	str	r3, [r2, #28]
+20008598:	f8c1 6430 	str.w	r6, [r1, #1072]	@ 0x430
+2000859c:	600e      	str	r6, [r1, #0]
+2000859e:	f8d1 20f8 	ldr.w	r2, [r1, #248]	@ 0xf8
+200085a2:	2a00      	cmp	r2, #0
+200085a4:	d0fb      	beq.n	2000859e <main+0x82>
+200085a6:	4950      	ldr	r1, [pc, #320]	@ (200086e8 <main+0x1cc>)
+200085a8:	2201      	movs	r2, #1
+200085aa:	5042      	str	r2, [r0, r1]
+200085ac:	6868      	ldr	r0, [r5, #4]
+200085ae:	2603      	movs	r6, #3
+200085b0:	2801      	cmp	r0, #1
+200085b2:	bf88      	it	hi
+200085b4:	2602      	movhi	r6, #2
+200085b6:	f000 f8c6 	bl	20008746 <em_lang_Debug::delay()>
+200085ba:	f000 f8c4 	bl	20008746 <em_lang_Debug::delay()>
+200085be:	1e70      	subs	r0, r6, #1
+200085c0:	0631      	lsls	r1, r6, #24
+200085c2:	4606      	mov	r6, r0
+200085c4:	d1f7      	bne.n	200085b6 <main+0x9a>
+200085c6:	4849      	ldr	r0, [pc, #292]	@ (200086ec <main+0x1d0>)
+200085c8:	2101      	movs	r1, #1
+200085ca:	f8c0 16b8 	str.w	r1, [r0, #1720]	@ 0x6b8
+200085ce:	2202      	movs	r2, #2
+200085d0:	f8c0 24b0 	str.w	r2, [r0, #1200]	@ 0x4b0
+200085d4:	6001      	str	r1, [r0, #0]
+200085d6:	4846      	ldr	r0, [pc, #280]	@ (200086f0 <main+0x1d4>)
+200085d8:	2204      	movs	r2, #4
+200085da:	6002      	str	r2, [r0, #0]
+200085dc:	4845      	ldr	r0, [pc, #276]	@ (200086f4 <main+0x1d8>)
+200085de:	6020      	str	r0, [r4, #0]
+200085e0:	4845      	ldr	r0, [pc, #276]	@ (200086f8 <main+0x1dc>)
+200085e2:	4a46      	ldr	r2, [pc, #280]	@ (200086fc <main+0x1e0>)
+200085e4:	2300      	movs	r3, #0
+200085e6:	5013      	str	r3, [r2, r0]
+200085e8:	f5a2 700f 	sub.w	r0, r2, #572	@ 0x23c
+200085ec:	f04f 73eb 	mov.w	r3, #30801920	@ 0x1d60000
+200085f0:	6243      	str	r3, [r0, #36]	@ 0x24
+200085f2:	2308      	movs	r3, #8
+200085f4:	6003      	str	r3, [r0, #0]
+200085f6:	6015      	str	r5, [r2, #0]
+200085f8:	6051      	str	r1, [r2, #4]
+200085fa:	4a41      	ldr	r2, [pc, #260]	@ (20008700 <main+0x1e4>)
+200085fc:	5081      	str	r1, [r0, r2]
+200085fe:	6868      	ldr	r0, [r5, #4]
+20008600:	2801      	cmp	r0, #1
+20008602:	d812      	bhi.n	2000862a <main+0x10e>
+20008604:	f000 f888 	bl	20008718 <em_utils_BoardController::blink(unsigned char, unsigned int)>
+20008608:	f000 f8a0 	bl	2000874c <nordic_mcu_nrf54_ConsoleUart3::flush()>
+2000860c:	2000      	movs	r0, #0
+2000860e:	f000 f8a7 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+20008612:	2000      	movs	r0, #0
+20008614:	f000 f8a4 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+20008618:	240e      	movs	r4, #14
+2000861a:	3c01      	subs	r4, #1
+2000861c:	d003      	beq.n	20008626 <main+0x10a>
+2000861e:	2003      	movs	r0, #3
+20008620:	f000 f89e 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+20008624:	e7f9      	b.n	2000861a <main+0xfe>
+20008626:	f000 f891 	bl	2000874c <nordic_mcu_nrf54_ConsoleUart3::flush()>
+2000862a:	f44f 4000 	mov.w	r0, #32768	@ 0x8000
+2000862e:	6804      	ldr	r4, [r0, #0]
+20008630:	4834      	ldr	r0, [pc, #208]	@ (20008704 <main+0x1e8>)
+20008632:	2117      	movs	r1, #23
+20008634:	4622      	mov	r2, r4
+20008636:	f248 0310 	movw	r3, #32784	@ 0x8010
+2000863a:	f000 f89f 	bl	2000877c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)>
+2000863e:	f248 0004 	movw	r0, #32772	@ 0x8004
+20008642:	6800      	ldr	r0, [r0, #0]
+20008644:	2100      	movs	r1, #0
+20008646:	4288      	cmp	r0, r1
+20008648:	d008      	beq.n	2000865c <main+0x140>
+2000864a:	4a2f      	ldr	r2, [pc, #188]	@ (20008708 <main+0x1ec>)
+2000864c:	ea02 0281 	and.w	r2, r2, r1, lsl #2
+20008650:	f248 0310 	movw	r3, #32784	@ 0x8010
+20008654:	58d3      	ldr	r3, [r2, r3]
+20008656:	50a3      	str	r3, [r4, r2]
+20008658:	3101      	adds	r1, #1
+2000865a:	e7f4      	b.n	20008646 <main+0x12a>
+2000865c:	f248 050c 	movw	r5, #32780	@ 0x800c
+20008660:	682b      	ldr	r3, [r5, #0]
+20008662:	1f28      	subs	r0, r5, #4
+20008664:	6804      	ldr	r4, [r0, #0]
+20008666:	4829      	ldr	r0, [pc, #164]	@ (2000870c <main+0x1f0>)
+20008668:	2114      	movs	r1, #20
+2000866a:	4622      	mov	r2, r4
+2000866c:	f000 f886 	bl	2000877c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)>
+20008670:	6828      	ldr	r0, [r5, #0]
+20008672:	2100      	movs	r1, #0
+20008674:	2300      	movs	r3, #0
+20008676:	4288      	cmp	r0, r1
+20008678:	d004      	beq.n	20008684 <main+0x168>
+2000867a:	b28a      	uxth	r2, r1
+2000867c:	f844 3022 	str.w	r3, [r4, r2, lsl #2]
+20008680:	3101      	adds	r1, #1
+20008682:	e7f7      	b.n	20008674 <main+0x158>
+20008684:	4822      	ldr	r0, [pc, #136]	@ (20008710 <main+0x1f4>)
+20008686:	2109      	movs	r1, #9
+20008688:	2200      	movs	r2, #0
+2000868a:	f000 f877 	bl	2000877c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)>
+2000868e:	bf00      	nop
+20008690:	bf00      	nop
+20008692:	bf00      	nop
+20008694:	bf00      	nop
+20008696:	bf00      	nop
+20008698:	bf00      	nop
+2000869a:	f44f 4000 	mov.w	r0, #32768	@ 0x8000
+2000869e:	6800      	ldr	r0, [r0, #0]
+200086a0:	491c      	ldr	r1, [pc, #112]	@ (20008714 <main+0x1f8>)
+200086a2:	6088      	str	r0, [r1, #8]
+200086a4:	2001      	movs	r0, #1
+200086a6:	6008      	str	r0, [r1, #0]
+200086a8:	f3ef 8010 	mrs	r0, PRIMASK
+200086ac:	b672      	cpsid	i
+200086ae:	2004      	movs	r0, #4
+200086b0:	f000 f856 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+200086b4:	f000 f84a 	bl	2000874c <nordic_mcu_nrf54_ConsoleUart3::flush()>
+200086b8:	f64c 20fe 	movw	r0, #51966	@ 0xcafe
+200086bc:	9000      	str	r0, [sp, #0]
+200086be:	9800      	ldr	r0, [sp, #0]
+200086c0:	2800      	cmp	r0, #0
+200086c2:	d1fc      	bne.n	200086be <main+0x1a2>
+200086c4:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
+200086c6:	bf00      	nop
+200086c8:	5012071c 	.word	0x5012071c
+200086cc:	e000ed08 	.word	0xe000ed08
+200086d0:	00ffc400 	.word	0x00ffc400
+200086d4:	5010e010 	.word	0x5010e010
+200086d8:	2003c000 	.word	0x2003c000
+200086dc:	5004b518 	.word	0x5004b518
+200086e0:	e0082404 	.word	0xe0082404
+200086e4:	500cf500 	.word	0x500cf500
+200086e8:	fffffee4 	.word	0xfffffee4
+200086ec:	500e2060 	.word	0x500e2060
+200086f0:	e000e11c 	.word	0xe000e11c
+200086f4:	20008000 	.word	0x20008000
+200086f8:	fffffec8 	.word	0xfffffec8
+200086fc:	5010473c 	.word	0x5010473c
+20008700:	fffffc68 	.word	0xfffffc68
+20008704:	200088dc 	.word	0x200088dc
+20008708:	0003fffc 	.word	0x0003fffc
+2000870c:	200088f4 	.word	0x200088f4
+20008710:	20008909 	.word	0x20008909
+20008714:	5004c800 	.word	0x5004c800
+
+20008718 <em_utils_BoardController::blink(unsigned char, unsigned int)>:
+20008718:	b510      	push	{r4, lr}
+2000871a:	2405      	movs	r4, #5
+2000871c:	3c01      	subs	r4, #1
+2000871e:	bf08      	it	eq
+20008720:	bd10      	popeq	{r4, pc}
+20008722:	2000      	movs	r0, #0
+20008724:	6800      	ldr	r0, [r0, #0]
+20008726:	f24c 3050 	movw	r0, #50000	@ 0xc350
+2000872a:	f000 f801 	bl	20008730 <em_utils_BusyWait::wait(unsigned int)>
+2000872e:	e7f5      	b.n	2000871c <em_utils_BoardController::blink(unsigned char, unsigned int)+0x4>
+
+20008730 <em_utils_BusyWait::wait(unsigned int)>:
+20008730:	b081      	sub	sp, #4
+20008732:	f06f 0119 	mvn.w	r1, #25
+20008736:	4348      	muls	r0, r1
+20008738:	b118      	cbz	r0, 20008742 <em_utils_BusyWait::wait(unsigned int)+0x12>
+2000873a:	2100      	movs	r1, #0
+2000873c:	9100      	str	r1, [sp, #0]
+2000873e:	3001      	adds	r0, #1
+20008740:	e7fa      	b.n	20008738 <em_utils_BusyWait::wait(unsigned int)+0x8>
+20008742:	b001      	add	sp, #4
+20008744:	4770      	bx	lr
+
+20008746 <em_lang_Debug::delay()>:
+20008746:	2001      	movs	r0, #1
+20008748:	f7ff bff2 	b.w	20008730 <em_utils_BusyWait::wait(unsigned int)>
+
+2000874c <nordic_mcu_nrf54_ConsoleUart3::flush()>:
+2000874c:	4803      	ldr	r0, [pc, #12]	@ (2000875c <nordic_mcu_nrf54_ConsoleUart3::flush()+0x10>)
+2000874e:	6801      	ldr	r1, [r0, #0]
+20008750:	2900      	cmp	r1, #0
+20008752:	d0fc      	beq.n	2000874e <nordic_mcu_nrf54_ConsoleUart3::flush()+0x2>
+20008754:	2101      	movs	r1, #1
+20008756:	6001      	str	r1, [r0, #0]
+20008758:	4770      	bx	lr
+2000875a:	bf00      	nop
+2000875c:	50104168 	.word	0x50104168
+
+20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>:
+20008760:	4904      	ldr	r1, [pc, #16]	@ (20008774 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)+0x14>)
+20008762:	7008      	strb	r0, [r1, #0]
+20008764:	4804      	ldr	r0, [pc, #16]	@ (20008778 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)+0x18>)
+20008766:	2100      	movs	r1, #0
+20008768:	f8c0 1118 	str.w	r1, [r0, #280]	@ 0x118
+2000876c:	2101      	movs	r1, #1
+2000876e:	6001      	str	r1, [r0, #0]
+20008770:	f7ff bfec 	b.w	2000874c <nordic_mcu_nrf54_ConsoleUart3::flush()>
+20008774:	2003c000 	.word	0x2003c000
+20008778:	50104050 	.word	0x50104050
+
+2000877c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)>:
+2000877c:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
+20008780:	b08f      	sub	sp, #60	@ 0x3c
+20008782:	4604      	mov	r4, r0
+20008784:	2500      	movs	r5, #0
+20008786:	a809      	add	r0, sp, #36	@ 0x24
+20008788:	c02c      	stmia	r0!, {r2, r3, r5}
+2000878a:	e9cd 550c 	strd	r5, r5, [sp, #48]	@ 0x30
+2000878e:	950e      	str	r5, [sp, #56]	@ 0x38
+20008790:	f8ad 5020 	strh.w	r5, [sp, #32]
+20008794:	e9cd 5506 	strd	r5, r5, [sp, #24]
+20008798:	fa1f fb81 	uxth.w	fp, r1
+2000879c:	af09      	add	r7, sp, #36	@ 0x24
+2000879e:	462e      	mov	r6, r5
+200087a0:	455e      	cmp	r6, fp
+200087a2:	bfa4      	itt	ge
+200087a4:	b00f      	addge	sp, #60	@ 0x3c
+200087a6:	e8bd 8ff0 	ldmiage.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+200087aa:	b2b0      	uxth	r0, r6
+200087ac:	5c20      	ldrb	r0, [r4, r0]
+200087ae:	1c71      	adds	r1, r6, #1
+200087b0:	2825      	cmp	r0, #37	@ 0x25
+200087b2:	d109      	bne.n	200087c8 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x4c>
+200087b4:	b288      	uxth	r0, r1
+200087b6:	5c20      	ldrb	r0, [r4, r0]
+200087b8:	1cb5      	adds	r5, r6, #2
+200087ba:	2830      	cmp	r0, #48	@ 0x30
+200087bc:	d106      	bne.n	200087cc <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x50>
+200087be:	b2a8      	uxth	r0, r5
+200087c0:	5c20      	ldrb	r0, [r4, r0]
+200087c2:	1cf5      	adds	r5, r6, #3
+200087c4:	2630      	movs	r6, #48	@ 0x30
+200087c6:	e002      	b.n	200087ce <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x52>
+200087c8:	460e      	mov	r6, r1
+200087ca:	e019      	b.n	20008800 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x84>
+200087cc:	2620      	movs	r6, #32
+200087ce:	f04f 0900 	mov.w	r9, #0
+200087d2:	f1a0 0130 	sub.w	r1, r0, #48	@ 0x30
+200087d6:	b2ca      	uxtb	r2, r1
+200087d8:	2a09      	cmp	r2, #9
+200087da:	d808      	bhi.n	200087ee <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x72>
+200087dc:	eb09 0089 	add.w	r0, r9, r9, lsl #2
+200087e0:	0040      	lsls	r0, r0, #1
+200087e2:	fa50 f981 	uxtab	r9, r0, r1
+200087e6:	b2a8      	uxth	r0, r5
+200087e8:	5c20      	ldrb	r0, [r4, r0]
+200087ea:	3501      	adds	r5, #1
+200087ec:	e7f1      	b.n	200087d2 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x56>
+200087ee:	2863      	cmp	r0, #99	@ 0x63
+200087f0:	d009      	beq.n	20008806 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x8a>
+200087f2:	2878      	cmp	r0, #120	@ 0x78
+200087f4:	d00b      	beq.n	2000880e <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x92>
+200087f6:	2873      	cmp	r0, #115	@ 0x73
+200087f8:	d028      	beq.n	2000884c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xd0>
+200087fa:	2864      	cmp	r0, #100	@ 0x64
+200087fc:	d00a      	beq.n	20008814 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x98>
+200087fe:	462e      	mov	r6, r5
+20008800:	f000 f82c 	bl	2000885c <em_lang_Console::putch(unsigned char)>
+20008804:	e7cc      	b.n	200087a0 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x24>
+20008806:	7838      	ldrb	r0, [r7, #0]
+20008808:	f000 f828 	bl	2000885c <em_lang_Console::putch(unsigned char)>
+2000880c:	e01c      	b.n	20008848 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xcc>
+2000880e:	683b      	ldr	r3, [r7, #0]
+20008810:	2110      	movs	r1, #16
+20008812:	e00b      	b.n	2000882c <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xb0>
+20008814:	f8d7 a000 	ldr.w	sl, [r7]
+20008818:	f1ba 0f00 	cmp.w	sl, #0
+2000881c:	da04      	bge.n	20008828 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xac>
+2000881e:	202d      	movs	r0, #45	@ 0x2d
+20008820:	f7ff ff9e 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+20008824:	f1ca 0a00 	rsb	sl, sl, #0
+20008828:	210a      	movs	r1, #10
+2000882a:	4653      	mov	r3, sl
+2000882c:	fa4f f089 	sxtb.w	r0, r9
+20008830:	e9cd 1000 	strd	r1, r0, [sp]
+20008834:	9602      	str	r6, [sp, #8]
+20008836:	a804      	add	r0, sp, #16
+20008838:	a906      	add	r1, sp, #24
+2000883a:	220a      	movs	r2, #10
+2000883c:	f000 f81a 	bl	20008874 <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)>
+20008840:	e9dd 0104 	ldrd	r0, r1, [sp, #16]
+20008844:	f000 f83e 	bl	200088c4 <em_lang_Console::putbuf(em::frame_t<unsigned char>)>
+20008848:	3704      	adds	r7, #4
+2000884a:	e7a8      	b.n	2000879e <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0x22>
+2000884c:	683e      	ldr	r6, [r7, #0]
+2000884e:	f816 0b01 	ldrb.w	r0, [r6], #1
+20008852:	2800      	cmp	r0, #0
+20008854:	d0f8      	beq.n	20008848 <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xcc>
+20008856:	f000 f801 	bl	2000885c <em_lang_Console::putch(unsigned char)>
+2000885a:	e7f8      	b.n	2000884e <em_lang_Console::print(em::text_t, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)+0xd2>
+
+2000885c <em_lang_Console::putch(unsigned char)>:
+2000885c:	b510      	push	{r4, lr}
+2000885e:	4604      	mov	r4, r0
+20008860:	280a      	cmp	r0, #10
+20008862:	d102      	bne.n	2000886a <em_lang_Console::putch(unsigned char)+0xe>
+20008864:	200d      	movs	r0, #13
+20008866:	f7ff ff7b 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+2000886a:	4620      	mov	r0, r4
+2000886c:	f7ff ff78 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+20008870:	bd10      	pop	{r4, pc}
+	...
+
+20008874 <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)>:
+20008874:	b5f0      	push	{r4, r5, r6, r7, lr}
+20008876:	f8dd c01c 	ldr.w	ip, [sp, #28]
+2000887a:	e9dd e605 	ldrd	lr, r6, [sp, #20]
+2000887e:	4614      	mov	r4, r2
+20008880:	3c01      	subs	r4, #1
+20008882:	3e01      	subs	r6, #1
+20008884:	4573      	cmp	r3, lr
+20008886:	fbb3 f5fe 	udiv	r5, r3, lr
+2000888a:	fb05 331e 	mls	r3, r5, lr, r3
+2000888e:	4f0c      	ldr	r7, [pc, #48]	@ (200088c0 <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)+0x4c>)
+20008890:	5cfb      	ldrb	r3, [r7, r3]
+20008892:	b2a7      	uxth	r7, r4
+20008894:	55cb      	strb	r3, [r1, r7]
+20008896:	462b      	mov	r3, r5
+20008898:	d2f2      	bcs.n	20008880 <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)+0xc>
+2000889a:	e004      	b.n	200088a6 <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)+0x32>
+2000889c:	3c01      	subs	r4, #1
+2000889e:	b2a3      	uxth	r3, r4
+200088a0:	f801 c003 	strb.w	ip, [r1, r3]
+200088a4:	3e01      	subs	r6, #1
+200088a6:	b273      	sxtb	r3, r6
+200088a8:	2b01      	cmp	r3, #1
+200088aa:	daf7      	bge.n	2000889c <em_lang_Console::formatNum(em::frame_t<unsigned char>, unsigned int, unsigned char, signed char, unsigned char)+0x28>
+200088ac:	0423      	lsls	r3, r4, #16
+200088ae:	bf48      	it	mi
+200088b0:	4414      	addmi	r4, r2
+200088b2:	1b12      	subs	r2, r2, r4
+200088b4:	8082      	strh	r2, [r0, #4]
+200088b6:	fa11 f184 	uxtah	r1, r1, r4
+200088ba:	6001      	str	r1, [r0, #0]
+200088bc:	bdf0      	pop	{r4, r5, r6, r7, pc}
+200088be:	bf00      	nop
+200088c0:	20008913 	.word	0x20008913
+
+200088c4 <em_lang_Console::putbuf(em::frame_t<unsigned char>)>:
+200088c4:	b538      	push	{r3, r4, r5, lr}
+200088c6:	4604      	mov	r4, r0
+200088c8:	b28d      	uxth	r5, r1
+200088ca:	3d01      	subs	r5, #1
+200088cc:	bf38      	it	cc
+200088ce:	bd38      	popcc	{r3, r4, r5, pc}
+200088d0:	f814 0b01 	ldrb.w	r0, [r4], #1
+200088d4:	f7ff ff44 	bl	20008760 <nordic_mcu_nrf54_ConsoleUart3::put(unsigned char)>
+200088d8:	e7f7      	b.n	200088ca <em_lang_Console::putbuf(em::frame_t<unsigned char>)+0x6>
+	...

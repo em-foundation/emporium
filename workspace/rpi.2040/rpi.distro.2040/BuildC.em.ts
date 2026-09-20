@@ -61,6 +61,7 @@ export function em$generate() {
             dmem_sram: { orig: 0, len: 0 },
             imem_sram: { orig: 0, len: 0 },
             lmem_sram: { orig: 0, len: 0 },
+            cmem_sram: LinkerC.MEM_NULL,
         },
         [
             { name: 'BOOT2', sect: '.boot2', desc: { orig: 0x1000_0000, len: boot_sz } }
