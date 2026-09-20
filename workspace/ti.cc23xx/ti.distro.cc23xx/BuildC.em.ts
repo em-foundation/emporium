@@ -41,7 +41,7 @@ export function em$configure() {
     $using(REGS)
     $using(StartupC)
     $using(TargC)
-    IntrVec.IsrDefault.$$dlg = $isbare() ? IsrEmpty : IsrDebug
+    IntrVec.IsrDefault.$$dlg = IsrEmpty
     for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
