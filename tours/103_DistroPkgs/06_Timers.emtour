@@ -17,6 +17,15 @@ steps:
   - cmds:
       - open 2
       - fold 2 3 7
+      - fold 2 8 12
+      - fold 2 13 14
+      - fold 2 15 17
+      - fold 2 19 21
+      - fold 2 25 52
+      - fold 2 53 69
+      - fold 2 71 73
+      - fold 2 74 83
+      - fold 2 84 88
     focus: [2, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]BoardC% Additions}
