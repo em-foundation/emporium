@@ -9,6 +9,7 @@ const DATA = Path.join(ROOT, '.data')
 const EXTS = Path.join(ROOT, '.extensions')
 const NODE_MODULES = Path.join(ROOT, 'node_modules')
 const TOOLS = Path.join(ROOT, 'tools')
+const WORKSPACE = Path.join(ROOT, 'workspace')
 
 const EXTENSIONS = [
     'the-em-foundation.em-builder@26.2.2',
@@ -68,6 +69,9 @@ if (RESET) {
     Fs.rmSync(EXTS, { recursive: true, force: true })
     Fs.rmSync(NODE_MODULES, { recursive: true, force: true })
     Fs.rmSync(TOOLS, { recursive: true, force: true })
+    Fs.rmSync(Path.join(WORKSPACE, '.emscript'), { recursive: true, force: true })
+    Fs.rmSync(Path.join(WORKSPACE, 'emscript.ini'), { force: true })
+    Fs.rmSync(Path.join(ROOT, 'tsconfig.json'), { force: true })
 }
 
 Fs.mkdirSync(DATA, { recursive: true })
