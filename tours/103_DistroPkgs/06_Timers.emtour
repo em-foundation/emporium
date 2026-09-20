@@ -5,6 +5,7 @@ files:
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - rpi.2040:rpi.mcu.2040/Idle.em.ts
   - rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
+  - .assets/img-103-05-02.png
 
 steps:
 
@@ -31,8 +32,8 @@ steps:
       {[ht,$details]&thinsp;%[cu]BoardC% Additions}
 
   - cmds:
-      - open 3
-    focus: [3, 1]
+      - open 4
+    focus: [4, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]OneShotI% Implementation}
 
@@ -45,7 +46,11 @@ steps:
       {[ht,$details]&thinsp;ARM Core Support}
 
   - cmds:
-      - open 4
+      - open 3
+      - fold 3 7 22
+      - fold 3 40 51
+
+    focus: [3, 25]
     text: |
       {[ht,$details]&thinsp;%[cu]IdleI% Implementation}
 
@@ -54,5 +59,6 @@ steps:
       {[ht,$extra]&thinsp;Extra Credit}
 
   - cmds:
+      - view 5
     text: |
       {[ht,$steps]&thinsp;Next Steps}
