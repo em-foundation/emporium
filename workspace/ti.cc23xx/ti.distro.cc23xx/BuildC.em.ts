@@ -11,7 +11,7 @@ import * as REGS from '@ti.distro.cc23xx/REGS.em'
 import * as StartupC from '@ti.distro.cc23xx/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
-const NVIC_INTRS = [
+const NVIC_INTRS = <Array<string>>[
     'CPUIRQ0',
     'CPUIRQ1',
     'CPUIRQ2',
