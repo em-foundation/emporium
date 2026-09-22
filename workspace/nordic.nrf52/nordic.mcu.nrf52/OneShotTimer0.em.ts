@@ -22,7 +22,7 @@ var cur_fxn: Handler = $null
 
 export function disable(): void {
     $R.TIMER0.TASKS_STOP.$$ = 1
-    Idle.setPauseOnly(false)
+    Idle.setLevel(0)
     IntrVec.NVIC_disable(e$`TIMER0_IRQn`)
 }
 
@@ -37,7 +37,7 @@ export function uenable(usecs: u32, handler: OneShotI.Handler, arg: arg_t): void
 function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_fxn = handler
     cur_arg = arg
-    Idle.setPauseOnly(true)
+    Idle.setLevel(1)
     IntrVec.NVIC_enable(e$`TIMER0_IRQn`)
     $R.TIMER0.TASKS_STOP.$$ = 1
     $R.TIMER0.TASKS_CLEAR.$$ = 1

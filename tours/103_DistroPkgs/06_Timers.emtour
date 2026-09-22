@@ -80,7 +80,7 @@ steps:
 
       This implementation of the {[cu]OneShotI} in&shy;terface imports the {[cs]'@rpi.distro.2040'} {[cu]REGS} facade as {[cs]$R}{[bm,A]}.
 
-      Targeting the {[cn]TIMER}.{[cn]ALARM0} peripheral, {[cu]OneShotAlarm0} must manage interrupts sourced by the underlying MCU.
+      Using the {[cs]$R}.{[cn]TIMER}.{[cn]ALARM0} peripheral, {[cu]OneShotAlarm0} must manage interrupts sourced by the underlying MCU.
 
       <div class="em-info">
 
@@ -90,28 +90,69 @@ steps:
 
       Invoked at build-time&thinsp;{[bm,B]}, the {[cf]useIntr} meta-function tells {[cu]IntrVec} that we'll handle {[cs]'TIMER_IRQ_0'} interrupts.
 
-      A name unique to this MCU, let's return to {[cu]BuildC} where we'll find the original declaration of {[cs]'TIMER_IRQ_0'}&hellip;
+      A name _unique_ to this MCU, let's return to {[cu]BuildC} where we'll find the original declaration of {[cs]'TIMER_IRQ_0'}&hellip;
 
   - cmds:
       - view 6
     text: |
       {[ht,$details]&thinsp;%[cu]BuildC% &ndash; Interrupt Declarations}
 
+      The {[cu]BuildC} composite of each (ARM-based) distro def&shy;ines {[cn]NVIC_INTRS} &ndash; a list of MCU-specific interrupt names.
+
+      The {[cs]em$configure} intrinsic of each {[cu]BoardC} then invokes {[cu]IntrVec}.**`em$meta`**.{[cf]addIntr}{[dc,I]} to declare each name.
+
+      <div class="em-info">
+
+      Note that our first overview of {[cu]BoardC}&thinsp;{[tr,103/03/03]} had an _empty_ {[cn]NVIC_INTRS} &ndash; suitable for its `..sandbox` distro.
+
+      </div>
+
+      Each interrupt name in fact declares a _family_ of program identifiers &ndash; as we'll see next with {[cs]'TIMER_IRQ_0'}{[dc,T]}.
+
+
   - cmds:
       - open 4
       - mark 4 A 4
       - mark 4 B 14
-      - mark 4 C 26
-      - mark 4 D 40
-      - mark 4 E 49
+      - mark 4 C 21
+      - mark 4 D 26
+      - mark 4 E 41
+      - mark 4 F 50
     focus: [4, 23]
     text: |
       {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$targ</b></code>}
+
+      The {[cn]IRQn} constant at&thinsp;{[bm,C]} aliases a (vendor-supplied) sym&shy;bol defining the interrupt number of {[cs]'TIMER_IRQ_0'}.
+
+      <div class="em-info">
+
+      Calls to {[cu]IntrVec}.{[cf]NVIC_*} inside functions {[bm,D]}&thinsp;&ndash;{[bm,F]} re&shy;ceive {[cn]IRQn} as their argument.
+
+      </div>
+
+      Implementations of the {[cu]OneShotI} {[cf]enable} and {[cf]uenable} methods defer to a common {[cf]ustart} function {[bm,E]}.
+
+      Besides preparing {[cs]$R}.{[cn]TIMER}, {[cf]ustart} calls the {[cf]setLevel} method of {[cu]Idle} &ndash; which we'll explain shortly.
+
+      To handle {[cs]'TIMER_IRQ_0'} interrupts, the driver must im&shy;plement a specially-named {[cf]*_isr$$} function {[bm,F]}.
+
+      When triggered, {[cf]*_isr$$} clears the appropriate inter&shy;rupt sources and invokes the {[cn]cur_fxn} handler bound in {[bm,E]}.
 
   - cmds:
       - view 7
     text: |
       {[ht,$details]&thinsp;ARM Core Support}
+
+      The `em.arch.arm` bucket contains generic run-time con&shy;tent targeting ARM-based MCUs:
+
+      {[DC,1]} standard ARM core header files included via {[cu]REGS}<br>
+      {[DC,2]} stock implementation of {[cu]GlobalInterruptsI}<br>
+      {[DC,3]} implementation of {[cu]IrqI} plus a default {[cu]IsrI} proxy<br>
+      {[DC,4]} implementation of {[cu]IsrI} with debug output<br>
+      {[DC,5]} minimal implementation of {[cu]IsrI}<br>
+      {[DC,6]} stock implementation of {[cu]UsCounterI}<br>
+
+      Note also that {[cu]IntrVec}{[dc,M]} along with {[cu]StartupC}{[dc,M]} both play important roles in **`em$meta`** domain.
 
   - cmds:
       - open 3

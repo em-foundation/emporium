@@ -24,6 +24,7 @@ var cur_arg: arg_t
 var cur_fxn: Handler = $null
 
 export function disable(): void {
+    cur_fxn = $null
     $R.TIMER.ARMED.$$ = ALARM_MASK
     Idle.setLevel(0)
     IntrVec.NVIC_disable(IRQn)
