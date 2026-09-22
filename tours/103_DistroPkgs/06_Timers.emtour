@@ -14,9 +14,24 @@ steps:
 
   - cmds:
       - open 1
+      - mark 1 A 8
+      - mark 1 B 13
+      - mark 1 C 21
     focus: [1, 1]
     text: |
       {[ht,$start]&thinsp;Handling One-Shot Interrupts}
+
+      With basic {[cu]Gpio} and {[cu]ConsoleUart} services in place, we'll pivot to handling HW interrupts inside a {[cu]OneShot} driver.
+
+      <div class="em-info">
+
+      Managing interrupts indeed raises the bar for **EMS** dis&shy;tros in general &ndash; especially when supporting new MCUs.
+
+      </div>
+
+      To simplify matters, we'll examine a {[cu]OneShot} driver {[bm,A]} used throughout **Basic Examples**&thinsp; {[tr,101/04/01]} and&thinsp; {[tr,101/05/01]}.
+
+      Note that the design of {[cu]OneShot1P} directly uses (distro-supplied) {[cn]GlobalInterrupts}{[bm,B]} and {[cn]Idle}{[bm,C]} modules.
 
   - cmds:
       - open 2
@@ -30,16 +45,52 @@ steps:
       - fold 2 71 73
       - fold 2 74 83
       - fold 2 84 88
+      - mark 2 A 8
+      - mark 2 B 13
+      - mark 2 C 15
     focus: [2, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]BoardC% Additions}
 
+      Starting with a baseline {[cu]BoardC} viewed in the last tour {[tr,103/05/02]}, supporting {[cu]OneShot} requires minimal additions.
+
+      Notice how the modules imported by {[cu]BoardC} now fall into _three_ categories, based on their bucket of origin:
+
+      {[BM,A]} portable &ndash; {[cu]Common}, {[cu]Poller}<br>
+      {[BM,B]} MCU-specific &ndash; {[cu]Idle}, {[cu]OneShot}<br>
+      {[BM,C]} ARM-generic &ndash; {[cu]GlobalInterrupts}, {[cu]UsCounter}
+
+      With multiple **EMS** distros supporting a range of **ARM** processors, {[cs]'@em.arch.arm'} has earned its keep.
+
+      <div class="em-info">
+
+      In the limit, we want to _minimize_ each distro's unique contributions and _maximize_ re-use of generic elements.
+
+      </div>
+      
+
   - cmds:
       - open 4
       - fold 4 18 100
+      - mark 4 A 4
+      - mark 4 B 14
     focus: [4, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$meta</b></code>}
+
+      This implementation of the {[cu]OneShotI} in&shy;terface imports the {[cs]'@rpi.distro.2040'} {[cu]REGS} facade as {[cs]$R}{[bm,A]}.
+
+      Targeting the {[cn]TIMER}.{[cn]ALARM0} peripheral, {[cu]OneShotAlarm0} must manage interrupts sourced by the underlying MCU.
+
+      <div class="em-info">
+
+      This implementation therefore imports {[cu]IntrVec} &ndash; first seen in the context of {[cu]BuildC} {[tr,103/03/04]}.
+
+      </div>
+
+      Invoked at build-time&thinsp;{[bm,B]}, the {[cf]useIntr} meta-function tells {[cu]IntrVec} that we'll handle {[cs]'TIMER_IRQ_0'} interrupts.
+
+      A name unique to this MCU, let's return to {[cu]BuildC} where we'll find the original declaration of {[cs]'TIMER_IRQ_0'}&hellip;
 
   - cmds:
       - view 6
@@ -48,6 +99,11 @@ steps:
 
   - cmds:
       - open 4
+      - mark 4 A 4
+      - mark 4 B 14
+      - mark 4 C 26
+      - mark 4 D 40
+      - mark 4 E 49
     focus: [4, 23]
     text: |
       {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$targ</b></code>}
