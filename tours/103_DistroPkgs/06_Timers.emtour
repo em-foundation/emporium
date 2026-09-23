@@ -206,13 +206,25 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]} 
+      {[bi,task_alt]} Review how {[cu]Poller} uses its {[cn]OneShot} proxy.
 
-      {[bi,task_alt]} 
+      {[bi,task_alt]} Find {[cu]OneShotI} implementations in other distros
 
-      {[bi,task_alt]} 
+      {[bi,task_alt]} Explore {[cu]IntrVec} in light of what you've learned.
 
   - cmds:
       - view 5
     text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      Advancing from **Basic Examples** group {[dc,1]} to {[dc,2]} required distro elements that comprehend hardware interrupts.
+
+      Moving on to group {[dc,3]}, we'll explore timers designed for extended periods of sleep &ndash; expending very little energy.
+
+      <div class="em-info">
+
+      And as promised, we'll dive into {[cu]Idle}.{[cf]doSleep}&hellip;🌙
+
+      </div>
+      
+      {[hc]}
