@@ -1,11 +1,63 @@
 title: Sleep + Wakeup
 
+files:
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/RtcAlarm1.em.ts
+
 steps:
-  - text: |
+  - cmds:
+      - open 1
+    text: |
       {[ht,$start]&thinsp;Welcome}
 
-  - text: |
+  - cmds:
+      - open 2
+      - fold 2 4 7
+      - fold 2 8 19
+      - fold 2 22 51
+      - fold 2 53 57
+      - fold 2 58 72
+      - fold 2 74 87
+      - mark 2 A 20
+      - mark 2 B 22
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+  - cmds:
+      - open 3
+      - fold 3 38 50
+      - fold 3 58 100
+    focus: [3, 16]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Interrupts}
+
+  - cmds:
+      - open 3
+      - fold 3 9 39
+      - fold 3 51 59
+      - mark 3 A 8
+      - mark 3 B 40
+      - mark 3 C 48
+      - mark 3 D 60
+    focus: [3, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Time Functions}
+
+  - cmds:
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+      {[bi,task_alt]}
+
+      {[bi,task_alt]}
+
+      {[bi,task_alt]}
+
+  - cmds:
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}
+

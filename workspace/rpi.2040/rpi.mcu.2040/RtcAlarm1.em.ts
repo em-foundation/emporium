@@ -33,7 +33,6 @@ export function disable() {
 
 export function enable(thresh: T.RtcThresh, handler: Handler) {
     cur_hlr = handler
-    // printf`cur = %08d, thr = %08d\n`($R.TIMER.TIMELR.$$, thresh)
     $R.TIMER.ALARM1.$$ = thresh
     $R.TIMER_SET.INTE.$$ = ALARM_MASK
 }
