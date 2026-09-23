@@ -78,7 +78,7 @@ steps:
     text: |
       {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$meta</b></code>}
 
-      This implementation of the {[cu]OneShotI} in&shy;terface imports the {[cs]'@rpi.distro.2040'} {[cu]REGS} facade as {[cs]$R}{[bm,A]}.
+      Our distro's implementation of {[cu]OneShotI} begins by im&shy;porting the {[cs]'@rpi.distro.2040'} {[cu]REGS} facade as {[cs]$R}{[bm,A]}.
 
       Using the {[cs]$R}.{[cn]TIMER}.{[cn]ALARM0} peripheral, {[cu]OneShotAlarm0} must manage interrupts sourced by the underlying MCU.
 
@@ -99,7 +99,7 @@ steps:
 
       The {[cu]BuildC} composite of each (ARM-based) distro def&shy;ines {[cn]NVIC_INTRS} &ndash; a list of MCU-specific interrupt names.
 
-      The {[cs]em$configure} intrinsic of each {[cu]BoardC} then invokes {[cu]IntrVec}.**`em$meta`**.{[cf]addIntr}{[dc,I]} to declare each name.
+      The {[cs]em$configure} intrinsic of each {[cu]BuildC} then invokes {[cu]IntrVec}.**`em$meta`**.{[cf]addIntr}{[dc,I]} to declare each name.
 
       <div class="em-info">
 
@@ -122,7 +122,7 @@ steps:
     text: |
       {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$targ</b></code>}
 
-      The {[cn]IRQn} constant at&thinsp;{[bm,C]} aliases a (vendor-supplied) sym&shy;bol defining the interrupt number of {[cs]'TIMER_IRQ_0'}.
+      The {[cn]IRQn} constant at&thinsp;{[bm,C]} aliases a (vendor-supplied) sym&shy;bol defining the interrupt number for {[cs]'TIMER_IRQ_0'}.
 
       <div class="em-info">
 
@@ -143,7 +143,7 @@ steps:
     text: |
       {[ht,$details]&thinsp;ARM Core Support}
 
-      The `em.arch.arm` bucket contains generic run-time con&shy;tent targeting ARM-based MCUs:
+      The `em.arch.arm` bucket contains generic support for ARM-based MCUs at build-time as well as run-time:
 
       {[DC,1]} standard ARM core header files included via {[cu]REGS}<br>
       {[DC,2]} stock implementation of {[cu]GlobalInterruptsI}<br>
@@ -175,7 +175,7 @@ steps:
 
       An earlier **Basic Examples** tour {[tr,101/04/06]} mentioned how a distro's {[cu]Idle} module uses `DbgB` to signal MCU activity.
 
-      Set "active"&thinsp;{[bm,A]} at startup, {[cf]doPause}{[bm,B]} signals on `DbgB` the MCU's entry into "standby" via the ARM `wfi` instruction.
+      Set "active"&thinsp;{[bm,A]} at startup, {[cf]doPause}{[bm,B]} signals on `DbgB` the MCU's entry into "lite-sleep" via the ARM `wfi` instruction.
 
       <div class="em-info">
 
@@ -208,7 +208,7 @@ steps:
 
       {[bi,task_alt]} Review how {[cu]Poller} uses its {[cn]OneShot} proxy.
 
-      {[bi,task_alt]} Find {[cu]OneShotI} implementations in other distros
+      {[bi,task_alt]} Find {[cu]OneShotI} implementations in other distros.
 
       {[bi,task_alt]} Explore {[cu]IntrVec} in light of what you've learned.
 
@@ -223,7 +223,7 @@ steps:
 
       <div class="em-info">
 
-      And as promised, we'll dive into {[cu]Idle}.{[cf]doSleep}&hellip;🌙
+      And as promised, we'll dive into {[cu]Idle}.{[cf]doSleep}&hellip;&thinsp;💤
 
       </div>
       
