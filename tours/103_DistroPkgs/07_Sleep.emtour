@@ -20,12 +20,12 @@ steps:
 
       The `em.hal` bucket within the (portable) `em.core` pack&shy;age contains two complementary MCU timer abstractions:
 
-      {[bi,arrow_circle_right]}&thinsp;{[cu]OneShotI}, "pausing" the CPU for a short interval<br>
-      {[bi,arrow_circle_right]}&thinsp;{[cu]RtcI}, entering _deep-sleep_ over a longer interval<br>
+      {[bi,arrow_circle_right]}&thinsp;{[cu]OneShotI} &mdash; "pausing" the CPU for a short interval<br>
+      {[bi,arrow_circle_right]}&thinsp;{[cu]RtcI} &mdash; entering _deep-sleep_ over a longer interval<br>
 
       To motivate our {[cu]RtcI} implementation, we'll return to the (portable) {[cu]SleepyRunnerP} app analyzed earlier &thinsp;{[tr,102/07/05]}.
 
-      Using {[cu]TickerMgr}{[bm,A]}, this program awakens from deep-sleep every second &ndash; to run just _one_ pass of **CoreMark** {[bm,B]}.
+      Using {[cu]TickerMgr}{[bm,A]}, this program awakens from deep-sleep every second &ndash; and runs _one_ **CoreMark** iteration&thinsp;{[bm,B]}.
 
       <div class="em-info">
 
@@ -33,9 +33,7 @@ steps:
 
       </div>
 
-      Since {[cu]FiberMgr} calls the distro's {[cu]Common}.{[cn]Idle} dele&shy;gate {[tr,101/03/05]}&thinsp;, we'll also visit {[cu]Idle}.{[cf]doSleep} &ndash; as promised&thinsp;&hellip;
-
-
+      Since {[cu]FiberMgr} calls the distro's {[cu]Common}.{[cn]Idle} dele&shy;gate {[tr,101/03/05]}&thinsp;, we'll finally visit {[cu]Idle}.{[cf]doSleep} &ndash; as promised&thinsp;&hellip;
 
   - cmds:
       - open 2
@@ -50,6 +48,23 @@ steps:
     focus: [2, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+      The only distro-supplied module imported here, {[cu]BoardC} binds its {[cu]Rtc} delegate&thinsp;{[bm,A]} to several proxies.
+
+      Adjacent to deep-sleep support within this (ARM-based) distro, the {[cu]UsCounter} delegate at&thinsp;{[bm,B]} deserves mention.
+
+      Drawn from {[cs]'@em.arch.arm'}, this implementation of {[cu]UsCounterI} uses the generic ARM **SysTick** timer.
+
+      <div class="em-info">
+
+      You'll soon learn why **SysTick** comes up short in serving as our distro's optimal {[cu]RtcI} or {[cu]OneShot} timer.
+
+      </div>
+
+      The **SysTick** peripheral can, however, measure the passage of time at the resolution of the CPU instruction clock.
+
+      &ensp;💡&thinsp;Use **F12** to inspect {[cu]UsCounter} in more detail.
+      
 
   - cmds:
       - open 3
