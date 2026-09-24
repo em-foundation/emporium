@@ -4,12 +4,38 @@ files:
   - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - rpi.2040:rpi.mcu.2040/RtcAlarm1.em.ts
+  - rpi.2040:rpi.mcu.2040/Idle.em.ts
+  - em.core:em.utils/LedT.em.ts
+  - .assets/img-103-07-01.png
+  - .assets/img-103-05-02.png
 
 steps:
   - cmds:
       - open 1
+      - mark 1 A 26
+      - mark 1 B 32
+    focus: [1, 1]
     text: |
-      {[ht,$start]&thinsp;Welcome}
+      {[ht,$start]&thinsp;Deep-Sleep}
+
+      The `em.hal` bucket within the (portable) `em.core` pack&shy;age contains two complementary MCU timer abstractions:
+
+      {[bi,arrow_circle_right]}&thinsp;{[cu]OneShotI}, "pausing" the CPU for a short interval<br>
+      {[bi,arrow_circle_right]}&thinsp;{[cu]RtcI}, entering _deep-sleep_ over a longer interval<br>
+
+      To motivate our {[cu]RtcI} implementation, we'll return to the (portable) {[cu]SleepyRunnerP} app analyzed earlier &thinsp;{[tr,102/07/05]}.
+
+      Using {[cu]TickerMgr}{[bm,A]}, this program awakens from deep-sleep every second &ndash; to run just _one_ pass of **CoreMark** {[bm,B]}.
+
+      <div class="em-info">
+
+      An earlier diagram illustrates how {[cu]TickerMgr} maintains its own portability via internal {[cu]RtcI} proxies {[tr,101/08/01]}.
+
+      </div>
+
+      Since {[cu]FiberMgr} calls the distro's {[cu]Common}.{[cn]Idle} dele&shy;gate {[tr,101/03/05]}&thinsp;, we'll also visit {[cu]Idle}.{[cf]doSleep} &ndash; as promised&thinsp;&hellip;
+
+
 
   - cmds:
       - open 2
@@ -46,6 +72,39 @@ steps:
       {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Time Functions}
 
   - cmds:
+      - open 4
+      - fold 4 22 30
+      - fold 4 52 100
+      - mark 4 A 10
+      - mark 4 B 14
+      - mark 4 C 41
+      - mark 4 D 44
+      - mark 4 E 46
+
+    focus: [4, 12]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Idle% &ndash; &thinsp;Enter&thinsp;&middot;&thinsp;Leave&thinsp; Deep-Sleep}
+
+  - cmds:
+      - open 5
+      - fold 5 36 54
+      - fold 5 63 100
+      - mark 5 A 18
+      - mark 5 B 55
+      - mark 5 C 59
+    focus: [5, 14]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]LedT% &ndash; Deep-Sleep Callbacks}
+
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,timer]&thinsp;Timer Design Space}
+
+
+  - cmds:
+      - view 6
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -56,6 +115,7 @@ steps:
       {[bi,task_alt]}
 
   - cmds:
+      - view 7
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
