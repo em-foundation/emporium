@@ -70,9 +70,24 @@ steps:
       - open 3
       - fold 3 38 50
       - fold 3 58 100
+      - mark 3 A 14
+      - mark 3 B 26
+      - mark 3 C 54
     focus: [3, 16]
     text: |
       {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Interrupts}
+
+      Similar to the distro's {[cu]OneShot} driver {[tr,103/06/03]}, its {[cu]Rtc} im&shy;plementation manages {[cs]$R}.{[cn]TIMER}.{[cn]ALARM1} interrupts.
+
+      <div class="em-info">
+
+      You'll also learn why our `rpi.2040` distro can use the _same_ {[cs]$R}.{[cn]TIMER} peripheral for both {[cu]OneShot} and {[cu]Rtc}.
+
+      </div>
+
+      Other than using a (slightly) different interrupt source {[bm,A]}, use of {[cs]$R}.{[cn]TIMER} by the {[cu]Rtc} driver should look familiar.
+
+      Unlike {[cu]OneShot}, {[cu]Rtc} enables {[cn]IRQn}{[bm,B]} just _once_ at start&shy;up; {[cf]*_isr$$}, however, clears {[cn]IRQn}{[bm,C]} when triggered.
 
   - cmds:
       - open 3
