@@ -57,7 +57,7 @@ steps:
 
       <div class="em-info">
 
-      You'll soon learn why **SysTick** comes up short in serving as our distro's optimal {[cu]RtcI} or {[cu]OneShot} timer.
+      You'll soon learn why **SysTick** comes up short in serving as our distro's optimal {[cu]Rtc} or {[cu]OneShot} timer.
 
       </div>
 
@@ -101,19 +101,71 @@ steps:
     text: |
       {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Time Functions}
 
+      Our driver must also implement two {[cu]RtcI} methods which operate upon {[cs]'@em.utils/TimeTypes.em'}{[bm,A]} values:
+
+      {[BM,B]} {[cf]getRawTime} &mdash; 64-bit seconds&thinsp;&middot;&thinsp;sub-seconds pair<br>
+      {[BM,C]} {[cf]toThresh} &mdash; quarter-seconds to opaque timer limit<br>
+
+      Like many candidate {[cu]RtcI} peripherals, {[cs]$R}.{[cn]TIMER} pro&shy;vides a pair of 32-bit registers marking time since reset.
+
+      <div class="em-info">
+
+      The exact protocol to read and scale these registers {[bm,D]} will vary with each distro's choice for its {[cu]RtcI} timer.
+
+      </div>
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,timer]&thinsp;Timer Design Space}
+
+      We've hinted that properties of timer periph&shy;erals make them more (or less) suitable for {[cu]Rtc} or {[cu]OneShot} drivers.
+
+      When characterizing a candidate timer, we'll consider four independent dimensions of the design space:
+
+      {[DC,1]}&thinsp; **Resolution** &mdash; smallest interval it can distinguish <br>
+      {[DC,2]}&thinsp; **Range** &mdash; longest interval it can represent<br>
+      {[DC,3]}&thinsp; **Accuracy** &mdash; its closeness to real elapsed time<br>
+      {[DC,4]}&thinsp; **Power** &mdash; energy needed to keep its running<br>
+
+      {[cu]OneShot}&ensp;|&ensp; {[dc,1]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,4]} &ensp;|&ensp; _short, precise timing_<br>
+      {[cu]Rtc&nbsp;&nbsp;&nbsp;&nbsp;}&ensp;|&ensp; {[dc,4]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,1]} &ensp;|&ensp; _long, low-power timing_
+
+      <div class="em-info">
+
+      Since we can't measure {[dc,4]} on {[em]PI_PICO-sim$$}, our distro uses the _same_ timer for its {[cu]OneShot} and {[cu]Rtc} drivers.
+
+      </div>
+
   - cmds:
       - open 4
       - fold 4 22 30
       - fold 4 52 100
-      - mark 4 A 10
-      - mark 4 B 14
+      - mark 4 A 14
+      - mark 4 B 18
       - mark 4 C 41
       - mark 4 D 44
       - mark 4 E 46
+      - mark 4 F 48
+      - mark 4 G 50
 
-    focus: [4, 12]
+    focus: [4, 13]
     text: |
       {[ht,$details]&thinsp;%[cu]Idle% &ndash; &thinsp;Enter&thinsp;&middot;&thinsp;Leave&thinsp; Deep-Sleep}
+
+      Our earlier pass through {[cu]Idle}&thinsp;{[tr,103/06/07]} illustrated how {[cf]doPause} took control when awaiting a {[cu]OneShot} interrupt.
+
+      By contrast, {[cu]Rtc} drivers would want {[cu]Idle} to enter a very low-power sleep mode implemented within {[cf]doSleep}.
+
+      To save power, {[cu]Idle} enables _other_ drivers to receive call&shy;backs when entering (or leaving) deep-sleep:
+
+      {[bm,A]}{[BM,B]}&thinsp;drivers register {[ct]SleepCB} functions at build-time<br>
+      {[bm,C]}{[BM,G]}{[cf]doSleep} invokes driver callbacks at run-time<br>
+      {[bm,D]}{[BM,F]}{[cf]doSleep} directly resets&thinsp;&middot;&thinsp;restarts the `Dbg*` pins
+
+      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into its deep-sleep at {[bm,E]}.
+
+      &nbsp;⚠️ Details can vary widely from one MCU to the next&thinsp;!!
 
   - cmds:
       - open 5
@@ -125,13 +177,6 @@ steps:
     focus: [5, 14]
     text: |
       {[ht,$peek]&thinsp;%[cu]LedT% &ndash; Deep-Sleep Callbacks}
-
-
-  - cmds:
-      - view 6
-    text: |
-      {[ht,timer]&thinsp;Timer Design Space}
-
 
   - cmds:
       - view 6
