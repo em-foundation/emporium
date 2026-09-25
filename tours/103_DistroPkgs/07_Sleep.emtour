@@ -142,12 +142,12 @@ steps:
       - fold 4 22 30
       - fold 4 52 100
       - mark 4 A 14
-      - mark 4 B 18
-      - mark 4 C 41
-      - mark 4 D 44
-      - mark 4 E 46
-      - mark 4 F 48
-      - mark 4 G 50
+      - mark 4 a 18
+      - mark 4 B 41
+      - mark 4 b 50
+      - mark 4 C 44
+      - mark 4 c 48
+      - mark 4 D 46
 
     focus: [4, 13]
     text: |
@@ -159,11 +159,11 @@ steps:
 
       To save power, {[cu]Idle} enables _other_ drivers to receive call&shy;backs when entering (or leaving) deep-sleep:
 
-      {[bm,A]}{[BM,B]}&thinsp;drivers register {[ct]SleepCB} functions at build-time<br>
-      {[bm,C]}{[BM,G]}{[cf]doSleep} invokes driver callbacks at run-time<br>
-      {[bm,D]}{[BM,F]}{[cf]doSleep} directly resets&thinsp;&middot;&thinsp;restarts the `Dbg*` pins
+      {[bm,A]}{[BM,a]}&thinsp;drivers register {[ct]SleepCB} functions at build-time<br>
+      {[bm,B]}{[BM,b]}{[cf]doSleep} invokes driver callbacks at run-time<br>
+      {[bm,C]}{[BM,c]}{[cf]doSleep} directly resets&thinsp;&middot;&thinsp;restarts the `Dbg*` pins
 
-      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into its deep-sleep at {[bm,E]}.
+      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into its deep-sleep at {[bm,D]}.
 
       &nbsp;⚠️ Details can vary widely from one MCU to the next&thinsp;!!
 
@@ -177,6 +177,22 @@ steps:
     focus: [5, 14]
     text: |
       {[ht,$peek]&thinsp;%[cu]LedT% &ndash; Deep-Sleep Callbacks}
+
+      To illustrate {[cu]Idle} callbacks, consider the (portable) {[cu]LedT} template whose clones control {[cn]Pin} proxies.
+
+      To save energy, we want to reset (or re-enable) `AppLed` and `SysLed` GPIOs when entering (or leaving) deep-sleep.
+
+      {[BM,A]} {[cu]LedT} registers {[cn]sleep*} callbacks at build-time.<br>
+      {[BM,B]} {[cf]sleepEnter} puts {[cn]Pin} in its hi-Z input state<br>
+      {[BM,C]} {[cf]sleepLeave} puts {[cn]Pin} in its inactive output state<br>
+
+      <div class="em-info">
+
+      Note how {[cu]LedT} calls {[cf]sleepLeave} within {[cs]em$startup}.
+
+      </div>
+
+      In general, _any_ **EMS** driver can register {[cu]Idle} call&shy;backs to shutdown its HW peripheral during low-power deep-sleep.
 
   - cmds:
       - view 6
