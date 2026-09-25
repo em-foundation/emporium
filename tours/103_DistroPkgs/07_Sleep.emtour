@@ -49,7 +49,7 @@ steps:
     text: |
       {[ht,$details]&thinsp;%[cu]BoardC% Additions}
 
-      The only distro-supplied module imported here, {[cu]BoardC} binds its {[cu]Rtc} delegate&thinsp;{[bm,A]} to several proxies.
+      Of the additions shown here, only the {[cu]Rtc} delegate {[bm,A]} originates within the `rpi.2040` distro package.
 
       Adjacent to deep-sleep support within this (ARM-based) distro, the {[cu]UsCounter} delegate at&thinsp;{[bm,B]} deserves mention.
 
@@ -125,8 +125,8 @@ steps:
 
       {[DC,1]}&thinsp; **Resolution** &mdash; smallest interval it can distinguish <br>
       {[DC,2]}&thinsp; **Range** &mdash; longest interval it can represent<br>
-      {[DC,3]}&thinsp; **Accuracy** &mdash; its closeness to real elapsed time<br>
-      {[DC,4]}&thinsp; **Power** &mdash; energy needed to keep its running<br>
+      {[DC,3]}&thinsp; **Accuracy** &mdash;closeness to real elapsed time<br>
+      {[DC,4]}&thinsp; **Power** &mdash; energy needed to keep it running<br>
 
       {[cu]OneShot}&ensp;|&ensp; {[dc,1]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,4]} &ensp;|&ensp; _short, precise timing_<br>
       {[cu]Rtc&nbsp;&nbsp;&nbsp;&nbsp;}&ensp;|&ensp; {[dc,4]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,1]} &ensp;|&ensp; _long, low-power timing_
@@ -163,7 +163,7 @@ steps:
       {[bm,B]}{[BM,b]}{[cf]doSleep} invokes driver callbacks at run-time<br>
       {[bm,C]}{[BM,c]}{[cf]doSleep} directly resets&thinsp;&middot;&thinsp;restarts the `Dbg*` pins
 
-      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into its deep-sleep at {[bm,D]}.
+      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into deep-sleep at {[bm,D]}.
 
       &nbsp;⚠️ Details can vary widely from one MCU to the next&thinsp;!!
 
@@ -203,7 +203,7 @@ steps:
 
       {[bi,task_alt]} Find {[cu]Rtc} and {[cu]Idle} implementations in other distros.
 
-      {[bi,task_alt]} Execute {[cu]SleepyRunnerP} on real HW board.
+      {[bi,task_alt]} Execute {[cu]SleepyRunnerP} on real hardware.
 
   - cmds:
       - view 7
@@ -214,7 +214,7 @@ steps:
 
       <div class="em-info">
 
-      We can also support {[cu]SleepRunnerP} &ndash; a portable app underlying our <b>EM&bull;Mark</b> energy-efficiency metric. 
+      We can also support {[cu]SleepyRunnerP} &ndash; a portable app underlying our <b>EM&bull;Mark</b> energy-efficiency metric. 
 
       </div>
 
