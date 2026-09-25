@@ -199,16 +199,26 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Rate **SysTick**'s suitability as an {[cu]Rtc} or {[cu]OneShot} timer.
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Find {[cu]Rtc} and {[cu]Idle} implementations in other distros.
 
-      {[bi,task_alt]}
+      {[bi,task_alt]} Execute {[cu]SleepyRunnerP} on real HW board.
 
   - cmds:
       - view 7
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
+      With distro support for (low-power) deep-sleep in place, we can now run all **Basic Examples** from group {[dc,3]}.
+
+      <div class="em-info">
+
+      We can also support {[cu]SleepRunnerP} &ndash; a portable app underlying our <b>EM&bull;Mark</b> energy-efficiency metric. 
+
+      </div>
+
+      Before taking up <b>EM&bull;Mark</b> in a future tour bundle, let's finish up with **Edge Interrupts** needed for group {[dc,4]}.
+      
       {[hc]}
 
