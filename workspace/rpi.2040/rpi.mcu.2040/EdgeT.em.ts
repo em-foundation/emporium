@@ -13,17 +13,25 @@ export namespace em$template {
     export const Pin = $proxy<GpioI.$I>()
     export const pin_num = $config<i16>()
 
+    const edge_handler = $config<EdgeI.Handler>()
+
     export namespace em$meta {
-        export function setDetectHandler(h: EdgeI.Handler) {
+
+        export function em$construct() {
             let hi = Aux.HandlerInfo.$make()
-            hi.handler = h
+            hi.handler = $cb(handler)
             Aux.em$meta.addHandlerInfo(hi)
+        }
+
+        export function setDetectHandler(h: EdgeI.Handler) {
+            edge_handler.$$val = h
         }
     }
 
+    //>> ---- em$targ ---- <<//
+
     const pid = pin_num & 0xff
     const shift = (pid & 0x7) * 4
-    const mask = 0x3 << shift
 
     let mode = 0
 
@@ -32,7 +40,7 @@ export namespace em$template {
     }
 
     export function disableDetect(): void {
-        $reg32[e$`IO_BANK0_PROC_INTE_get(pid)`] &= mask
+        $reg32[e$`IO_BANK0_PROC_INTE_get(pid)`] &= ~mode
     }
 
     export function enableDetect(): void {
@@ -60,6 +68,12 @@ export namespace em$template {
 
     export function setDetectRising() {
         mode = $R.IO_BANK0_INTR0_GPIO0_EDGE_HIGH_Msk << shift
+    }
+
+    function handler() {
+        if (($reg32[e$`IO_BANK0_PROC_INTS_get(pid)`] & mode) && edge_handler != $null) {
+            edge_handler()
+        }
     }
 }
 

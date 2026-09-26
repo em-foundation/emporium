@@ -1,8 +1,6 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as $R from '@rpi.distro.2040/REGS.em'
-
 import * as EdgeI from '@em.hal/EdgeI.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
@@ -18,10 +16,8 @@ export namespace em$meta {
         IntrVec.em$meta.useIntr('IO_IRQ_BANK0')
     }
 
-    export function addHandlerInfo(hi: HandlerInfo): u8 {
-        const chan = <u8>handler_info_tab.$len
+    export function addHandlerInfo(hi: HandlerInfo) {
         handler_info_tab.$$add(hi)
-        return chan
     }
 }
 
