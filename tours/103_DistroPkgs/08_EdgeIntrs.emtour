@@ -31,12 +31,12 @@ steps:
 
       <div class="em-info">
 
-      Pressing the button of course triggers an MCU interrupt.
+      Pressing the button triggers an MCU interrupt.
 
       </div>
 
       {[BM,B]} We bind an {[cu]AppButEdge} event handler at build-time.<br>
-      {[BM,C]} We setup {[cu]AppButEdge} to detect HI-LO transitions.<br>
+      {[BM,C]} We set up {[cu]AppButEdge} to detect HI-LO transitions.<br>
       {[BM,D]} We enable event detection on {[cu]AppButEdge}.<br>
       {[BM,E]} We await an incoming {[cu]AppButEdge} MCU interrupt.<br>
       {[BM,F]} We clear the {[cu]AppButEdge} event before setting a flag.<br>
@@ -70,7 +70,7 @@ steps:
 
       </div>
 
-      The distro's special `em-boards` file (loaded at {[bm,D]}) will de&shy;fine a suitable value for the {[cn]appBut} pin&thinsp;{[bm,C]}.
+      The distro's special `em-boards` file (loaded at {[bm,D]}) defines a suitable value for the {[cn]appBut} pin&thinsp;{[bm,C]}.
 
       {[cu]BoardC} assigns this Evalue to {[cn]pin_num} configs ex&shy;posed by {[cu]AppButEdge} as well as its bound {[cu]AppButPin} delegate.
 
@@ -107,20 +107,23 @@ steps:
       - mark 4 A 6
       - mark 4 B 16
       - mark 4 C 23
-      - mark A D 26
+      - mark 4 D 26
     focus: [4, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]EdgeT% Driver Template &ndash; <code><b>em$meta</b></code>}
 
-      Typical of most {[cu]EdgeT} templates, its {[cu]EdgeI} implementa&shy;tion relies upon an auxiliary module&thinsp;{[bm,A]} we'll visit next.
-
-      Supporting {[cu]EdgeI}.{[cf]setDetectHandler}{[bm,B]}&thinsp; in the **`em$meta`** domain, {[cu]Aux} enables us to record handler information.
+      At build-time, the {[cf]setDetectHandler}{[bm,D]} function simply retains a client callback in the {[cn]edge_handler}{[bm,B]} config.
 
       <div class="em-info">
 
-      Once again, the design of {[cu]EdgeI} requires binding of client handlers to only occur at build-time {[bm,C]}.
+      Edge-detection events signalled by the associated GPIO will call the current {[cn]edge_handler} function at run-time.
 
       </div>
+
+      Typical of {[cu]EdgeI} implementations, an auxiliary module {[bm,A]} directly manages the underlying HW interrupts.
+
+      Through a build-time binding {[bm,C]}, {[cu]Aux} will invoke a _local_ {[cn]handler} callback (defined later) at run-time.
+
 
   - cmds:
       - open 5
@@ -137,7 +140,7 @@ steps:
 
       In the **`em$meta`** domain, each call to {[cf]addHandlerInfo}{[bm,C]} ap&shy;pends a {[ct]HandlerInfo} value to {[cn]handler_info_tab}{[bm,A]}.
 
-      In the **`em$targ`** domain, {[cu]EdgeAux} iterates {[bm,E]} over this (readonly) table and invokes the handler for each entry.
+      In the **`em$targ`** domain, {[cu]EdgeAux} iterates {[bm,E]} over this (read-only) table and invokes the handler for each entry.
 
       Like our {[cu]Rtc} driver {[tr,103/07/03]}, {[cu]EdgeAux} declares its use of the {[cs]'IO_IRQ_BANK0'} interrupt at build-time&thinsp;{[bm,B]}.
 
@@ -188,7 +191,7 @@ steps:
 
       On _any_ incoming pin interrupt, {[cu]EdgeAux} invokes a private {[cf]handler}{[bm,H]} &ndash; passed via our {[cu]Aux}{[bm,A]} alias at build-time&thinsp;{[bm,C]}.
 
-      Using {[cn]mask}, {[cf]handler} confirms the event's origin &ndash; before calling client functions bound by {[cf]setDetectHandler}{[bm,B]}{[bm,D]}.
+      Using {[cn]mask}, {[cf]handler} ensures the edge occur&shy;red &ndash; and then invokes a client callback bound at build-time {[bm,B]}{[bm,D]}.
 
   - cmds:
       - view 6
@@ -197,7 +200,7 @@ steps:
 
       {[bi,task_alt]} Review {[cu]Button2P} {[tr,101/09/09]} and {[cu]Button3P} {[tr,101/10/01]}.
 
-      {[bi,task_alt]} Inspect _rising_ edges in {[cu]Button1P} and using **PulseView**.
+      {[bi,task_alt]} Inspect _rising_ edges in {[cu]Button1P} using **PulseView**.
 
       {[bi,task_alt]} Explore programs in the `em.examples.combo` bucket.
 
@@ -209,7 +212,7 @@ steps:
 
       ☑️&ensp;Done&thinsp;&hellip;
 
-      We've finished our deep-dive into the `rpi.2040` distro package &ndash; systematically adding drivers for each group.
+      We've finished our deep-dive into the `rpi.2040` distro package &ndash; incrementally adding drivers along the way.
 
       But before we move on to tackling **Energy Efficiency**, let's take a [relaxing&thinsp;!!] final tour of the **EMS** distro codescape.
 
