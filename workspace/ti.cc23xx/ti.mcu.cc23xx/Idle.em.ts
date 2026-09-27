@@ -22,7 +22,9 @@ export namespace em$meta {
     }
 }
 
-let cur_pause_only = false
+//>> ---- em$targ ---- <<//
+
+var cur_level: IdleI.SleepLevel = 0
 
 export function em$startup() {
     $['%%b+']
@@ -54,16 +56,20 @@ function doPause() {
     IntrVec.PRIMASK_set(0)
 }
 
-export function setPauseOnly(pause_only: bool_t) {
-    cur_pause_only = pause_only
-}
-
 export function exec() {
-    if (cur_pause_only) {
+    if (cur_level > 0) {
         doPause()
     } else {
         doSleep()
     }
+}
+
+export function getLevel(): IdleI.SleepLevel {
+    return cur_level
+}
+
+export function setLevel(level: IdleI.SleepLevel) {
+    cur_level = level
 }
 
 export function wakeup() { }

@@ -73,7 +73,6 @@ export function em$generate() {
             cmem_sram: { orig: 0x20008000, len: 0x00008000 }
         },
         [
-            { name: 'FLASH_CCFG', sect: '.ccfg', desc: { orig: 0x4e020000, len: 0x800 } }
         ]
 
     )
