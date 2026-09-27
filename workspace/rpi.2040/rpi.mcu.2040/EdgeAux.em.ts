@@ -23,12 +23,14 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const IRQn = e$`IO_IRQ_BANK0_IRQn`
+
 export function em$startup() {
-    IntrVec.NVIC_enable(e$`IO_IRQ_BANK0_IRQn`)
+    IntrVec.NVIC_enable(IRQn)
 }
 
 export function IO_IRQ_BANK0_isr$$() {
-    IntrVec.NVIC_clear(e$`IO_IRQ_BANK0_IRQn`)
+    IntrVec.NVIC_clear(IRQn)
     for (const hi of handler_info_tab) {
         if (hi.handler != $null) {
             hi.handler()

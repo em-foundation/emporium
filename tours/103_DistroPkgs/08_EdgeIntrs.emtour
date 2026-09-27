@@ -127,8 +127,8 @@ steps:
       - mark 5 A 11
       - mark 5 B 16
       - mark 5 C 19
-      - mark 5 D 27
-      - mark 5 E 32
+      - mark 5 D 29
+      - mark 5 E 34
     focus: [5, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]EdgeAux% Helper}
@@ -139,31 +139,78 @@ steps:
 
       In the **`em$targ`** domain, {[cu]EdgeAux} iterates {[bm,E]} over this (readonly) table and invokes the handler for each entry.
 
+      Like our {[cu]Rtc} driver {[tr,103/07/03]}, {[cu]EdgeAux} declares its use of the {[cs]'IO_IRQ_BANK0'} interrupt at build-time&thinsp;{[bm,B]}.
+
+      {[cu]EdgeAux} then enables the corresponding {[cn]IRQn} just once at {[cs]em$startup}{[bm,D]} &ndash; like {[cu]Rtc}.
+
+      <div class="em-info">
+
+      Note that {[cu]EdgeAux} does _not_ call {[cu]Idle}.{[cf]setLevel} &ndash; al&shy;lowing MCU deep-sleep when awaiting edge interrupts.
+
+      </div>
+
+
+
   - cmds:
       - open 4
       - fold 4 40 41
       - fold 4 42 45
       - fold 4 46 49
       - fold 4 52 53
+      - fold 4 59 61
       - fold 4 63 64
       - fold 4 67 68
       - fold 4 69 71
-      - fold 4 77 100
-      - mark 5 A 11
-      - mark 5 B 16
-      - mark 5 C 19
-      - mark 5 D 27
-      - mark 5 E 32
+      - fold 4 78 100
+      - mark 4 A 6
+      - mark 4 B 16
+      - mark 4 C 23
+      - mark 4 D 26
+      - mark 4 E 38
+      - mark 4 F 54
+      - mark 4 G 65
+      - mark 4 H 73
     focus: [4, 34]
     text: |
       {[ht,$details]&thinsp;%[cu]EdgeT% Driver Template &ndash; <code><b>em$targ</b></code>}
+
+      Typically called once at run-time, {[cf]init}{[bm,F]} makes its {[cn]Pin} proxy a GPIO input and sets its pull bias conditionally.
+
+      The {[cf]*Detect}{[bm,E]} functions use the current {[cn]mask} value when manipulating GPIO detection _state_.
+
+      The {[cf]setDetect*}{[bm,G]} functions assign an appropriate value to {[cn]mask} &ndash; tracking the latest GPIO detection _mode_.
+
+      <div class="em-info">
+
+      Unlike {[cu]Button1P}, advanced apps can alter the _mode_{[bm,G]} as well as the _state_{[bm,E]} of GPIO detection at run-time.
+
+      </div>
+
+      On _any_ incoming pin interrupt, {[cu]EdgeAux} invokes a private {[cf]handler}{[bm,H]} &ndash; passed via our {[cu]Aux}{[bm,A]} alias at build-time&thinsp;{[bm,C]}.
+
+      Using {[cn]mask}, {[cf]handler} confirms the event's origin &ndash; before calling client functions bound by {[cf]setDetectHandler}{[bm,B]}{[bm,D]}.
 
   - cmds:
       - view 6
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
+      {[bi,task_alt]} Review {[cu]Button2P} {[tr,101/09/09]} and {[cu]Button3P} {[tr,101/10/01]}.
+
+      {[bi,task_alt]} Inspect _rising_ edges in {[cu]Button1P} and using **PulseView**.
+
+      {[bi,task_alt]} Explore programs in the `em.examples.combo` bucket.
+
+
   - cmds:
       - view 7
     text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      ☑️&ensp;Done&thinsp;&hellip;
+
+      We've finished our deep-dive into the `rpi.2040` distro package &ndash; systematically adding drivers for each group.
+
+      But before we move on to tackling **Energy Efficiency**, let's take a [relaxing&thinsp;!!] final tour of the **EMS** distro codescape.
+
+      {[hc]}
