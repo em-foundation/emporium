@@ -15,12 +15,7 @@ export namespace em$meta {
     }
 }
 
-var ovr_cnt: u32 = 0
-
 //>> ---- em$targ ---- <<//
-
-const DEBUG = false
-const TEST_OVR = false
 
 const SUBS_Cnt = 15  // 32kHz 
 const SUBS_Msk = (1 << SUBS_Cnt) - 1
@@ -28,9 +23,9 @@ const SUBS_Msk = (1 << SUBS_Cnt) - 1
 var cur_hlr = <Handler>$null
 var cur_hlr_aux = <Handler>$null
 
+var ovr_cnt: u32 = 0
+
 export function em$startup() {
-    // $R.RTC0.PRESCALER.$$ = 0     // 32kHz
-    if (TEST_OVR) $R.RTC0.TASKS_TRIGOVRFLW.$$ = 1
     $R.RTC0.INTENSET.$$ = $R.RTC_INTENSET_OVRFLW_Msk
     $R.RTC0.TASKS_START.$$ = 1
     IntrVec.NVIC_enable(e$`RTC0_IRQn`)
@@ -48,10 +43,8 @@ export function disableAux() {
     $R.RTC0.EVENTS_COMPARE[1].$$ = 0
 }
 
-
 export function enable(thresh: T.RtcThresh, handler: Handler) {
     const ctr = $R.RTC0.COUNTER.$$
-    if (DEBUG) printf`ena: ctr = %08x, thr = %08x\n`(ctr, thresh)
     cur_hlr = handler
     $R.RTC0.CC[0].$$ = thresh
     $R.RTC0.INTENSET.$$ = $R.RTC_INTENSET_COMPARE0_Msk
@@ -76,7 +69,6 @@ export function getRawTime(): T.RawTime {
     const ctr = $R.RTC0.COUNTER.$$
     res.secs = ((ovr_cnt << 9)) | (ctr >> SUBS_Cnt) // TODO -- add overflow count
     res.subs = (ctr & SUBS_Msk) << (32 - SUBS_Cnt)
-    if (DEBUG) printf`raw: ovr = %08x, ctr = %08x, secs = %08x, subs = %08x\n`(ovr_cnt, ctr, res.secs, res.subs)
     return res
 }
 
