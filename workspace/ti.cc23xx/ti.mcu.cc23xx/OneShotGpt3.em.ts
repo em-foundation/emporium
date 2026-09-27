@@ -15,13 +15,17 @@ export namespace em$meta {
     }
 }
 
-let cur_arg: arg_t
-let cur_fxn: Handler = $null
+//>> ---- em$targ ---- <<//
+
+const IRQn = e$`LGPT3_COMB_IRQn`
+
+var cur_arg: arg_t
+var cur_fxn: Handler = $null
 
 export function disable() {
     cur_fxn = $null
     Idle.setLevel(0)
-    IntrVec.NVIC_disable(e$`LGPT3_COMB_IRQn`)
+    IntrVec.NVIC_disable(IRQn)
     $R.LGPT3.ICLR.$$ = $R.LGPT_ICLR_TGT
 }
 
@@ -37,7 +41,7 @@ function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_fxn = handler
     cur_arg = arg
     Idle.setLevel(1)
-    IntrVec.NVIC_enable(e$`LGPT3_COMB_IRQn`)
+    IntrVec.NVIC_enable(IRQn)
     $R.CLKCTL.CLKENSET0.$$ = $R.CLKCTL_CLKCFG0_LGPT3
     $R.LGPT3.IMSET.$$ = $R.LGPT_IMSET_TGT
     $R.LGPT3.PRECFG.$$ = 48 << $R.LGPT_PRECFG_TICKDIV_S
