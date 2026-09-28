@@ -33,6 +33,15 @@ export function em$startup() {
         $R.EVTULL_WKUPMASK_AON_IOC_COMB | $R.EVTULL_WKUPMASK_AON_RTC_COMB
 }
 
+function doPause() {
+    $['%%b:'](1)
+    $['%%b-']
+    IntrVec.PRIMASK_set(1)
+    e$`asm volatile ("wfi")`
+    $['%%b+']
+    IntrVec.PRIMASK_set(0)
+}
+
 function doSleep() {
     for (let cb of sleep_enter_tab) cb()
     $['%%b:'](2)
@@ -44,15 +53,6 @@ function doSleep() {
     Debug.startup()
     $['%%b+']
     for (let cb of sleep_leave_tab) cb()
-    IntrVec.PRIMASK_set(0)
-}
-
-function doPause() {
-    $['%%b:'](1)
-    $['%%b-']
-    IntrVec.PRIMASK_set(1)
-    e$`asm volatile ("wfi")`
-    $['%%b+']
     IntrVec.PRIMASK_set(0)
 }
 
