@@ -1,7 +1,11 @@
 title: Distro Gallery
 
+files:
+  - .assets/img-103-09-01.png
+
 steps:
   - cmds:
+      - view 1
     text: |
       {[ht,$start]&thinsp;Distro Gallery}
 
