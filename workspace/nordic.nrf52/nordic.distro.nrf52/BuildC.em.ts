@@ -107,7 +107,7 @@ export function em$generate() {
         |->     -D__EM_LANG__=1 \\
         |->     -D__GNUC__ \\
         |->     --std=c++14 \\
-        |->     -triple thumbv6m-none-eabi \\
+        |->     -triple thumbv7em-none-eabi \\
         |->     -target-cpu cortex-m4 \\
         |->     -ffunction-sections \\
         |->     -fdata-sections \\
