@@ -68,11 +68,10 @@ steps:
 
   - cmds:
       - open 3
-      - fold 3 38 50
-      - fold 3 58 100
+      - fold 3 38 57
       - mark 3 A 14
       - mark 3 B 26
-      - mark 3 C 54
+      - mark 3 C 61
     focus: [3, 16]
     text: |
       {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Interrupts}
@@ -92,11 +91,10 @@ steps:
   - cmds:
       - open 3
       - fold 3 9 39
-      - fold 3 51 59
+      - fold 3 57 100
       - mark 3 A 8
       - mark 3 B 40
-      - mark 3 C 48
-      - mark 3 D 60
+      - mark 3 C 55
     focus: [3, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Time Functions}
@@ -110,7 +108,7 @@ steps:
 
       <div class="em-info">
 
-      The exact protocol to read and scale these registers {[bm,D]} will vary with each distro's choice for its {[cu]RtcI} timer.
+      The exact protocol to read and scale these registers {[bm,B]} will vary with each distro's choice for its {[cu]RtcI} timer.
 
       </div>
 
