@@ -78,7 +78,8 @@ export function em$generate() {
     )
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
-    let libflav = opt == 'Oz' ? 'small' : 'balanced'
+    let libarch = 'v7em_fpv4_sp_d16_hard'
+    let libflav = 'balanced'
     let out = $outfile('build.sh', 0o755)
     out.addFrag(`
         |-> #!/bin/sh
@@ -106,6 +107,8 @@ export function em$generate() {
         |->     -D__EM_MCU_null__ \\
         |->     -D__EM_LANG__=1 \\
         |->     -D__GNUC__ \\
+        |->     -D__FPU_PRESENT=1 \\
+        |->     -D__FPU_USED=1 \\
         |->     --std=c++14 \\
         |->     -triple thumbv7em-none-eabi \\
         |->     -target-cpu cortex-m4 \\
@@ -139,8 +142,8 @@ export function em$generate() {
         |-> "
         |-> 
         |-> LIBS="
-        |->     $TOOLS/lib/libc_v6m_t_le_eabi_${libflav}.a \\
-        |->     $TOOLS/lib/strops_v6m_t_le_eabi_${libflav}.a \\
+        |->     $TOOLS/lib/libc_${libarch}_t_le_eabi_${libflav}.a \\
+        |->     $TOOLS/lib/strops_${libarch}_t_le_eabi_${libflav}.a \\
         |-> "
         |-> 
         |-> $CC -c $CFLAGS $CINCS $COPTS -x c++ main.cpp -o $OUT/main.obj
