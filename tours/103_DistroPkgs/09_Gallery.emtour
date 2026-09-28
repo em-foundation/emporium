@@ -2,6 +2,7 @@ title: Distro Gallery
 
 files:
   - .assets/img-103-09-01.png
+  - .assets/img-103-09-02.png
 
 steps:
   - cmds:
@@ -9,7 +10,22 @@ steps:
     text: |
       {[ht,$start]&thinsp;Distro Gallery}
 
+      The last handful of tours examined the details of (MCU-specific) content supplied by our `rpi.2040` distro {[dc,R]}.
+
+      This tour takes a bird's-eye view of those sources &ndash; plac&shy;ing files from {[dc,R]} next to counterparts from distros {[dc,N]} and {[dc,T]}.
+
+      We'll use capitalized markers [{[bm,A]}&thinsp;] to highlight com&shy;mon elements to aid viewing source files side-by-side.
+
+      We'll then numeric markers [{[bm,1]}&thinsp;] to highlight additional details within these files as needed.
+
+      <div class="em-info">
+
+      **VS Code**💡&ndash; hide the **Primary Sidebar** and **Bottom Panel** to best view _code triptych_ series that follows.
+
+      </div>
+
   - cmds:
+      - view 2
     text: |
       {[ht,photo]&thinsp;%[cu]BuildC%}
 
