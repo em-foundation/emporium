@@ -1,11 +1,50 @@
 title: Distro Gallery
 
 steps:
-  - text: |
-      {[ht,$start]&thinsp;Welcome}
+  - cmds:
+    text: |
+      {[ht,$start]&thinsp;Distro Gallery}
 
-  - text: |
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]BuildC%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]BoardC%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]ConsoleUart%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]GpioT%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]Mcu%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]EdgeAux%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]OneShot%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]Idle%}
+
+  - cmds:
+    text: |
+      {[ht,photo]&thinsp;%[cu]Rtc%}
+
+  - cmds:
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+  - cmds:
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
