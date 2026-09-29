@@ -3,6 +3,7 @@ title: Distro Gallery
 files:
   - .assets/img-103-09-01.png
   - .assets/img-103-09-02.png
+  - .assets/img-103-09-03.png
 
 steps:
   - cmds:
@@ -16,7 +17,7 @@ steps:
 
       We'll use capitalized markers [{[bm,A]}&thinsp;] to highlight com&shy;mon elements to aid viewing source files side-by-side.
 
-      We'll then numeric markers [{[bm,1]}&thinsp;] to highlight additional details within these files as needed.
+      We'll then numeric circles [&thinsp;{[dc,1]}&thinsp;] to highlight additional details within these files as needed.
 
       <div class="em-info">
 
@@ -29,9 +30,46 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]BuildC%}
 
+      Recalling its special relationshp with the **EMS** translator, {[cu]BuildC}&thinsp;{[tr,103/03/01]} provides an entry-point into any distro.
+
+      We've peeked earlier at {[cs]em$configure} in these files, not&shy;ing _commonality_ in declaring MCU interrupts {[tr,103/06/04]}.
+
+      Synthesis of `build.sh` and `load.sh` scripts within their {[cs]em$generate} implementations follows suit:
+
+      {[BM,A]} specification of the MCU's memory map<br>
+      {[BM,B]} compiler flags reflecting the CPU's architecture<br>
+      {[BM,C]} a platform-specific command for loading executables<br>
+
+      {[DC,1]} a repeatable pattern for any MCU with **JLink** support
+
+      <div class="em-info">
+
+      A future utility might synthesize `build.sh` fragments for these (and other) distros using **Segger** compilers.
+
+      </div>
+
   - cmds:
+      - view 3
     text: |
       {[ht,photo]&thinsp;%[cu]BoardC%}
+
+      Having made _many_ stops at the `rpi.2040` {[dc,R]} {[cu]BoardC}, we see almost identical code in its distro {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} counterparts.
+
+      Some details about their {[cs]em$configure} implementations:
+
+      {[BM,A]} per-board bindings of logical pin names<br>
+      {[BM,B]} assigning a (MCU-specific) scalar for {[cu]BusyWait}<br>
+
+      {[DC,1]} set {[cn]MHZ_P} [=&thinsp;48] to match the MCU system clock<br>
+      {[DC,2]} disable on-board SPI flash to save power<br>
+
+      Similar to a top-level HW module in VHDL/Verilog, {[cu]BoardC} serves as a "collection" point for distro content.
+
+      <div class="em-info">
+
+      Yes, we shamelessly "cut-copy-paste" proven {[cu]BoardC} implementations when fielding a new distro.
+
+      </div>
 
   - cmds:
     text: |
