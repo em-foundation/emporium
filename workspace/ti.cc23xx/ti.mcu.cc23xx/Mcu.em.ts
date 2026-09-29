@@ -32,4 +32,3 @@ export function startup(): void {
     $R.CKMD.LFCLKSEL.$$ = e$`CKMD_LFCLKSEL_MAIN_LFXT`
     $R.CKMD.LFXTCTL.$$ = $R.CKMD_LFXTCTL_EN
 }
-
