@@ -4,6 +4,7 @@ files:
   - .assets/img-103-09-01.png
   - .assets/img-103-09-02.png
   - .assets/img-103-09-03.png
+  - .assets/img-103-09-04.png
 
 steps:
   - cmds:
@@ -72,8 +73,28 @@ steps:
       </div>
 
   - cmds:
+      - view 4
     text: |
       {[ht,photo]&thinsp;%[cu]ConsoleUart%}
+
+      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart}&thinsp;{[tr,103/05/06]} for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro.
+
+      The {[cu]ConsoleUart} drivers supplied by distros {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} rep&shy;resent a more typical implementation pattern:
+
+      {[BM,A]} flush any pending output to the HW UART<br>
+      {[BM,B]} write a single output byte, polling for completion<br>
+
+      {[DC,1]} bind {[cu]Idle} sleep callbacks at build-time<br>
+      {[DC,2]} re-use {[cf]sleepLeave} in {[cs]em$startup}<br>
+      {[DC,3]} disable the HW UART and reset {[cu]TxPin}<br>
+      {[DC,4]} configure and enable the HW UART<br>
+
+      <div class="em-info">
+
+      Prefer the minimalist approach {[dc,R]} when coding a new distro; add the {[cu]Idle} callbacks when further along.
+
+      </div>
+
 
   - cmds:
     text: |
