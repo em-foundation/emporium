@@ -7,6 +7,10 @@ files:
   - .assets/img-103-09-04.png
   - .assets/img-103-09-05.png
   - .assets/img-103-09-06.png
+  - .assets/img-103-09-07.png
+  - .assets/img-103-09-08.png
+  - .assets/img-103-09-09.png
+  - .assets/img-103-09-10.png
 
 steps:
   - cmds:
@@ -101,7 +105,7 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]ConsoleUart%}
 
-      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart}&thinsp;{[tr,103/05/06]} for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro.
+      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart}for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro &thinsp;{[tr,103/05/06]}.
 
       The {[cu]ConsoleUart} drivers supplied by distros {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} rep&shy;resent a more typical implementation pattern:
 
@@ -145,20 +149,75 @@ steps:
 
 
   - cmds:
-    text: |
-      {[ht,photo]&thinsp;%[cu]EdgeAux%}
-
-  - cmds:
+      - view 8
     text: |
       {[ht,photo]&thinsp;%[cu]OneShot%}
 
+      Our first driver to handle interrupts, {[cu]OneShot} also man&shy;ages a HW TIMER in a very transparent manner {[tr,103/06/05]}.
+
+      Except for some low-level HW details, the {[cu]OneShot} drivers for distros {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} follow a very predictable pattern:
+
+      {[BM,A]} declare use of some HW TIMER INTR<br>
+      {[BM,B]} stop TIMER, disable INTR, allow deep-sleep<br>
+      {[BM,C]} inhibit deep-sleep, enable INTR, arm/start TIMER<br>
+      {[BM,D]} handle TIMER INTR, invoke client-supplied callback<br>
+
+      <div class="em-info">
+
+      By far the easiest class of peripheral to manage when initially supporting HW interrupts within a new distro.
+
+      </div>
+
   - cmds:
+      - view 7
+    text: |
+      {[ht,photo]&thinsp;%[cu]EdgeAux%}
+
+      {[BM,A]}<br>
+      {[BM,B]}<br>
+      {[BM,C]}<br>
+      {[BM,D]}<br>
+      {[BM,E]}<br>
+
+      {[DC,1]}<br>
+
+      <div class="em-info">
+
+      </div>
+
+  - cmds:
+      - view 9
     text: |
       {[ht,photo]&thinsp;%[cu]Idle%}
 
+      {[BM,A]}<br>
+      {[BM,B]}<br>
+      {[BM,C]}<br>
+      {[BM,D]}<br>
+
+      <div class="em-info">
+
+      </div>
+
   - cmds:
+      - view 10
     text: |
       {[ht,photo]&thinsp;%[cu]Rtc%}
+
+      {[BM,A]}<br>
+      {[BM,B]}<br>
+      {[BM,C]}<br>
+      {[BM,D]}<br>
+      {[BM,E]}<br>
+
+      {[DC,1]}<br>
+      {[DC,2]}<br>
+      {[DC,3]}<br>
+
+      <div class="em-info">
+
+      </div>
+
 
   - cmds:
     text: |
