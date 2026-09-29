@@ -6,6 +6,7 @@ files:
   - .assets/img-103-09-03.png
   - .assets/img-103-09-04.png
   - .assets/img-103-09-05.png
+  - .assets/img-103-09-06.png
 
 steps:
   - cmds:
@@ -63,7 +64,7 @@ steps:
       {[BM,B]} assigning a (MCU-specific) scalar for {[cu]BusyWait}<br>
 
       {[DC,1]} set {[cn]MHZ_P} [=&thinsp;48] to match the MCU system clock<br>
-      {[DC,2]} disable on-board SPI flash to save power<br>
+      {[DC,2]} disable on-board SPI FLASH to save power<br>
 
       Similar to a top-level HW module in VHDL/Verilog, {[cu]BoardC} serves as a "collection" point for distro content.
 
@@ -120,8 +121,28 @@ steps:
 
 
   - cmds:
+      - view 6
     text: |
       {[ht,photo]&thinsp;%[cu]Mcu%}
+
+      The {[cu]Mcu} module contains initialization code executed very soon after HW RESET {[tr,103/05/05]}.
+
+      Highly reflective of the underlying HW architecture, each {[cu]Mcu} implementation does contain some common traits:     
+
+      {[BM,A]} a stub satisfying most MCU HW needs<br>
+      {[BM,B]} initial activity on the `DbgB` pin<br>
+
+      {[DC,1]} distinquish `setup-sram` from `setup-flash`<br>
+      {[DC,2]} vendor-supplied silicon workarounds ["magic"]<br>
+      {[DC,3]} CACHE setup for FLASH execution<br>
+      {[DC,4]} low-frequency CLOCK for deep-sleep<br>
+
+      <div class="em-info">
+
+      Often coded in tandem with {[cu]GpioT} in early distro devel&shy;opment, keep {[cu]Mcu} minimal for as long as reasonable.
+
+      </div>
+
 
   - cmds:
     text: |
