@@ -5,6 +5,7 @@ files:
   - .assets/img-103-09-02.png
   - .assets/img-103-09-03.png
   - .assets/img-103-09-04.png
+  - .assets/img-103-09-05.png
 
 steps:
   - cmds:
@@ -73,6 +74,28 @@ steps:
       </div>
 
   - cmds:
+      - view 5
+    text: |
+      {[ht,photo]&thinsp;%[cu]GpioT%}
+
+      Evolving from bare-metal code fragments {[tr,103/04/03]}, {[cu]GpioT} {[tr,103/05/07]} supports a basic capability of the distro's MCU.
+
+      Despite expected differences in register-level ac&shy;cess to in&shy;dividual pins, {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} employ a consistent design:
+
+      {[BM,A]} a {[cn]pin_num} config parameter assigned in {[cu]BoardC}<br>
+      {[BM,B]} mapping external {[cn]pin_num} to internal constants<br>
+      {[BM,C]} prepare the underlying GPIO pin for output<br>
+      {[BM,D]} change the output state of the underlying GPIO pin<br>
+
+      MCUs with _multiple_ GPIO banks [eg `0xB_09`] require more advanced de&shy;coding of {[cn]pin_num} at&thinsp;{[bm,B]}.
+
+      <div class="em-info">
+
+      In practice, {[cu]GpioT} will evolve organically within a new distro &ndash; code what you need, stub-out the rest.
+
+      </div>
+
+  - cmds:
       - view 4
     text: |
       {[ht,photo]&thinsp;%[cu]ConsoleUart%}
@@ -95,10 +118,6 @@ steps:
 
       </div>
 
-
-  - cmds:
-    text: |
-      {[ht,photo]&thinsp;%[cu]GpioT%}
 
   - cmds:
     text: |
