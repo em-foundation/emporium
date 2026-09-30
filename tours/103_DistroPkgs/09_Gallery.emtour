@@ -11,6 +11,7 @@ files:
   - .assets/img-103-09-08.png
   - .assets/img-103-09-09.png
   - .assets/img-103-09-10.png
+  - .assets/img-103-09-11.png
 
 steps:
   - cmds:
@@ -236,8 +237,16 @@ steps:
 
 
   - cmds:
+      - view 11
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Deep-dive into the full {[cu]Rtc} drivers of distro {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}
+
+      {[bi,task_alt]} Comprehend the unique {[cu]Rtc} _range_ issues within {[dc,N]}.
+
+      {[bi,task_alt]} Grok why LFCLK sources impact {[cu]Rtc} _power_ {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
+
 
   - cmds:
     text: |
