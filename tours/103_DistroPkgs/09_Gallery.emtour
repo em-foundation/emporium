@@ -26,7 +26,7 @@ steps:
 
       We'll use capitalized markers [{[bm,A]}&thinsp;] to highlight com&shy;mon elements to aid viewing source files side-by-side.
 
-      We'll then numeric circles [&thinsp;{[dc,1]}&thinsp;] to highlight additional details within these files as needed.
+      We'll then use numeric circles [&thinsp;{[dc,1]}&thinsp;] to highlight additional details within these files as needed.
 
       <div class="em-info">
 
@@ -39,7 +39,7 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]BuildC%}
 
-      Recalling its special relationshp with the **EMS** translator, {[cu]BuildC}&thinsp;{[tr,103/03/01]} provides an entry-point into any distro.
+      Recalling its special relationship with the **EMS** translator, {[cu]BuildC}&thinsp;{[tr,103/03/01]} provides an entry-point into any distro.
 
       We've peeked earlier at {[cs]em$configure} in these files, not&shy;ing _commonality_ in declaring MCU interrupts {[tr,103/06/04]}.
 
@@ -107,7 +107,7 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]ConsoleUart%}
 
-      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart}for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro &thinsp;{[tr,103/05/06]}.
+      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart} for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro &thinsp;{[tr,103/05/06]}.
 
       The {[cu]ConsoleUart} drivers supplied by distros {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} rep&shy;resent a more typical implementation pattern:
 
@@ -138,7 +138,7 @@ steps:
       {[BM,A]} a stub satisfying most MCU HW needs<br>
       {[BM,B]} initial activity on the `DbgB` pin<br>
 
-      {[DC,1]} distinquish `setup-sram` from `setup-flash`<br>
+      {[DC,1]} distinguish `setup-sram` from `setup-flash`<br>
       {[DC,2]} vendor-supplied silicon workarounds ["magic"]<br>
       {[DC,3]} CACHE setup for FLASH execution<br>
       {[DC,4]} low-frequency CLOCK for deep-sleep<br>
@@ -177,7 +177,7 @@ steps:
 
       The {[cu]EdgeAux} module provides common build-time and run-time support for distro's {[cu]EdgeT} clones {[tr,103/08/01]}.
 
-      While {[cu]EdgeT} effectively extends its distro's {[cu]GpioT} temp&shy;late, {[cu]EdgeAux} manges interrupts in a regular manner:
+      While {[cu]EdgeT} effectively extends its distro's {[cu]GpioT} temp&shy;late, {[cu]EdgeAux} manages interrupts in a regular manner:
 
       {[BM,A]} define fields of a {[ct]HandlerInfo} struct<br>
       {[BM,B]} declare use of some INTR for a GPIO group<br>
@@ -222,7 +222,7 @@ steps:
 
       Achieving low power in {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} boils down to using the MCU's (32&thinsp;kHz) LFCLK when entering deep-sleep.
 
-      Achieving long-range heavily depends upon the width and precision of underlying HW counters: 
+      Achieving long-range heavily depends upon counter width and resolution within the underlying HW: 
 
       {[BM,A]} initialize the RTC and enable its interrupt <br>
       {[BM,B]} read then normalize RTC HW counters<br>
@@ -244,7 +244,7 @@ steps:
 
       {[bi,task_alt]} Deep-dive into the full {[cu]Rtc} drivers of distro {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}
 
-      {[bi,task_alt]} Comprehend the unique {[cu]Rtc} _range_ issues within {[dc,N]}.
+      {[bi,task_alt]} Explore the unique {[cu]Rtc} _range_ issues within {[dc,N]}.
 
       {[bi,task_alt]} Grok why LFCLK sources impact {[cu]Rtc} _power_ {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
 
@@ -262,7 +262,7 @@ steps:
 
       <div class="em-info">
 
-      Ponder this&thinsp;&hellip;&thinsp; Why does the less-performant **TI CC23xx** achieve more energy-efficiency {[dc,E]} than the **nRF52**&thinsp;??
+      Why does the lower-performance **TI CC23xx** achieve better overall energy-efficiency {[dc,E]} than the **nRF52**&thinsp;??
 
       </div>
 
