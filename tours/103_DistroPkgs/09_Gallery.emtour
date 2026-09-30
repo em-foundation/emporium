@@ -12,6 +12,7 @@ files:
   - .assets/img-103-09-09.png
   - .assets/img-103-09-10.png
   - .assets/img-103-09-11.png
+  - .assets/img-103-09-12.png
 
 steps:
   - cmds:
@@ -249,5 +250,20 @@ steps:
 
 
   - cmds:
+      - view 12
     text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      Congratulations on conquering **Distro Packages** 🏔️ &ndash; one of our most challenging **EM&bull;Tour** bundles.
+
+      Hinting at the importance of _low-power_, we'll climb that mountain in our next set of tours &ndash; **Energy Efficiency**.
+
+      We'll focus on profiling MCU energy con&shy;sumption (meas&shy;ured in &mu;J) when active {[dc,A]} as well as in deep-sleep {[dc,S]}.
+
+      <div class="em-info">
+
+      Ponder this&thinsp;&hellip;&thinsp; Why does the less-performant **TI CC23xx** achieve more energy-efficiency {[dc,E]} than the **nRF52**&thinsp;??
+
+      </div>
+
+      {[hc]}
