@@ -1,0 +1,157 @@
+title: Target C++ Project
+
+files:
+  - .assets/img-103-01-02.png
+  - .assets/img-103-02-01.png
+  - .assets/img-103-02-02.png
+  - .assets/img-103-02-03.png
+  - .assets/img-103-02-04.png
+  - .assets/img-103-02-05.png
+  - .assets/img-103-02-06.png
+  - .assets/img-103-02-07.png
+
+steps:
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$start]&thinsp;Working Backwards}
+
+      To fully grasp the importance of {[cu]BuildC}, we'll first exam&shy;ine the _output_ of the **EMS** program build process.
+
+      Using a minimal program supported by a skeletal distro, we'll visit generated files found the `.emscript` folder {[dc,4]}.
+
+      Viewed together, the contents of `.emscript` represent a standalone C++ project featuring a familiar set of artifacts.
+
+      <div class="em-info">
+
+      Some of these artifacts [`main.cpp`] originate within the **EMS** translator; others come (in-)directly from {[cu]BuildC}.
+      </div>
+
+      So let's proceed to populate the `.emscript` project&thinsp;&hellip;
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,download]&thinsp;Minimal Target Program}
+
+      This picture captures the steps required to build a virtually empty {[cu]Gist00} pro&shy;gram targeting a skeletal  **EMS** distro.
+
+      {[DC,1]} select {[em]Board &ndash; &lt;bare-metal&gt;}<br>
+      {[DC,2]} select {[em]Setup &ndash; segger.arm.sandbox://default}<br>
+      {[DC,3]} locate `segger.arm.gists.sandbox/Gist00.em.ts`<br>
+      {[DC,4]} click the **Build&thinsp;+&thinsp;Load** button and track progress<br>
+
+      <div class="em-info">
+
+      We encourage you to "play along at home" by simply following these same steps in your local environment.
+
+      </div>
+
+      The **OUTPUT** panel shows status of the **EMS** translator {[dc,5]}, the backend C++ compiler {[dc,6]}, and the program loader {[dc,7]}.
+
+      Note that the executable image corresponding to {[cu]Gist00} weighs in at just 156 bytes &ndash; truly tiny code&thinsp;!!
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$build]&thinsp;Generated C++ Project}
+
+      Shown as **EM&bull;Script Output** in **Content** view, this fold&shy;er houses (generated) artifacts of a standalone C++ project.
+
+      {[bi,arrow_circle_right]} `main.cpp` &ndash; the program source itself<br>
+      {[bi,arrow_circle_right]} `build.sh` &ndash; a script to compile the program<br>
+      {[bi,arrow_circle_right]} `linkcmd.ld` &ndash; the program's memory placement<br>
+      {[bi,arrow_circle_right]} `load.sh` &ndash; a script to load the executable program<br>
+
+      The `.out` sub-folder then contains a typical set of artifacts produced by the underlying build tools.
+
+      <div class="em-info">
+
+      You can right-click on any file or folder in **Content** view, and select **Reveal in Explorer** from its context menu.
+
+      </div>
+
+      Again, we recommend that you locally **Build&thinsp;+&thinsp;Load** the {[cu]Gist00} program &ndash; as we next explore its `main.cpp`.
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,conversion_path]&thinsp;From %[cu]Gist00% to <code>main.cpp</code>}
+
+      Passing `segger.arm.sandbox/Gist00.em.ts` to the **EMS** translator generates a corresponding `main.cpp` program.
+
+      Lines labeled {[bm,G]}&thinsp; in `main.cpp` directly reference the top-level {[cu]Gist00} module &ndash; its header, body, and entry point.
+
+      <div class="em-info">
+
+      But how about the rest of `main.cpp`&hellip;&nbsp; What prompts **EMS** to generate those extra {[ck]#include} directives&thinsp;??
+
+      </div>
+
+      In short, the current distro's {[cu]BuildC} composite &ndash; which the next tour will examine in greater detail.
+
+      For now, though, take the time to explore the generated C++ code in your own version of `main.cpp`.
+
+      💡&thinsp;Try pressing **F12** after selecting an {[ck]#include} path.
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$build]&thinsp;Other Build Artifacts}
+
+      While the **EMS** translator outputs `main.cpp`, other gener&shy;ated artifacts originate with {[cu]BuildC} &ndash; as you'll soon see.
+
+      <div class="em-info">
+
+      For now, though, take some time exploring your own local copies of `build.sh`, `linkcmd.ld`, and `load.sh`.
+
+      </div>
+
+      The `build.sh` script uses an Arm C/C++ compiler from [SEGGER](https://doc.segger.com/UM20007_Compiler.html) &ndash; already provisioned by the **EM&bull;porium** {[dc,1]}.
+
+      Defining typical flags {[dc,2]} and options {[dc,3]}, `build.sh` in&shy;vokes **SEGGER** tools {[dc,4]} which yield `.out/main.*` files.
+
+      The (generated) `linkcmd.ld` used at {[dc,4]} in turn defines a target memory map {[dc,5]} that will hold program sections {[dc,6]}.
+
+      Finally, `load.sh` uses a provisioned **SEGGER JLink** {[dc,7]} to flash the MCU using the distro's `jlink-cmds`&thinsp;{[dc,8]} file.
+
+  - cmds:
+      - view 7
+    text: |
+      {[ht,$build]&thinsp;Build Properties}
+
+      A (generated) `props.json` file {[dc,P]} defines _build prop&shy;erties_ used by **EMS** when translating the {[cu]Gist00} program.
+
+      Unlike {[cn]"em.build.ToolsHome"} (which **EMS** defines), most of these properties originate in a distro `setup-*.ini` file.
+
+      Looking at `setup-default.ini` {[dc,S]} (your chosen {[em]Setup}), its reflection in `props.json` should appear obvious.
+
+      As you'll learn in next tour, {[cu]BuildC} can read these proper&shy;ties while generating artifacts like `build.sh`.
+
+  - cmds:
+      - view 8
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[DC,1]} Explore the `.out`files again (and again and again)&thinsp;!!
+
+      {[DC,2]} How does the **Build Meta-Program** command differ.
+
+      {[DC,3]} Re-build {[cu]Gist00} for a different {[em]Board} and {[em]Setup}.
+
+      {[DC,4]} Keep exploring with ever-larger **EMS** programs.
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Knowing the eventual outcome {[dc,4]}, we'll finally visit the upstream source for `build.sh`, `linkcmd.ld`, and others.
+
+      Unlike {[cu]BoardC} (encountered throughout these tours), the {[cu]BuildC} unit remains hidden to most **EMS** programs.
+
+      {[cu]BuildC} will also introduce **EMS** meta-functions not seen before &ndash; tailored for generating target program artifacts.
+
+      <br>&ensp;&ensp;⚠️&nbsp; _So keep your seatbelt fastened&thinsp;!!_
+
+      {[hc]}

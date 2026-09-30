@@ -1,0 +1,219 @@
+title: Edge Interrupts
+
+files:
+
+  - em.prog:em.examples.basic/Ex05_Button1P.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - em.core:em.hal/EdgeI.em.ts
+  - rpi.2040:rpi.mcu.2040/EdgeT.em.ts
+  - rpi.2040:rpi.mcu.2040/EdgeAux.em.ts
+  - .assets/img-101-09-01.png
+  - .assets/img-103-05-02.png
+
+
+steps:
+
+  - cmds:
+      - open 1
+      - mark 1 A 7
+      - mark 1 B 12
+      - mark 1 C 21
+      - mark 1 D 28
+      - mark 1 E 30
+      - mark 1 F 37
+    focus: [1, 1]
+    text: |
+      {[ht,$start]&thinsp;GPIO Edge Interrupts}
+
+      The last tours covered interrupts triggered by tim&shy;ers.&thinsp; In this tour we'll study a very different MCU interrupt source.
+
+      The {[cu]Button1P} example {[tr,101/09/01]} handles interrupts from {[cu]AppButEdge}{[bm,A]} &ndash; a GPIO wired to an on-board button.
+
+      <div class="em-info">
+
+      Pressing the button triggers an MCU interrupt.
+
+      </div>
+
+      {[BM,B]} We bind an {[cu]AppButEdge} event handler at build-time.<br>
+      {[BM,C]} We set up {[cu]AppButEdge} to detect HI-LO transitions.<br>
+      {[BM,D]} We enable event detection on {[cu]AppButEdge}.<br>
+      {[BM,E]} We await an incoming {[cu]AppButEdge} MCU interrupt.<br>
+      {[BM,F]} We clear the {[cu]AppButEdge} event before setting a flag.<br>
+
+      Let's now break down {[cu]AppButEdge} and understand how our distro supports GPIO edge interrupts.
+
+  - cmds:
+      - open 2
+      - fold 2 3 6
+      - fold 2 7 11
+      - fold 2 12 13
+      - fold 2 14 24
+      - fold 2 28 37
+      - fold 2 53 54
+      - fold 2 55 58
+      - fold 2 61 88
+      - mark 2 A 12
+      - mark 2 B 27
+      - mark 2 C 42
+      - mark 2 D 55
+      - mark 2 E 61
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+      Along with {[cu]GpioT}, our distro uses an MCU-specific {[cu]EdgeT} template&thinsp;{[bm,A]} which yields our {[cu]AppButEdge} clone&thinsp;{[bm,B]}.
+
+      <div class="em-info">
+
+      Recall that the (portable) {[cu]ButtonT} template &thinsp;{[tr,101/10/04]} uses an {[cu]EdgeI} proxy to implement {[cu]ButtonI} services.
+
+      </div>
+
+      The distro's special `em-boards` file (loaded at {[bm,D]}) defines a suitable value for the {[cn]appBut} pin&thinsp;{[bm,C]}.
+
+      {[cu]BoardC} assigns this Evalue to {[cn]pin_num} configs ex&shy;posed by {[cu]AppButEdge} as well as its bound {[cu]AppButPin} delegate.
+
+      Bear in mind the {[cu]AppBut*} units form a natural hierarchy:
+
+      {[cu]AppButPin} :: {[cu]GpioT}&thinsp;›&thinsp;{[cu]GpioI} clone<br>
+      &thinsp;⤷{[cu]AppButEdge} :: {[cu]EdgeT}&thinsp;›&thinsp;{[cu]EdgeI} clone w/ {[cu]GpioI} proxy<br>
+      &emsp;⤷{[cu]AppBut} :: {[cu]ButtonT}&thinsp;›&thinsp;{[cu]ButtonI} clone w/ {[cu]EdgeI} proxy<br>
+
+
+  - cmds:
+      - open 3
+    focus: [3, 1]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]EdgeI% Interface}
+
+      Before diving into our distro's {[cu]EdgeI} implementation, let's review some features of the interface itself.
+
+      Unlike the timer interfaces implemented in earlier tours, binding of {[cu]EdgeI} handlers can _only_ occur at build-time.
+
+      <div class="em-info">
+
+      Clients will, however, dynamically invoke the {[cf]&#42;Detect&#42;} methods at run-time.
+
+      </div>
+
+      We'll now move on to an MCU-specific {[cu]EdgeI} implemen&shy;tation supported by our distro's {[cu]EdgeT} driver template.
+
+
+
+  - cmds:
+      - open 4
+      - fold 4 29 77
+      - mark 4 A 6
+      - mark 4 B 16
+      - mark 4 C 23
+      - mark 4 D 26
+    focus: [4, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]EdgeT% Driver Template &ndash; <code><b>em$meta</b></code>}
+
+      At build-time, the {[cf]setDetectHandler}{[bm,D]} function simply retains a client callback in the {[cn]edge_handler}{[bm,B]} config.
+
+      <div class="em-info">
+
+      Edge-detection events signalled by the associated GPIO will call the current {[cn]edge_handler} function at run-time.
+
+      </div>
+
+      Typical of {[cu]EdgeI} implementations, an auxiliary module {[bm,A]} directly manages the underlying HW interrupts.
+
+      Through a build-time binding {[bm,C]}, {[cu]Aux} will invoke a _local_ {[cn]handler} callback (defined later) at run-time.
+
+
+  - cmds:
+      - open 5
+      - mark 5 A 11
+      - mark 5 B 16
+      - mark 5 C 19
+      - mark 5 D 29
+      - mark 5 E 34
+    focus: [5, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]EdgeAux% Helper}
+
+      Besides directly supporting {[cu]EdgeI} drivers at build-time, {[cu]EdgeAux} plays a critical (albeit hidden) role at run-time.
+
+      In the **`em$meta`** domain, each call to {[cf]addHandlerInfo}{[bm,C]} ap&shy;pends a {[ct]HandlerInfo} value to {[cn]handler_info_tab}{[bm,A]}.
+
+      In the **`em$targ`** domain, {[cu]EdgeAux} iterates {[bm,E]} over this (read-only) table and invokes the handler for each entry.
+
+      Like our {[cu]Rtc} driver {[tr,103/07/03]}, {[cu]EdgeAux} declares its use of the {[cs]'IO_IRQ_BANK0'} interrupt at build-time&thinsp;{[bm,B]}.
+
+      {[cu]EdgeAux} then enables the corresponding {[cn]IRQn} just once at {[cs]em$startup}{[bm,D]} &ndash; like {[cu]Rtc}.
+
+      <div class="em-info">
+
+      Note that {[cu]EdgeAux} does _not_ call {[cu]Idle}.{[cf]setLevel} &ndash; al&shy;lowing MCU deep-sleep when awaiting edge interrupts.
+
+      </div>
+
+
+
+  - cmds:
+      - open 4
+      - fold 4 40 41
+      - fold 4 42 45
+      - fold 4 46 49
+      - fold 4 52 53
+      - fold 4 59 61
+      - fold 4 63 64
+      - fold 4 67 68
+      - fold 4 69 71
+      - fold 4 78 100
+      - mark 4 A 6
+      - mark 4 B 16
+      - mark 4 C 23
+      - mark 4 D 26
+      - mark 4 E 38
+      - mark 4 F 54
+      - mark 4 G 65
+      - mark 4 H 73
+    focus: [4, 34]
+    text: |
+      {[ht,$details]&thinsp;%[cu]EdgeT% Driver Template &ndash; <code><b>em$targ</b></code>}
+
+      Typically called once at run-time, {[cf]init}{[bm,F]} makes its {[cn]Pin} proxy a GPIO input and sets its pull bias conditionally.
+
+      The {[cf]*Detect}{[bm,E]} functions use the current {[cn]mask} value when manipulating GPIO detection _state_.
+
+      The {[cf]setDetect*}{[bm,G]} functions assign an appropriate value to {[cn]mask} &ndash; tracking the latest GPIO detection _mode_.
+
+      <div class="em-info">
+
+      Unlike {[cu]Button1P}, advanced apps can alter the _mode_{[bm,G]} as well as the _state_{[bm,E]} of GPIO detection at run-time.
+
+      </div>
+
+      On _any_ incoming pin interrupt, {[cu]EdgeAux} invokes a private {[cf]handler}{[bm,H]} &ndash; passed via our {[cu]Aux}{[bm,A]} alias at build-time&thinsp;{[bm,C]}.
+
+      Using {[cn]mask}, {[cf]handler} ensures the edge occur&shy;red &ndash; and then invokes a client callback bound at build-time {[bm,B]}{[bm,D]}.
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Review {[cu]Button2P} {[tr,101/09/09]} and {[cu]Button3P} {[tr,101/10/01]}.
+
+      {[bi,task_alt]} Inspect _rising_ edges in {[cu]Button1P} using **PulseView**.
+
+      {[bi,task_alt]} Explore programs in the `em.examples.combo` bucket.
+
+
+  - cmds:
+      - view 7
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      ☑️&ensp;Done&thinsp;&hellip;
+
+      We've finished our deep-dive into the `rpi.2040` distro package &ndash; incrementally adding drivers along the way.
+
+      But before we move on to tackling **Energy Efficiency**, let's take a [relaxing&thinsp;!!] final tour of the **EMS** distro codescape.
+
+      {[hc]}

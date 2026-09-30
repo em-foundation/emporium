@@ -1,4 +1,3 @@
-import * as Path from 'path'
 import * as Fs from 'fs'
 
 import em from '../../em.core/em.lang/emscript'
@@ -17,8 +16,6 @@ const TYPE_MAP = new Map<string, string>([
 ])
 
 const TYPE_SET = new Set<string>(TYPE_MAP.values())
-
-let meta = em.$outfile('REGS.em.ts')
 
 function genConsts() {
     while (true) {
@@ -82,7 +79,6 @@ function scanStruct(): string | null {
             base = tk.substring(0, k)
         }
         if (TYPE_SET.has(base)) {
-            console.log(ln)
             return tk
         }
     }
@@ -90,9 +86,7 @@ function scanStruct(): string | null {
 
 // ---- main ---- //
 
-let src_lines = Fs.readFileSync('inc/nrf52.h', 'utf-8').split('\n')
-let cur_idx = 0
-
+let meta = em.$outfile('REGS.em.ts')
 meta.addText(`import em from '@$$emscript'\n`)
 meta.addText(`export const $U = em.$declare('COMPOSITE')\n`)
 meta.addText(`
@@ -102,6 +96,9 @@ export function em$generate() {
     out.close()
 }
 `)
+
+let src_lines = Fs.readFileSync('inc/nrf52.h', 'utf-8').split('\n')
+let cur_idx = 0
 
 while (true) {
     const sname = scanStruct()
@@ -126,8 +123,4 @@ meta.genTitle('INSTANCES')
 for (const [ti, tn] of TYPE_MAP) {
     meta.print('export const %1 = {} as %2_t\n', ti, tn)
 }
-// meta.genTitle('INDICIES')
-// for (const [iname, itype] of INDICIES) {
-//     meta.print('export const %1 = [] as %2_t[]\n', iname, itype)
-// }
 meta.close()

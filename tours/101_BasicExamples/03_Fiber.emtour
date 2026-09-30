@@ -123,7 +123,7 @@ steps:
 
       {[BM,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
 
-      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
+      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts the MCU in a low-power sleep mode.
 
       {[BM,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
 

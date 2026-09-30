@@ -1,0 +1,230 @@
+title: Timers + Interrupts
+
+files:
+  - em.prog:em.examples.basic/Ex08_OneShot1P.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/Idle.em.ts
+  - rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
+  - .assets/img-103-05-02.png
+  - .assets/img-103-06-01.png
+  - .assets/img-103-06-02.png
+  - em.core:em.arch.arm/IntrVec.em.ts
+
+steps:
+
+  - cmds:
+      - open 1
+      - mark 1 A 8
+      - mark 1 B 13
+      - mark 1 C 21
+    focus: [1, 1]
+    text: |
+      {[ht,$start]&thinsp;Handling One-Shot Interrupts}
+
+      With basic {[cu]Gpio} and {[cu]ConsoleUart} services in place, we'll pivot to handling HW interrupts inside a {[cu]OneShot} driver.
+
+      <div class="em-info">
+
+      Managing interrupts indeed raises the bar for **EMS** dis&shy;tros in general &ndash; especially when supporting new MCUs.
+
+      </div>
+
+      To simplify matters, we'll examine a {[cu]OneShot} driver {[bm,A]} used throughout **Basic Examples**&thinsp; {[tr,101/04/01]} and&thinsp; {[tr,101/05/01]}.
+
+      Note that the design of {[cu]OneShot1P} directly uses (distro-supplied) {[cn]GlobalInterrupts}{[bm,B]} and {[cn]Idle}{[bm,C]} modules.
+
+  - cmds:
+      - open 2
+      - fold 2 3 7
+      - fold 2 8 12
+      - fold 2 13 14
+      - fold 2 15 17
+      - fold 2 19 21
+      - fold 2 25 52
+      - fold 2 53 69
+      - fold 2 71 73
+      - fold 2 74 83
+      - fold 2 84 88
+      - mark 2 A 8
+      - mark 2 B 13
+      - mark 2 C 15
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+      Starting with a baseline {[cu]BoardC} viewed in the last tour {[tr,103/05/02]}, supporting {[cu]OneShot} requires minimal additions.
+
+      Notice how the modules imported by {[cu]BoardC} now fall into _three_ categories, based on their bucket of origin:
+
+      {[BM,A]} portable &ndash; {[cu]Common}, {[cu]Poller}<br>
+      {[BM,B]} MCU-specific &ndash; {[cu]Idle}, {[cu]OneShot}<br>
+      {[BM,C]} ARM-generic &ndash; {[cu]GlobalInterrupts}, {[cu]UsCounter}
+
+      With multiple **EMS** distros supporting a range of **ARM** processors, {[cs]'@em.arch.arm'} has earned its keep.
+
+      <div class="em-info">
+
+      In the limit, we want to _minimize_ each distro's unique contributions and _maximize_ re-use of generic elements.
+
+      </div>
+      
+
+  - cmds:
+      - open 4
+      - fold 4 18 100
+      - mark 4 A 4
+      - mark 4 B 14
+    focus: [4, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$meta</b></code>}
+
+      Our distro's implementation of {[cu]OneShotI} begins by im&shy;porting the {[cs]'@rpi.distro.2040'} {[cu]REGS} facade as {[cs]$R}{[bm,A]}.
+
+      Using the {[cs]$R}.{[cn]TIMER}.{[cn]ALARM0} peripheral, {[cu]OneShotAlarm0} must manage interrupts sourced by the underlying MCU.
+
+      <div class="em-info">
+
+      This implementation therefore imports {[cu]IntrVec} &ndash; first seen in the context of {[cu]BuildC} {[tr,103/03/04]}.
+
+      </div>
+
+      Invoked at build-time&thinsp;{[bm,B]}, the {[cf]useIntr} meta-function tells {[cu]IntrVec} that we'll handle {[cs]'TIMER_IRQ_0'} interrupts.
+
+      A name _unique_ to this MCU, let's return to {[cu]BuildC} where we'll find the original declaration of {[cs]'TIMER_IRQ_0'}&hellip;
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,$details]&thinsp;%[cu]BuildC% &ndash; Interrupt Declarations}
+
+      The {[cu]BuildC} composite of each (ARM-based) distro def&shy;ines {[cn]NVIC_INTRS} &ndash; a list of MCU-specific interrupt names.
+
+      The {[cs]em$configure} intrinsic of each {[cu]BuildC} then invokes {[cu]IntrVec}.**`em$meta`**.{[cf]addIntr}{[dc,I]} to declare each name.
+
+      <div class="em-info">
+
+      Note that our first overview of {[cu]BoardC}&thinsp;{[tr,103/03/03]} had an _empty_ {[cn]NVIC_INTRS} &ndash; suitable for its `..sandbox` distro.
+
+      </div>
+
+      Each interrupt name in fact declares a _family_ of program identifiers &ndash; as we'll see next with {[cs]'TIMER_IRQ_0'}{[dc,T]}.
+
+
+  - cmds:
+      - open 4
+      - mark 4 A 4
+      - mark 4 B 14
+      - mark 4 C 21
+      - mark 4 D 26
+      - mark 4 E 41
+      - mark 4 F 50
+    focus: [4, 23]
+    text: |
+      {[ht,$details]&thinsp;%[cu]OneShot% Driver &ndash; <code><b>em$targ</b></code>}
+
+      The {[cn]IRQn} constant at&thinsp;{[bm,C]} aliases a (vendor-supplied) sym&shy;bol defining the interrupt number for {[cs]'TIMER_IRQ_0'}.
+
+      <div class="em-info">
+
+      Calls to {[cu]IntrVec}.{[cf]NVIC_*} inside functions {[bm,D]}&thinsp;&ndash;{[bm,F]} re&shy;ceive {[cn]IRQn} as their argument.
+
+      </div>
+
+      Implementations of the {[cu]OneShotI} {[cf]enable} and {[cf]uenable} methods defer to a common {[cf]ustart} function {[bm,E]}.
+
+      Besides preparing {[cs]$R}.{[cn]TIMER}, {[cf]ustart} calls the {[cf]setLevel} method of {[cu]Idle} &ndash; which we'll explain shortly.
+
+      To handle {[cs]'TIMER_IRQ_0'} interrupts, the driver must im&shy;plement a specially-named {[cf]*_isr$$} function {[bm,F]}.
+
+      When triggered, {[cf]*_isr$$} clears the appropriate inter&shy;rupt sources and invokes the {[cn]cur_fxn} handler bound in {[bm,E]}.
+
+  - cmds:
+      - view 7
+    text: |
+      {[ht,$details]&thinsp;ARM Core Support}
+
+      The `em.arch.arm` bucket contains generic support for ARM-based MCUs at build-time as well as run-time:
+
+      {[DC,1]} standard ARM core header files included via {[cu]REGS}<br>
+      {[DC,2]} stock implementation of {[cu]GlobalInterruptsI}<br>
+      {[DC,3]} implementation of {[cu]IrqI} plus a default {[cu]IsrI} proxy<br>
+      {[DC,4]} implementation of {[cu]IsrI} with debug output<br>
+      {[DC,5]} minimal implementation of {[cu]IsrI}<br>
+      {[DC,6]} stock implementation of {[cu]UsCounterI}<br>
+
+      Note also that {[cu]IntrVec}{[dc,M]} along with {[cu]StartupC}{[dc,M]} both play important roles in **`em$meta`** domain.
+
+      <div class="em-info">
+
+      With other distros targeting MCUs based on **RISC-V** or **ARC** cores, expect a similar design to emerge.
+
+      </div>
+
+  - cmds:
+      - open 3
+      - fold 3 7 22
+      - fold 3 40 51
+      - mark 3 A 28
+      - mark 3 B 31
+      - mark 3 C 40
+      - mark 3 D 54
+      - mark 3 E 66
+    focus: [3, 25]
+    text: |
+      {[ht,$details]&thinsp;%[cu]IdleI% Implementation}
+
+      An earlier **Basic Examples** tour {[tr,101/04/06]} mentioned how a distro's {[cu]Idle} module uses `DbgB` to signal MCU activity.
+
+      Set "active"&thinsp;{[bm,A]} at startup, {[cf]doPause}{[bm,B]} signals on `DbgB` the MCU's entry into "lite-sleep" via the ARM `wfi` instruction.
+
+      <div class="em-info">
+
+      The internal {[cf]doSleep}{[bm,C]} function (examined on the next tour) signals entry into a "deeper" mode of MCU sleep.
+
+      </div>
+
+      Depending upon {[cn]cur_level}, our public {[cf]exec}{[bm,D]} imple&shy;mentation "idles" MCU execution using either {[bm,B]} or {[bm,C]}.
+
+      Recall how our {[cu]OneShot} driver seen earlier on this tour called {[cf]setLevel}{[bm,E]} &ndash; forcing use of {[cf]doPause} when idling.
+
+      <div class="em-info">
+
+      The next tour explains the tradeoffs between {[bm,B]} and {[bm,C]}.
+
+      </div>
+
+
+
+  - cmds:
+      - open 8
+      - fold 8 3 8
+      - fold 8 9 30
+      - fold 8 33 78
+      - fold 8 94 106
+      - fold 8 121 200
+    focus: [8, 1]
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Review how {[cu]Poller} uses its {[cn]OneShot} proxy.
+
+      {[bi,task_alt]} Find {[cu]OneShotI} implementations in other distros.
+
+      {[bi,task_alt]} Explore {[cu]IntrVec} in light of what you've learned.
+
+  - cmds:
+      - view 5
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Advancing from **Basic Examples** group {[dc,1]} to {[dc,2]} required distro elements that comprehend hardware interrupts.
+
+      Moving on to group {[dc,3]}, we'll explore timers designed for extended periods of sleep &ndash; expending very little energy.
+
+      <div class="em-info">
+
+      And as promised, we'll dive into {[cu]Idle}.{[cf]doSleep}&hellip;&thinsp;💤
+
+      </div>
+      
+      {[hc]}
