@@ -173,15 +173,21 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]EdgeAux%}
 
-      {[BM,A]}<br>
-      {[BM,B]}<br>
-      {[BM,C]}<br>
-      {[BM,D]}<br>
-      {[BM,E]}<br>
+      The {[cu]EdgeAux} module provides common build-time and run-time support for distro's {[cu]EdgeT} clones {[tr,103/08/01]}.
 
-      {[DC,1]}<br>
+      While {[cu]EdgeT} effectively extends its distro's {[cu]GpioT} temp&shy;late, {[cu]EdgeAux} manges interrupts in a regular manner:
+
+      {[BM,A]} define fields of a {[ct]HandlerInfo} struct<br>
+      {[BM,B]} declare use of some INTR for a GPIO group<br>
+      {[BM,C]} add new handler descriptor to build-time table<br>
+      {[BM,D]} enable the GPIO group INTR once in {[cs]em$startup}<br> 
+      {[BM,E]} service INTRs and invoke any matching handlers<br>
+
+      {[DC,1]} the {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} versions fully match handlers in {[cf]*_isr$$}<br>
 
       <div class="em-info">
+
+      Surprisingly tricky compared with {[cu]OneShot}, defer devel&shy;opment of the {[cu]EdgeT}+{[cu]EdgeAux} pair until needs arise.
 
       </div>
 
@@ -190,12 +196,18 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]Idle%}
 
-      {[BM,A]}<br>
-      {[BM,B]}<br>
-      {[BM,C]}<br>
-      {[BM,D]}<br>
+      Anchoring drivers that use interrupts, {[cu]Idle} halts the CPU and awaits incoming events in a low-power state &thinsp;{[tr,103/06/07]}.
+
+      While clearly touching the MCU directly, {[cu]Idle} maintains design consistency across distros {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
+
+      {[BM,A]} initial `DbgB` signalling always occurs at {[cs]em$startup}<br>
+      {[BM,B]} pause the CPU while keeping peripherals powered<br>
+      {[BM,C]} turn off most peripherals and enter MCU deep-sleep<br>
+      {[BM,D]} stock implementations of abstract {[cu]IdleI} methods<br>
 
       <div class="em-info">
+
+      Initial {[cu]Idle} implementations might _only_ use {[cf]doPause}, adding {[cf]doSleep} later as a low-power optimization.
 
       </div>
 
@@ -204,17 +216,21 @@ steps:
     text: |
       {[ht,photo]&thinsp;%[cu]Rtc%}
 
-      {[BM,A]}<br>
-      {[BM,B]}<br>
-      {[BM,C]}<br>
-      {[BM,D]}<br>
-      {[BM,E]}<br>
+      More advanced than {[cu]OneShot}, the {[cu]Rtc} driver must ad&shy;dress challenges of low-power and long-range {[tr,103/07/05]}.
 
-      {[DC,1]}<br>
-      {[DC,2]}<br>
-      {[DC,3]}<br>
+      Achieving low power in {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} boils down to using the MCU's (32&thinsp;kHz) LFCLK when entering deep-sleep.
+
+      Achieving long-range heavily depends upon the width and precision of underlying HW counters: 
+
+      {[BM,A]} initialize the RTC and enable its interrupt <br>
+      {[BM,B]} read then normalize RTC HW counters<br>
+      {[BM,C]} convert to an RTC-specific counter threshold<br>
+
+      &ensp;&ensp;{[dc,1]}&thinsp; [<small>64-bit @ 1&mu;s</small>] &thinsp;&middot;&thinsp; {[dc,2]}&thinsp; [<small>24-bit @ 32kHz</small>] &thinsp;&middot;&thinsp; {[dc,3]}&thinsp; [<small>67-bit @ 8&mu;s</small>]
 
       <div class="em-info">
+
+      While a conventional timer {[dc,R]} can simplify matters, you really _will_ want a low-power {[cu]Rtc} in any new distro.
 
       </div>
 
