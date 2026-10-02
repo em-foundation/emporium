@@ -12,7 +12,7 @@ const TOOLS = Path.join(ROOT, 'tools')
 const WORKSPACE = Path.join(ROOT, 'workspace')
 
 const EXTENSIONS = [
-    'em-builder-26.3.0.202609280358',
+    'em-builder-26.3.0.202610021344',
     'Wokwi.wokwi-vscode@3.7.0',
     'ms-vscode.vscode-serial-monitor@0.13.1',
     'ms-vscode.cpptools-extension-pack@1.5.1',
