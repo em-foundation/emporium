@@ -30,7 +30,6 @@ steps:
       - mark 1 B 34
       - mark 1 C 39
     focus: [1, 8]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp;%[cu]OneShot2P% &ndash; Details}
@@ -53,7 +52,6 @@ steps:
       - mark 2 B 4
       - mark 2 C 6
     focus: [2, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp;%[cu]OneShotI% &ndash; Details}
@@ -75,7 +73,6 @@ steps:
       - mark 3 I 18
       - mark 3 E 24
     focus: [3, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}
@@ -133,7 +130,6 @@ steps:
       - mark 4 C 21
       - mark 4 D 27
     focus: [4, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp;%[cu]OneShot1P% &ndash; Details}

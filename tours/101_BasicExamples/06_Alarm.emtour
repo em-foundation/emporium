@@ -32,7 +32,7 @@ steps:
       - mark 1 D 35
 
     focus: [1, 1]
-    acts: [$reveal, $build]
+    acts: [$build]
     text: |
 
       {[ht,$details]&thinsp;%[cu]Alarm1P% &ndash; Details}
@@ -51,7 +51,7 @@ steps:
       - open 2
       - mark 2 D 35
     focus: [2, 1]
-    acts: [$reveal, $build]
+    acts: [$build]
     text: |
 
       {[ht,$details]&thinsp;%[cu]Alarm2P% &ndash; Details}

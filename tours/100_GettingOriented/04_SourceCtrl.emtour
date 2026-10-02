@@ -8,7 +8,7 @@ steps:
       - open 1
       - mark 1 A 12
     focus: [1, 1]
-    acts: ["$reveal", "$build"]
+    acts: ["$build"]
     text: |
 
       {[ht,$start]&thinsp;Experimenting with EM&bull;Script}
@@ -24,7 +24,6 @@ steps:
       This tour therefore recommends some "best practices" using **Git** source control to sandbox your own work.
 
       Once in place, you can start experimenting 🧪&thinsp;&hellip;
-
 
   - cmds:
       - view 2
@@ -153,12 +152,10 @@ steps:
 
       Ideally, you've done this before and know the drill&thinsp;😉&thinsp;&hellip;
 
-
-
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal", "$build"]
+    acts: ["$build"]
     text: |
 
       {[ht,experiment]&thinsp;Start Experimenting}
@@ -181,7 +178,6 @@ steps:
       Of course, you can *always* discard *any* changes to `work`.
 
       </div>
-
 
   - cmds:
     text: |

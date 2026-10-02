@@ -89,7 +89,6 @@ steps:
       - mark 4 B 57
 
     focus: [4, 30]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$details]&thinsp;&thinsp;%[cu]BoardC% &ndash; Closer Look}

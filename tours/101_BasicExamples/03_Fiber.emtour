@@ -9,7 +9,7 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal", "$build"]
+    acts: ["$build"]
     text: |
 
       {[ht,$start]&thinsp;%[cu]FiberP% &ndash; Threading with Fibers}
@@ -54,7 +54,6 @@ steps:
       - mark 2 D 14
       - mark 2 E 18
     focus: [2, 6]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$details]&thinsp;%[cu]FiberMgr% &ndash; Details}
@@ -150,7 +149,6 @@ steps:
 
   - cmds:
       - view 3
-    acts: [$build]
     text: |
 
       {[ht,measuring_tape]&thinsp;&thinsp;%[cu]FiberP% &ndash; Program Size}

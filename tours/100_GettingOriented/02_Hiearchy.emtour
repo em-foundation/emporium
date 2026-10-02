@@ -8,7 +8,6 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$start]&thinsp;EM&bull;Script Content Hierarchy}
@@ -20,7 +19,11 @@ steps:
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/04]}.
 
-      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
+      <div class="em-info">
+
+      We've also revealed this program's **Package &middot; Bucket &middot; Unit** elements within the **EM&bull;Builder Content** hierarchy.
+
+      </div>
 
       The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
@@ -28,7 +31,6 @@ steps:
       - open 1
       - mark 1 A 2
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Unit &ndash; Source File}
@@ -50,7 +52,6 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Bucket &ndash; Namespace}
@@ -73,7 +74,6 @@ steps:
       - open 1
       - mark 1 B 5
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Package &ndash; Container}

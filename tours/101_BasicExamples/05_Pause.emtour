@@ -11,7 +11,7 @@ steps:
       - mark 1 A 6
       - mark 1 B 32
     focus: [1, 1]
-    acts: [$reveal, $build]
+    acts: [$build]
     text: |
 
       {[ht,$start]&thinsp;Pausing Execution}
@@ -31,7 +31,6 @@ steps:
       - mark 2 C 17
       - mark 2 D 17
     focus: [2, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp;%[cu]Poller% &ndash; Details}
@@ -64,7 +63,6 @@ steps:
       - open 3
       - mark 3 P 84
     focus: [3, 84]
-    acts: [$reveal]
     text: |
 
       {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}

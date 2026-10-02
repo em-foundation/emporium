@@ -76,7 +76,6 @@ steps:
       - mark 4 C 19
       - mark 4 D 23
     focus: [4, 1]
-    acts: ["$reveal"]
     text: |
       {[ht,$details]&thinsp;%[cu]UartRegG% &ndash; Transmitting Bytes}
 
@@ -131,7 +130,6 @@ steps:
       - mark 6 D 2899
       - mark 6 E 2945
     focus: [6, 1]
-    acts: ["$reveal"]
     text: |
       {[ht,sync_arrow_up]&thinsp;The %[cu]REGS% Facade}
 

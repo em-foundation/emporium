@@ -29,7 +29,7 @@ steps:
       - mark 1 B 14
       - mark 1 C 20
     focus: [1, 1]
-    acts: [$reveal, $build]
+    acts: [$build]
     text: |
 
       {[ht,$details]&thinsp; %[cu]Button3P% &ndash; Details}
@@ -47,7 +47,6 @@ steps:
   - cmds:
       - open 2
     focus: [2, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$peek]&thinsp; %[cu]ButtonI% &ndash; Quick Look}
@@ -65,7 +64,6 @@ steps:
       - mark 4 E 32
       - mark 4 F 37
     focus: [4, 9]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; Details}
@@ -95,7 +93,6 @@ steps:
       - mark 4 I 65
 
     focus: [4, 45]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp; %[cu]ButtonT% &ndash; More Details}
@@ -115,7 +112,6 @@ steps:
       - mark 3 A 26
       - mark 3 B 59
     focus: [3, 30]
-    acts: [$reveal]
     text: |
 
       {[ht,$peek]&thinsp; %[cu]BoardC% &ndash; A Look Back}
