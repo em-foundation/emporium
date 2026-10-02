@@ -109,6 +109,7 @@ steps:
 
   - cmds:
       - view 5
+      - reveal 1
     text: |
 
       {[ht,monitor_heart]&thinsp;&thinsp;%[cu]OneShot2P% &ndash; Signal Capture}

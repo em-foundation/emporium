@@ -11,6 +11,7 @@ files:
 steps:
   - cmds:
       - view 6
+      - reveal 1
     text: |
 
       {[ht,$start]&thinsp; Edge Detection}
@@ -74,6 +75,7 @@ steps:
 
   - cmds:
       - view 7
+      - reveal 2
     text: |
 
       {[ht,monitor_heart]&thinsp; %[cu]Button2P% &ndash; Signal Capture}
@@ -135,6 +137,7 @@ steps:
 
   - cmds:
       - view 7
+      - reveal 2
     text: |
 
       {[ht,$extra]&thinsp;Extra Credit}
@@ -147,6 +150,7 @@ steps:
 
   - cmds:
       - view 6
+      - reveal 1
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}

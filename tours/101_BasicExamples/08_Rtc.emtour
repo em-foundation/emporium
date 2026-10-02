@@ -9,6 +9,7 @@ files:
 steps:
   - cmds:
       - view 5
+      - reveal 3
     text: |
 
       {[ht,$start]&thinsp; Real-Time Clock}

@@ -4,6 +4,8 @@ files:
   - .assets/img-101-02-01.png
   - em.core/em.lang/Debug.em.ts
 
+reveal: 1
+
 steps:
   - cmds:
       - open 1

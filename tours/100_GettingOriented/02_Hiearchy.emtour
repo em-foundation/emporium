@@ -19,12 +19,6 @@ steps:
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/04]}.
 
-      <div class="em-info">
-
-      We've also revealed this program's **Package &middot; Bucket &middot; Unit** elements within the **EM&bull;Builder Content** hierarchy.
-
-      </div>
-
       The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
   - cmds:

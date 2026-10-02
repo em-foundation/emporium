@@ -5,6 +5,8 @@ files:
   - .assets/img-101-03-01.png
   - .assets/img-101-03-02.png
 
+reveal: 1
+
 steps:
   - cmds:
       - open 1

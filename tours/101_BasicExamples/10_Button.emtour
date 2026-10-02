@@ -9,6 +9,7 @@ files:
 steps:
   - cmds:
       - view 5
+      - reveal 1
     text: |
 
       {[ht,$start]&thinsp; Pressing Buttons}
@@ -135,6 +136,7 @@ steps:
 
   - cmds:
       - view 5
+      - reveal 1
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}

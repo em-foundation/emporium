@@ -8,6 +8,7 @@ files:
 steps:
   - cmds:
       - view 3
+      - reveal 1
     text: |
 
       {[ht,$start]&thinsp;Wakeup Alarms}
@@ -70,6 +71,7 @@ steps:
   - cmds:
       - view 3
       - view 4
+      - reveal 2
     text: |
 
       {[ht,monitor_heart]&thinsp;%[cu]Alarm2P% &ndash; Signal Capture}
