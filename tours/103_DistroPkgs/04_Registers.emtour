@@ -14,6 +14,10 @@ files:
 steps:
   - cmds:
       - view 1
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
+
     text: |
       {[ht,$start]&thinsp;Elevating Register Access}
 
@@ -35,6 +39,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal nordic.nrf52:nordic.gists.nrf52/GpioNatG.em.ts
     text: |
       {[ht,arrow_circle_right]&thinsp;Register Access &ndash; Vendor Headers}
 
@@ -54,6 +59,8 @@ steps:
 
   - cmds:
       - view 3
+      - reveal nordic.nrf52:nordic.gists.nrf52/GpioRegG.em.ts
+
     text: |
       {[ht,arrows_left_right_circle]&thinsp;Register Access &ndash; Headers vs Facade}
 
@@ -97,6 +104,7 @@ steps:
 
   - cmds:
       - view 5
+      - reveal nordic.nrf52:setup-flash
     text: |
       {[ht,sync_arrow_down]&thinsp;Lowering %[cs]$R% Expressions}
 
@@ -163,6 +171,7 @@ steps:
       - mark 7 E 118
       - mark 7 F 121
       - mark 7 G 124
+      - reveal 7
     focus: [7, 1]
     text: |
       {[ht,$peek]&thinsp;<code>genregs.ts</code>}
@@ -184,6 +193,10 @@ steps:
 
   - cmds:
       - view 8
+      - reveal nordic.nr54
+      - reveal rpi.2040
+      - reveal ti.cc23xx
+      - reveal nordic.nrf52
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -197,6 +210,9 @@ steps:
 
   - cmds:
       - view 9
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

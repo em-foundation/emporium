@@ -1,7 +1,6 @@
 title: Edge Interrupts
 
 files:
-
   - em.prog:em.examples.basic/Ex05_Button1P.em.ts
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - em.core:em.hal/EdgeI.em.ts
@@ -10,9 +9,7 @@ files:
   - .assets/img-101-09-01.png
   - .assets/img-103-05-02.png
 
-
 steps:
-
   - cmds:
       - open 1
       - mark 1 A 7
@@ -80,7 +77,6 @@ steps:
       &thinsp;⤷{[cu]AppButEdge} :: {[cu]EdgeT}&thinsp;›&thinsp;{[cu]EdgeI} clone w/ {[cu]GpioI} proxy<br>
       &emsp;⤷{[cu]AppBut} :: {[cu]ButtonT}&thinsp;›&thinsp;{[cu]ButtonI} clone w/ {[cu]EdgeI} proxy<br>
 
-
   - cmds:
       - open 3
     focus: [3, 1]
@@ -98,8 +94,6 @@ steps:
       </div>
 
       We'll now move on to an MCU-specific {[cu]EdgeI} implemen&shy;tation supported by our distro's {[cu]EdgeT} driver template.
-
-
 
   - cmds:
       - open 4
@@ -123,7 +117,6 @@ steps:
       Typical of {[cu]EdgeI} implementations, an auxiliary module {[bm,A]} directly manages the underlying HW interrupts.
 
       Through a build-time binding {[bm,C]}, {[cu]Aux} will invoke a _local_ {[cn]handler} callback (defined later) at run-time.
-
 
   - cmds:
       - open 5
@@ -151,8 +144,6 @@ steps:
       Note that {[cu]EdgeAux} does _not_ call {[cu]Idle}.{[cf]setLevel} &ndash; al&shy;lowing MCU deep-sleep when awaiting edge interrupts.
 
       </div>
-
-
 
   - cmds:
       - open 4
@@ -195,6 +186,7 @@ steps:
 
   - cmds:
       - view 6
+      - reveal 1
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -204,9 +196,9 @@ steps:
 
       {[bi,task_alt]} Explore programs in the `em.examples.combo` bucket.
 
-
   - cmds:
       - view 7
+      - reveal 2
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

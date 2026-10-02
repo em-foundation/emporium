@@ -10,6 +10,7 @@ files:
 steps:
   - cmds:
       - view 1
+      - reveal 3
     text: |
       {[ht,$start]&thinsp;%[cu]BuildC% &ndash; Its Unique Position}
 
@@ -29,6 +30,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 3
     text: |
       {[ht,playground]&thinsp;A Distro Playground}
 

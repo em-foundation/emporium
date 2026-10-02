@@ -35,6 +35,10 @@ steps:
 
   - cmds:
       - view 2
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
+
     text: |
       {[ht,account_tree]&thinsp;EMS Distro Architecture}
 
@@ -57,6 +61,9 @@ steps:
 
   - cmds:
       - view 3
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
     text: |
       {[ht,snippet_folder]&thinsp;Inside a Distro Package}
 
@@ -83,6 +90,8 @@ steps:
 
   - cmds:
       - view 4
+      - reveal nordic.nrf52:nordic.distro.nrf52/em-boards
+
     text: |
       {[ht,settings]&thinsp;Selecting a Board + Setup}
 
@@ -106,6 +115,8 @@ steps:
 
   - cmds:
       - view 5
+      - reveal 1
+      - reveal nordic.nrf52:nordic.distro.nrf52/BuildC.em.ts
     text: |
       {[ht,$build]%[cu]BuildC% &ndash; From Source To Output}
 
@@ -140,6 +151,9 @@ steps:
 
   - cmds:
       - view 2
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

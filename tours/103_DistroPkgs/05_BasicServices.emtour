@@ -65,8 +65,6 @@ steps:
 
       </div>
 
-
-
   - cmds:
       - open 2
       - fold 2 3 4
@@ -112,6 +110,7 @@ steps:
 
   - cmds:
       - view 6
+      - reveal 2
     text: |
       {[ht,developer_board]&thinsp;%[cu]BoardC% &ndash; Ingesting <code>em-boards</code>}
 
@@ -190,18 +189,16 @@ steps:
 
       Note how the {[cu]GpioI} {[cs]$clone} produced by {[cu]GpioT} defines {[cn]pin_num}{[bm,C]} &ndash; a build-time {[cs]$config} bound by {[cu]BoardC}.
 
-
-
   - cmds:
-    - open 2
-    - fold 2 3 4
-    - fold 2 6 8
-    - fold 2 6 8
-    - fold 2 11 13
-    - fold 2 14 15
-    - fold 2 17 24
-    - fold 2 25 28
-    - fold 2 55 88
+      - open 2
+      - fold 2 3 4
+      - fold 2 6 8
+      - fold 2 6 8
+      - fold 2 11 13
+      - fold 2 14 15
+      - fold 2 17 24
+      - fold 2 25 28
+      - fold 2 55 88
     focus: [2, 1]
 
     text: |
@@ -215,6 +212,7 @@ steps:
 
   - cmds:
       - view 7
+      - reveal 2
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

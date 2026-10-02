@@ -9,10 +9,15 @@ files:
   - .assets/img-103-02-05.png
   - .assets/img-103-02-06.png
   - .assets/img-103-02-07.png
+  - segger.arm.sandbox:segger.arm.gists.sandbox/Gist00.em.ts
 
 steps:
   - cmds:
       - view 1
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
+
     text: |
       {[ht,$start]&thinsp;Working Backwards}
 
@@ -31,6 +36,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 9
     text: |
       {[ht,download]&thinsp;Minimal Target Program}
 
@@ -53,6 +59,7 @@ steps:
 
   - cmds:
       - view 3
+      - reveal 9
     text: |
       {[ht,$build]&thinsp;Generated C++ Project}
 
@@ -75,6 +82,7 @@ steps:
 
   - cmds:
       - view 4
+      - reveal 9
     text: |
       {[ht,conversion_path]&thinsp;From %[cu]Gist00% to <code>main.cpp</code>}
 
@@ -96,6 +104,9 @@ steps:
 
   - cmds:
       - view 6
+      - reveal 9
+      - reveal segger.arm.sandbox:segger.arm.distro.sandbox
+
     text: |
       {[ht,$build]&thinsp;Other Build Artifacts}
 
@@ -117,6 +128,9 @@ steps:
 
   - cmds:
       - view 7
+      - reveal 9
+      - reveal segger.arm.sandbox:setup-default
+
     text: |
       {[ht,$build]&thinsp;Build Properties}
 
@@ -130,6 +144,8 @@ steps:
 
   - cmds:
       - view 8
+      - reveal em.prog:em.examples.basic
+      - reveal 9
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -143,6 +159,10 @@ steps:
 
   - cmds:
       - view 1
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
+
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

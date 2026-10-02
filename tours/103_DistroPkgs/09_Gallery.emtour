@@ -17,6 +17,9 @@ files:
 steps:
   - cmds:
       - view 1
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
     text: |
       {[ht,$start]&thinsp;Distro Gallery}
 
@@ -36,6 +39,9 @@ steps:
 
   - cmds:
       - view 2
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.distro.2040/BuildC.em.ts
     text: |
       {[ht,photo]&thinsp;%[cu]BuildC%}
 
@@ -59,6 +65,10 @@ steps:
 
   - cmds:
       - view 3
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.distro.2040/BoardC.em.ts
+
     text: |
       {[ht,photo]&thinsp;%[cu]BoardC%}
 
@@ -82,6 +92,10 @@ steps:
 
   - cmds:
       - view 5
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/GpioT.em.ts
+
     text: |
       {[ht,photo]&thinsp;%[cu]GpioT%}
 
@@ -104,6 +118,10 @@ steps:
 
   - cmds:
       - view 4
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
+
     text: |
       {[ht,photo]&thinsp;%[cu]ConsoleUart%}
 
@@ -125,9 +143,12 @@ steps:
 
       </div>
 
-
   - cmds:
       - view 6
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/Mcu.em.ts
+
     text: |
       {[ht,photo]&thinsp;%[cu]Mcu%}
 
@@ -149,9 +170,11 @@ steps:
 
       </div>
 
-
   - cmds:
       - view 8
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
     text: |
       {[ht,photo]&thinsp;%[cu]OneShot%}
 
@@ -172,6 +195,9 @@ steps:
 
   - cmds:
       - view 7
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/EdgeAux.em.ts
     text: |
       {[ht,photo]&thinsp;%[cu]EdgeAux%}
 
@@ -195,6 +221,9 @@ steps:
 
   - cmds:
       - view 9
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/Idle.em.ts
     text: |
       {[ht,photo]&thinsp;%[cu]Idle%}
 
@@ -215,6 +244,10 @@ steps:
 
   - cmds:
       - view 10
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/RtcAlarm1.em.ts
+
     text: |
       {[ht,photo]&thinsp;%[cu]Rtc%}
 
@@ -236,9 +269,11 @@ steps:
 
       </div>
 
-
   - cmds:
       - view 11
+      - reveal ti.cc23xx:ti.mcu.cc23xx/Rtc.em.ts
+      - reveal nordic.nrf52:nordic.mcu.nrf52/Rtc.em.ts
+
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -248,9 +283,9 @@ steps:
 
       {[bi,task_alt]} Grok why LFCLK sources impact {[cu]Rtc} _power_ {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
 
-
   - cmds:
       - view 12
+      - reveal em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

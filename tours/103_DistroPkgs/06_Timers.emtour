@@ -11,7 +11,6 @@ files:
   - em.core:em.arch.arm/IntrVec.em.ts
 
 steps:
-
   - cmds:
       - open 1
       - mark 1 A 8
@@ -67,7 +66,6 @@ steps:
       In the limit, we want to _minimize_ each distro's unique contributions and _maximize_ re-use of generic elements.
 
       </div>
-      
 
   - cmds:
       - open 4
@@ -94,6 +92,10 @@ steps:
 
   - cmds:
       - view 6
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.distro.2040/BuildC.em.ts
+
     text: |
       {[ht,$details]&thinsp;%[cu]BuildC% &ndash; Interrupt Declarations}
 
@@ -108,7 +110,6 @@ steps:
       </div>
 
       Each interrupt name in fact declares a _family_ of program identifiers &ndash; as we'll see next with {[cs]'TIMER_IRQ_0'}{[dc,T]}.
-
 
   - cmds:
       - open 4
@@ -140,6 +141,7 @@ steps:
 
   - cmds:
       - view 7
+      - reveal em.core:em.arch.arm
     text: |
       {[ht,$details]&thinsp;ARM Core Support}
 
@@ -193,8 +195,6 @@ steps:
 
       </div>
 
-
-
   - cmds:
       - open 8
       - fold 8 3 8
@@ -214,6 +214,7 @@ steps:
 
   - cmds:
       - view 5
+      - reveal 2
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
@@ -226,5 +227,5 @@ steps:
       And as promised, we'll dive into {[cu]Idle}.{[cf]doSleep}&hellip;&thinsp;💤
 
       </div>
-      
+
       {[hc]}

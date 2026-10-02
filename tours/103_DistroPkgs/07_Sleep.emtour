@@ -64,7 +64,6 @@ steps:
       The **SysTick** peripheral can, however, measure the passage of time at the resolution of the CPU instruction clock.
 
       &ensp;💡&thinsp;Use **F12** to inspect {[cu]UsCounter} in more detail.
-      
 
   - cmds:
       - open 3
@@ -114,6 +113,7 @@ steps:
 
   - cmds:
       - view 6
+      - reveal 3
     text: |
       {[ht,timer]&thinsp;Timer Design Space}
 
@@ -194,6 +194,7 @@ steps:
 
   - cmds:
       - view 6
+      - reveal em.core:em.arch.arm/UsCounterSystick.em.ts
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -205,6 +206,7 @@ steps:
 
   - cmds:
       - view 7
+      - reveal 2
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
@@ -217,6 +219,5 @@ steps:
       </div>
 
       Before taking up <b>EM&bull;Mark</b> in a future tour bundle, let's finish up with **Edge Interrupts** needed for group {[dc,4]}.
-      
-      {[hc]}
 
+      {[hc]}
