@@ -88,6 +88,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 1
     text: |
 
       {[ht,snippet_folder]&thinsp;Files and Folders}
@@ -108,6 +109,7 @@ steps:
 
   - cmds:
       - view 3
+      - reveal 1
     text: |
 
       {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
@@ -132,6 +134,7 @@ steps:
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
 
   - cmds:
+      - open 1
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}
