@@ -6,11 +6,13 @@ files:
   - .assets/img-102-08-01.png
   - .assets/img-102-08-02.png
   - .assets/img-102-08-03.png
-
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
 
 steps:
   - cmds:
       - view 2
+      - reveal 6
+
     text: |
       {[ht,$start]&thinsp;Signal Capture on Real Hardware}
 
@@ -21,13 +23,14 @@ steps:
       The last tour {[tr,102/07/05]} showed a **PulseView** capture of {[cu]SleepyRunnerP} &ndash; more compelling than {[cu]BlinkerP}.
 
       </div>
-      
+
       In fact, you can *already* execute {[cu]SleepyRunnerP} on *any* of the boards presented in an earlier tour {[tr,102/06/02]}.
 
       But without **PulseView**, you'll miss out on lots of details&thinsp;&hellip;
 
   - cmds:
       - view 3
+      - reveal 6
     text: |
       {[ht,monitor_heart]&thinsp;A Real Hardware Logic Analyzer}
 
@@ -42,16 +45,15 @@ steps:
       After some **PulseView** setup, you'll see the same [`AppOut`, `DbgA`, &thinsp;&hellip; `SysLed`] signals captured from *real* hardware.
 
       Ensure that {[cu]BlinkerP} builds&thinsp;&middot;&thinsp;loads&thinsp;&middot;&thinsp;runs on your board of choice and then:
-      
+
       ☑️&thinsp; select {[em]Board} then **✓&thinsp;current** to view its labeled image<br>
       ☑️&thinsp; connect the jumper wires to your board's colored pins<br>
       ☑️&thinsp; also connect analyzer GND to board GND [grey]<br>
       ☑️&thinsp; plug the USB logic analyzer into your host PC
 
-
-
   - cmds:
       - view 4
+      - reveal 6
     text: |
       {[ht,settings]&thinsp;Configuring PulseView}
 
@@ -73,6 +75,7 @@ steps:
 
   - cmds:
       - view 5
+      - reveal 6
     text: |
       {[ht,cycle]&thinsp;Steady-State Workflow}
 
@@ -112,8 +115,6 @@ steps:
 
       ❓&thinsp;And don't hesitate to ask for help at [Discussions](https://github.com/em-foundation/emporium/discussions).
 
-
-
   - cmds:
       - open 1
     acts: ["$build"]
@@ -128,6 +129,7 @@ steps:
 
   - cmds:
       - view 3
+      - reveal 1
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
