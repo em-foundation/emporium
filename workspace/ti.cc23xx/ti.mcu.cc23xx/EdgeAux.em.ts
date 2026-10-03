@@ -34,10 +34,4 @@ export function GPIO_COMB_isr$$() {
             hi.handler()
         }
     }
-    // for (let i of $range(handler_info_tab.$len)) {
-    //     let hi = $ref(handler_info_tab[i])
-    //     if ((mis & hi.$$.mask) && hi.$$.handler != $null) {
-    //         hi.$$.handler()
-    //     }
-    // }
 }
