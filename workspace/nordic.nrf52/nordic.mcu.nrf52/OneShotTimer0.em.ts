@@ -17,13 +17,15 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const IRQn = e$`TIMER0_IRQn`
+
 var cur_arg: arg_t
 var cur_fxn: Handler = $null
 
 export function disable(): void {
     $R.TIMER0.TASKS_STOP.$$ = 1
-    Idle.setLevel(1)
-    IntrVec.NVIC_disable(e$`TIMER0_IRQn`)
+    Idle.setLevel(0)
+    IntrVec.NVIC_disable(IRQn)
 }
 
 export function enable(msecs: u32, handler: OneShotI.Handler, arg: arg_t): void {
@@ -37,8 +39,8 @@ export function uenable(usecs: u32, handler: OneShotI.Handler, arg: arg_t): void
 function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
     cur_fxn = handler
     cur_arg = arg
-    Idle.setLevel(0)
-    IntrVec.NVIC_enable(e$`TIMER0_IRQn`)
+    Idle.setLevel(1)
+    IntrVec.NVIC_enable(IRQn)
     $R.TIMER0.TASKS_STOP.$$ = 1
     $R.TIMER0.TASKS_CLEAR.$$ = 1
     $R.TIMER0.MODE.$$ = $R.TIMER_MODE_MODE_Timer
@@ -49,7 +51,7 @@ function ustart(usecs: u32, handler: OneShotI.Handler, arg: arg_t) {
 }
 
 export function TIMER0_isr$$() {
-    IntrVec.NVIC_clear(e$`TIMER0_IRQn`)
+    IntrVec.NVIC_clear(IRQn)
     $R.TIMER0.INTENCLR.$$ = $R.TIMER_INTENCLR_COMPARE0_Msk
     $R.TIMER0.EVENTS_COMPARE[0].$$ = 0
     const fxn = cur_fxn

@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/05_List.emtour"
 title: "Algorithm – List Processing"
 
 source_snapshot:
-  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
-  generated_at: "2026-07-13T02:16:42.873Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.514Z"
 
 ground_truth:
   stop_count: 11
@@ -48,17 +48,14 @@ steps:
     heading: "%[cu]ListBench% Codescape"
     icon: "$peek"
     cmds:
-      - "close 2"
-      - "close 3"
       - "view 4"
     focus: []
     acts:
       []
   - stop: 3
-    heading: "%[cu]ListBench% – static declarations"
+    heading: "%[cu]ListBench% – Static Declarations"
     icon: "$details"
     cmds:
-      - "close 2"
       - "view 4"
       - "open 1"
       - "mark 1 A 8"
@@ -70,7 +67,7 @@ steps:
     acts:
       []
   - stop: 4
-    heading: "%[cu]ListBench% – %[cx]em$meta% initialization"
+    heading: "%[cu]ListBench% – %[cx]em$meta% Initialization"
     icon: "$details"
     cmds:
       - "open 1"
@@ -86,7 +83,7 @@ steps:
     acts:
       []
   - stop: 5
-    heading: "%[cu]ListBench% – %[cf]setup% details"
+    heading: "%[cu]ListBench% – %[cf]setup% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -97,7 +94,7 @@ steps:
     acts:
       []
   - stop: 6
-    heading: "%[cu]ListBench% – %[cf]run% details (search phase)"
+    heading: "%[cu]ListBench% – %[cf]run% Details (Search Phase)"
     icon: "$details"
     cmds:
       - "open 1"
@@ -111,7 +108,7 @@ steps:
     acts:
       []
   - stop: 7
-    heading: "%[cu]ListBench% – %[cf]run% details (sort phase)"
+    heading: "%[cu]ListBench% – %[cf]run% Details (Sort Phase)"
     icon: "$details"
     cmds:
       - "open 1"
@@ -125,7 +122,7 @@ steps:
     acts:
       []
   - stop: 8
-    heading: "%[cu]ListBench% – helper functions"
+    heading: "%[cu]ListBench% – Helper Functions"
     icon: "$peek"
     cmds:
       - "open 1"
@@ -155,8 +152,6 @@ steps:
     heading: "Next Steps"
     icon: "$steps"
     cmds:
-      - "close 1"
-      - "close 4"
       - "view 3"
     focus: []
     acts:
@@ -675,7 +670,7 @@ usage:
     - "$steps"
   macros:
     "bi": 5
-    "bm": 26
+    "bm": 20
     "cf": 38
     "ck": 4
     "cn": 34
@@ -683,12 +678,11 @@ usage:
     "ct": 30
     "cu": 28
     "cx": 1
-    "dc": 13
+    "dc": 6
     "hc": 1
     "ht": 11
     "in": 9
   commands:
-    "close": 5
     "mark": 31
     "open": 9
     "view": 4

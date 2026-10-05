@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/03_Matrix.emtour"
 title: "Algorithm – Matrix Math"
 
 source_snapshot:
-  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
-  generated_at: "2026-07-13T02:16:26.051Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.386Z"
 
 ground_truth:
   stop_count: 7
@@ -34,10 +34,9 @@ steps:
     acts:
       []
   - stop: 2
-    heading: "%[cu]MatrixBench% – %[cx]em$meta% details"
+    heading: "%[cu]MatrixBench% – %[cx]em$meta% Details"
     icon: "$details"
     cmds:
-      - "close 2"
       - "open 1"
       - "mark 1 A 8"
       - "mark 1 B 15"
@@ -46,7 +45,7 @@ steps:
     acts:
       []
   - stop: 3
-    heading: "%[cu]MatrixBench% – %[cf]run% details"
+    heading: "%[cu]MatrixBench% – %[cf]run% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -56,7 +55,7 @@ steps:
     acts:
       []
   - stop: 4
-    heading: "%[cu]MatrixBench% – %[cf]setup% details"
+    heading: "%[cu]MatrixBench% – %[cf]setup% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -65,11 +64,10 @@ steps:
     acts:
       []
   - stop: 5
-    heading: "%[cu]BenchAlgI%.%[cf]setup% – domain boundaries"
+    heading: "%[cu]BenchAlgI%.%[cf]setup% – Domain Boundaries"
     icon: "fence"
     cmds:
       - "open 1"
-      - "mark 1 A 71"
     focus: [1, 74]
     acts:
       []
@@ -187,22 +185,6 @@ marker_audit:
       - "    if (sd == 0) sd = 1"
       - "    let order = <matdat_t>1"
     status: "ok"
-  - stop: 5
-    file_index: 1
-    file_raw: "em.prog:em.benchmark.coremark/MatrixBench.em.ts"
-    file_resolved: "em.prog/em.benchmark.coremark/MatrixBench.em.ts"
-    label: "A"
-    line: 71
-    expect: "    const s32 = (<u32>UT.getSeed(1)) | ((<u32>UT.getSeed(2)) << 16)"
-    context_before:
-      - "}"
-      - ""
-      - "export function setup() {"
-    context_after:
-      - "    let sd = <matdat_t>s32"
-      - "    if (sd == 0) sd = 1"
-      - "    let order = <matdat_t>1"
-    status: "ok"
 
 usage:
   heading_icons:
@@ -226,8 +208,7 @@ usage:
     "ht": 7
     "in": 5
   commands:
-    "close": 1
-    "mark": 7
+    "mark": 6
     "open": 5
     "view": 2
   actions:

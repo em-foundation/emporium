@@ -22,13 +22,24 @@ export namespace em$meta {
     }
 }
 
-let cur_pause_only = false
+//>> ---- em$targ ---- <<//
+
+var cur_level: IdleI.SleepLevel = 0
 
 export function em$startup() {
     $['%%b+']
     $R.PMCTL.VDDRCTL.$$ = $R.PMCTL_VDDRCTL_SELECT
     $R.EVTULL.WKUPMASK.$$ =
         $R.EVTULL_WKUPMASK_AON_IOC_COMB | $R.EVTULL_WKUPMASK_AON_RTC_COMB
+}
+
+function doPause() {
+    $['%%b:'](1)
+    $['%%b-']
+    IntrVec.PRIMASK_set(1)
+    e$`asm volatile ("wfi")`
+    $['%%b+']
+    IntrVec.PRIMASK_set(0)
 }
 
 function doSleep() {
@@ -45,25 +56,20 @@ function doSleep() {
     IntrVec.PRIMASK_set(0)
 }
 
-function doPause() {
-    $['%%b:'](1)
-    $['%%b-']
-    IntrVec.PRIMASK_set(1)
-    e$`asm volatile ("wfi")`
-    $['%%b+']
-    IntrVec.PRIMASK_set(0)
-}
-
-export function setPauseOnly(pause_only: bool_t) {
-    cur_pause_only = pause_only
-}
-
 export function exec() {
-    if (cur_pause_only) {
+    if (cur_level > 0) {
         doPause()
     } else {
         doSleep()
     }
+}
+
+export function getLevel(): IdleI.SleepLevel {
+    return cur_level
+}
+
+export function setLevel(level: IdleI.SleepLevel) {
+    cur_level = level
 }
 
 export function wakeup() { }

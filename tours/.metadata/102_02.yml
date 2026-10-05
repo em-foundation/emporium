@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/02_Infrastructure.emtour"
 title: "Benchmark Infrastructure"
 
 source_snapshot:
-  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
-  generated_at: "2026-07-13T02:16:20.928Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.321Z"
 
 ground_truth:
   stop_count: 8
@@ -49,16 +49,15 @@ steps:
     acts:
       []
   - stop: 2
-    heading: "%[cu]BenchAlgI% – quick peek"
+    heading: "%[cu]BenchAlgI% – Quick Look"
     icon: "$look"
     cmds:
-      - "close 5"
       - "open 1"
     focus: [1, 1]
     acts:
       - "$reveal"
   - stop: 3
-    heading: "%[cu]Utils% – details"
+    heading: "%[cu]Utils% – Details"
     icon: "$details"
     cmds:
       - "open 4"
@@ -73,7 +72,7 @@ steps:
     acts:
       []
   - stop: 4
-    heading: "%[cu]Crc% – details"
+    heading: "%[cu]Crc% – Details"
     icon: "$details"
     cmds:
       - "open 3"
@@ -84,7 +83,7 @@ steps:
     acts:
       []
   - stop: 5
-    heading: "%[cu]CoreBench% – %[cx]em$targ% details"
+    heading: "%[cu]CoreBench% – %[cx]em$targ% Details"
     icon: "$details"
     cmds:
       - "open 2"
@@ -98,7 +97,7 @@ steps:
     acts:
       []
   - stop: 6
-    heading: "%[cu]CoreBench% – %[cx]em$meta% details"
+    heading: "%[cu]CoreBench% – %[cx]em$meta% Details"
     icon: "$details"
     cmds:
       - "open 2"
@@ -113,10 +112,7 @@ steps:
     heading: "Extra Credit"
     icon: "$extra"
     cmds:
-      - "close 5"
-      - "close 4"
-      - "close 3"
-      - "close 2"
+      []
     focus: []
     acts:
       []
@@ -473,8 +469,8 @@ usage:
     "hc": 1
     "ht": 8
     "in": 5
+    "tr": 1
   commands:
-    "close": 5
     "mark": 20
     "open": 5
     "view": 2

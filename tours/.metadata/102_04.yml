@@ -7,8 +7,8 @@ source_file: "tours/102_CoreMark/04_State.emtour"
 title: "Algorithm – State Machine"
 
 source_snapshot:
-  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
-  generated_at: "2026-07-13T02:16:33.278Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.454Z"
 
 ground_truth:
   stop_count: 8
@@ -34,10 +34,9 @@ steps:
     acts:
       []
   - stop: 2
-    heading: "%[cu]StateBench% – static declarations"
+    heading: "%[cu]StateBench% – Static Declarations"
     icon: "$details"
     cmds:
-      - "close 2"
       - "open 1"
       - "mark 1 A 8"
       - "mark 1 B 10"
@@ -49,7 +48,7 @@ steps:
     acts:
       []
   - stop: 3
-    heading: "%[cu]StateBench% – %[cf]run% details"
+    heading: "%[cu]StateBench% – %[cf]run% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -60,7 +59,7 @@ steps:
     acts:
       []
   - stop: 4
-    heading: "%[cu]StateBench% – %[cf]scan% details"
+    heading: "%[cu]StateBench% – %[cf]scan% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -71,7 +70,7 @@ steps:
     acts:
       []
   - stop: 5
-    heading: "%[cu]StateBench% – %[cf]nextState% details"
+    heading: "%[cu]StateBench% – %[cf]nextState% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -83,7 +82,7 @@ steps:
     acts:
       []
   - stop: 6
-    heading: "%[cu]StateBench% – %[cf]setup% details"
+    heading: "%[cu]StateBench% – %[cf]setup% Details"
     icon: "$details"
     cmds:
       - "open 1"
@@ -440,7 +439,6 @@ usage:
     "ht": 8
     "in": 6
   commands:
-    "close": 1
     "mark": 19
     "open": 6
     "view": 2

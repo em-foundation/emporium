@@ -7,11 +7,11 @@ source_file: "tours/102_CoreMark/01_Introduction.emtour"
 title: "Transcribing CoreMark"
 
 source_snapshot:
-  git_sha: "74b18b65620a4b7aabf17c817fbe36f0ce49c334"
-  generated_at: "2026-07-13T02:16:11.811Z"
+  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
+  generated_at: "2026-09-18T18:34:47.251Z"
 
 ground_truth:
-  stop_count: 5
+  stop_count: 7
   files:
     - index: 1
       raw: "em.prog:em.benchmark.coremark/legacy-source/core_main.c"
@@ -31,6 +31,14 @@ ground_truth:
 
 steps:
   - stop: 1
+    heading: "Transcribing CoreMark"
+    icon: "$start"
+    cmds:
+      - "open 3"
+    focus: []
+    acts:
+      []
+  - stop: 2
     heading: "Legacy Sources"
     icon: "files"
     cmds:
@@ -38,20 +46,18 @@ steps:
     focus: [1, 93]
     acts:
       []
-  - stop: 2
+  - stop: 3
     heading: "EM•Script Modules"
     icon: "account_tree"
     cmds:
-      - "close 1"
       - "view 2"
     focus: []
     acts:
       []
-  - stop: 3
-    heading: "%[cu]ActiveRunnerP% – details"
+  - stop: 4
+    heading: "%[cu]ActiveRunnerP% – Details"
     icon: "$details"
     cmds:
-      - "close 2"
       - "open 3"
       - "mark 3 A 6"
       - "mark 3 B 11"
@@ -60,17 +66,26 @@ steps:
     focus: [3, 1]
     acts:
       []
-  - stop: 4
-    heading: "%[cu]ActiveRunnerP% – output"
+  - stop: 5
+    heading: "%[cu]ActiveRunnerP% – Output"
     icon: "$build"
     cmds:
+      - "open 3"
       - "mark 3 A 23"
       - "mark 3 B 27"
       - "mark 3 C 29"
     focus: [3, 1]
     acts:
       - "$build"
-  - stop: 5
+  - stop: 6
+    heading: "Extra Credit"
+    icon: "$extra"
+    cmds:
+      []
+    focus: []
+    acts:
+      []
+  - stop: 7
     heading: "Next Steps"
     icon: "$steps"
     cmds:
@@ -80,7 +95,7 @@ steps:
       []
 
 marker_audit:
-  - stop: 3
+  - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -96,7 +111,7 @@ marker_audit:
       - ""
       - "const AppLed = $delegate(BoardC.AppLed)"
     status: "ok"
-  - stop: 3
+  - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -112,7 +127,7 @@ marker_audit:
       - "export namespace em$meta { }"
       - ""
     status: "ok"
-  - stop: 3
+  - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -128,7 +143,7 @@ marker_audit:
       - ""
       - "export function em$run() {"
     status: "ok"
-  - stop: 3
+  - stop: 4
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -144,7 +159,7 @@ marker_audit:
       - "    const usecs = Common.UsCounter.stop()"
       - "    AppLed.wink(1000)"
     status: "ok"
-  - stop: 4
+  - stop: 5
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -160,7 +175,7 @@ marker_audit:
       - "        CoreBench.run(0)"
       - "    }"
     status: "ok"
-  - stop: 4
+  - stop: 5
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -176,7 +191,7 @@ marker_audit:
       - "    printf`usecs = %d\\n`(usecs)"
       - "    printf`list crc = %04x\\n`(UT.getCrc(UT.Kind.LIST))"
     status: "ok"
-  - stop: 4
+  - stop: 5
     file_index: 3
     file_raw: "em.prog:em.benchmark.coremark/ActiveRunnerP.em.ts"
     file_resolved: "em.prog/em.benchmark.coremark/ActiveRunnerP.em.ts"
@@ -195,26 +210,27 @@ marker_audit:
 
 usage:
   heading_icons:
+    - "$start"
     - "files"
     - "account_tree"
     - "$details"
     - "$build"
+    - "$extra"
     - "$steps"
   macros:
-    "bi": 3
-    "bm": 13
+    "bi": 9
+    "bm": 3
     "cf": 2
     "cn": 4
     "cu": 15
     "em": 1
     "hc": 1
-    "ht": 6
-    "in": 4
+    "ht": 7
+    "in": 5
     "le": 1
   commands:
-    "close": 2
     "mark": 7
-    "open": 2
+    "open": 4
     "view": 2
   actions:
     - "$build"

@@ -19,12 +19,11 @@ import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@ti.mcu.cc23xx/Mcu.em'
 import * as OneShot from '@ti.mcu.cc23xx/OneShotGpt3.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as RadioDriver from '@ti.radio.cc23xx/RadioDriver.em'
 import * as Rtc from '@ti.mcu.cc23xx/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
-export { CacheStats, OneShot, RadioDriver }
+export { CacheStats, OneShot }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
@@ -43,7 +42,7 @@ export const FlashPOCI = $clone(GpioT)
 export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
 
-export const DEFAULTS = {
+export const BRD_DEFAULTS = {
     /** setting applies to {app,com,sys}Led pins */ activeLowLeds: false,
     pins: {
         appBut: <i16>-1,
@@ -63,7 +62,7 @@ export const DEFAULTS = {
 
 export function em$configure(): void {
     if ($isbare()) return
-    const brd = $board(DEFAULTS)
+    const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
     $using(ExtFlashDisabler)

@@ -8,7 +8,6 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$start]&thinsp;EM&bull;Script Content Hierarchy}
@@ -20,15 +19,12 @@ steps:
 
       As a live example, we'll return to the {[cu]BlinkerP} program introduced in the previous tour {[tr,100/01/04]}.
 
-      Click the {[cb,target]} button to reveal this program's **Package &middot; Bucket &middot; Unit** elements within the content hierarchy.
-
       The **Next** stops on this tour will provide more infor&shy;mation about these **EM&bull;Script** [**EMS**] elements.
 
   - cmds:
       - open 1
       - mark 1 A 2
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Unit &ndash; Source File}
@@ -50,7 +46,6 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Bucket &ndash; Namespace}
@@ -73,7 +68,6 @@ steps:
       - open 1
       - mark 1 B 5
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,account_tree]&thinsp;EM&bull;Script Package &ndash; Container}
@@ -94,6 +88,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 1
     text: |
 
       {[ht,snippet_folder]&thinsp;Files and Folders}
@@ -114,6 +109,7 @@ steps:
 
   - cmds:
       - view 3
+      - reveal 1
     text: |
 
       {[ht,note_add]&thinsp;Adding EM&bull;Script Content}
@@ -138,6 +134,7 @@ steps:
       To *delete* a **Package &middot; Bucket &middot; Unit** from the content hierarchy, select **Remove** from its right-click menu.
 
   - cmds:
+      - open 1
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}

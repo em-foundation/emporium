@@ -19,12 +19,11 @@ import * as Mcu from '@nordic.mcu.nrf52/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf52/OneShotTimer0.em'
 import * as OneShotN from '@em.hal/OneShotN.em'
 import * as Poller from '@em.mcu/Poller.em'
-import * as RadioDriver from '@nordic.radio.nrf52/RadioDriver.em'
 import * as Rtc from '@nordic.mcu.nrf52/Rtc.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 
-export { CacheStats, OneShot, RadioDriver }
+export { CacheStats, OneShot }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
@@ -39,8 +38,8 @@ export const DbgD = $clone(GpioT)
 export const SysLed = $clone(LedT)
 export const SysLedPin = $clone(GpioT)
 
-export const DEFAULTS = {
-    /** setting applies to {app,com,sys}Led pins */ activeLowLeds: false,
+export const BRD_DEFAULTS = {
+    activeLowLeds: false,
     pins: {
         appBut: <i16>-1,
         appLed: <i16>-1,
@@ -55,7 +54,7 @@ export const DEFAULTS = {
 
 export function em$configure(): void {
     if ($isbare()) return
-    const brd = $board(DEFAULTS)
+    const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
     AlarmMgr.Rtc.$$dlg = Rtc
