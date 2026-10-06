@@ -372,7 +372,9 @@ function testPoint() {
     Mem.cpy(peer.x.$ptr(), PEER_X_TEST.$ptr(), $sizeof<U256>())
     Mem.cpy(peer.y.$ptr(), PEER_Y_TEST.$ptr(), $sizeof<U256>())
     let secret = U256.$make()
+    $['%%d+']
     ecdh(sk, $$(peer), secret.$ptr())
+    $['%%d-']
     print(secret.$ptr(), t$`secret`)
 }
 
