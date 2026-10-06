@@ -9,6 +9,7 @@ type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
 class U512 extends $vector<U256_BASE> { $len = 16 }
+class NAF257 extends $vector<i8> { $len = 257 }
 export type U256_Ref = ptr_t<U256_BASE>
 
 export class PubKey extends $struct {
@@ -428,33 +429,73 @@ function pointMul(k: U256_Ref, p: $$<PointJ>) {
     Mem.cpy(base.x.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
     Mem.cpy(base.y.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
     base.z[0] = 1
+    let neg = PointJ.$make()
+    Mem.cpy(neg.x.$ptr(), base.x.$ptr(), $sizeof<U256>())
+    for (const i of $range(U256_LEN)) neg.y[i] = 0
+    fieldSub(neg.y.$ptr(), base.y.$ptr())
+    neg.z[0] = 1
+    let n = U256.$make()
+    Mem.cpy(n.$ptr(), k, $sizeof<U256>())
+    let naf = NAF257.$make()
+    let nbits: u32 = 0
+    while (!scalarIsZero(n.$ptr())) {
+        if ((n[0] & 1) != 0) {
+            const d: i8 = ((n[0] & 3) == 1) ? 1 : -1
+            naf[nbits] = d
+            if (d > 0) scalarSubOne(n.$ptr())
+            else scalarAddOne(n.$ptr())
+        }
+        scalarShiftRight(n.$ptr())
+        nbits += 1
+    }
     let r = PointJ.$make()
     let have = false
-    for (const i of $range(U256_LEN - 1, -1, -1)) {
-        for (const j of $range(31, -1, -1)) {
-            const bit = (k[i] & (1 << j)) != 0
-            if (!have) {
-                if (bit) {
-                    Mem.cpy(r.x.$ptr(), base.x.$ptr(), $sizeof<U256>())
-                    Mem.cpy(r.y.$ptr(), base.y.$ptr(), $sizeof<U256>())
-                    r.z[0] = 1
-                    have = true
-                }
-                continue
-            }
-            $['%%a+']
-            pointDouble($$(r))
-            $['%%a-']
-            if (bit) {
-                $['%%c+']
-                pointAddAffine($$(r), $$(base))
-                $['%%c-']
-            }
+    for (let i = $cast2<i32>(nbits) - 1; i >= 0; i -= 1) {
+        if (have) pointDouble($$(r))
+        const d = naf[i]
+        if (d == 0) continue
+        const q = d > 0 ? $$(base) : $$(neg)
+        if (!have) {
+            Mem.cpy(r.x.$ptr(), q.$$.x.$ptr(), $sizeof<U256>())
+            Mem.cpy(r.y.$ptr(), q.$$.y.$ptr(), $sizeof<U256>())
+            r.z[0] = 1
+            have = true
+        } else {
+            pointAddAffine($$(r), q)
         }
     }
     Mem.cpy(p.$$.x.$ptr(), r.x.$ptr(), $sizeof<U256>())
     Mem.cpy(p.$$.y.$ptr(), r.y.$ptr(), $sizeof<U256>())
     Mem.cpy(p.$$.z.$ptr(), r.z.$ptr(), $sizeof<U256>())
+}
+
+function scalarAddOne(a: U256_Ref) {
+    for (const i of $range(U256_LEN)) {
+        a[i] += 1
+        if (a[i] != 0) return
+    }
+}
+
+function scalarIsZero(a: U256_Ref): bool_t {
+    for (const i of $range(U256_LEN)) if (a[i] != 0) return false
+    return true
+}
+
+function scalarShiftRight(a: U256_Ref) {
+    let carry: u32 = 0
+    for (const i of $range(U256_LEN - 1, -1, -1)) {
+        const next = a[i] << 31
+        a[i] = (a[i] >> 1) | carry
+        carry = next
+    }
+}
+
+function scalarSubOne(a: U256_Ref) {
+    for (const i of $range(U256_LEN)) {
+        const v = a[i]
+        a[i] -= 1
+        if (v != 0) return
+    }
 }
 
 function pointToAffine(p: $$<PointJ>) {
