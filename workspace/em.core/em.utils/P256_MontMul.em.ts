@@ -186,15 +186,6 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     let t8: u32 = 0
     let t9: u32 = 0
 
-    const a0 = a[0]
-    const a1 = a[1]
-    const a2 = a[2]
-    const a3 = a[3]
-    const a4 = a[4]
-    const a5 = a[5]
-    const a6 = a[6]
-    const a7 = a[7]
-
     let carry: u64 = 0
     let z: u64 = 0
     let m: u32 = 0
@@ -202,21 +193,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 0
     const bi0 = b[0]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi0) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi0) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi0) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi0) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi0) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi0) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi0) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi0) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi0) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -248,21 +239,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 1
     const bi1 = b[1]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi1) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi1) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi1) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi1) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi1) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi1) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi1) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi1) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi1) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -294,21 +285,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 2
     const bi2 = b[2]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi2) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi2) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi2) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi2) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi2) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi2) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi2) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi2) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi2) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -340,21 +331,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 3
     const bi3 = b[3]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi3) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi3) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi3) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi3) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi3) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi3) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi3) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi3) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi3) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -386,21 +377,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 4
     const bi4 = b[4]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi4) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi4) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi4) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi4) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi4) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi4) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi4) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi4) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi4) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -432,21 +423,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 5
     const bi5 = b[5]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi5) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi5) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi5) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi5) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi5) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi5) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi5) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi5) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi5) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -478,21 +469,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 6
     const bi6 = b[6]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi6) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi6) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi6) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi6) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi6) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi6) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi6) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi6) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi6) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
@@ -524,21 +515,21 @@ function fieldMontMul(a: U256_Ref, b: U256_Ref) {
     // Round 7
     const bi7 = b[7]
     carry = 0
-    z = $cast2<u64>(t0) + $cast2<u64>(a0) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t0) + $cast2<u64>(a[0]) * $cast2<u64>(bi7) + carry
     t0 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t1) + $cast2<u64>(a1) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t1) + $cast2<u64>(a[1]) * $cast2<u64>(bi7) + carry
     t1 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t2) + $cast2<u64>(a2) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t2) + $cast2<u64>(a[2]) * $cast2<u64>(bi7) + carry
     t2 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t3) + $cast2<u64>(a3) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t3) + $cast2<u64>(a[3]) * $cast2<u64>(bi7) + carry
     t3 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t4) + $cast2<u64>(a4) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t4) + $cast2<u64>(a[4]) * $cast2<u64>(bi7) + carry
     t4 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t5) + $cast2<u64>(a5) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t5) + $cast2<u64>(a[5]) * $cast2<u64>(bi7) + carry
     t5 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t6) + $cast2<u64>(a6) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t6) + $cast2<u64>(a[6]) * $cast2<u64>(bi7) + carry
     t6 = $cast2<u32>(z); carry = z >> 32
-    z = $cast2<u64>(t7) + $cast2<u64>(a7) * $cast2<u64>(bi7) + carry
+    z = $cast2<u64>(t7) + $cast2<u64>(a[7]) * $cast2<u64>(bi7) + carry
     t7 = $cast2<u32>(z); carry = z >> 32
     z = $cast2<u64>(t8) + carry
     t8 = $cast2<u32>(z)
