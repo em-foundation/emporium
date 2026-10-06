@@ -7,6 +7,7 @@ const U256_LEN = 8
 type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
+class U512 extends $vector<U256_BASE> { $len = 16 }
 export type U256_Ref = ptr_t<U256_BASE>
 
 export class PubKey extends $struct {
@@ -142,17 +143,49 @@ function fieldInv(a: U256_Ref) {
 }
 
 function fieldMul(a: U256_Ref, b: U256_Ref) {
-    let x = U256.$make()
-    let y = U256.$make()
-    Mem.cpy(x.$ptr(), a, $sizeof<U256>())
-    for (const i of $range(U256_LEN)) a[i] = 0
+    let aa = U256.$make()
+    let bb = U256.$make()
+    let prod = U512.$make()
+    Mem.cpy(aa.$ptr(), a, $sizeof<U256>())
+    Mem.cpy(bb.$ptr(), b, $sizeof<U256>())
     for (const i of $range(U256_LEN)) {
-        for (const j of $range(32)) {
-            if ((b[i] & (1 << j)) != 0) fieldAdd(a, x.$ptr())
-            Mem.cpy(y.$ptr(), x.$ptr(), $sizeof<U256>())
-            fieldAdd(x.$ptr(), y.$ptr())
+        let carry: u64 = 0
+        for (const j of $range(U256_LEN)) {
+            const k = i + j
+            const z = $cast2<u64>(prod[k]) + $cast2<u64>(aa[i]) * $cast2<u64>(bb[j]) + carry
+            prod[k] = $cast2<u32>(z)
+            carry = z >> 32
         }
+        prod[i + U256_LEN] = $cast2<u32>(carry)
     }
+    for (const i of $range(U256_LEN)) a[i] = prod[i]
+    let t = U256.$make()
+    t[0] = 0; t[1] = 0; t[2] = 0; t[3] = prod[11]
+    t[4] = prod[12]; t[5] = prod[13]; t[6] = prod[14]; t[7] = prod[15]
+    fieldAdd(a, t.$ptr())
+    fieldAdd(a, t.$ptr())
+    t[0] = 0; t[1] = 0; t[2] = 0; t[3] = prod[12]
+    t[4] = prod[13]; t[5] = prod[14]; t[6] = prod[15]; t[7] = 0
+    fieldAdd(a, t.$ptr())
+    fieldAdd(a, t.$ptr())
+    t[0] = prod[8]; t[1] = prod[9]; t[2] = prod[10]; t[3] = 0
+    t[4] = 0; t[5] = 0; t[6] = prod[14]; t[7] = prod[15]
+    fieldAdd(a, t.$ptr())
+    t[0] = prod[9]; t[1] = prod[10]; t[2] = prod[11]; t[3] = prod[13]
+    t[4] = prod[14]; t[5] = prod[15]; t[6] = prod[13]; t[7] = prod[8]
+    fieldAdd(a, t.$ptr())
+    t[0] = prod[11]; t[1] = prod[12]; t[2] = prod[13]; t[3] = 0
+    t[4] = 0; t[5] = 0; t[6] = prod[8]; t[7] = prod[10]
+    fieldSub(a, t.$ptr())
+    t[0] = prod[12]; t[1] = prod[13]; t[2] = prod[14]; t[3] = prod[15]
+    t[4] = 0; t[5] = 0; t[6] = prod[9]; t[7] = prod[11]
+    fieldSub(a, t.$ptr())
+    t[0] = prod[13]; t[1] = prod[14]; t[2] = prod[15]; t[3] = prod[8]
+    t[4] = prod[9]; t[5] = prod[10]; t[6] = 0; t[7] = prod[12]
+    fieldSub(a, t.$ptr())
+    t[0] = prod[14]; t[1] = prod[15]; t[2] = 0; t[3] = prod[9]
+    t[4] = prod[10]; t[5] = prod[11]; t[6] = 0; t[7] = prod[13]
+    fieldSub(a, t.$ptr())
 }
 
 function fieldSquare(a: U256_Ref) {
