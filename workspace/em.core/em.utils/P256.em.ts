@@ -312,6 +312,64 @@ function pointAdd(p: $$<PointJ>, q: $$<PointJ>) {
     Mem.cpy(p.$$.z.$ptr(), z3.$ptr(), $sizeof<U256>())
 }
 
+function pointAddAffine(p: $$<PointJ>, q: $$<PointJ>) {
+    let z1z1 = U256.$make()
+    Mem.cpy(z1z1.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
+    fieldSquare(z1z1.$ptr())
+    let u2 = U256.$make()
+    Mem.cpy(u2.$ptr(), q.$$.x.$ptr(), $sizeof<U256>())
+    fieldMul(u2.$ptr(), z1z1.$ptr())
+    let s2 = U256.$make()
+    Mem.cpy(s2.$ptr(), q.$$.y.$ptr(), $sizeof<U256>())
+    fieldMul(s2.$ptr(), p.$$.z.$ptr())
+    fieldMul(s2.$ptr(), z1z1.$ptr())
+    let h = U256.$make()
+    Mem.cpy(h.$ptr(), u2.$ptr(), $sizeof<U256>())
+    fieldSub(h.$ptr(), p.$$.x.$ptr())
+    let hh = U256.$make()
+    Mem.cpy(hh.$ptr(), h.$ptr(), $sizeof<U256>())
+    fieldSquare(hh.$ptr())
+    let i = U256.$make()
+    Mem.cpy(i.$ptr(), hh.$ptr(), $sizeof<U256>())
+    fieldAdd(i.$ptr(), i.$ptr())
+    fieldAdd(i.$ptr(), i.$ptr())
+    let j = U256.$make()
+    Mem.cpy(j.$ptr(), h.$ptr(), $sizeof<U256>())
+    fieldMul(j.$ptr(), i.$ptr())
+    let r = U256.$make()
+    Mem.cpy(r.$ptr(), s2.$ptr(), $sizeof<U256>())
+    fieldSub(r.$ptr(), p.$$.y.$ptr())
+    fieldAdd(r.$ptr(), r.$ptr())
+    let v = U256.$make()
+    Mem.cpy(v.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
+    fieldMul(v.$ptr(), i.$ptr())
+    let x3 = U256.$make()
+    Mem.cpy(x3.$ptr(), r.$ptr(), $sizeof<U256>())
+    fieldSquare(x3.$ptr())
+    fieldSub(x3.$ptr(), j.$ptr())
+    let t = U256.$make()
+    Mem.cpy(t.$ptr(), v.$ptr(), $sizeof<U256>())
+    fieldAdd(t.$ptr(), t.$ptr())
+    fieldSub(x3.$ptr(), t.$ptr())
+    let y3 = U256.$make()
+    Mem.cpy(y3.$ptr(), v.$ptr(), $sizeof<U256>())
+    fieldSub(y3.$ptr(), x3.$ptr())
+    fieldMul(y3.$ptr(), r.$ptr())
+    Mem.cpy(t.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
+    fieldMul(t.$ptr(), j.$ptr())
+    fieldAdd(t.$ptr(), t.$ptr())
+    fieldSub(y3.$ptr(), t.$ptr())
+    let z3 = U256.$make()
+    Mem.cpy(z3.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
+    fieldAdd(z3.$ptr(), h.$ptr())
+    fieldSquare(z3.$ptr())
+    fieldSub(z3.$ptr(), z1z1.$ptr())
+    fieldSub(z3.$ptr(), hh.$ptr())
+    Mem.cpy(p.$$.x.$ptr(), x3.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.$$.y.$ptr(), y3.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.$$.z.$ptr(), z3.$ptr(), $sizeof<U256>())
+}
+
 function pointDouble(p: $$<PointJ>) {
     let delta = U256.$make()
     Mem.cpy(delta.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
@@ -366,25 +424,26 @@ function pointDouble(p: $$<PointJ>) {
 }
 
 function pointMul(k: U256_Ref, p: $$<PointJ>) {
+    let base = PointJ.$make()
+    Mem.cpy(base.x.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(base.y.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
+    base.z[0] = 1
     let r = PointJ.$make()
-    let q = PointJ.$make()
-    Mem.cpy(q.x.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
-    Mem.cpy(q.y.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
-    Mem.cpy(q.z.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
     let have = false
-    for (const i of $range(U256_LEN)) {
-        for (const j of $range(32)) {
-            if ((k[i] & (1 << j)) != 0) {
-                if (!have) {
-                    Mem.cpy(r.x.$ptr(), q.x.$ptr(), $sizeof<U256>())
-                    Mem.cpy(r.y.$ptr(), q.y.$ptr(), $sizeof<U256>())
-                    Mem.cpy(r.z.$ptr(), q.z.$ptr(), $sizeof<U256>())
+    for (const i of $range(U256_LEN - 1, -1, -1)) {
+        for (const j of $range(31, -1, -1)) {
+            const bit = (k[i] & (1 << j)) != 0
+            if (!have) {
+                if (bit) {
+                    Mem.cpy(r.x.$ptr(), base.x.$ptr(), $sizeof<U256>())
+                    Mem.cpy(r.y.$ptr(), base.y.$ptr(), $sizeof<U256>())
+                    r.z[0] = 1
                     have = true
-                } else {
-                    pointAdd($$(r), $$(q))
                 }
+                continue
             }
-            pointDouble($$(q))
+            pointDouble($$(r))
+            if (bit) pointAddAffine($$(r), $$(base))
         }
     }
     Mem.cpy(p.$$.x.$ptr(), r.x.$ptr(), $sizeof<U256>())
