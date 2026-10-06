@@ -1220,6 +1220,45 @@ function testMontMulM4() {
     print(a.$ptr(), t$`mont4096`)
 }
 
+
+function testPointOps() {
+    let p = PointJ.$make()
+    let q = PointJ.$make()
+
+    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(p.x.$ptr())
+    fieldToMont(p.y.$ptr())
+    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+
+    Mem.cpy(q.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(q.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(q.x.$ptr())
+    fieldToMont(q.y.$ptr())
+    Mem.cpy(q.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+
+    $['%%d+']
+    for (const i of $range(1024)) {
+        pointDouble($$(p))
+    }
+    $['%%d-']
+    print(p.x.$ptr(), t$`double1024`)
+
+    // Reinitialize p so the add benchmark starts from a stable valid point.
+    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(p.x.$ptr())
+    fieldToMont(p.y.$ptr())
+    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+
+    $['%%d+']
+    for (const i of $range(1024)) {
+        pointAddAffine($$(p), $$(q))
+    }
+    $['%%d-']
+    print(p.x.$ptr(), t$`add1024`)
+}
+
 export function em$run() {
-    testMontMulM4()
+    testPointOps()
 }
