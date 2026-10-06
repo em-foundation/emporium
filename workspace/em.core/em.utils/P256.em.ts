@@ -1259,6 +1259,72 @@ function testPointOps() {
     print(p.x.$ptr(), t$`add1024`)
 }
 
+
+function testFieldOps() {
+    let a = U256.$make()
+    let b = U256.$make()
+
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(b.$ptr(), B_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(a.$ptr())
+    fieldToMont(b.$ptr())
+
+    $['%%d+']
+    for (const i of $range(16384)) {
+        fieldAdd(a.$ptr(), b.$ptr())
+    }
+    $['%%d-']
+    print(a.$ptr(), t$`add16384`)
+
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(a.$ptr())
+
+    $['%%d+']
+    for (const i of $range(16384)) {
+        fieldSub(a.$ptr(), b.$ptr())
+    }
+    $['%%d-']
+    print(a.$ptr(), t$`sub16384`)
+}
+
+function testPointOpsValid() {
+    let p = PointJ.$make()
+    let q = PointJ.$make()
+
+    // q = G, in Montgomery form.
+    Mem.cpy(q.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(q.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
+    fieldToMont(q.x.$ptr())
+    fieldToMont(q.y.$ptr())
+    Mem.cpy(q.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+
+    // p = G, then make p = 2G before the timed add loop.
+    Mem.cpy(p.x.$ptr(), q.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), q.y.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+
+    $['%%d+']
+    for (const i of $range(1024)) {
+        pointDouble($$(p))
+    }
+    $['%%d-']
+    print(p.x.$ptr(), t$`double1024`)
+
+    // Reinitialize and form 2G outside the timed region.
+    Mem.cpy(p.x.$ptr(), q.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), q.y.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<U256>())
+    pointDouble($$(p))
+
+    $['%%d+']
+    for (const i of $range(1024)) {
+        pointAddAffine($$(p), $$(q))
+    }
+    $['%%d-']
+    print(p.x.$ptr(), t$`add1024`)
+}
+
 export function em$run() {
-    testPointOps()
+    testFieldOps()
+    testPointOpsValid()
 }
