@@ -1,7 +1,6 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Common from '@em.mcu/Common.em'
 import * as Mem from '@em.utils/Mem.em'
 
 const U256_LEN = 8
@@ -9,8 +8,10 @@ type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
 class NAF257 extends $vector<i8> { $len = 257 }
+
 export type U256_Ref = ptr_t<U256_BASE>
 export type MontMulFxn = cb_t<[U256_Ref, U256_Ref]>
+
 export const montMul = $config<MontMulFxn>()
 
 export class PubKey extends $struct {
@@ -51,7 +52,8 @@ export namespace em$meta {
         initU256(K_TEST.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
         initU256(PEER_X_TEST.$$val, 'd12dfb52_89c8d4f8_1208b702_70398c34_2296970a_0bccb74c_736fc755_4494bf63')
         initU256(PEER_Y_TEST.$$val, '56fbf3ca_366cc23e_8157854c_13c58d6a_ac23f046_ada30f83_53e74f33_039872ab')
-        if (montMul.$$val == null) montMul.$$val = $cb(fieldMontMulPortable)
+        console.log((montMul.$$val as any).fname)
+        if ((montMul.$$val as any).fname === undefined) montMul.$$val = $cb(fieldMontMulPortable)
     }
     function initU256(u: U256, val: string) {
         let limbs = val.split('_')
@@ -188,8 +190,7 @@ function fieldFromMont(a: U256_Ref) {
 }
 
 function fieldMul(a: U256_Ref, b: U256_Ref) {
-    // montMul(a, b)
-    fieldMontMulPortable(a, b)
+    montMul(a, b)
 }
 
 // Portable CIOS Montgomery multiplication.
