@@ -132,12 +132,43 @@ function fieldAdd(a: U256_Ref, b: U256_Ref) {
 function fieldInv(a: U256_Ref) {
     let x = U256.$make()
     Mem.cpy(x.$ptr(), a, $sizeof<U256>())
+    let x2 = U256.$make()
+    Mem.cpy(x2.$ptr(), x.$ptr(), $sizeof<U256>())
+    fieldSquare(x2.$ptr())
+    let x4 = U256.$make()
+    Mem.cpy(x4.$ptr(), x2.$ptr(), $sizeof<U256>())
+    fieldSquare(x4.$ptr())
+    let x8 = U256.$make()
+    Mem.cpy(x8.$ptr(), x4.$ptr(), $sizeof<U256>())
+    fieldSquare(x8.$ptr())
+    let x13 = U256.$make()
+    Mem.cpy(x13.$ptr(), x8.$ptr(), $sizeof<U256>())
+    fieldMul(x13.$ptr(), x4.$ptr())
+    fieldMul(x13.$ptr(), x.$ptr())
+    let x15 = U256.$make()
+    Mem.cpy(x15.$ptr(), x13.$ptr(), $sizeof<U256>())
+    fieldMul(x15.$ptr(), x2.$ptr())
     let r = U256.$make()
-    r[0] = 1
+    Mem.cpy(r.$ptr(), x15.$ptr(), $sizeof<U256>())
+    let first = true
     for (const i of $range(U256_LEN - 1, -1, -1)) {
-        for (const j of $range(31, -1, -1)) {
+        for (const j of $range(7, -1, -1)) {
+            if (first) {
+                first = false
+                continue
+            }
             fieldSquare(r.$ptr())
-            if ((FIELD_PRIME_M2[i] & (1 << j)) != 0) fieldMul(r.$ptr(), x.$ptr())
+            fieldSquare(r.$ptr())
+            fieldSquare(r.$ptr())
+            fieldSquare(r.$ptr())
+            const n = (FIELD_PRIME_M2[i] >> (j * 4)) & 0xf
+            if (n == 1) {
+                fieldMul(r.$ptr(), x.$ptr())
+            } else if (n == 13) {
+                fieldMul(r.$ptr(), x13.$ptr())
+            } else if (n == 15) {
+                fieldMul(r.$ptr(), x15.$ptr())
+            }
         }
     }
     Mem.cpy(a, r.$ptr(), $sizeof<U256>())
