@@ -176,16 +176,12 @@ function fieldInv(a: U256_Ref) {
 }
 
 function fieldMul(a: U256_Ref, b: U256_Ref) {
-    let aa = U256.$make()
-    let bb = U256.$make()
     let prod = U512.$make()
-    Mem.cpy(aa.$ptr(), a, $sizeof<U256>())
-    Mem.cpy(bb.$ptr(), b, $sizeof<U256>())
     for (const i of $range(U256_LEN)) {
         let carry: u64 = 0
         for (const j of $range(U256_LEN)) {
             const k = i + j
-            const z = $cast2<u64>(prod[k]) + $cast2<u64>(aa[i]) * $cast2<u64>(bb[j]) + carry
+            const z = $cast2<u64>(prod[k]) + $cast2<u64>(a[i]) * $cast2<u64>(b[j]) + carry
             prod[k] = $cast2<u32>(z)
             carry = z >> 32
         }
@@ -222,9 +218,7 @@ function fieldMul(a: U256_Ref, b: U256_Ref) {
 }
 
 function fieldSquare(a: U256_Ref) {
-    let t = U256.$make()
-    Mem.cpy(t.$ptr(), a, $sizeof<U256>())
-    fieldMul(a, t.$ptr())
+    fieldMul(a, a)
 }
 
 function fieldSub(a: U256_Ref, b: U256_Ref) {
