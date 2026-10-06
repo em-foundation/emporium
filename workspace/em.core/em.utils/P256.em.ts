@@ -74,8 +74,12 @@ export function ecdh(sk: U256, peer_pk: $$<PubKey>, secret_OUT: U256_Ref) {
     Mem.cpy(p.x.$ptr(), peer_pk.$$.x.$ptr(), $sizeof<U256>())
     Mem.cpy(p.y.$ptr(), peer_pk.$$.y.$ptr(), $sizeof<U256>())
     p.z[0] = 1
+    $['%%a+']
     pointMul(sk.$ptr(), $$(p))
+    $['%%a-']
+    $['%%c+']
     pointToAffine($$(p))
+    $['%%c-']
     Mem.cpy(secret_OUT, p.x.$ptr(), $sizeof<U256>())
 }
 
