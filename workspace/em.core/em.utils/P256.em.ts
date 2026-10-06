@@ -94,38 +94,33 @@ export function print(uref: U256_Ref, lab: text_t = t$``) {
 
 // FIELD FUNCTIONS
 function fieldAdd(a: U256_Ref, b: U256_Ref) {
-    let t = U256.$make()
-    let borrow: u64 = 0
+    let carry: u64 = 0
     for (const i of $range(U256_LEN)) {
-        const pi = $cast2<u64>(FIELD_PRIME[i])
-        const bi = $cast2<u64>(b[i])
-        const d = pi - bi - borrow
-        t[i] = $cast2<u32>(d)
-        borrow = pi < (bi + borrow) ? 1 : 0
+        const s = $cast2<u64>(a[i]) + $cast2<u64>(b[i]) + carry
+        a[i] = $cast2<u32>(s)
+        carry = s >> 32
     }
-    let ge = true
-    let decided = false
-    for (const i of $range(U256_LEN - 1, -1, -1)) {
-        if (!decided && a[i] != t[i]) {
-            ge = a[i] > t[i]
-            decided = true
+
+    // Inputs are canonical, so a+b < 2p.  Reduce once if the 257th bit
+    // is set or the low 256 bits are >= p.
+    let reduce = carry != 0
+    if (!reduce) {
+        for (const i of $range(U256_LEN - 1, -1, -1)) {
+            if (a[i] != FIELD_PRIME[i]) {
+                reduce = a[i] > FIELD_PRIME[i]
+                break
+            }
+            if (i == 0) reduce = true
         }
     }
-    if (ge) {
-        borrow = 0
+    if (reduce) {
+        let borrow: u64 = 0
         for (const i of $range(U256_LEN)) {
             const ai = $cast2<u64>(a[i])
-            const ti = $cast2<u64>(t[i])
-            const d = ai - ti - borrow
+            const pi = $cast2<u64>(FIELD_PRIME[i])
+            const d = ai - pi - borrow
             a[i] = $cast2<u32>(d)
-            borrow = ai < (ti + borrow) ? 1 : 0
-        }
-    } else {
-        let carry: u64 = 0
-        for (const i of $range(U256_LEN)) {
-            const s = $cast2<u64>(a[i]) + $cast2<u64>(b[i]) + carry
-            a[i] = $cast2<u32>(s)
-            carry = s >> 32
+            borrow = ai < (pi + borrow) ? 1 : 0
         }
     }
 }
