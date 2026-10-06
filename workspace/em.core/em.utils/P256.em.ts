@@ -26,6 +26,7 @@ const A_TEST = $config<U256>()
 const B_TEST = $config<U256>()
 const G_X_TEST = $config<U256>()
 const G_Y_TEST = $config<U256>()
+const K_TEST = $config<U256>()
 
 export namespace em$meta {
     export function em$construct() {
@@ -35,6 +36,7 @@ export namespace em$meta {
         initU256(B_TEST.$$val, '01020304_05060708_090a0b0c_0d0e0f10_11121314_15161718_191a1b1c_1d1e1f20')
         initU256(G_X_TEST.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
         initU256(G_Y_TEST.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
+        initU256(K_TEST.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
     }
     function initU256(u: U256, val: string) {
         let limbs = val.split('_')
@@ -279,6 +281,33 @@ function pointDouble(p: $$<PointJ>) {
     Mem.cpy(p.$$.z.$ptr(), z3.$ptr(), $sizeof<U256>())
 }
 
+function pointMul(k: U256_Ref, p: $$<PointJ>) {
+    let r = PointJ.$make()
+    let q = PointJ.$make()
+    Mem.cpy(q.x.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(q.y.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
+    Mem.cpy(q.z.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
+    let have = false
+    for (const i of $range(U256_LEN)) {
+        for (const j of $range(32)) {
+            if ((k[i] & (1 << j)) != 0) {
+                if (!have) {
+                    Mem.cpy(r.x.$ptr(), q.x.$ptr(), $sizeof<U256>())
+                    Mem.cpy(r.y.$ptr(), q.y.$ptr(), $sizeof<U256>())
+                    Mem.cpy(r.z.$ptr(), q.z.$ptr(), $sizeof<U256>())
+                    have = true
+                } else {
+                    pointAdd($$(r), $$(q))
+                }
+            }
+            pointDouble($$(q))
+        }
+    }
+    Mem.cpy(p.$$.x.$ptr(), r.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.$$.y.$ptr(), r.y.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.$$.z.$ptr(), r.z.$ptr(), $sizeof<U256>())
+}
+
 function pointToAffine(p: $$<PointJ>) {
     let zi = U256.$make()
     Mem.cpy(zi.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
@@ -322,15 +351,10 @@ function testPoint() {
     Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
     Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
     p.z[0] = 1
-    let q = PointJ.$make()
-    Mem.cpy(q.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
-    Mem.cpy(q.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
-    q.z[0] = 1
-    pointDouble($$(p))
-    pointAdd($$(p), $$(q))
+    pointMul(K_TEST.$ptr(), $$(p))
     pointToAffine($$(p))
-    print(p.x.$ptr(), t$`p3.x`)
-    print(p.y.$ptr(), t$`p3.y`)
+    print(p.x.$ptr(), t$`pk.x`)
+    print(p.y.$ptr(), t$`pk.y`)
 }
 
 export function em$run() {
