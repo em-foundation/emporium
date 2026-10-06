@@ -1,6 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Mem from '@em.utils/Mem.em'
+
 const U256_LEN = 8
 type U256_BASE = u32
 
@@ -13,16 +15,24 @@ export class PubKey extends $struct {
     y: U256
 }
 
-const FIELD_PRIME_INIT = 'FFFFFFFF_00000001_00000000_00000000_00000000_FFFFFFFF_FFFFFFFF_FFFFFFFF'
-
 const FIELD_PRIME = $config<U256>()
+const A_TEST = $config<U256>()
+const B_TEST = $config<U256>()
 
 export namespace em$meta {
+
     export function em$construct() {
-        let limbs = FIELD_PRIME_INIT.split('_')
+        initU256(FIELD_PRIME.$$val, 'ffffffff_00000001_00000000_00000000_00000000_ffffffff_ffffffff_ffffffff')
+        initU256(A_TEST.$$val, '11111111_22222222_33333333_44444444_55555555_66666666_77777777_88888888')
+        initU256(B_TEST.$$val, '01020304_05060708_090a0b0c_0d0e0f10_11121314_15161718_191a1b1c_1d1e1f20')
+    }
+
+    function initU256(u: U256, val: string) {
+        let limbs = val.split('_')
         for (const i of $range(U256_LEN)) {
-            FIELD_PRIME.$$val[i] = Number.parseInt(limbs[i], 16) >>> 0
+            u[U256_LEN - i - 1] = Number.parseInt(limbs[i], 16) >>> 0
         }
+
     }
 }
 
@@ -52,14 +62,34 @@ export function print(uref: U256_Ref, lab: text_t = t$``) {
     printf`\n`()
 }
 
+function fieldAdd(a: U256_Ref, b: U256_Ref) {
+    let carry: u64 = 0
+    for (const i of $range(U256_LEN)) {
+        const s = $cast2<u64>(a[i]) + $cast2<u64>(b[i]) + carry
+        a[i] = $cast2<u32>(s)
+        carry = s >> 32
+    }
+    let borrow: u64 = 0
+    let t = U256.$make()
+    for (const i of $range(U256_LEN)) {
+        const ai = $cast2<u64>(a[i])
+        const pi = $cast2<u64>(FIELD_PRIME[i])
+        const d = ai - pi - borrow
+        t[i] = $cast2<u32>(d)
+        borrow = ai < (pi + borrow) ? 1 : 0
+    }
+    if (carry != 0 || borrow == 0) {
+        Mem.cpy(a, t.$ptr(), $sizeof<U256>())
+    }
+}
+
 export function em$run() {
-    print(FIELD_PRIME.$ptr())
-
-
-    //    let u = U256.$make()
-    //    for (const i of $range(u.$len)) {
-    //        u[i] = 0x10 + i
-    //    }
-    //    print(u.$ptr())
-    //    print(u.$ptr(), t$`my_u`)
+    let a = U256.$make()
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    let b = U256.$make()
+    Mem.cpy(b.$ptr(), B_TEST.$ptr(), $sizeof<U256>())
+    print(a.$ptr(), t$`a0`)
+    print(b.$ptr(), t$`b0`)
+    fieldAdd(a.$ptr(), b.$ptr())
+    print(a.$ptr(), t$`a1`)
 }
