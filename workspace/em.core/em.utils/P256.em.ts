@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Common from '@em.mcu/Common.em'
 import * as Mem from '@em.utils/Mem.em'
 
 const U256_LEN = 8
