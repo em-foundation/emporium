@@ -9,6 +9,7 @@ type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
 class U512 extends $vector<U256_BASE> { $len = 16 }
+class I64x9 extends $vector<i64> { $len = 9 }
 class NAF257 extends $vector<i8> { $len = 257 }
 export type U256_Ref = ptr_t<U256_BASE>
 
@@ -187,34 +188,41 @@ function fieldMul(a: U256_Ref, b: U256_Ref) {
         }
         prod[i + U256_LEN] = $cast2<u32>(carry)
     }
-    for (const i of $range(U256_LEN)) a[i] = prod[i]
-    let t = U256.$make()
-    t[0] = 0; t[1] = 0; t[2] = 0; t[3] = prod[11]
-    t[4] = prod[12]; t[5] = prod[13]; t[6] = prod[14]; t[7] = prod[15]
-    fieldAdd(a, t.$ptr())
-    fieldAdd(a, t.$ptr())
-    t[0] = 0; t[1] = 0; t[2] = 0; t[3] = prod[12]
-    t[4] = prod[13]; t[5] = prod[14]; t[6] = prod[15]; t[7] = 0
-    fieldAdd(a, t.$ptr())
-    fieldAdd(a, t.$ptr())
-    t[0] = prod[8]; t[1] = prod[9]; t[2] = prod[10]; t[3] = 0
-    t[4] = 0; t[5] = 0; t[6] = prod[14]; t[7] = prod[15]
-    fieldAdd(a, t.$ptr())
-    t[0] = prod[9]; t[1] = prod[10]; t[2] = prod[11]; t[3] = prod[13]
-    t[4] = prod[14]; t[5] = prod[15]; t[6] = prod[13]; t[7] = prod[8]
-    fieldAdd(a, t.$ptr())
-    t[0] = prod[11]; t[1] = prod[12]; t[2] = prod[13]; t[3] = 0
-    t[4] = 0; t[5] = 0; t[6] = prod[8]; t[7] = prod[10]
-    fieldSub(a, t.$ptr())
-    t[0] = prod[12]; t[1] = prod[13]; t[2] = prod[14]; t[3] = prod[15]
-    t[4] = 0; t[5] = 0; t[6] = prod[9]; t[7] = prod[11]
-    fieldSub(a, t.$ptr())
-    t[0] = prod[13]; t[1] = prod[14]; t[2] = prod[15]; t[3] = prod[8]
-    t[4] = prod[9]; t[5] = prod[10]; t[6] = 0; t[7] = prod[12]
-    fieldSub(a, t.$ptr())
-    t[0] = prod[14]; t[1] = prod[15]; t[2] = 0; t[3] = prod[9]
-    t[4] = prod[10]; t[5] = prod[11]; t[6] = 0; t[7] = prod[13]
-    fieldSub(a, t.$ptr())
+
+    // P-256 fast reduction, fused into signed limb sums.
+    // Equivalent to the previous 2*S1 + 2*S2 + S3 + S4 - S5 - S6 - S7 - S8.
+    let r = I64x9.$make()
+    r[0] = $cast2<i64>(prod[0]) - prod[11] - prod[12] - prod[13] - prod[14] + prod[8] + prod[9]
+    r[1] = $cast2<i64>(prod[1]) + prod[10] - prod[12] - prod[13] - prod[14] - prod[15] + prod[9]
+    r[2] = $cast2<i64>(prod[2]) + prod[10] + prod[11] - prod[13] - prod[14] - prod[15]
+    r[3] = $cast2<i64>(prod[3]) + 2 * $cast2<i64>(prod[11]) + 2 * $cast2<i64>(prod[12]) + prod[13] - prod[15] - prod[8] - prod[9]
+    r[4] = $cast2<i64>(prod[4]) - prod[10] + 2 * $cast2<i64>(prod[12]) + 2 * $cast2<i64>(prod[13]) + prod[14] - prod[9]
+    r[5] = $cast2<i64>(prod[5]) - prod[10] - prod[11] + 2 * $cast2<i64>(prod[13]) + 2 * $cast2<i64>(prod[14]) + prod[15]
+    r[6] = $cast2<i64>(prod[6]) + prod[13] + 3 * $cast2<i64>(prod[14]) + 2 * $cast2<i64>(prod[15]) - prod[8] - prod[9]
+    r[7] = $cast2<i64>(prod[7]) - prod[10] - prod[11] - prod[12] - prod[13] + 3 * $cast2<i64>(prod[15]) + prod[8]
+
+    // Normalize base-2^32 limbs.  For P-256:
+    // 2^256 == 2^224 - 2^192 - 2^96 + 1 (mod p).
+    for (const pass of $range(3)) {
+        for (const i of $range(U256_LEN)) {
+            const v = r[i]
+            const c = v >> 32
+            r[i] = $cast2<i64>($cast2<u32>(v))
+            r[i + 1] += c
+        }
+        const c = r[8]
+        r[8] = 0
+        if (c == 0) break
+        r[0] += c
+        r[3] -= c
+        r[6] -= c
+        r[7] += c
+    }
+
+    for (const i of $range(U256_LEN)) a[i] = $cast2<u32>(r[i])
+
+    // r is now in [0, 2^256); one conditional subtraction canonicalizes it.
+    fieldSub(a, FIELD_PRIME.$ptr())
 }
 
 function fieldSquare(a: U256_Ref) {
