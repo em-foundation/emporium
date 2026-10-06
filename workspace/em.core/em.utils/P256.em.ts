@@ -170,7 +170,7 @@ function fieldInv(a: U256_Ref) {
 function fieldMul(a: U256_Ref, b: U256_Ref) {
     let prod = U512.$make()
 
-    // Fixed 8x8 product: retain the outer loop and unroll each row.
+    // Fully specialize the fixed 8x8 product.
     const b0 = b[0]
     const b1 = b[1]
     const b2 = b[2]
@@ -179,28 +179,168 @@ function fieldMul(a: U256_Ref, b: U256_Ref) {
     const b5 = b[5]
     const b6 = b[6]
     const b7 = b[7]
+    let carry: u64 = 0
+    let z: u64 = 0
 
-    for (const i of $range(U256_LEN)) {
-        const ai = a[i]
-        let carry: u64 = 0
-        let z = $cast2<u64>(prod[i]) + $cast2<u64>(ai) * $cast2<u64>(b0) + carry
-        prod[i] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 1]) + $cast2<u64>(ai) * $cast2<u64>(b1) + carry
-        prod[i + 1] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 2]) + $cast2<u64>(ai) * $cast2<u64>(b2) + carry
-        prod[i + 2] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 3]) + $cast2<u64>(ai) * $cast2<u64>(b3) + carry
-        prod[i + 3] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 4]) + $cast2<u64>(ai) * $cast2<u64>(b4) + carry
-        prod[i + 4] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 5]) + $cast2<u64>(ai) * $cast2<u64>(b5) + carry
-        prod[i + 5] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 6]) + $cast2<u64>(ai) * $cast2<u64>(b6) + carry
-        prod[i + 6] = $cast2<u32>(z); carry = z >> 32
-        z = $cast2<u64>(prod[i + 7]) + $cast2<u64>(ai) * $cast2<u64>(b7) + carry
-        prod[i + 7] = $cast2<u32>(z); carry = z >> 32
-        prod[i + U256_LEN] = $cast2<u32>(carry)
-    }
+    const a0 = a[0]
+    carry = 0
+    z = $cast2<u64>(prod[0]) + $cast2<u64>(a0) * $cast2<u64>(b0) + carry
+    prod[0] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[1]) + $cast2<u64>(a0) * $cast2<u64>(b1) + carry
+    prod[1] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[2]) + $cast2<u64>(a0) * $cast2<u64>(b2) + carry
+    prod[2] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[3]) + $cast2<u64>(a0) * $cast2<u64>(b3) + carry
+    prod[3] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[4]) + $cast2<u64>(a0) * $cast2<u64>(b4) + carry
+    prod[4] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a0) * $cast2<u64>(b5) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a0) * $cast2<u64>(b6) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a0) * $cast2<u64>(b7) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    prod[8] = $cast2<u32>(carry)
+
+    const a1 = a[1]
+    carry = 0
+    z = $cast2<u64>(prod[1]) + $cast2<u64>(a1) * $cast2<u64>(b0) + carry
+    prod[1] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[2]) + $cast2<u64>(a1) * $cast2<u64>(b1) + carry
+    prod[2] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[3]) + $cast2<u64>(a1) * $cast2<u64>(b2) + carry
+    prod[3] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[4]) + $cast2<u64>(a1) * $cast2<u64>(b3) + carry
+    prod[4] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a1) * $cast2<u64>(b4) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a1) * $cast2<u64>(b5) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a1) * $cast2<u64>(b6) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a1) * $cast2<u64>(b7) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    prod[9] = $cast2<u32>(carry)
+
+    const a2 = a[2]
+    carry = 0
+    z = $cast2<u64>(prod[2]) + $cast2<u64>(a2) * $cast2<u64>(b0) + carry
+    prod[2] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[3]) + $cast2<u64>(a2) * $cast2<u64>(b1) + carry
+    prod[3] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[4]) + $cast2<u64>(a2) * $cast2<u64>(b2) + carry
+    prod[4] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a2) * $cast2<u64>(b3) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a2) * $cast2<u64>(b4) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a2) * $cast2<u64>(b5) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a2) * $cast2<u64>(b6) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a2) * $cast2<u64>(b7) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    prod[10] = $cast2<u32>(carry)
+
+    const a3 = a[3]
+    carry = 0
+    z = $cast2<u64>(prod[3]) + $cast2<u64>(a3) * $cast2<u64>(b0) + carry
+    prod[3] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[4]) + $cast2<u64>(a3) * $cast2<u64>(b1) + carry
+    prod[4] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a3) * $cast2<u64>(b2) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a3) * $cast2<u64>(b3) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a3) * $cast2<u64>(b4) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a3) * $cast2<u64>(b5) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a3) * $cast2<u64>(b6) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[10]) + $cast2<u64>(a3) * $cast2<u64>(b7) + carry
+    prod[10] = $cast2<u32>(z); carry = z >> 32
+    prod[11] = $cast2<u32>(carry)
+
+    const a4 = a[4]
+    carry = 0
+    z = $cast2<u64>(prod[4]) + $cast2<u64>(a4) * $cast2<u64>(b0) + carry
+    prod[4] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a4) * $cast2<u64>(b1) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a4) * $cast2<u64>(b2) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a4) * $cast2<u64>(b3) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a4) * $cast2<u64>(b4) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a4) * $cast2<u64>(b5) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[10]) + $cast2<u64>(a4) * $cast2<u64>(b6) + carry
+    prod[10] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[11]) + $cast2<u64>(a4) * $cast2<u64>(b7) + carry
+    prod[11] = $cast2<u32>(z); carry = z >> 32
+    prod[12] = $cast2<u32>(carry)
+
+    const a5 = a[5]
+    carry = 0
+    z = $cast2<u64>(prod[5]) + $cast2<u64>(a5) * $cast2<u64>(b0) + carry
+    prod[5] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a5) * $cast2<u64>(b1) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a5) * $cast2<u64>(b2) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a5) * $cast2<u64>(b3) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a5) * $cast2<u64>(b4) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[10]) + $cast2<u64>(a5) * $cast2<u64>(b5) + carry
+    prod[10] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[11]) + $cast2<u64>(a5) * $cast2<u64>(b6) + carry
+    prod[11] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[12]) + $cast2<u64>(a5) * $cast2<u64>(b7) + carry
+    prod[12] = $cast2<u32>(z); carry = z >> 32
+    prod[13] = $cast2<u32>(carry)
+
+    const a6 = a[6]
+    carry = 0
+    z = $cast2<u64>(prod[6]) + $cast2<u64>(a6) * $cast2<u64>(b0) + carry
+    prod[6] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a6) * $cast2<u64>(b1) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a6) * $cast2<u64>(b2) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a6) * $cast2<u64>(b3) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[10]) + $cast2<u64>(a6) * $cast2<u64>(b4) + carry
+    prod[10] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[11]) + $cast2<u64>(a6) * $cast2<u64>(b5) + carry
+    prod[11] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[12]) + $cast2<u64>(a6) * $cast2<u64>(b6) + carry
+    prod[12] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[13]) + $cast2<u64>(a6) * $cast2<u64>(b7) + carry
+    prod[13] = $cast2<u32>(z); carry = z >> 32
+    prod[14] = $cast2<u32>(carry)
+
+    const a7 = a[7]
+    carry = 0
+    z = $cast2<u64>(prod[7]) + $cast2<u64>(a7) * $cast2<u64>(b0) + carry
+    prod[7] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[8]) + $cast2<u64>(a7) * $cast2<u64>(b1) + carry
+    prod[8] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[9]) + $cast2<u64>(a7) * $cast2<u64>(b2) + carry
+    prod[9] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[10]) + $cast2<u64>(a7) * $cast2<u64>(b3) + carry
+    prod[10] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[11]) + $cast2<u64>(a7) * $cast2<u64>(b4) + carry
+    prod[11] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[12]) + $cast2<u64>(a7) * $cast2<u64>(b5) + carry
+    prod[12] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[13]) + $cast2<u64>(a7) * $cast2<u64>(b6) + carry
+    prod[13] = $cast2<u32>(z); carry = z >> 32
+    z = $cast2<u64>(prod[14]) + $cast2<u64>(a7) * $cast2<u64>(b7) + carry
+    prod[14] = $cast2<u32>(z); carry = z >> 32
+    prod[15] = $cast2<u32>(carry)
 
     // P-256 reduction as straight-line signed limb arithmetic.
     let r0 = $cast2<i64>(prod[0]) - prod[11] - prod[12] - prod[13] - prod[14] + prod[8] + prod[9]
