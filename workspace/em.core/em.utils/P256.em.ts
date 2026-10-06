@@ -83,6 +83,37 @@ function fieldAdd(a: U256_Ref, b: U256_Ref) {
     }
 }
 
+function fieldSub(a: U256_Ref, b: U256_Ref) {
+    let borrow: u64 = 0
+    for (const i of $range(U256_LEN)) {
+        const ai = $cast2<u64>(a[i])
+        const bi = $cast2<u64>(b[i])
+        const d = ai - bi - borrow
+        a[i] = $cast2<u32>(d)
+        borrow = ai < (bi + borrow) ? 1 : 0
+    }
+    if (borrow != 0) {
+        let carry: u64 = 0
+        for (const i of $range(U256_LEN)) {
+            const s = $cast2<u64>(a[i]) + $cast2<u64>(FIELD_PRIME[i]) + carry
+            a[i] = $cast2<u32>(s)
+            carry = s >> 32
+        }
+    }
+}
+
+function fieldMul(a: U256_Ref, b: U256_Ref) {
+    let x = U256.$make()
+    Mem.cpy(x.$ptr(), a, $sizeof<U256>())
+    for (const i of $range(U256_LEN)) a[i] = 0
+    for (const i of $range(U256_LEN)) {
+        for (const j of $range(32)) {
+            if ((b[i] & (1 << j)) != 0) fieldAdd(a, x.$ptr())
+            fieldAdd(x.$ptr(), x.$ptr())
+        }
+    }
+}
+
 export function em$run() {
     let a = U256.$make()
     Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
@@ -92,4 +123,10 @@ export function em$run() {
     print(b.$ptr(), t$`b0`)
     fieldAdd(a.$ptr(), b.$ptr())
     print(a.$ptr(), t$`a1`)
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    fieldSub(a.$ptr(), b.$ptr())
+    print(a.$ptr(), t$`a2`)
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    fieldMul(a.$ptr(), b.$ptr())
+    print(a.$ptr(), t$`a3`)
 }
