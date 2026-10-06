@@ -519,58 +519,63 @@ function pointAddAffine(p: $$<PointJ>, q: $$<PointJ>) {
     let z1z1 = U256.$make()
     Mem.cpy(z1z1.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
     fieldSquare(z1z1.$ptr())
+
     let u2 = U256.$make()
     Mem.cpy(u2.$ptr(), q.$$.x.$ptr(), $sizeof<U256>())
     fieldMul(u2.$ptr(), z1z1.$ptr())
+
     let s2 = U256.$make()
     Mem.cpy(s2.$ptr(), q.$$.y.$ptr(), $sizeof<U256>())
     fieldMul(s2.$ptr(), p.$$.z.$ptr())
     fieldMul(s2.$ptr(), z1z1.$ptr())
+
     let h = U256.$make()
     Mem.cpy(h.$ptr(), u2.$ptr(), $sizeof<U256>())
     fieldSub(h.$ptr(), p.$$.x.$ptr())
+
     let hh = U256.$make()
     Mem.cpy(hh.$ptr(), h.$ptr(), $sizeof<U256>())
     fieldSquare(hh.$ptr())
-    let i = U256.$make()
-    Mem.cpy(i.$ptr(), hh.$ptr(), $sizeof<U256>())
-    fieldAdd(i.$ptr(), i.$ptr())
-    fieldAdd(i.$ptr(), i.$ptr())
-    let j = U256.$make()
-    Mem.cpy(j.$ptr(), h.$ptr(), $sizeof<U256>())
-    fieldMul(j.$ptr(), i.$ptr())
-    let r = U256.$make()
-    Mem.cpy(r.$ptr(), s2.$ptr(), $sizeof<U256>())
-    fieldSub(r.$ptr(), p.$$.y.$ptr())
-    fieldAdd(r.$ptr(), r.$ptr())
-    let v = U256.$make()
-    Mem.cpy(v.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
-    fieldMul(v.$ptr(), i.$ptr())
-    let x3 = U256.$make()
-    Mem.cpy(x3.$ptr(), r.$ptr(), $sizeof<U256>())
-    fieldSquare(x3.$ptr())
-    fieldSub(x3.$ptr(), j.$ptr())
-    let t = U256.$make()
-    Mem.cpy(t.$ptr(), v.$ptr(), $sizeof<U256>())
-    fieldAdd(t.$ptr(), t.$ptr())
-    fieldSub(x3.$ptr(), t.$ptr())
-    let y3 = U256.$make()
-    Mem.cpy(y3.$ptr(), v.$ptr(), $sizeof<U256>())
-    fieldSub(y3.$ptr(), x3.$ptr())
-    fieldMul(y3.$ptr(), r.$ptr())
-    Mem.cpy(t.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
-    fieldMul(t.$ptr(), j.$ptr())
-    fieldAdd(t.$ptr(), t.$ptr())
-    fieldSub(y3.$ptr(), t.$ptr())
-    let z3 = U256.$make()
-    Mem.cpy(z3.$ptr(), p.$$.z.$ptr(), $sizeof<U256>())
-    fieldAdd(z3.$ptr(), h.$ptr())
-    fieldSquare(z3.$ptr())
-    fieldSub(z3.$ptr(), z1z1.$ptr())
-    fieldSub(z3.$ptr(), hh.$ptr())
-    Mem.cpy(p.$$.x.$ptr(), x3.$ptr(), $sizeof<U256>())
-    Mem.cpy(p.$$.y.$ptr(), y3.$ptr(), $sizeof<U256>())
-    Mem.cpy(p.$$.z.$ptr(), z3.$ptr(), $sizeof<U256>())
+
+    // Z3 = (Z1 + H)^2 - Z1^2 - H^2.  Original Z1 is now dead.
+    fieldAdd(p.$$.z.$ptr(), h.$ptr())
+    fieldSquare(p.$$.z.$ptr())
+    fieldSub(p.$$.z.$ptr(), z1z1.$ptr())
+    fieldSub(p.$$.z.$ptr(), hh.$ptr())
+
+    // I = 4*HH, reusing hh.
+    fieldAdd(hh.$ptr(), hh.$ptr())
+    fieldAdd(hh.$ptr(), hh.$ptr())
+
+    // J = H*I, reusing u2.
+    Mem.cpy(u2.$ptr(), h.$ptr(), $sizeof<U256>())
+    fieldMul(u2.$ptr(), hh.$ptr())
+
+    // r = 2*(S2 - Y1), reusing s2.
+    fieldSub(s2.$ptr(), p.$$.y.$ptr())
+    fieldAdd(s2.$ptr(), s2.$ptr())
+
+    // 2*Y1*J, reusing z1z1.  Original Y1 is then dead.
+    Mem.cpy(z1z1.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
+    fieldMul(z1z1.$ptr(), u2.$ptr())
+    fieldAdd(z1z1.$ptr(), z1z1.$ptr())
+
+    // V = X1*I, directly into p.y.  Original X1 is then dead.
+    Mem.cpy(p.$$.y.$ptr(), p.$$.x.$ptr(), $sizeof<U256>())
+    fieldMul(p.$$.y.$ptr(), hh.$ptr())
+
+    // X3 = r^2 - J - 2V, directly into p.x.
+    Mem.cpy(p.$$.x.$ptr(), s2.$ptr(), $sizeof<U256>())
+    fieldSquare(p.$$.x.$ptr())
+    fieldSub(p.$$.x.$ptr(), u2.$ptr())
+    Mem.cpy(h.$ptr(), p.$$.y.$ptr(), $sizeof<U256>())
+    fieldAdd(h.$ptr(), h.$ptr())
+    fieldSub(p.$$.x.$ptr(), h.$ptr())
+
+    // Y3 = r*(V - X3) - 2*Y1*J, directly into p.y.
+    fieldSub(p.$$.y.$ptr(), p.$$.x.$ptr())
+    fieldMul(p.$$.y.$ptr(), s2.$ptr())
+    fieldSub(p.$$.y.$ptr(), z1z1.$ptr())
 }
 
 function pointDouble(p: $$<PointJ>) {
