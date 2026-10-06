@@ -9,7 +9,6 @@ type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
 class U512 extends $vector<U256_BASE> { $len = 16 }
-class I64x9 extends $vector<i64> { $len = 9 }
 class NAF257 extends $vector<i8> { $len = 257 }
 export type U256_Ref = ptr_t<U256_BASE>
 
@@ -189,39 +188,86 @@ function fieldMul(a: U256_Ref, b: U256_Ref) {
         prod[i + U256_LEN] = $cast2<u32>(carry)
     }
 
-    // P-256 fast reduction, fused into signed limb sums.
-    // Equivalent to the previous 2*S1 + 2*S2 + S3 + S4 - S5 - S6 - S7 - S8.
-    let r = I64x9.$make()
-    r[0] = $cast2<i64>(prod[0]) - prod[11] - prod[12] - prod[13] - prod[14] + prod[8] + prod[9]
-    r[1] = $cast2<i64>(prod[1]) + prod[10] - prod[12] - prod[13] - prod[14] - prod[15] + prod[9]
-    r[2] = $cast2<i64>(prod[2]) + prod[10] + prod[11] - prod[13] - prod[14] - prod[15]
-    r[3] = $cast2<i64>(prod[3]) + 2 * $cast2<i64>(prod[11]) + 2 * $cast2<i64>(prod[12]) + prod[13] - prod[15] - prod[8] - prod[9]
-    r[4] = $cast2<i64>(prod[4]) - prod[10] + 2 * $cast2<i64>(prod[12]) + 2 * $cast2<i64>(prod[13]) + prod[14] - prod[9]
-    r[5] = $cast2<i64>(prod[5]) - prod[10] - prod[11] + 2 * $cast2<i64>(prod[13]) + 2 * $cast2<i64>(prod[14]) + prod[15]
-    r[6] = $cast2<i64>(prod[6]) + prod[13] + 3 * $cast2<i64>(prod[14]) + 2 * $cast2<i64>(prod[15]) - prod[8] - prod[9]
-    r[7] = $cast2<i64>(prod[7]) - prod[10] - prod[11] - prod[12] - prod[13] + 3 * $cast2<i64>(prod[15]) + prod[8]
+    // P-256 reduction as straight-line signed limb arithmetic.
+    let r0 = $cast2<i64>(prod[0]) - prod[11] - prod[12] - prod[13] - prod[14] + prod[8] + prod[9]
+    let r1 = $cast2<i64>(prod[1]) + prod[10] - prod[12] - prod[13] - prod[14] - prod[15] + prod[9]
+    let r2 = $cast2<i64>(prod[2]) + prod[10] + prod[11] - prod[13] - prod[14] - prod[15]
+    let r3 = $cast2<i64>(prod[3]) + 2 * $cast2<i64>(prod[11]) + 2 * $cast2<i64>(prod[12]) + prod[13] - prod[15] - prod[8] - prod[9]
+    let r4 = $cast2<i64>(prod[4]) - prod[10] + 2 * $cast2<i64>(prod[12]) + 2 * $cast2<i64>(prod[13]) + prod[14] - prod[9]
+    let r5 = $cast2<i64>(prod[5]) - prod[10] - prod[11] + 2 * $cast2<i64>(prod[13]) + 2 * $cast2<i64>(prod[14]) + prod[15]
+    let r6 = $cast2<i64>(prod[6]) + prod[13] + 3 * $cast2<i64>(prod[14]) + 2 * $cast2<i64>(prod[15]) - prod[8] - prod[9]
+    let r7 = $cast2<i64>(prod[7]) - prod[10] - prod[11] - prod[12] - prod[13] + 3 * $cast2<i64>(prod[15]) + prod[8]
+    let r8: i64 = 0
 
-    // Normalize base-2^32 limbs.  For P-256:
-    // 2^256 == 2^224 - 2^192 - 2^96 + 1 (mod p).
-    for (const pass of $range(3)) {
-        for (const i of $range(U256_LEN)) {
-            const v = r[i]
-            const c = v >> 32
-            r[i] = $cast2<i64>($cast2<u32>(v))
-            r[i + 1] += c
-        }
-        const c = r[8]
-        r[8] = 0
-        if (c == 0) break
-        r[0] += c
-        r[3] -= c
-        r[6] -= c
-        r[7] += c
+    // Normalize pass 1.
+    let c = r0 >> 32; r0 = $cast2<i64>($cast2<u32>(r0)); r1 += c
+    c = r1 >> 32; r1 = $cast2<i64>($cast2<u32>(r1)); r2 += c
+    c = r2 >> 32; r2 = $cast2<i64>($cast2<u32>(r2)); r3 += c
+    c = r3 >> 32; r3 = $cast2<i64>($cast2<u32>(r3)); r4 += c
+    c = r4 >> 32; r4 = $cast2<i64>($cast2<u32>(r4)); r5 += c
+    c = r5 >> 32; r5 = $cast2<i64>($cast2<u32>(r5)); r6 += c
+    c = r6 >> 32; r6 = $cast2<i64>($cast2<u32>(r6)); r7 += c
+    c = r7 >> 32; r7 = $cast2<i64>($cast2<u32>(r7)); r8 += c
+    c = r8; r8 = 0
+    r0 += c; r3 -= c; r6 -= c; r7 += c
+
+    // Normalize pass 2.
+    c = r0 >> 32; r0 = $cast2<i64>($cast2<u32>(r0)); r1 += c
+    c = r1 >> 32; r1 = $cast2<i64>($cast2<u32>(r1)); r2 += c
+    c = r2 >> 32; r2 = $cast2<i64>($cast2<u32>(r2)); r3 += c
+    c = r3 >> 32; r3 = $cast2<i64>($cast2<u32>(r3)); r4 += c
+    c = r4 >> 32; r4 = $cast2<i64>($cast2<u32>(r4)); r5 += c
+    c = r5 >> 32; r5 = $cast2<i64>($cast2<u32>(r5)); r6 += c
+    c = r6 >> 32; r6 = $cast2<i64>($cast2<u32>(r6)); r7 += c
+    c = r7 >> 32; r7 = $cast2<i64>($cast2<u32>(r7)); r8 += c
+    c = r8; r8 = 0
+    r0 += c; r3 -= c; r6 -= c; r7 += c
+
+    // Normalize pass 3.
+    c = r0 >> 32; r0 = $cast2<i64>($cast2<u32>(r0)); r1 += c
+    c = r1 >> 32; r1 = $cast2<i64>($cast2<u32>(r1)); r2 += c
+    c = r2 >> 32; r2 = $cast2<i64>($cast2<u32>(r2)); r3 += c
+    c = r3 >> 32; r3 = $cast2<i64>($cast2<u32>(r3)); r4 += c
+    c = r4 >> 32; r4 = $cast2<i64>($cast2<u32>(r4)); r5 += c
+    c = r5 >> 32; r5 = $cast2<i64>($cast2<u32>(r5)); r6 += c
+    c = r6 >> 32; r6 = $cast2<i64>($cast2<u32>(r6)); r7 += c
+    c = r7 >> 32; r7 = $cast2<i64>($cast2<u32>(r7)); r8 += c
+    c = r8
+    r0 += c; r3 -= c; r6 -= c; r7 += c
+
+    // One final carry sweep after the last 2^256 fold.
+    c = r0 >> 32; r0 = $cast2<i64>($cast2<u32>(r0)); r1 += c
+    c = r1 >> 32; r1 = $cast2<i64>($cast2<u32>(r1)); r2 += c
+    c = r2 >> 32; r2 = $cast2<i64>($cast2<u32>(r2)); r3 += c
+    c = r3 >> 32; r3 = $cast2<i64>($cast2<u32>(r3)); r4 += c
+    c = r4 >> 32; r4 = $cast2<i64>($cast2<u32>(r4)); r5 += c
+    c = r5 >> 32; r5 = $cast2<i64>($cast2<u32>(r5)); r6 += c
+    c = r6 >> 32; r6 = $cast2<i64>($cast2<u32>(r6)); r7 += c
+    c = r7 >> 32; r7 = $cast2<i64>($cast2<u32>(r7))
+    if (c != 0) {
+        r0 += c
+        r3 -= c
+        r6 -= c
+        r7 += c
+        // Bounds are now tiny; one last propagation is sufficient.
+        c = r0 >> 32; r0 = $cast2<i64>($cast2<u32>(r0)); r1 += c
+        c = r1 >> 32; r1 = $cast2<i64>($cast2<u32>(r1)); r2 += c
+        c = r2 >> 32; r2 = $cast2<i64>($cast2<u32>(r2)); r3 += c
+        c = r3 >> 32; r3 = $cast2<i64>($cast2<u32>(r3)); r4 += c
+        c = r4 >> 32; r4 = $cast2<i64>($cast2<u32>(r4)); r5 += c
+        c = r5 >> 32; r5 = $cast2<i64>($cast2<u32>(r5)); r6 += c
+        c = r6 >> 32; r6 = $cast2<i64>($cast2<u32>(r6)); r7 += c
+        r7 = $cast2<i64>($cast2<u32>(r7))
     }
 
-    for (const i of $range(U256_LEN)) a[i] = $cast2<u32>(r[i])
-
-    // r is now in [0, 2^256); one conditional subtraction canonicalizes it.
+    a[0] = $cast2<u32>(r0)
+    a[1] = $cast2<u32>(r1)
+    a[2] = $cast2<u32>(r2)
+    a[3] = $cast2<u32>(r3)
+    a[4] = $cast2<u32>(r4)
+    a[5] = $cast2<u32>(r5)
+    a[6] = $cast2<u32>(r6)
+    a[7] = $cast2<u32>(r7)
     fieldSub(a, FIELD_PRIME.$ptr())
 }
 
