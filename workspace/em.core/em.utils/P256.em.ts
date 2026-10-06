@@ -53,6 +53,14 @@ export function validatePublicKey(pk: $$<PubKey>): bool_t {
 }
 
 export function makePublicKey(sk: U256, pk_OUT: $$<PubKey>) {
+    let p = PointJ.$make()
+    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
+    p.z[0] = 1
+    pointMul(sk.$ptr(), $$(p))
+    pointToAffine($$(p))
+    Mem.cpy(pk_OUT.$$.x.$ptr(), p.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(pk_OUT.$$.y.$ptr(), p.y.$ptr(), $sizeof<U256>())
 }
 
 export function ecdh(sk: U256, peer_pk: $$<PubKey>, secret_OUT: U256) {
@@ -347,14 +355,12 @@ function testField() {
 }
 
 function testPoint() {
-    let p = PointJ.$make()
-    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<U256>())
-    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<U256>())
-    p.z[0] = 1
-    pointMul(K_TEST.$ptr(), $$(p))
-    pointToAffine($$(p))
-    print(p.x.$ptr(), t$`pk.x`)
-    print(p.y.$ptr(), t$`pk.y`)
+    let sk = U256.$make()
+    Mem.cpy(sk.$ptr(), K_TEST.$ptr(), $sizeof<U256>())
+    let pk = PubKey.$make()
+    makePublicKey(sk, $$(pk))
+    print(pk.x.$ptr(), t$`pk.x`)
+    print(pk.y.$ptr(), t$`pk.y`)
 }
 
 export function em$run() {
