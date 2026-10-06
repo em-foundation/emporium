@@ -27,6 +27,8 @@ const B_TEST = $config<U256>()
 const G_X_TEST = $config<U256>()
 const G_Y_TEST = $config<U256>()
 const K_TEST = $config<U256>()
+const PEER_X_TEST = $config<U256>()
+const PEER_Y_TEST = $config<U256>()
 
 export namespace em$meta {
     export function em$construct() {
@@ -37,6 +39,8 @@ export namespace em$meta {
         initU256(G_X_TEST.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
         initU256(G_Y_TEST.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
         initU256(K_TEST.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
+        initU256(PEER_X_TEST.$$val, 'd12dfb52_89c8d4f8_1208b702_70398c34_2296970a_0bccb74c_736fc755_4494bf63')
+        initU256(PEER_Y_TEST.$$val, '56fbf3ca_366cc23e_8157854c_13c58d6a_ac23f046_ada30f83_53e74f33_039872ab')
     }
     function initU256(u: U256, val: string) {
         let limbs = val.split('_')
@@ -63,7 +67,14 @@ export function makePublicKey(sk: U256, pk_OUT: $$<PubKey>) {
     Mem.cpy(pk_OUT.$$.y.$ptr(), p.y.$ptr(), $sizeof<U256>())
 }
 
-export function ecdh(sk: U256, peer_pk: $$<PubKey>, secret_OUT: U256) {
+export function ecdh(sk: U256, peer_pk: $$<PubKey>, secret_OUT: U256_Ref) {
+    let p = PointJ.$make()
+    Mem.cpy(p.x.$ptr(), peer_pk.$$.x.$ptr(), $sizeof<U256>())
+    Mem.cpy(p.y.$ptr(), peer_pk.$$.y.$ptr(), $sizeof<U256>())
+    p.z[0] = 1
+    pointMul(sk.$ptr(), $$(p))
+    pointToAffine($$(p))
+    Mem.cpy(secret_OUT, p.x.$ptr(), $sizeof<U256>())
 }
 
 export function print(uref: U256_Ref, lab: text_t = t$``) {
@@ -357,10 +368,12 @@ function testField() {
 function testPoint() {
     let sk = U256.$make()
     Mem.cpy(sk.$ptr(), K_TEST.$ptr(), $sizeof<U256>())
-    let pk = PubKey.$make()
-    makePublicKey(sk, $$(pk))
-    print(pk.x.$ptr(), t$`pk.x`)
-    print(pk.y.$ptr(), t$`pk.y`)
+    let peer = PubKey.$make()
+    Mem.cpy(peer.x.$ptr(), PEER_X_TEST.$ptr(), $sizeof<U256>())
+    Mem.cpy(peer.y.$ptr(), PEER_Y_TEST.$ptr(), $sizeof<U256>())
+    let secret = U256.$make()
+    ecdh(sk, $$(peer), secret.$ptr())
+    print(secret.$ptr(), t$`secret`)
 }
 
 export function em$run() {
