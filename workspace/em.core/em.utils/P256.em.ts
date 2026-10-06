@@ -16,6 +16,7 @@ export class PubKey extends $struct {
 }
 
 const FIELD_PRIME = $config<U256>()
+const FIELD_PRIME_M2 = $config<U256>()
 const A_TEST = $config<U256>()
 const B_TEST = $config<U256>()
 
@@ -23,6 +24,7 @@ export namespace em$meta {
 
     export function em$construct() {
         initU256(FIELD_PRIME.$$val, 'ffffffff_00000001_00000000_00000000_00000000_ffffffff_ffffffff_ffffffff')
+        initU256(FIELD_PRIME_M2.$$val, 'ffffffff_00000001_00000000_00000000_00000000_ffffffff_ffffffff_fffffffd')
         initU256(A_TEST.$$val, '11111111_22222222_33333333_44444444_55555555_66666666_77777777_88888888')
         initU256(B_TEST.$$val, '01020304_05060708_090a0b0c_0d0e0f10_11121314_15161718_191a1b1c_1d1e1f20')
     }
@@ -114,6 +116,26 @@ function fieldMul(a: U256_Ref, b: U256_Ref) {
     }
 }
 
+function fieldSquare(a: U256_Ref) {
+    let t = U256.$make()
+    Mem.cpy(t.$ptr(), a, $sizeof<U256>())
+    fieldMul(a, t.$ptr())
+}
+
+function fieldInv(a: U256_Ref) {
+    let x = U256.$make()
+    Mem.cpy(x.$ptr(), a, $sizeof<U256>())
+    let r = U256.$make()
+    r[0] = 1
+    for (const i of $range(U256_LEN - 1, -1, -1)) {
+        for (const j of $range(31, -1, -1)) {
+            fieldSquare(r.$ptr())
+            if ((FIELD_PRIME_M2[i] & (1 << j)) != 0) fieldMul(r.$ptr(), x.$ptr())
+        }
+    }
+    Mem.cpy(a, r.$ptr(), $sizeof<U256>())
+}
+
 export function em$run() {
     let a = U256.$make()
     Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
@@ -129,4 +151,10 @@ export function em$run() {
     Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
     fieldMul(a.$ptr(), b.$ptr())
     print(a.$ptr(), t$`a3`)
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    fieldSquare(a.$ptr())
+    print(a.$ptr(), t$`a4`)
+    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<U256>())
+    fieldInv(a.$ptr())
+    print(a.$ptr(), t$`a5`)
 }
