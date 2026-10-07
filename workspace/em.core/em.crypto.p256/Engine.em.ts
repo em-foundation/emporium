@@ -320,16 +320,22 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     let naf = T.NAF257.$make()
     let nbits: u32 = 0
 
-    while (!scalarIsZero(n.$ptr())) {
+    // Fixed recoding pass: avoid rescanning all eight limbs for zero on
+    // every bit.  Track the highest nonzero NAF position as we go.
+    for (let bit: u32 = 0; bit < 257; bit += 1) {
+        let d: i8 = 0
+
         if ((n[0] & 1) != 0) {
-            let d: i8 = $cast2<i8>(n[0] & 0x1f)
+            d = $cast2<i8>(n[0] & 0x1f)
             if (d >= 16) d -= 32
-            naf[nbits] = d
             if (d > 0) scalarSubSmall(n.$ptr(), $cast2<u32>(d))
             else scalarAddSmall(n.$ptr(), $cast2<u32>(-d))
         }
+
+        naf[bit] = d
+        if (d != 0) nbits = bit + 1
+
         scalarShiftRight(n.$ptr())
-        nbits += 1
     }
 
     let r = T.PointJ.$make()
