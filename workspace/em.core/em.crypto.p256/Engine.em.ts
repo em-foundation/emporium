@@ -155,21 +155,20 @@ function pointDouble(p: $$<T.PointJ>) {
     T.copyU256(t3.$ptr(), p.$$.x.$ptr())
     Field.sub(t3.$ptr(), t1.$ptr())
     Field.mul(t3.$ptr(), t2.$ptr())
+
+    // t3 = 3/2 * t3; t1 becomes the later Y^4 scratch.
     T.copyU256(t1.$ptr(), t3.$ptr())
+    Field.half(t1.$ptr())
+    Field.add(t3.$ptr(), t1.$ptr())
 
-    // t1 = 3/2 * t1
-    T.copyU256(t2.$ptr(), t1.$ptr())
-    Field.half(t2.$ptr())
-    Field.add(t1.$ptr(), t2.$ptr())
-
-    // t2 = t1^2
-    T.copyU256(t2.$ptr(), t1.$ptr())
+    // t2 = t3^2
+    T.copyU256(t2.$ptr(), t3.$ptr())
     fieldSquare(t2.$ptr())
 
-    // Y2 = Y1^2; t3 = Y2^2
+    // Y2 = Y1^2; t1 = Y2^2
     fieldSquare(p.$$.y.$ptr())
-    T.copyU256(t3.$ptr(), p.$$.y.$ptr())
-    fieldSquare(t3.$ptr())
+    T.copyU256(t1.$ptr(), p.$$.y.$ptr())
+    fieldSquare(t1.$ptr())
 
     // Y2 = X1 * Y2
     Field.mul(p.$$.y.$ptr(), p.$$.x.$ptr())
@@ -182,8 +181,8 @@ function pointDouble(p: $$<T.PointJ>) {
 
     // Y2 = t1 * (Y2 - X2) - t3
     Field.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), t1.$ptr())
-    Field.sub(p.$$.y.$ptr(), t3.$ptr())
+    Field.mul(p.$$.y.$ptr(), t3.$ptr())
+    Field.sub(p.$$.y.$ptr(), t1.$ptr())
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
