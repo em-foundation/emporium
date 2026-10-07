@@ -66,7 +66,6 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
     `
 }
 
-// a$`always_inline`
 export function copy(a: T.U256_Ref, b: T.U256_Ref) {
     T.copyU256(a, b)
 }
