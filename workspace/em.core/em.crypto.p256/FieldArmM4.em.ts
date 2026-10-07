@@ -730,3 +730,43 @@ export function times2(a: T.U256_Ref) {
         );
     `
 }
+
+
+a$`noinline`
+export function half(a: T.U256_Ref) {
+    e$`
+        register uint32_t *ra asm("r0") = a.p_;
+
+        asm volatile (
+            R"(
+                push    {r0}
+                ldm     r0,{r0-r7}
+
+                lsl     r8,r0,#31
+                adds    r0,r0,r8,asr #31
+                adcs    r1,r1,r8,asr #31
+                adcs    r2,r2,r8,asr #31
+                adcs    r3,#0
+                adcs    r4,#0
+                adcs    r5,#0
+                adcs    r6,r6,r8,lsr #31
+                adcs    r7,r7,r8,asr #31
+                rrxs    r7,r7
+                rrxs    r6,r6
+                rrxs    r5,r5
+                rrxs    r4,r4
+                rrxs    r3,r3
+                rrxs    r2,r2
+                rrxs    r1,r1
+                rrx     r0,r0
+
+                pop     {r8}
+                stm     r8,{r0-r7}
+            )"
+            : "+r" (ra)
+            :
+            : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
+              "r8", "cc", "memory"
+        );
+    `
+}

@@ -573,3 +573,24 @@ export function sub(a: T.U256_Ref, b: T.U256_Ref) {
 export function times2(a: T.U256_Ref) {
     add(a, a)
 }
+
+
+export function half(a: T.U256_Ref) {
+    const odd = a[0] & 1
+    let carry: u64 = 0
+
+    if (odd != 0) {
+        for (const i of $range(T.U256_LEN)) {
+            const s = $cast2<u64>(a[i]) + T.FIELD_PRIME[i] + carry
+            a[i] = $cast2<u32>(s)
+            carry = s >> 32
+        }
+    }
+
+    let hi: u32 = $cast2<u32>(carry)
+    for (const i of $range(T.U256_LEN - 1, -1, -1)) {
+        const next = a[i] << 31
+        a[i] = (a[i] >> 1) | (hi << 31)
+        hi = next >> 31
+    }
+}

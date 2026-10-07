@@ -134,53 +134,56 @@ function pointAddAffine(p: $$<T.PointJ>, q: $$<T.PointJ>) {
 }
 
 function pointDouble(p: $$<T.PointJ>) {
-    // delta = Z^2, gamma = Y^2
-    let delta = T.U256.$make()
-    Field.copy(delta.$ptr(), p.$$.z.$ptr())
-    fieldSquare(delta.$ptr())
-    let gamma = T.U256.$make()
-    Field.copy(gamma.$ptr(), p.$$.y.$ptr())
-    fieldSquare(gamma.$ptr())
+    // ePrint 2014/130 algorithm 10, arranged like Emil Lenngren's P256_double_j.
+    // This trades two field squares for one multiply plus one modular half.
 
-    // Z3 = (Y + Z)^2 - gamma - delta.  Z is dead after this.
-    Field.add(p.$$.z.$ptr(), p.$$.y.$ptr())
-    fieldSquare(p.$$.z.$ptr())
-    Field.sub(p.$$.z.$ptr(), gamma.$ptr())
-    Field.sub(p.$$.z.$ptr(), delta.$ptr())
+    // t1 = Z1^2
+    let t1 = T.U256.$make()
+    Field.copy(t1.$ptr(), p.$$.z.$ptr())
+    fieldSquare(t1.$ptr())
 
-    // Reuse Y storage for beta = X * gamma.  Original Y is now dead.
-    Field.copy(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), gamma.$ptr())
+    // Z2 = Y1 * Z1
+    Field.mul(p.$$.z.$ptr(), p.$$.y.$ptr())
 
-    // alpha = 3 * (X - delta) * (X + delta).
-    let alpha = T.U256.$make()
-    Field.copy(alpha.$ptr(), p.$$.x.$ptr())
-    Field.sub(alpha.$ptr(), delta.$ptr())
-    Field.add(delta.$ptr(), p.$$.x.$ptr())
-    Field.mul(alpha.$ptr(), delta.$ptr())
-    Field.copy(delta.$ptr(), alpha.$ptr())
-    Field.times2(alpha.$ptr())
-    Field.add(alpha.$ptr(), delta.$ptr())
+    // t2 = X1 + t1
+    let t2 = T.U256.$make()
+    Field.copy(t2.$ptr(), p.$$.x.$ptr())
+    Field.add(t2.$ptr(), t1.$ptr())
 
-    // X3 = alpha^2 - 8*beta.  Original X is now dead.
-    Field.copy(p.$$.x.$ptr(), alpha.$ptr())
-    fieldSquare(p.$$.x.$ptr())
-    Field.copy(delta.$ptr(), p.$$.y.$ptr())
-    Field.times2(delta.$ptr())
-    Field.times2(delta.$ptr())
-    Field.times2(delta.$ptr())
-    Field.sub(p.$$.x.$ptr(), delta.$ptr())
+    // t1 = (X1 - t1) * t2
+    let t3 = T.U256.$make()
+    Field.copy(t3.$ptr(), p.$$.x.$ptr())
+    Field.sub(t3.$ptr(), t1.$ptr())
+    Field.mul(t3.$ptr(), t2.$ptr())
+    Field.copy(t1.$ptr(), t3.$ptr())
 
-    // Y3 = alpha * (4*beta - X3) - 8*gamma^2.
-    Field.times2(p.$$.y.$ptr())
-    Field.times2(p.$$.y.$ptr())
+    // t1 = 3/2 * t1
+    Field.copy(t2.$ptr(), t1.$ptr())
+    Field.half(t2.$ptr())
+    Field.add(t1.$ptr(), t2.$ptr())
+
+    // t2 = t1^2
+    Field.copy(t2.$ptr(), t1.$ptr())
+    fieldSquare(t2.$ptr())
+
+    // Y2 = Y1^2; t3 = Y2^2
+    fieldSquare(p.$$.y.$ptr())
+    Field.copy(t3.$ptr(), p.$$.y.$ptr())
+    fieldSquare(t3.$ptr())
+
+    // Y2 = X1 * Y2
+    Field.mul(p.$$.y.$ptr(), p.$$.x.$ptr())
+
+    // X2 = t2 - 2*Y2
+    Field.copy(p.$$.x.$ptr(), p.$$.y.$ptr())
+    Field.times2(p.$$.x.$ptr())
+    Field.sub(t2.$ptr(), p.$$.x.$ptr())
+    Field.copy(p.$$.x.$ptr(), t2.$ptr())
+
+    // Y2 = t1 * (Y2 - X2) - t3
     Field.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), alpha.$ptr())
-    fieldSquare(gamma.$ptr())
-    Field.times2(gamma.$ptr())
-    Field.times2(gamma.$ptr())
-    Field.times2(gamma.$ptr())
-    Field.sub(p.$$.y.$ptr(), gamma.$ptr())
+    Field.mul(p.$$.y.$ptr(), t1.$ptr())
+    Field.sub(p.$$.y.$ptr(), t3.$ptr())
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
