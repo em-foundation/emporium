@@ -36,6 +36,11 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+export function copyU256(dst: U256_Ref, src: U256_Ref) {
+    for (const i of $range(U256_LEN)) dst[i] = src[i]
+}
+
+
 export function print(uref: U256_Ref, lab: text_t = t$``) {
     if (lab.$len > 0) {
         printf`%s = `(lab)
