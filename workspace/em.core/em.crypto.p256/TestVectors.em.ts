@@ -2,9 +2,11 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Common from '@em.mcu/Common.em'
-import * as Engine from '@em.crypto.p256/Engine.em'
+import * as EngineC from '@em.crypto.p256/EngineC.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as T from '@em.crypto.p256/Types.em'
+
+const Engine = $delegate(EngineC.Engine)
 
 const K_TEST = $config<T.U256>()
 const PUBLIC_X_EXPECTED = $config<T.U256>()
