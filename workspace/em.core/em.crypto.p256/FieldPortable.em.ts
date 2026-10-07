@@ -3,6 +3,7 @@ export const $U = $declare('MODULE', FieldI)
 
 import * as FieldI from '@em.crypto.p256/FieldI.em'
 import * as T from '@em.crypto.p256/Types.em'
+import * as Mem from '@em.utils/Mem.em'
 
 export namespace em$meta { }
 
@@ -35,6 +36,75 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
             borrow = ai < (pi + borrow) ? 1 : 0
         }
     }
+}
+
+
+export function inv(a: T.U256_Ref) {
+    // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized
+    // P256_modinv schedule.  Input and output remain in Montgomery form.
+    let x = T.U256.$make()
+    Mem.cpy(x.$ptr(), a, $sizeof<T.U256>())
+
+    // a^3
+    let r = T.U256.$make()
+    Mem.cpy(r.$ptr(), x.$ptr(), $sizeof<T.U256>())
+    square(r.$ptr())
+    mul(r.$ptr(), x.$ptr())
+
+    // a^12
+    let a12 = T.U256.$make()
+    Mem.cpy(a12.$ptr(), r.$ptr(), $sizeof<T.U256>())
+    square(a12.$ptr())
+    square(a12.$ptr())
+
+    // a^15
+    let a15 = T.U256.$make()
+    Mem.cpy(a15.$ptr(), a12.$ptr(), $sizeof<T.U256>())
+    mul(a15.$ptr(), r.$ptr())
+
+    // a^(2^8 - 1)
+    Mem.cpy(r.$ptr(), a15.$ptr(), $sizeof<T.U256>())
+    for (const i of $range(4)) square(r.$ptr())
+    mul(r.$ptr(), a15.$ptr())
+    let a255 = T.U256.$make()
+    Mem.cpy(a255.$ptr(), r.$ptr(), $sizeof<T.U256>())
+
+    // a^(2^16 - 1)
+    for (const i of $range(8)) square(r.$ptr())
+    mul(r.$ptr(), a255.$ptr())
+    let a65535 = T.U256.$make()
+    Mem.cpy(a65535.$ptr(), r.$ptr(), $sizeof<T.U256>())
+
+    // a^(2^32 - 1)
+    for (const i of $range(16)) square(r.$ptr())
+    mul(r.$ptr(), a65535.$ptr())
+    let a32m1 = T.U256.$make()
+    Mem.cpy(a32m1.$ptr(), r.$ptr(), $sizeof<T.U256>())
+
+    // Remaining fixed chain from Emil Lenngren's speed-optimized P256_modinv.
+    for (const i of $range(32)) square(r.$ptr())
+    mul(r.$ptr(), x.$ptr())
+
+    for (const i of $range(128)) square(r.$ptr())
+    mul(r.$ptr(), a32m1.$ptr())
+
+    for (const i of $range(32)) square(r.$ptr())
+    mul(r.$ptr(), a32m1.$ptr())
+
+    for (const i of $range(16)) square(r.$ptr())
+    mul(r.$ptr(), a65535.$ptr())
+
+    for (const i of $range(8)) square(r.$ptr())
+    mul(r.$ptr(), a255.$ptr())
+
+    for (const i of $range(4)) square(r.$ptr())
+    mul(r.$ptr(), a15.$ptr())
+
+    for (const i of $range(4)) square(r.$ptr())
+    mul(r.$ptr(), a12.$ptr())
+
+    mul(r.$ptr(), x.$ptr())
+    Mem.cpy(a, r.$ptr(), $sizeof<T.U256>())
 }
 
 export function mul(a: T.U256_Ref, b: T.U256_Ref) {

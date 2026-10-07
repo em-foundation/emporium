@@ -7,7 +7,6 @@ import * as T from '@em.crypto.p256/Types.em'
 
 export const Field = $proxy<FieldI.$I>()
 
-const FIELD_PRIME_M2 = $config<T.U256>()
 const G_X = $config<T.U256>()
 const G_Y = $config<T.U256>()
 const MONT_R = $config<T.U256>()
@@ -16,7 +15,6 @@ const MONT_ONE = $config<T.U256>()
 
 export namespace em$meta {
     export function em$construct() {
-        T.em$meta.initU256(FIELD_PRIME_M2.$$val, 'ffffffff_00000001_00000000_00000000_00000000_ffffffff_ffffffff_fffffffd')
         T.em$meta.initU256(G_X.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
         T.em$meta.initU256(G_Y.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
         T.em$meta.initU256(MONT_R.$$val, '00000000_fffffffe_ffffffff_ffffffff_ffffffff_00000000_00000000_00000001')
@@ -57,51 +55,6 @@ export function ecdh(sk: T.U256, peer_pk: $$<T.PubKey>, secret_OUT: T.U256_Ref) 
 }
 
 // FIELD FUNCTIONS
-
-function fieldInv(a: T.U256_Ref) {
-    let x = T.U256.$make()
-    Mem.cpy(x.$ptr(), a, $sizeof<T.U256>())
-    let x2 = T.U256.$make()
-    Mem.cpy(x2.$ptr(), x.$ptr(), $sizeof<T.U256>())
-    fieldSquare(x2.$ptr())
-    let x4 = T.U256.$make()
-    Mem.cpy(x4.$ptr(), x2.$ptr(), $sizeof<T.U256>())
-    fieldSquare(x4.$ptr())
-    let x8 = T.U256.$make()
-    Mem.cpy(x8.$ptr(), x4.$ptr(), $sizeof<T.U256>())
-    fieldSquare(x8.$ptr())
-    let x13 = T.U256.$make()
-    Mem.cpy(x13.$ptr(), x8.$ptr(), $sizeof<T.U256>())
-    Field.mul(x13.$ptr(), x4.$ptr())
-    Field.mul(x13.$ptr(), x.$ptr())
-    let x15 = T.U256.$make()
-    Mem.cpy(x15.$ptr(), x13.$ptr(), $sizeof<T.U256>())
-    Field.mul(x15.$ptr(), x2.$ptr())
-    let r = T.U256.$make()
-    Mem.cpy(r.$ptr(), x15.$ptr(), $sizeof<T.U256>())
-    let first = true
-    for (const i of $range(T.U256_LEN - 1, -1, -1)) {
-        for (const j of $range(7, -1, -1)) {
-            if (first) {
-                first = false
-                continue
-            }
-            fieldSquare(r.$ptr())
-            fieldSquare(r.$ptr())
-            fieldSquare(r.$ptr())
-            fieldSquare(r.$ptr())
-            const n = (FIELD_PRIME_M2[i] >> (j * 4)) & 0xf
-            if (n == 1) {
-                Field.mul(r.$ptr(), x.$ptr())
-            } else if (n == 13) {
-                Field.mul(r.$ptr(), x13.$ptr())
-            } else if (n == 15) {
-                Field.mul(r.$ptr(), x15.$ptr())
-            }
-        }
-    }
-    Mem.cpy(a, r.$ptr(), $sizeof<T.U256>())
-}
 
 function fieldToMont(a: T.U256_Ref) {
     Field.mul(a, MONT_R2.$ptr())
@@ -307,7 +260,7 @@ function scalarSubOne(a: T.U256_Ref) {
 function pointToAffine(p: $$<T.PointJ>) {
     let zi = T.U256.$make()
     Mem.cpy(zi.$ptr(), p.$$.z.$ptr(), $sizeof<T.U256>())
-    fieldInv(zi.$ptr())
+    Field.inv(zi.$ptr())
     let zi2 = T.U256.$make()
     Mem.cpy(zi2.$ptr(), zi.$ptr(), $sizeof<T.U256>())
     fieldSquare(zi2.$ptr())
