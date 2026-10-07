@@ -68,24 +68,7 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
 
 a$`always_inline`
 export function copy(a: T.U256_Ref, b: T.U256_Ref) {
-    e$`
-        register uint32_t *ra asm("r0") = a.p_;
-        register uint32_t *rb asm("r1") = b.p_;
-     
-        asm volatile (
-            R"(
-                ldmia   r1!,{r2,r3,r12}
-                stmia   r0!,{r2,r3,r12}
-                ldmia   r1!,{r2,r3,r12}
-                stmia   r0!,{r2,r3,r12}
-                ldmia   r1!,{r2,r3}
-                stmia   r0!,{r2,r3}
-            )"
-            : "+r" (ra), "+r" (rb)
-            :
-            : "r2", "r3", "r12", "memory"
-        );
-    `
+    T.copyU256(a, b)
 }
 
 
