@@ -315,27 +315,41 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     Field.copy(p15.z.$ptr(), p13.z.$ptr())
     pointAddJacobian($$(p15), $$(twoP))
 
-    let n = T.U256.$make()
-    Field.copy(n.$ptr(), k)
     let naf = T.NAF257.$make()
     let nbits: u32 = 0
 
-    // Fixed recoding pass: avoid rescanning all eight limbs for zero on
-    // every bit.  Track the highest nonzero NAF position as we go.
-    for (let bit: u32 = 0; bit < 257; bit += 1) {
-        let d: i8 = 0
+    // Direct width-5 wNAF recoding from the original scalar limbs.
+    // carry represents the signed correction from previously emitted digits;
+    // no 256-bit working scalar or whole-value right shifts are required.
+    let carry: i32 = 0
 
-        if ((n[0] & 1) != 0) {
-            d = $cast2<i8>(n[0] & 0x1f)
+    for (let bit: u32 = 0; bit < 257; bit += 1) {
+        let qbits: u32 = 0
+
+        if (bit < 256) {
+            const wi = bit >> 5
+            const sh = bit & 31
+            qbits = k[wi] >> sh
+
+            if (sh > 27 && wi < 7) {
+                qbits |= k[wi + 1] << (32 - sh)
+            }
+
+            qbits &= 0x1f
+        }
+
+        let d: i8 = 0
+        const x = $cast2<i32>(qbits) + carry
+
+        if ((x & 1) != 0) {
+            d = $cast2<i8>(x & 0x1f)
             if (d >= 16) d -= 32
-            if (d > 0) scalarSubSmall(n.$ptr(), $cast2<u32>(d))
-            else scalarAddSmall(n.$ptr(), $cast2<u32>(-d))
         }
 
         naf[bit] = d
         if (d != 0) nbits = bit + 1
 
-        scalarShiftRight(n.$ptr())
+        carry = ($cast2<i32>(qbits & 1) + carry - $cast2<i32>(d)) >> 1
     }
 
     let r = T.PointJ.$make()
