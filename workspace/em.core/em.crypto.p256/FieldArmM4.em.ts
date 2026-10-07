@@ -366,6 +366,262 @@ export namespace em$meta {
                     |-> };
     `
         )
+
+        out.addFrag(`
+                    |-> namespace em_crypto_p256_FieldArmM4 {
+                    |->  
+                    |-> __attribute__((noinline))
+                    |-> void square_asm(T::U256_Ref a) {
+                    |->     register uint32_t *ra asm("r0") = a.p_;
+                    |->  
+                    |->     asm volatile (
+                    |->         R"(
+                    |->             /* Save destination, then load the field element into r0-r7. */
+                    |->             push    {r0}
+                    |->             ldm     r0,{r0-r7}
+                    |->  
+                    |->             /* Reference P256_sqrmod uses one saved-word frame slot. */
+                    |->             push    {r12}
+                    |->  
+                    |->             /* mul 01, 00 */
+                    |->             umull   r10,r9,r0,r0
+                    |->             umull   r11,r12,r0,r1
+                    |->             adds    r11,r11,r11
+                    |->             mov     lr,#0
+                    |->             umaal   r9,r11,lr,lr
+                    |->  
+                    |->             push    {r9,r10}
+                    |->  
+                    |->             /* mul 02, 11 */
+                    |->             mov     r9,#0
+                    |->             umaal   r9,r12,r0,r2
+                    |->             adcs    r9,r9,r9
+                    |->             umaal   r9,r11,r1,r1
+                    |->  
+                    |->             /* mul 03, 12 */
+                    |->             umull   r8,r10,r0,r3
+                    |->             umaal   r8,r12,r1,r2
+                    |->             adcs    r8,r8,r8
+                    |->             umaal   r8,r11,lr,lr
+                    |->  
+                    |->             push    {r8,r9}
+                    |->  
+                    |->             /* mul 04, 13, 22 */
+                    |->             mov     r9,#0
+                    |->             umaal   r9,r10,r0,r4
+                    |->             umaal   r9,r12,r1,r3
+                    |->             adcs    r9,r9,r9
+                    |->             umaal   r9,r11,r2,r2
+                    |->  
+                    |->             push    {r9}
+                    |->  
+                    |->             /* mul 05, 14, 23 */
+                    |->             umull   r9,r8,r0,r5
+                    |->             umaal   r9,r10,r1,r4
+                    |->             umaal   r9,r12,r2,r3
+                    |->             adcs    r9,r9,r9
+                    |->             umaal   r9,r11,lr,lr
+                    |->  
+                    |->             push    {r9}
+                    |->  
+                    |->             /* mul 06, 15, 24, 33 */
+                    |->             mov     r9,#0
+                    |->             umaal   r9,r8,r1,r5
+                    |->             umaal   r9,r12,r2,r4
+                    |->             umaal   r9,r10,r0,r6
+                    |->             adcs    r9,r9,r9
+                    |->             umaal   r9,r11,r3,r3
+                    |->  
+                    |->             push    {r9}
+                    |->  
+                    |->             /* mul 07, 16, 25, 34 */
+                    |->             umull   r9,r0,r0,r7
+                    |->             umaal   r9,r10,r1,r6
+                    |->             umaal   r9,r12,r2,r5
+                    |->             umaal   r9,r8,r3,r4
+                    |->             adcs    r9,r9,r9
+                    |->             umaal   r9,r11,lr,lr
+                    |->  
+                    |->             /* mul 17, 26, 35, 44 */
+                    |->             umaal   r0,r8,r1,r7
+                    |->             umaal   r0,r10,r2,r6
+                    |->             umaal   r0,r12,r3,r5
+                    |->             adcs    r0,r0,r0
+                    |->             umaal   r11,r0,r4,r4
+                    |->  
+                    |->             /* mul 27, 36, 45 */
+                    |->             umaal   r12,r8,r2,r7
+                    |->             umaal   r12,r10,r3,r6
+                    |->             movs    r2,#0
+                    |->             umaal   r12,r2,r4,r5
+                    |->             adcs    r1,r12,r12
+                    |->             umaal   r0,r1,lr,lr
+                    |->  
+                    |->             /* mul 37, 46, 55 */
+                    |->             umaal   r2,r8,r3,r7
+                    |->             umaal   r2,r10,r4,r6
+                    |->             adcs    r2,r2,r2
+                    |->             umaal   r1,r2,r5,r5
+                    |->  
+                    |->             /* mul 47, 56 */
+                    |->             movs    r3,#0
+                    |->             umaal   r3,r8,r4,r7
+                    |->             umaal   r3,r10,r5,r6
+                    |->             adcs    r3,r3,r3
+                    |->             umaal   r2,r3,lr,lr
+                    |->  
+                    |->             /* mul 57, 66 */
+                    |->             umaal   r8,r10,r5,r7
+                    |->             adcs    r8,r8,r8
+                    |->             umaal   r3,r8,r6,r6
+                    |->  
+                    |->             /* mul 67 */
+                    |->             umull   r4,r5,lr,lr
+                    |->             umaal   r4,r10,r6,r7
+                    |->             adcs    r4,r4,r4
+                    |->             umaal   r4,r8,lr,lr
+                    |->  
+                    |->             /* mul 77 */
+                    |->             adcs    r10,r10,r10
+                    |->             umaal   r8,r10,r7,r7
+                    |->             adcs    r10,r10,lr
+                    |->  
+                    |->             /* Montgomery reduction. */
+                    |->             push    {r4,r8,r10}
+                    |->             add     r4,sp,#12
+                    |->             ldm     r4,{r4-r8,r10,r12}
+                    |->  
+                    |->             X0 .req r12
+                    |->             X1 .req r10
+                    |->             X2 .req r8
+                    |->             X3 .req r7
+                    |->             X4 .req r6
+                    |->             X5 .req r5
+                    |->             X6 .req r4
+                    |->             X7 .req r9
+                    |->             X8 .req r11
+                    |->             X9 .req r0
+                    |->             X10 .req r1
+                    |->             X11 .req r2
+                    |->             X12 .req r3
+                    |->             X13 .req r7
+                    |->             X14 .req r8
+                    |->             X15 .req r10
+                    |->  
+                    |->             adcs    X3,X0
+                    |->             adcs    X4,X1
+                    |->             adcs    X5,X2
+                    |->             adcs    X6,X0
+                    |->             adcs    X7,X1
+                    |->             adcs    X8,X0
+                    |->             adcs    X9,X1
+                    |->             adcs    X10,#0
+                    |->             adcs    X11,#0
+                    |->             adcs    lr,#0
+                    |->  
+                    |->             adds    X6,X3
+                    |->             adcs    X7,X4
+                    |->             adcs    X8,X2
+                    |->             adcs    X9,X3
+                    |->             adcs    X10,X2
+                    |->             adcs    X11,X3
+                    |->             adcs    lr,#0
+                    |->  
+                    |->             subs    X7,X0
+                    |->             sbcs    X8,X1
+                    |->             sbcs    X9,X2
+                    |->             sbcs    X10,X3
+                    |->             sbcs    X11,#0
+                    |->             sbcs    lr,#0
+                    |->  
+                    |->             pop     {X13,X14,X15}
+                    |->  
+                    |->             adds    X0,X12,lr
+                    |->             adcs    X13,#0
+                    |->             mov     lr,#0
+                    |->             adcs    lr,#0
+                    |->  
+                    |->             adcs    X8,X5
+                    |->             adcs    X9,X6
+                    |->             adcs    X10,X4
+                    |->             adcs    X11,X5
+                    |->             adcs    X0,X4
+                    |->             adcs    X13,X5
+                    |->             adcs    X14,lr
+                    |->             adcs    X15,#0
+                    |->             mov     lr,#0
+                    |->             adcs    lr,#0
+                    |->  
+                    |->             adcs    X10,X7
+                    |->             adcs    X11,#0
+                    |->             adcs    X0,X6
+                    |->             adcs    X13,X7
+                    |->             adcs    X14,X6
+                    |->             adcs    X15,X7
+                    |->             adcs    lr,#0
+                    |->  
+                    |->             subs    X11,X4
+                    |->             sbcs    X0,X5
+                    |->             sbcs    X13,X6
+                    |->             sbcs    X14,X7
+                    |->             sbcs    X15,#0
+                    |->             sbcs    lr,#0
+                    |->  
+                    |->             /* Conditional subtraction of p. */
+                    |->             subs    r11,r11,#0xffffffff
+                    |->             sbcs    r9,r0,#0xffffffff
+                    |->             sbcs    r4,r1,#0xffffffff
+                    |->             sbcs    r3,r2,#0
+                    |->             sbcs    r6,r12,#0
+                    |->             sbcs    r5,r7,#0
+                    |->             sbcs    r12,r8,#1
+                    |->             sbcs    r8,r10,#0xffffffff
+                    |->             sbcs    r7,lr,#0
+                    |->  
+                    |->             adds    r0,r11,r7
+                    |->             adcs    r1,r9,r7
+                    |->             adcs    r2,r4,r7
+                    |->             adcs    r3,r3,#0
+                    |->             adcs    r4,r6,#0
+                    |->             adcs    r5,r5,#0
+                    |->             adcs    r6,r12,r7,lsr #31
+                    |->             adcs    r7,r8,r7
+                    |->  
+                    |->             .unreq X0
+                    |->             .unreq X1
+                    |->             .unreq X2
+                    |->             .unreq X3
+                    |->             .unreq X4
+                    |->             .unreq X5
+                    |->             .unreq X6
+                    |->             .unreq X7
+                    |->             .unreq X8
+                    |->             .unreq X9
+                    |->             .unreq X10
+                    |->             .unreq X11
+                    |->             .unreq X12
+                    |->             .unreq X13
+                    |->             .unreq X14
+                    |->             .unreq X15
+                    |->  
+                    |->             add     sp,#28
+                    |->             pop     {r12}
+                    |->  
+                    |->             /* Restore destination pointer and store the result. */
+                    |->             pop     {r12}
+                    |->             stm     r12,{r0-r7}
+                    |->         )"
+                    |->         : "+r" (ra)
+                    |->         :
+                    |->         : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
+                    |->           "r8", "r9", "r10", "r11", "r12", "lr", "cc", "memory"
+                    |->     );
+                    |-> }
+                    |->  
+                    |-> };
+    `
+        )
+
         out.close()
     }
 
@@ -381,6 +637,11 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
 export function mul(a: T.U256_Ref, b: T.U256_Ref) {
     e$`mul_asm(a, b)`
 }
+
+export function square(a: T.U256_Ref) {
+    e$`square_asm(a)`
+}
+
 
 export function sub(a: T.U256_Ref, b: T.U256_Ref) {
     e$`sub_asm(a, b)`

@@ -6,5 +6,6 @@ import * as T from '@em.crypto.p256/Types.em'
 export interface $I {
     add(a: T.U256_Ref, b: T.U256_Ref): void
     mul(a: T.U256_Ref, b: T.U256_Ref): void
+    square(a: T.U256_Ref): void
     sub(a: T.U256_Ref, b: T.U256_Ref): void
 }

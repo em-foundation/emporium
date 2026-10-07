@@ -470,6 +470,11 @@ export function mul(a: T.U256_Ref, b: T.U256_Ref) {
 
 }
 
+export function square(a: T.U256_Ref) {
+    mul(a, a)
+}
+
+
 export function sub(a: T.U256_Ref, b: T.U256_Ref) {
     let borrow: u64 = 0
     for (const i of $range(T.U256_LEN)) {

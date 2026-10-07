@@ -112,7 +112,7 @@ function fieldFromMont(a: T.U256_Ref) {
 }
 
 function fieldSquare(a: T.U256_Ref) {
-    Field.mul(a, a)
+    Field.square(a)
 }
 
 // POINT FUNCTIONS
