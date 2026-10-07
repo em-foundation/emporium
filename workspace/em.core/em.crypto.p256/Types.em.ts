@@ -35,3 +35,15 @@ export namespace em$meta {
 }
 
 //>> ---- em$targ ---- <<//
+
+export function print(uref: U256_Ref, lab: text_t = t$``) {
+    if (lab.$len > 0) {
+        printf`%s = `(lab)
+    }
+    let sep = t$``
+    for (const i of $range(U256_LEN - 1, -1, -1)) {
+        printf`%s%08x`(sep, uref[i])
+        sep = t$`_`
+    }
+    printf`\n`()
+}

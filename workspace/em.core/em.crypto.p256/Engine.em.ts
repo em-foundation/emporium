@@ -2,23 +2,18 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Mem from '@em.utils/Mem.em'
-import * as FieldI from '@em.crypto/P256_FieldI.em'
-import * as FieldPortable from '@em.crypto/P256_FieldPortable.em'
-import * as T from '@em.crypto/P256_Types.em'
+import * as FieldI from '@em.crypto.p256/FieldI.em'
+import * as FieldPortable from '@em.crypto.p256/FieldPortable.em'
+import * as T from '@em.crypto.p256/Types.em'
 
 export const Field = $proxy<FieldI.$I>()
 
 const FIELD_PRIME_M2 = $config<T.U256>()
+const G_X = $config<T.U256>()
+const G_Y = $config<T.U256>()
 const MONT_R = $config<T.U256>()
 const MONT_R2 = $config<T.U256>()
 const MONT_ONE = $config<T.U256>()
-const A_TEST = $config<T.U256>()
-const B_TEST = $config<T.U256>()
-const G_X_TEST = $config<T.U256>()
-const G_Y_TEST = $config<T.U256>()
-const K_TEST = $config<T.U256>()
-const PEER_X_TEST = $config<T.U256>()
-const PEER_Y_TEST = $config<T.U256>()
 
 export namespace em$meta {
 
@@ -28,16 +23,11 @@ export namespace em$meta {
 
     export function em$construct() {
         T.em$meta.initU256(FIELD_PRIME_M2.$$val, 'ffffffff_00000001_00000000_00000000_00000000_ffffffff_ffffffff_fffffffd')
+        T.em$meta.initU256(G_X.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
+        T.em$meta.initU256(G_Y.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
         T.em$meta.initU256(MONT_R.$$val, '00000000_fffffffe_ffffffff_ffffffff_ffffffff_00000000_00000000_00000001')
         T.em$meta.initU256(MONT_R2.$$val, '00000004_fffffffd_ffffffff_fffffffe_fffffffb_ffffffff_00000000_00000003')
         T.em$meta.initU256(MONT_ONE.$$val, '00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001')
-        T.em$meta.initU256(A_TEST.$$val, '11111111_22222222_33333333_44444444_55555555_66666666_77777777_88888888')
-        T.em$meta.initU256(B_TEST.$$val, '01020304_05060708_090a0b0c_0d0e0f10_11121314_15161718_191a1b1c_1d1e1f20')
-        T.em$meta.initU256(G_X_TEST.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
-        T.em$meta.initU256(G_Y_TEST.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
-        T.em$meta.initU256(K_TEST.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
-        T.em$meta.initU256(PEER_X_TEST.$$val, 'd12dfb52_89c8d4f8_1208b702_70398c34_2296970a_0bccb74c_736fc755_4494bf63')
-        T.em$meta.initU256(PEER_Y_TEST.$$val, '56fbf3ca_366cc23e_8157854c_13c58d6a_ac23f046_ada30f83_53e74f33_039872ab')
     }
 }
 
@@ -49,8 +39,8 @@ export function validatePublicKey(pk: $$<T.PubKey>): bool_t {
 
 export function makePublicKey(sk: T.U256, pk_OUT: $$<T.PubKey>) {
     let p = T.PointJ.$make()
-    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<T.U256>())
+    Mem.cpy(p.x.$ptr(), G_X.$ptr(), $sizeof<T.U256>())
+    Mem.cpy(p.y.$ptr(), G_Y.$ptr(), $sizeof<T.U256>())
     fieldToMont(p.x.$ptr())
     fieldToMont(p.y.$ptr())
     Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
@@ -70,18 +60,6 @@ export function ecdh(sk: T.U256, peer_pk: $$<T.PubKey>, secret_OUT: T.U256_Ref) 
     pointMul(sk.$ptr(), $$(p))
     pointToAffine($$(p))
     Mem.cpy(secret_OUT, p.x.$ptr(), $sizeof<T.U256>())
-}
-
-export function print(uref: T.U256_Ref, lab: text_t = t$``) {
-    if (lab.$len > 0) {
-        printf`%s = `(lab)
-    }
-    let sep = t$``
-    for (const i of $range(T.U256_LEN - 1, -1, -1)) {
-        printf`%s%08x`(sep, uref[i])
-        sep = t$`_`
-    }
-    printf`\n`()
 }
 
 // FIELD FUNCTIONS
@@ -654,169 +632,4 @@ function pointToAffine(p: $$<T.PointJ>) {
     fieldFromMont(p.$$.y.$ptr())
     for (const i of $range(T.U256_LEN)) p.$$.z[i] = 0
     p.$$.z[0] = 1
-}
-
-// TEST FUNCTIONS
-function testField() {
-    let a = T.U256.$make()
-    let b = T.U256.$make()
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(b.$ptr(), B_TEST.$ptr(), $sizeof<T.U256>())
-    print(a.$ptr(), t$`a0`)
-    print(b.$ptr(), t$`b0`)
-    Field.add(a.$ptr(), b.$ptr())
-    print(a.$ptr(), t$`a1`)
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    Field.sub(a.$ptr(), b.$ptr())
-    print(a.$ptr(), t$`a2`)
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    Field.mul(a.$ptr(), b.$ptr())
-    print(a.$ptr(), t$`a3`)
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    fieldSquare(a.$ptr())
-    print(a.$ptr(), t$`a4`)
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    fieldInv(a.$ptr())
-    print(a.$ptr(), t$`a5`)
-}
-
-function testPoint() {
-    let sk = T.U256.$make()
-    Mem.cpy(sk.$ptr(), K_TEST.$ptr(), $sizeof<T.U256>())
-    let peer = T.PubKey.$make()
-    Mem.cpy(peer.x.$ptr(), PEER_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(peer.y.$ptr(), PEER_Y_TEST.$ptr(), $sizeof<T.U256>())
-    let secret = T.U256.$make()
-    $['%%d+']
-    ecdh(sk, $$(peer), secret.$ptr())
-    $['%%d-']
-    print(secret.$ptr(), t$`secret`)
-}
-
-
-function testMontMulM4() {
-    let a = T.U256.$make()
-    let b = T.U256.$make()
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(b.$ptr(), B_TEST.$ptr(), $sizeof<T.U256>())
-
-    fieldToMont(a.$ptr())
-    fieldToMont(b.$ptr())
-
-    $['%%d+']
-    for (const i of $range(4096)) {
-        fieldMontMulM4(a.$ptr(), b.$ptr())
-    }
-    $['%%d-']
-
-    print(a.$ptr(), t$`mont4096`)
-}
-
-
-function testPointOps() {
-    let p = T.PointJ.$make()
-    let q = T.PointJ.$make()
-
-    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(p.x.$ptr())
-    fieldToMont(p.y.$ptr())
-    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-
-    Mem.cpy(q.x.$ptr(), G_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(q.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(q.x.$ptr())
-    fieldToMont(q.y.$ptr())
-    Mem.cpy(q.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-
-    $['%%d+']
-    for (const i of $range(1024)) {
-        pointDouble($$(p))
-    }
-    $['%%d-']
-    print(p.x.$ptr(), t$`double1024`)
-
-    // Reinitialize p so the add benchmark starts from a stable valid point.
-    Mem.cpy(p.x.$ptr(), G_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(p.x.$ptr())
-    fieldToMont(p.y.$ptr())
-    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-
-    $['%%d+']
-    for (const i of $range(1024)) {
-        pointAddAffine($$(p), $$(q))
-    }
-    $['%%d-']
-    print(p.x.$ptr(), t$`add1024`)
-}
-
-
-function testFieldOps() {
-    let a = T.U256.$make()
-    let b = T.U256.$make()
-
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(b.$ptr(), B_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(a.$ptr())
-    fieldToMont(b.$ptr())
-
-    $['%%d+']
-    for (const i of $range(16384)) {
-        Field.add(a.$ptr(), b.$ptr())
-    }
-    $['%%d-']
-    print(a.$ptr(), t$`add16384`)
-
-    Mem.cpy(a.$ptr(), A_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(a.$ptr())
-
-    $['%%d+']
-    for (const i of $range(16384)) {
-        Field.sub(a.$ptr(), b.$ptr())
-    }
-    $['%%d-']
-    print(a.$ptr(), t$`sub16384`)
-}
-
-function testPointOpsValid() {
-    let p = T.PointJ.$make()
-    let q = T.PointJ.$make()
-
-    // q = G, in Montgomery form.
-    Mem.cpy(q.x.$ptr(), G_X_TEST.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(q.y.$ptr(), G_Y_TEST.$ptr(), $sizeof<T.U256>())
-    fieldToMont(q.x.$ptr())
-    fieldToMont(q.y.$ptr())
-    Mem.cpy(q.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-
-    // p = G, then make p = 2G before the timed add loop.
-    Mem.cpy(p.x.$ptr(), q.x.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.y.$ptr(), q.y.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-
-    $['%%d+']
-    for (const i of $range(1024)) {
-        pointDouble($$(p))
-    }
-    $['%%d-']
-    print(p.x.$ptr(), t$`double1024`)
-
-    // Reinitialize and form 2G outside the timed region.
-    Mem.cpy(p.x.$ptr(), q.x.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.y.$ptr(), q.y.$ptr(), $sizeof<T.U256>())
-    Mem.cpy(p.z.$ptr(), MONT_R.$ptr(), $sizeof<T.U256>())
-    pointDouble($$(p))
-
-    $['%%d+']
-    for (const i of $range(1024)) {
-        pointAddAffine($$(p), $$(q))
-    }
-    $['%%d-']
-    print(p.x.$ptr(), t$`add1024`)
-}
-
-export function em$run() {
-    testFieldOps()
-    testPointOpsValid()
 }
