@@ -801,6 +801,10 @@ namespace em {
     const __UTILS__ = null
     // #region
 
+    export function a$(sa: TemplateStringsArray): any {
+        return 0
+    }
+
     export function e$(sa: TemplateStringsArray): any {
         return 0
     }
@@ -1096,6 +1100,7 @@ declare global {
     const fail: typeof em.fail
     const halt: typeof em.halt
     const printf: typeof em.printf
+    const a$: typeof em.a$
     const c$: typeof em.c$
     const e$: typeof em.e$
     const t$: typeof em.t$
@@ -1136,6 +1141,7 @@ Object.assign(globalThis, {
     fail: em.fail,
     halt: em.halt,
     printf: em.printf,
+    a$: em.a$,
     c$: em.c$,
     e$: em.e$,
     t$: em.t$,
