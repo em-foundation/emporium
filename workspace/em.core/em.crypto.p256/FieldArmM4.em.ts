@@ -623,6 +623,33 @@ export namespace em$meta {
     `
         )
 
+        out.addFrag(`
+                    |-> namespace em_crypto_p256_FieldArmM4 {
+                    |->  
+                    |-> __attribute__((noinline))
+                    |-> void copy_asm(T::U256_Ref a, T::U256_Ref b) {
+                    |->     register uint32_t *ra asm("r0") = a.p_;
+                    |->     register uint32_t *rb asm("r1") = b.p_;
+                    |->  
+                    |->     asm volatile (
+                    |->         R"(
+                    |->             ldmia   r1!,{r2,r3,r12}
+                    |->             stmia   r0!,{r2,r3,r12}
+                    |->             ldmia   r1!,{r2,r3,r12}
+                    |->             stmia   r0!,{r2,r3,r12}
+                    |->             ldmia   r1!,{r2,r3}
+                    |->             stmia   r0!,{r2,r3}
+                    |->         )"
+                    |->         : "+r" (ra), "+r" (rb)
+                    |->         :
+                    |->         : "r2", "r3", "r12", "memory"
+                    |->     );
+                    |-> }
+                    |->  
+                    |-> };
+        `
+        )
+
         out.close()
     }
 
@@ -636,47 +663,52 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
 }
 
 
+export function copy(a: T.U256_Ref, b: T.U256_Ref) {
+    e$`copy_asm(a, b)`
+}
+
+
 export function inv(a: T.U256_Ref) {
     // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized
     // P256_modinv schedule.  Input and output remain in Montgomery form.
     let x = T.U256.$make()
-    Mem.cpy(x.$ptr(), a, $sizeof<T.U256>())
+    copy(x.$ptr(), a)
 
     // a^3
     let r = T.U256.$make()
-    Mem.cpy(r.$ptr(), x.$ptr(), $sizeof<T.U256>())
+    copy(r.$ptr(), x.$ptr())
     square(r.$ptr())
     mul(r.$ptr(), x.$ptr())
 
     // a^12
     let a12 = T.U256.$make()
-    Mem.cpy(a12.$ptr(), r.$ptr(), $sizeof<T.U256>())
+    copy(a12.$ptr(), r.$ptr())
     square(a12.$ptr())
     square(a12.$ptr())
 
     // a^15
     let a15 = T.U256.$make()
-    Mem.cpy(a15.$ptr(), a12.$ptr(), $sizeof<T.U256>())
+    copy(a15.$ptr(), a12.$ptr())
     mul(a15.$ptr(), r.$ptr())
 
     // a^(2^8 - 1)
-    Mem.cpy(r.$ptr(), a15.$ptr(), $sizeof<T.U256>())
+    copy(r.$ptr(), a15.$ptr())
     for (const i of $range(4)) square(r.$ptr())
     mul(r.$ptr(), a15.$ptr())
     let a255 = T.U256.$make()
-    Mem.cpy(a255.$ptr(), r.$ptr(), $sizeof<T.U256>())
+    copy(a255.$ptr(), r.$ptr())
 
     // a^(2^16 - 1)
     for (const i of $range(8)) square(r.$ptr())
     mul(r.$ptr(), a255.$ptr())
     let a65535 = T.U256.$make()
-    Mem.cpy(a65535.$ptr(), r.$ptr(), $sizeof<T.U256>())
+    copy(a65535.$ptr(), r.$ptr())
 
     // a^(2^32 - 1)
     for (const i of $range(16)) square(r.$ptr())
     mul(r.$ptr(), a65535.$ptr())
     let a32m1 = T.U256.$make()
-    Mem.cpy(a32m1.$ptr(), r.$ptr(), $sizeof<T.U256>())
+    copy(a32m1.$ptr(), r.$ptr())
 
     // Remaining fixed chain from Emil Lenngren's speed-optimized P256_modinv.
     for (const i of $range(32)) square(r.$ptr())
@@ -701,7 +733,7 @@ export function inv(a: T.U256_Ref) {
     mul(r.$ptr(), a12.$ptr())
 
     mul(r.$ptr(), x.$ptr())
-    Mem.cpy(a, r.$ptr(), $sizeof<T.U256>())
+    copy(a, r.$ptr())
 }
 
 export function mul(a: T.U256_Ref, b: T.U256_Ref) {
