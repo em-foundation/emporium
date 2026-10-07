@@ -139,7 +139,7 @@ function pointDouble(p: $$<T.PointJ>) {
 
     // t1 = Z1^2
     let t1 = T.U256.$make()
-    Field.copy(t1.$ptr(), p.$$.z.$ptr())
+    T.copyU256(t1.$ptr(), p.$$.z.$ptr())
     fieldSquare(t1.$ptr())
 
     // Z2 = Y1 * Z1
@@ -147,38 +147,38 @@ function pointDouble(p: $$<T.PointJ>) {
 
     // t2 = X1 + t1
     let t2 = T.U256.$make()
-    Field.copy(t2.$ptr(), p.$$.x.$ptr())
+    T.copyU256(t2.$ptr(), p.$$.x.$ptr())
     Field.add(t2.$ptr(), t1.$ptr())
 
     // t1 = (X1 - t1) * t2
     let t3 = T.U256.$make()
-    Field.copy(t3.$ptr(), p.$$.x.$ptr())
+    T.copyU256(t3.$ptr(), p.$$.x.$ptr())
     Field.sub(t3.$ptr(), t1.$ptr())
     Field.mul(t3.$ptr(), t2.$ptr())
-    Field.copy(t1.$ptr(), t3.$ptr())
+    T.copyU256(t1.$ptr(), t3.$ptr())
 
     // t1 = 3/2 * t1
-    Field.copy(t2.$ptr(), t1.$ptr())
+    T.copyU256(t2.$ptr(), t1.$ptr())
     Field.half(t2.$ptr())
     Field.add(t1.$ptr(), t2.$ptr())
 
     // t2 = t1^2
-    Field.copy(t2.$ptr(), t1.$ptr())
+    T.copyU256(t2.$ptr(), t1.$ptr())
     fieldSquare(t2.$ptr())
 
     // Y2 = Y1^2; t3 = Y2^2
     fieldSquare(p.$$.y.$ptr())
-    Field.copy(t3.$ptr(), p.$$.y.$ptr())
+    T.copyU256(t3.$ptr(), p.$$.y.$ptr())
     fieldSquare(t3.$ptr())
 
     // Y2 = X1 * Y2
     Field.mul(p.$$.y.$ptr(), p.$$.x.$ptr())
 
     // X2 = t2 - 2*Y2
-    Field.copy(p.$$.x.$ptr(), p.$$.y.$ptr())
+    T.copyU256(p.$$.x.$ptr(), p.$$.y.$ptr())
     Field.times2(p.$$.x.$ptr())
     Field.sub(t2.$ptr(), p.$$.x.$ptr())
-    Field.copy(p.$$.x.$ptr(), t2.$ptr())
+    T.copyU256(p.$$.x.$ptr(), t2.$ptr())
 
     // Y2 = t1 * (Y2 - X2) - t3
     Field.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
