@@ -568,3 +568,8 @@ export function sub(a: T.U256_Ref, b: T.U256_Ref) {
         }
     }
 }
+
+
+export function times2(a: T.U256_Ref) {
+    add(a, a)
+}

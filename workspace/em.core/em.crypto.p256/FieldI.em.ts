@@ -10,4 +10,5 @@ export interface $I {
     mul(a: T.U256_Ref, b: T.U256_Ref): void
     square(a: T.U256_Ref): void
     sub(a: T.U256_Ref, b: T.U256_Ref): void
+    times2(a: T.U256_Ref): void
 }

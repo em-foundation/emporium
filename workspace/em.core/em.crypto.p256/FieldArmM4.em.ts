@@ -66,7 +66,7 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
     `
 }
 
-a$`always_inline`
+// a$`always_inline`
 export function copy(a: T.U256_Ref, b: T.U256_Ref) {
     T.copyU256(a, b)
 }
@@ -675,6 +675,58 @@ export function sub(a: T.U256_Ref, b: T.U256_Ref) {
             :
             : "r2", "r3", "r4", "r5", "r6", "r7",
               "r8", "r9", "r10", "r11", "r12", "cc", "memory"
+        );
+    `
+}
+
+
+a$`noinline`
+export function times2(a: T.U256_Ref) {
+    e$`
+        register uint32_t *ra asm("r0") = a.p_;
+
+        asm volatile (
+            R"(
+                push    {r0}
+                ldm     r0,{r0-r7}
+
+                adds    r0,r0
+                adcs    r1,r1
+                adcs    r2,r2
+                adcs    r3,r3
+                adcs    r4,r4
+                adcs    r5,r5
+                adcs    r6,r6
+                adcs    r7,r7
+                mov     r8,#0
+                adcs    r8,r8
+
+                subs    r0,#0xffffffff
+                sbcs    r1,#0xffffffff
+                sbcs    r2,#0xffffffff
+                sbcs    r3,#0
+                sbcs    r4,#0
+                sbcs    r5,#0
+                sbcs    r6,#1
+                sbcs    r7,#0xffffffff
+                sbcs    r8,#0
+
+                adds    r0,r8
+                adcs    r1,r8
+                adcs    r2,r8
+                adcs    r3,#0
+                adcs    r4,#0
+                adcs    r5,#0
+                adcs    r6,r6,r8,lsr #31
+                adcs    r7,r8
+
+                pop     {r8}
+                stm     r8,{r0-r7}
+            )"
+            : "+r" (ra)
+            :
+            : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
+              "r8", "cc", "memory"
         );
     `
 }
