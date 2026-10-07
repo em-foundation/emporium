@@ -11,68 +11,6 @@ export namespace em$meta {
                     |-> namespace em_crypto_p256_FieldArmM4 {
                     |->  
                     |-> __attribute__((noinline))
-                    |-> void add_asm(T::U256_Ref a, T::U256_Ref b) {
-                    |->     register uint32_t *ra asm("r0") = a.p_;
-                    |->     register uint32_t *rb asm("r1") = b.p_;
-                    |->  
-                    |->     asm volatile (
-                    |->         R"(
-                    |->             /* Adapt the reference custom ABI to a := a + b mod p. */
-                    |->             push    {r0}
-                    |->             mov     r2,r1
-                    |->             mov     r1,r0
-                    |->  
-                    |->             ldm     r2,{r2-r9}
-                    |->             ldm     r1!,{r0,r10,r11,r12}
-                    |->             adds    r2,r0
-                    |->             adcs    r3,r10
-                    |->             adcs    r4,r11
-                    |->             adcs    r5,r12
-                    |->             ldm     r1,{r0,r1,r11,r12}
-                    |->             adcs    r6,r0
-                    |->             adcs    r7,r1
-                    |->             adcs    r8,r11
-                    |->             adcs    r9,r12
-                    |->             movs    r10,#0
-                    |->             adcs    r10,r10
-                    |->  
-                    |->             /* Conditional subtraction of p. */
-                    |->             subs    r2,#0xffffffff
-                    |->             sbcs    r3,#0xffffffff
-                    |->             sbcs    r4,#0xffffffff
-                    |->             sbcs    r5,#0
-                    |->             sbcs    r6,#0
-                    |->             sbcs    r7,#0
-                    |->             sbcs    r8,#1
-                    |->             sbcs    r9,#0xffffffff
-                    |->             sbcs    r10,#0
-                    |->  
-                    |->             adds    r0,r2,r10
-                    |->             adcs    r1,r3,r10
-                    |->             adcs    r2,r4,r10
-                    |->             adcs    r3,r5,#0
-                    |->             adcs    r4,r6,#0
-                    |->             adcs    r5,r7,#0
-                    |->             adcs    r6,r8,r10,lsr #31
-                    |->             adcs    r7,r9,r10
-                    |->  
-                    |->             pop     {r8}
-                    |->             stm     r8,{r0-r7}
-                    |->         )"
-                    |->         : "+r" (ra), "+r" (rb)
-                    |->         :
-                    |->         : "r2", "r3", "r4", "r5", "r6", "r7",
-                    |->           "r8", "r9", "r10", "r11", "r12", "cc", "memory"
-                    |->     );
-                    |-> }
-                    |->  
-                    |-> };
-    `
-        )
-        out.addFrag(`
-                    |-> namespace em_crypto_p256_FieldArmM4 {
-                    |->  
-                    |-> __attribute__((noinline))
                     |-> void mul_asm(T::U256_Ref a, T::U256_Ref b) {
                     |->     register uint32_t *ra asm("r0") = a.p_;
                     |->     register uint32_t *rb asm("r1") = b.p_;
@@ -314,59 +252,6 @@ export namespace em$meta {
                     |-> };
     `
         )
-        out.addFrag(`
-                    |-> namespace em_crypto_p256_FieldArmM4 {
-                    |->  
-                    |-> __attribute__((noinline))
-                    |-> void sub_asm(T::U256_Ref a, T::U256_Ref b) {
-                    |->     register uint32_t *ra asm("r0") = a.p_;
-                    |->     register uint32_t *rb asm("r1") = b.p_;
-                    |->  
-                    |->     asm volatile (
-                    |->         R"(
-                    |->             /* Adapt the reference custom ABI to a := a - b mod p. */
-                    |->             push    {r0}
-                    |->             mov     r2,r1
-                    |->             mov     r1,r0
-                    |->  
-                    |->             ldm     r1,{r3-r10}
-                    |->             ldm     r2!,{r0,r1,r11,r12}
-                    |->             subs    r3,r0
-                    |->             sbcs    r4,r1
-                    |->             sbcs    r5,r11
-                    |->             sbcs    r6,r12
-                    |->             ldm     r2,{r0,r1,r11,r12}
-                    |->             sbcs    r7,r0
-                    |->             sbcs    r8,r1
-                    |->             sbcs    r9,r11
-                    |->             sbcs    r10,r12
-                    |->  
-                    |->             sbcs    r11,r11
-                    |->  
-                    |->             /* Conditionally add p back after a borrow. */
-                    |->             adds    r0,r3,r11
-                    |->             adcs    r1,r4,r11
-                    |->             adcs    r2,r5,r11
-                    |->             adcs    r3,r6,#0
-                    |->             adcs    r4,r7,#0
-                    |->             adcs    r5,r8,#0
-                    |->             adcs    r6,r9,r11,lsr #31
-                    |->             adcs    r7,r10,r11
-                    |->  
-                    |->             pop     {r8}
-                    |->             stm     r8,{r0-r7}
-                    |->         )"
-                    |->         : "+r" (ra), "+r" (rb)
-                    |->         :
-                    |->         : "r2", "r3", "r4", "r5", "r6", "r7",
-                    |->           "r8", "r9", "r10", "r11", "r12", "cc", "memory"
-                    |->     );
-                    |-> }
-                    |->  
-                    |-> };
-    `
-        )
-
         out.addFrag(`
                     |-> namespace em_crypto_p256_FieldArmM4 {
                     |->  
@@ -621,7 +506,6 @@ export namespace em$meta {
                     |-> };
     `
         )
-
         out.addFrag(`
                     |-> namespace em_crypto_p256_FieldArmM4 {
                     |->  
@@ -660,6 +544,9 @@ export namespace em$meta {
 a$`noinline`
 export function add(a: T.U256_Ref, b: T.U256_Ref) {
     e$`
+        register uint32_t *ra asm("r0") = a.p_;
+        register uint32_t *rb asm("r1") = b.p_;
+
         asm volatile (
             R"(
                 /* Adapt the reference custom ABI to a := a + b mod p. */
@@ -704,7 +591,7 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
                 pop     {r8}
                 stm     r8,{r0-r7}
             )"
-            : "+r" (a), "+r" (b)
+            : "+r" (ra), "+r" (rb)
             :
             : "r2", "r3", "r4", "r5", "r6", "r7",
             "r8", "r9", "r10", "r11", "r12", "cc", "memory"
@@ -794,7 +681,50 @@ export function square(a: T.U256_Ref) {
     e$`square_asm(a)`
 }
 
-
+a$`noinline`
 export function sub(a: T.U256_Ref, b: T.U256_Ref) {
-    e$`sub_asm(a, b)`
+    e$`
+        register uint32_t *ra asm("r0") = a.p_;
+        register uint32_t *rb asm("r1") = b.p_;
+
+        asm volatile (
+            R"(
+                /* Adapt the reference custom ABI to a := a - b mod p. */
+                push    {r0}
+                mov     r2,r1
+                mov     r1,r0
+     
+                ldm     r1,{r3-r10}
+                ldm     r2!,{r0,r1,r11,r12}
+                subs    r3,r0
+                sbcs    r4,r1
+                sbcs    r5,r11
+                sbcs    r6,r12
+                ldm     r2,{r0,r1,r11,r12}
+                sbcs    r7,r0
+                sbcs    r8,r1
+                sbcs    r9,r11
+                sbcs    r10,r12
+     
+                sbcs    r11,r11
+     
+                /* Conditionally add p back after a borrow. */
+                adds    r0,r3,r11
+                adcs    r1,r4,r11
+                adcs    r2,r5,r11
+                adcs    r3,r6,#0
+                adcs    r4,r7,#0
+                adcs    r5,r8,#0
+                adcs    r6,r9,r11,lsr #31
+                adcs    r7,r10,r11
+     
+                pop     {r8}
+                stm     r8,{r0-r7}
+            )"
+            : "+r" (ra), "+r" (rb)
+            :
+            : "r2", "r3", "r4", "r5", "r6", "r7",
+              "r8", "r9", "r10", "r11", "r12", "cc", "memory"
+        );
+    `
 }
