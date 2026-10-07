@@ -3,7 +3,6 @@ export const $U = $declare('MODULE', FieldI)
 
 import * as FieldI from '@em.crypto.p256/FieldI.em'
 import * as T from '@em.crypto.p256/Types.em'
-import * as Mem from '@em.utils/Mem.em'
 
 export namespace em$meta {
     export function em$generate() {
@@ -658,8 +657,59 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+a$`noinline`
 export function add(a: T.U256_Ref, b: T.U256_Ref) {
-    e$`add_asm(a, b)`
+    e$`
+        asm volatile (
+            R"(
+                /* Adapt the reference custom ABI to a := a + b mod p. */
+                push    {r0}
+                mov     r2,r1
+                mov     r1,r0
+    
+                ldm     r2,{r2-r9}
+                ldm     r1!,{r0,r10,r11,r12}
+                adds    r2,r0
+                adcs    r3,r10
+                adcs    r4,r11
+                adcs    r5,r12
+                ldm     r1,{r0,r1,r11,r12}
+                adcs    r6,r0
+                adcs    r7,r1
+                adcs    r8,r11
+                adcs    r9,r12
+                movs    r10,#0
+                adcs    r10,r10
+    
+                /* Conditional subtraction of p. */
+                subs    r2,#0xffffffff
+                sbcs    r3,#0xffffffff
+                sbcs    r4,#0xffffffff
+                sbcs    r5,#0
+                sbcs    r6,#0
+                sbcs    r7,#0
+                sbcs    r8,#1
+                sbcs    r9,#0xffffffff
+                sbcs    r10,#0
+    
+                adds    r0,r2,r10
+                adcs    r1,r3,r10
+                adcs    r2,r4,r10
+                adcs    r3,r5,#0
+                adcs    r4,r6,#0
+                adcs    r5,r7,#0
+                adcs    r6,r8,r10,lsr #31
+                adcs    r7,r9,r10
+    
+                pop     {r8}
+                stm     r8,{r0-r7}
+            )"
+            : "+r" (a), "+r" (b)
+            :
+            : "r2", "r3", "r4", "r5", "r6", "r7",
+            "r8", "r9", "r10", "r11", "r12", "cc", "memory"
+        )
+    `
 }
 
 
