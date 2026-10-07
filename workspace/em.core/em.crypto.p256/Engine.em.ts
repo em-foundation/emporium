@@ -187,81 +187,76 @@ function pointDouble(p: $$<T.PointJ>) {
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
-    // General Jacobian + Jacobian addition, arranged like Emil Lenngren's
-    // P256_add_j.  This is used by the wider scalar window table/path.
+    // Rearranged like Emil Lenngren's P256_add_j, but aggressively reuse
+    // p.{x,y,z} and only three U256 temporaries.
 
-    let z1z1 = T.U256.$make()
-    Field.copy(z1z1.$ptr(), q.$$.z.$ptr())
-    fieldSquare(z1z1.$ptr())
+    // t1 = Z1^2
+    let t1 = T.U256.$make()
+    Field.copy(t1.$ptr(), q.$$.z.$ptr())
+    fieldSquare(t1.$ptr())
 
-    let u2 = T.U256.$make()
-    Field.copy(u2.$ptr(), p.$$.x.$ptr())
-    Field.mul(u2.$ptr(), z1z1.$ptr())
+    // X2 = U2 = X2 * Z1^2
+    Field.mul(p.$$.x.$ptr(), t1.$ptr())
 
-    let s2 = T.U256.$make()
-    Field.copy(s2.$ptr(), q.$$.z.$ptr())
-    Field.mul(s2.$ptr(), z1z1.$ptr())
-    Field.mul(s2.$ptr(), p.$$.y.$ptr())
+    // Y2 = S2 = Y2 * Z1^3
+    Field.mul(t1.$ptr(), q.$$.z.$ptr())
+    Field.mul(p.$$.y.$ptr(), t1.$ptr())
 
-    let z2z2 = T.U256.$make()
-    Field.copy(z2z2.$ptr(), p.$$.z.$ptr())
-    fieldSquare(z2z2.$ptr())
+    // t1 = Z2^2
+    Field.copy(t1.$ptr(), p.$$.z.$ptr())
+    fieldSquare(t1.$ptr())
 
-    let u1 = T.U256.$make()
-    Field.copy(u1.$ptr(), q.$$.x.$ptr())
-    Field.mul(u1.$ptr(), z2z2.$ptr())
+    // t2 = U1 = X1 * Z2^2
+    let t2 = T.U256.$make()
+    Field.copy(t2.$ptr(), q.$$.x.$ptr())
+    Field.mul(t2.$ptr(), t1.$ptr())
 
-    let s1 = T.U256.$make()
-    Field.copy(s1.$ptr(), p.$$.z.$ptr())
-    Field.mul(s1.$ptr(), z2z2.$ptr())
-    Field.mul(s1.$ptr(), q.$$.y.$ptr())
+    // t1 = S1 = Y1 * Z2^3
+    Field.mul(t1.$ptr(), p.$$.z.$ptr())
+    Field.mul(t1.$ptr(), q.$$.y.$ptr())
 
-    let h = T.U256.$make()
-    Field.copy(h.$ptr(), u2.$ptr())
-    Field.sub(h.$ptr(), u1.$ptr())
+    // X2 = H = U2 - U1
+    Field.sub(p.$$.x.$ptr(), t2.$ptr())
 
-    let hh = T.U256.$make()
-    Field.copy(hh.$ptr(), h.$ptr())
-    fieldSquare(hh.$ptr())
+    // t3 = HH = H^2
+    let t3 = T.U256.$make()
+    Field.copy(t3.$ptr(), p.$$.x.$ptr())
+    fieldSquare(t3.$ptr())
 
     // Z3 = Z2 * H * Z1
-    Field.mul(p.$$.z.$ptr(), h.$ptr())
+    Field.mul(p.$$.z.$ptr(), p.$$.x.$ptr())
     Field.mul(p.$$.z.$ptr(), q.$$.z.$ptr())
 
-    let hhh = T.U256.$make()
-    Field.copy(hhh.$ptr(), h.$ptr())
-    Field.mul(hhh.$ptr(), hh.$ptr())
+    // X2 = HHH = H * HH
+    Field.mul(p.$$.x.$ptr(), t3.$ptr())
 
-    let r = T.U256.$make()
-    Field.copy(r.$ptr(), s2.$ptr())
-    Field.sub(r.$ptr(), s1.$ptr())
+    // Y2 = r = S2 - S1
+    Field.sub(p.$$.y.$ptr(), t1.$ptr())
 
-    let v = T.U256.$make()
-    Field.copy(v.$ptr(), u1.$ptr())
-    Field.mul(v.$ptr(), hh.$ptr())
+    // t2 = V = U1 * HH
+    Field.mul(t2.$ptr(), t3.$ptr())
 
-    let x3 = T.U256.$make()
-    Field.copy(x3.$ptr(), r.$ptr())
-    fieldSquare(x3.$ptr())
-    Field.sub(x3.$ptr(), hhh.$ptr())
+    // t3 = r^2
+    Field.copy(t3.$ptr(), p.$$.y.$ptr())
+    fieldSquare(t3.$ptr())
 
-    let twoV = T.U256.$make()
-    Field.copy(twoV.$ptr(), v.$ptr())
-    Field.times2(twoV.$ptr())
-    Field.sub(x3.$ptr(), twoV.$ptr())
+    // t1 = S1 * HHH
+    Field.mul(t1.$ptr(), p.$$.x.$ptr())
 
-    let y3 = T.U256.$make()
-    Field.copy(y3.$ptr(), v.$ptr())
-    Field.sub(y3.$ptr(), x3.$ptr())
-    Field.mul(y3.$ptr(), r.$ptr())
+    // t3 = r^2 - HHH - 2V = X3
+    Field.sub(t3.$ptr(), p.$$.x.$ptr())
+    Field.copy(p.$$.x.$ptr(), t2.$ptr())
+    Field.times2(p.$$.x.$ptr())
+    Field.sub(t3.$ptr(), p.$$.x.$ptr())
+    Field.copy(p.$$.x.$ptr(), t3.$ptr())
 
-    Field.mul(s1.$ptr(), hhh.$ptr())
-    Field.sub(y3.$ptr(), s1.$ptr())
-
-    Field.copy(p.$$.x.$ptr(), x3.$ptr())
-    Field.copy(p.$$.y.$ptr(), y3.$ptr())
+    // Y3 = r * (V - X3) - S1*HHH
+    Field.copy(t3.$ptr(), t2.$ptr())
+    Field.sub(t3.$ptr(), p.$$.x.$ptr())
+    Field.mul(t3.$ptr(), p.$$.y.$ptr())
+    Field.sub(t3.$ptr(), t1.$ptr())
+    Field.copy(p.$$.y.$ptr(), t3.$ptr())
 }
-
 
 function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     // Width-4 signed NAF.  The odd-multiple table lives here because it is
