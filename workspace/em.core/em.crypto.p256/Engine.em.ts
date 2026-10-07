@@ -259,7 +259,7 @@ function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
 }
 
 function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
-    // Width-4 signed NAF.  The odd-multiple table lives here because it is
+    // Width-5 signed NAF.  The odd-multiple table lives here because it is
     // scalar-multiplication policy rather than a field/backend concern.
 
     let p1 = T.PointJ.$make()
@@ -291,6 +291,30 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     Field.copy(p7.z.$ptr(), p5.z.$ptr())
     pointAddJacobian($$(p7), $$(twoP))
 
+    let p9 = T.PointJ.$make()
+    Field.copy(p9.x.$ptr(), p7.x.$ptr())
+    Field.copy(p9.y.$ptr(), p7.y.$ptr())
+    Field.copy(p9.z.$ptr(), p7.z.$ptr())
+    pointAddJacobian($$(p9), $$(twoP))
+
+    let p11 = T.PointJ.$make()
+    Field.copy(p11.x.$ptr(), p9.x.$ptr())
+    Field.copy(p11.y.$ptr(), p9.y.$ptr())
+    Field.copy(p11.z.$ptr(), p9.z.$ptr())
+    pointAddJacobian($$(p11), $$(twoP))
+
+    let p13 = T.PointJ.$make()
+    Field.copy(p13.x.$ptr(), p11.x.$ptr())
+    Field.copy(p13.y.$ptr(), p11.y.$ptr())
+    Field.copy(p13.z.$ptr(), p11.z.$ptr())
+    pointAddJacobian($$(p13), $$(twoP))
+
+    let p15 = T.PointJ.$make()
+    Field.copy(p15.x.$ptr(), p13.x.$ptr())
+    Field.copy(p15.y.$ptr(), p13.y.$ptr())
+    Field.copy(p15.z.$ptr(), p13.z.$ptr())
+    pointAddJacobian($$(p15), $$(twoP))
+
     let n = T.U256.$make()
     Field.copy(n.$ptr(), k)
     let naf = T.NAF257.$make()
@@ -298,8 +322,8 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
 
     while (!scalarIsZero(n.$ptr())) {
         if ((n[0] & 1) != 0) {
-            let d: i8 = $cast2<i8>(n[0] & 0xf)
-            if (d >= 8) d -= 16
+            let d: i8 = $cast2<i8>(n[0] & 0x1f)
+            if (d >= 16) d -= 32
             naf[nbits] = d
             if (d > 0) scalarSubSmall(n.$ptr(), $cast2<u32>(d))
             else scalarAddSmall(n.$ptr(), $cast2<u32>(-d))
@@ -330,10 +354,26 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
             Field.copy(q.x.$ptr(), p5.x.$ptr())
             Field.copy(q.y.$ptr(), p5.y.$ptr())
             Field.copy(q.z.$ptr(), p5.z.$ptr())
-        } else {
+        } else if (ad == 7) {
             Field.copy(q.x.$ptr(), p7.x.$ptr())
             Field.copy(q.y.$ptr(), p7.y.$ptr())
             Field.copy(q.z.$ptr(), p7.z.$ptr())
+        } else if (ad == 9) {
+            Field.copy(q.x.$ptr(), p9.x.$ptr())
+            Field.copy(q.y.$ptr(), p9.y.$ptr())
+            Field.copy(q.z.$ptr(), p9.z.$ptr())
+        } else if (ad == 11) {
+            Field.copy(q.x.$ptr(), p11.x.$ptr())
+            Field.copy(q.y.$ptr(), p11.y.$ptr())
+            Field.copy(q.z.$ptr(), p11.z.$ptr())
+        } else if (ad == 13) {
+            Field.copy(q.x.$ptr(), p13.x.$ptr())
+            Field.copy(q.y.$ptr(), p13.y.$ptr())
+            Field.copy(q.z.$ptr(), p13.z.$ptr())
+        } else {
+            Field.copy(q.x.$ptr(), p15.x.$ptr())
+            Field.copy(q.y.$ptr(), p15.y.$ptr())
+            Field.copy(q.z.$ptr(), p15.z.$ptr())
         }
 
         if (d < 0) {
