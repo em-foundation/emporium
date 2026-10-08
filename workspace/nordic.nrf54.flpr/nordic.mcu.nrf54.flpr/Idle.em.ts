@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', IdleI)
 
-import * as $R from '@nordic.distro.nrf54.flpr/REGS.em'
+import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as CSR from '@em.arch.riscv/CSR.em'
 import * as Debug from '@em.lang/Debug.em'

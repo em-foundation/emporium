@@ -5,7 +5,7 @@ import * as BoardC from '@nordic.distro.nrf54.flpr/BoardC.em'
 import * as IsrDefault from '@em.arch.riscv/IsrDebug.em'
 import * as IntrC from '@nordic.distro.nrf54/IntrC.em'
 import * as IntrVec from '@nordic.distro.nrf54.flpr/IntrVec.em'
-import * as REGS from '@nordic.distro.nrf54.flpr/REGS.em'
+import * as REGS from '@nordic.distro.nrf54/REGS.em'
 import * as TargC from '@em.lang/TargC.em'
 
 export function em$configure() {
@@ -108,16 +108,16 @@ export function em$generate() {
     out.close()
     //
     out = $outfile('nordic.distro.nrf54.flpr/startup.cpp')
-    out.addFile('../nordic.nrf54/nordic.distro.nrf54.flpr/startup.cpp')
+    out.addFile('../nordic.nrf54.flpr/nordic.distro.nrf54.flpr/startup.cpp')
     out.close()
     //
     out = $outfile('linkcmd.ld')
-    out.addFile('../nordic.nrf54/nordic.distro.nrf54.flpr/linkcmd.ld')
+    out.addFile('../nordic.nrf54.flpr/nordic.distro.nrf54.flpr/linkcmd.ld')
     out.close()
     //
     const ext = (process.platform === 'win32') ? '.exe' : 'Exe'
     out = $outfile('load.sh', 0o755)
     const exec = `${tools}/segger-jlink/JLink${ext}`
-    out.addText(`${exec} -CommandFile ../nordic.nrf54/nordic.distro.nrf54.flpr/jlink-cmds`)
+    out.addText(`${exec} -CommandFile ../nordic.nrf54.flpr/nordic.distro.nrf54.flpr/jlink-cmds`)
     out.close()
 }
