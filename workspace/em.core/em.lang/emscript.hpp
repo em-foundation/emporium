@@ -258,7 +258,10 @@ namespace em {
         operator opaq_t() const { return (opaq_t)(&$$[0]); }
         ptr_t<T> $ptr() { return ptr_t<T>(&$$[0]); }
         ptr_t<T> $ptr() const { return ptr_t<T>((T *)&$$[0]); }
-        static vec_t $make() { return vec_t(); }
+        static vec_t $make() {
+            vec_t v;
+            return v;
+        }
     };
 
     struct text_t {
