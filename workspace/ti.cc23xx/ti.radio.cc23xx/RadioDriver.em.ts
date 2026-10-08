@@ -52,7 +52,7 @@ var tx_start = 0
 
 export function disable() {
     $['%%d:'](3)
-    Idle.setPauseOnly(false)
+    Idle.setLevel(0)
     setState(State.IDLE)
     RfCtrl.disable()
     RfXtal.disable()
@@ -81,7 +81,7 @@ export function enable() {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD] = <u16>(($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD) & 0x0FFF) >> 2
     $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = acc_adr != 0 ? acc_adr : 0x8E89_BED6
     $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_CRCINITL] = (crc_init != 0 ? crc_init : 0x555555) << 8
-    Idle.setPauseOnly(true)
+    Idle.setLevel(1)
 }
 
 export function getRxBuf(): TL.BufPtr {

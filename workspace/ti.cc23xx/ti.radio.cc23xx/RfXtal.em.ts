@@ -70,9 +70,9 @@ function setIrefTrim(iref: u32) {
 }
 
 export function waitReady() {
-    Idle.setPauseOnly(true)
+    Idle.setLevel(1)
     while (!osc_ready) Idle.exec()
-    Idle.setPauseOnly(false)
+    Idle.setLevel(0)
     // PowerCC23X0_oscillatorISR
     //while (($R.CKMD.RIS.$$ & $R.CKMD_RIS_AMPSETTLED) == 0) {}
     $R.CKMD.AMPADCCTL.$$ =
