@@ -314,8 +314,11 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     Field.copy(p15.z.$ptr(), p13.z.$ptr())
     pointAddJacobian($$(p15), $$(twoP))
 
-    let naf = T.NAF257.$make()
-    let nbits: u32 = 0
+    // Sparse width-5 wNAF: retain only nonzero digits and their bit positions.
+    // Width-5 guarantees at most ceil(257 / 5) = 52 nonzero digits.
+    let wpos = T.WNAF_Pos.$make()
+    let wdig = T.WNAF_Digit.$make()
+    let wcount: u32 = 0
 
     // Direct width-5 wNAF recoding from the original scalar limbs.
     // carry represents the signed correction from previously emitted digits;
@@ -345,8 +348,11 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
             if (d >= 16) d -= 32
         }
 
-        naf[bit] = d
-        if (d != 0) nbits = bit + 1
+        if (d != 0) {
+            wpos[wcount] = $cast2<u16>(bit)
+            wdig[wcount] = d
+            wcount += 1
+        }
 
         carry = ($cast2<i32>(qbits & 1) + carry - $cast2<i32>(d)) >> 1
     }
@@ -354,11 +360,16 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     let r = T.PointJ.$make()
     let have = false
     let q = T.PointJ.$make()
+    let prevBit: i32 = 0
 
-    for (let i = $cast2<i32>(nbits) - 1; i >= 0; i -= 1) {
-        if (have) pointDouble($$(r))
-        const d = naf[i]
-        if (d == 0) continue
+    for (let wi = $cast2<i32>(wcount) - 1; wi >= 0; wi -= 1) {
+        const bit = $cast2<i32>(wpos[wi])
+        const d = wdig[wi]
+
+        if (have) {
+            const gap = prevBit - bit
+            for (let j: i32 = 0; j < gap; j += 1) pointDouble($$(r))
+        }
 
         const ad = d < 0 ? -d : d
 
@@ -373,6 +384,7 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
             else if (ad == 11) pointAddJacobian($$(r), $$(p11))
             else if (ad == 13) pointAddJacobian($$(r), $$(p13))
             else pointAddJacobian($$(r), $$(p15))
+            prevBit = bit
             continue
         }
 
@@ -427,6 +439,8 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
         } else {
             pointAddJacobian($$(r), $$(q))
         }
+
+        prevBit = bit
     }
 
     Field.copy(p.$$.x.$ptr(), r.x.$ptr())

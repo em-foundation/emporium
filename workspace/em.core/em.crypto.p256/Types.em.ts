@@ -7,6 +7,10 @@ export type U256_BASE = u32
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
 export class NAF257 extends $vector<i8> { $len = 257 }
 
+export const WNAF_MAX = 52
+export class WNAF_Pos extends $vector<u16> { $len = WNAF_MAX }
+export class WNAF_Digit extends $vector<i8> { $len = WNAF_MAX }
+
 export type U256_Ref = ptr_t<U256_BASE>
 
 export class PubKey extends $struct {
