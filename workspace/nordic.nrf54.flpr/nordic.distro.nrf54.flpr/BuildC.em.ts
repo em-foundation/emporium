@@ -111,6 +111,10 @@ export function em$generate() {
     out.addFile('../nordic.nrf54.flpr/nordic.distro.nrf54.flpr/startup.cpp')
     out.close()
     //
+    out = $outfile('nordic.distro.nrf54.flpr/REGS.hpp')
+    out.addFile('../nordic.nrf54/nordic.distro.nrf54/REGS.hpp.txt')
+    out.close()
+    //
     out = $outfile('linkcmd.ld')
     out.addFile('../nordic.nrf54.flpr/nordic.distro.nrf54.flpr/linkcmd.ld')
     out.close()
