@@ -8,14 +8,12 @@ export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-a$`noinline`
+a$`naked,noinline`
 export function add(a: T.U256_Ref, b: T.U256_Ref) {
     e$`
-        register uint32_t *ra asm("r0") = a.p_;
-        register uint32_t *rb asm("r1") = b.p_;
-
         asm volatile (
             R"(
+                push    {r4-r11}
                 /* Adapt the reference custom ABI to a := a + b mod p. */
                 push    {r0}
                 mov     r2,r1
@@ -57,12 +55,10 @@ export function add(a: T.U256_Ref, b: T.U256_Ref) {
     
                 pop     {r8}
                 stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
             )"
-            : "+r" (ra), "+r" (rb)
-            :
-            : "r2", "r3", "r4", "r5", "r6", "r7",
-            "r8", "r9", "r10", "r11", "r12", "cc", "memory"
-        )
+        );
     `
 }
 
@@ -630,14 +626,12 @@ export function square(a: T.U256_Ref) {
     `
 }
 
-a$`noinline`
+a$`naked,noinline`
 export function sub(a: T.U256_Ref, b: T.U256_Ref) {
     e$`
-        register uint32_t *ra asm("r0") = a.p_;
-        register uint32_t *rb asm("r1") = b.p_;
-
         asm volatile (
             R"(
+                push    {r4-r11}
                 /* Adapt the reference custom ABI to a := a - b mod p. */
                 push    {r0}
                 mov     r2,r1
@@ -669,23 +663,20 @@ export function sub(a: T.U256_Ref, b: T.U256_Ref) {
      
                 pop     {r8}
                 stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
             )"
-            : "+r" (ra), "+r" (rb)
-            :
-            : "r2", "r3", "r4", "r5", "r6", "r7",
-              "r8", "r9", "r10", "r11", "r12", "cc", "memory"
         );
     `
 }
 
 
-a$`noinline`
+a$`naked,noinline`
 export function times2(a: T.U256_Ref) {
     e$`
-        register uint32_t *ra asm("r0") = a.p_;
-
         asm volatile (
             R"(
+                push    {r4-r11}
                 push    {r0}
                 ldm     r0,{r0-r7}
 
@@ -721,23 +712,20 @@ export function times2(a: T.U256_Ref) {
 
                 pop     {r8}
                 stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
             )"
-            : "+r" (ra)
-            :
-            : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-              "r8", "cc", "memory"
         );
     `
 }
 
 
-a$`noinline`
+a$`naked,noinline`
 export function half(a: T.U256_Ref) {
     e$`
-        register uint32_t *ra asm("r0") = a.p_;
-
         asm volatile (
             R"(
+                push    {r4-r11}
                 push    {r0}
                 ldm     r0,{r0-r7}
 
@@ -761,11 +749,9 @@ export function half(a: T.U256_Ref) {
 
                 pop     {r8}
                 stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
             )"
-            : "+r" (ra)
-            :
-            : "r1", "r2", "r3", "r4", "r5", "r6", "r7",
-              "r8", "cc", "memory"
         );
     `
 }
