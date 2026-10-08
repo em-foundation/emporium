@@ -361,6 +361,23 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
         if (d == 0) continue
 
         const ad = d < 0 ? -d : d
+
+        // Once r exists, a positive digit can use the immutable table point
+        // directly. pointAddJacobian() destroys only its first operand.
+        if (d > 0 && have) {
+            if (ad == 1) pointAddJacobian($$(r), $$(p1))
+            else if (ad == 3) pointAddJacobian($$(r), $$(p3))
+            else if (ad == 5) pointAddJacobian($$(r), $$(p5))
+            else if (ad == 7) pointAddJacobian($$(r), $$(p7))
+            else if (ad == 9) pointAddJacobian($$(r), $$(p9))
+            else if (ad == 11) pointAddJacobian($$(r), $$(p11))
+            else if (ad == 13) pointAddJacobian($$(r), $$(p13))
+            else pointAddJacobian($$(r), $$(p15))
+            continue
+        }
+
+        // The first nonzero digit and negative digits still need q:
+        // first digit is copied into r; negative digits need writable Y.
         if (ad == 1) {
             Field.copy(q.x.$ptr(), p1.x.$ptr())
             Field.copy(q.y.$ptr(), p1.y.$ptr())
