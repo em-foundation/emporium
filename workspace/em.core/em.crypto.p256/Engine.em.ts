@@ -12,6 +12,7 @@ const G_Y = $config<T.U256>()
 const MONT_R = $config<T.U256>()
 const MONT_R2 = $config<T.U256>()
 const MONT_ONE = $config<T.U256>()
+const ORDER = $config<T.U256>()
 
 export namespace em$meta {
     export function em$construct() {
@@ -20,6 +21,7 @@ export namespace em$meta {
         T.em$meta.initU256(MONT_R.$$val, '00000000_fffffffe_ffffffff_ffffffff_ffffffff_00000000_00000000_00000001')
         T.em$meta.initU256(MONT_R2.$$val, '00000004_fffffffd_ffffffff_fffffffe_fffffffb_ffffffff_00000000_00000003')
         T.em$meta.initU256(MONT_ONE.$$val, '00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001')
+        T.em$meta.initU256(ORDER.$$val, 'ffffffff_00000000_ffffffff_ffffffff_bce6faad_a7179e84_f3b9cac2_fc632551')
     }
 }
 
@@ -134,55 +136,7 @@ function pointAddAffine(p: $$<T.PointJ>, q: $$<T.PointJ>) {
 }
 
 function pointDouble(p: $$<T.PointJ>) {
-    // ePrint 2014/130 algorithm 10, arranged like Emil Lenngren's P256_double_j.
-    // This trades two field squares for one multiply plus one modular half.
-
-    // t1 = Z1^2
-    let t1 = T.U256.$make()
-    T.copyU256(t1.$ptr(), p.$$.z.$ptr())
-    fieldSquare(t1.$ptr())
-
-    // Z2 = Y1 * Z1
-    Field.mul(p.$$.z.$ptr(), p.$$.y.$ptr())
-
-    // t2 = X1 + t1
-    let t2 = T.U256.$make()
-    T.copyU256(t2.$ptr(), p.$$.x.$ptr())
-    Field.add(t2.$ptr(), t1.$ptr())
-
-    // t1 = (X1 - t1) * t2
-    let t3 = T.U256.$make()
-    T.copyU256(t3.$ptr(), p.$$.x.$ptr())
-    Field.sub(t3.$ptr(), t1.$ptr())
-    Field.mul(t3.$ptr(), t2.$ptr())
-
-    // t3 = 3/2 * t3; t1 becomes the later Y^4 scratch.
-    T.copyU256(t1.$ptr(), t3.$ptr())
-    Field.half(t1.$ptr())
-    Field.add(t3.$ptr(), t1.$ptr())
-
-    // t2 = t3^2
-    T.copyU256(t2.$ptr(), t3.$ptr())
-    fieldSquare(t2.$ptr())
-
-    // Y2 = Y1^2; t1 = Y2^2
-    fieldSquare(p.$$.y.$ptr())
-    T.copyU256(t1.$ptr(), p.$$.y.$ptr())
-    fieldSquare(t1.$ptr())
-
-    // Y2 = X1 * Y2
-    Field.mul(p.$$.y.$ptr(), p.$$.x.$ptr())
-
-    // X2 = t2 - 2*Y2
-    T.copyU256(p.$$.x.$ptr(), p.$$.y.$ptr())
-    Field.times2(p.$$.x.$ptr())
-    Field.sub(t2.$ptr(), p.$$.x.$ptr())
-    T.copyU256(p.$$.x.$ptr(), t2.$ptr())
-
-    // Y2 = t1 * (Y2 - X2) - t3
-    Field.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), t3.$ptr())
-    Field.sub(p.$$.y.$ptr(), t1.$ptr())
+    Field.doublePoint(p)
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
@@ -257,191 +211,200 @@ function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
     Field.copy(p.$$.y.$ptr(), t3.$ptr())
 }
 
+function ctEqMask(a: u32, b: u32): u32 {
+    const x = a ^ b
+    const nz = (x | ($cast2<u32>(0) - x)) >> 31
+    return $cast2<u32>(0) - (nz ^ 1)
+}
+
+
+function packTablePoint(table: $$<T.PointTableWords>, slot: u32, p: $$<T.PointJ>) {
+    const base = slot * T.POINT_WORDS
+    for (const i of $range(T.U256_LEN)) {
+        table.$$[base + i] = p.$$.x[i]
+        table.$$[base + T.U256_LEN + i] = p.$$.y[i]
+        table.$$[base + 2 * T.U256_LEN + i] = p.$$.z[i]
+    }
+}
+
+
+function ctSelectPoint(out: $$<T.PointJ>, idx: u32, table: $$<T.PointTableWords>) {
+    // Constant-time scan of a contiguous P,3P,...,15P table.
+    // This mirrors Emil's P256_select organization much more closely than
+    // passing eight independent PointJ arguments.
+    for (const i of $range(T.POINT_WORDS)) {
+        let v: u32 = 0
+
+        for (let slot: u32 = 0; slot < T.TABLE_POINTS; slot += 1) {
+            const mask = ctEqMask(idx, slot)
+            v |= table.$$[slot * T.POINT_WORDS + i] & mask
+        }
+
+        if (i < T.U256_LEN) out.$$.x[i] = v
+        else if (i < 2 * T.U256_LEN) out.$$.y[i - T.U256_LEN] = v
+        else out.$$.z[i - 2 * T.U256_LEN] = v
+    }
+}
+
+
+function pointNegateYIf(p: $$<T.PointJ>, neg: u32) {
+    // Always form -Y, then select Y or -Y with a full-word mask.
+    let ny = T.U256.$make()
+    for (const i of $range(T.U256_LEN)) ny[i] = 0
+    Field.sub(ny.$ptr(), p.$$.y.$ptr())
+
+    const mask = $cast2<u32>(0) - neg
+    for (const i of $range(T.U256_LEN)) {
+        p.$$.y[i] ^= (p.$$.y[i] ^ ny[i]) & mask
+    }
+}
+
+
+function scalarNormalizeOdd(k: T.U256_Ref, out: T.U256_Ref): u32 {
+    // Emil's point multiplier uses k when k is odd and n-k when k is even.
+    // Return 1 when n-k was selected so the final Y can be negated back.
+    const useNeg = (k[0] & 1) ^ 1
+
+    let nk = T.U256.$make()
+    let borrow: u64 = 0
+
+    for (const i of $range(T.U256_LEN)) {
+        const d = $cast2<u64>(ORDER[i]) - $cast2<u64>(k[i]) - borrow
+        nk[i] = $cast2<u32>(d)
+        borrow = d >> 63
+    }
+
+    const mask = $cast2<u32>(0) - useNeg
+    for (const i of $range(T.U256_LEN)) {
+        out[i] = k[i] ^ ((k[i] ^ nk[i]) & mask)
+    }
+
+    return useNeg
+}
+
+
+function scalarRewriteFixed4(k: T.U256_Ref, win: $$<T.Window64>) {
+    // Same signed 4-bit rewrite used by Emil: every emitted digit is odd,
+    // so each of the 63 main-loop windows performs exactly one point add.
+    let cur: i32 = $cast2<i32>(k[0] & 0x0f)
+
+    for (let w: u32 = 1; w < 64; w += 1) {
+        const wi = w >> 3
+        const sh = (w & 7) << 2
+        const nib = (k[wi] >> sh) & 0x0f
+        const even = (nib & 1) ^ 1
+
+        win.$$[w - 1] = $cast2<i8>(cur - $cast2<i32>(even << 4))
+        cur = $cast2<i32>(nib | 1)
+    }
+
+    win.$$[63] = $cast2<i8>(cur)
+}
+
+
 function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
-    // Width-5 signed NAF.  The odd-multiple table lives here because it is
-    // scalar-multiplication policy rather than a field/backend concern.
+    // Emil-style constant-operation scalar path:
+    //   - normalize scalar to odd k or n-k
+    //   - rewrite into 64 signed 4-bit odd windows
+    //   - precompute P,3P,...,15P
+    //   - fixed 63 iterations of four doubles + one add
+    //   - constant-time table selection and sign handling
+
+    let kk = T.U256.$make()
+    const flipResult = scalarNormalizeOdd(k, kk.$ptr())
+
+    let win = T.Window64.$make()
+    scalarRewriteFixed4(kk.$ptr(), $$(win))
 
     let p1 = T.PointJ.$make()
     Field.copy(p1.x.$ptr(), p.$$.x.$ptr())
     Field.copy(p1.y.$ptr(), p.$$.y.$ptr())
     Field.copy(p1.z.$ptr(), p.$$.z.$ptr())
 
-    let twoP = T.PointJ.$make()
-    Field.copy(twoP.x.$ptr(), p1.x.$ptr())
-    Field.copy(twoP.y.$ptr(), p1.y.$ptr())
-    Field.copy(twoP.z.$ptr(), p1.z.$ptr())
-    pointDouble($$(twoP))
+    // Match Emil's table construction closely: use the future 15P slot as
+    // temporary 2P storage, then overwrite it with 15P at the end.
+    let p15 = T.PointJ.$make()
+    Field.copy(p15.x.$ptr(), p1.x.$ptr())
+    Field.copy(p15.y.$ptr(), p1.y.$ptr())
+    Field.copy(p15.z.$ptr(), p1.z.$ptr())
+    pointDouble($$(p15))
 
     let p3 = T.PointJ.$make()
-    Field.copy(p3.x.$ptr(), p1.x.$ptr())
-    Field.copy(p3.y.$ptr(), p1.y.$ptr())
-    Field.copy(p3.z.$ptr(), p1.z.$ptr())
-    pointAddJacobian($$(p3), $$(twoP))
+    Field.copy(p3.x.$ptr(), p15.x.$ptr())
+    Field.copy(p3.y.$ptr(), p15.y.$ptr())
+    Field.copy(p3.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p3), $$(p1))
 
     let p5 = T.PointJ.$make()
-    Field.copy(p5.x.$ptr(), p3.x.$ptr())
-    Field.copy(p5.y.$ptr(), p3.y.$ptr())
-    Field.copy(p5.z.$ptr(), p3.z.$ptr())
-    pointAddJacobian($$(p5), $$(twoP))
+    Field.copy(p5.x.$ptr(), p15.x.$ptr())
+    Field.copy(p5.y.$ptr(), p15.y.$ptr())
+    Field.copy(p5.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p5), $$(p3))
 
     let p7 = T.PointJ.$make()
-    Field.copy(p7.x.$ptr(), p5.x.$ptr())
-    Field.copy(p7.y.$ptr(), p5.y.$ptr())
-    Field.copy(p7.z.$ptr(), p5.z.$ptr())
-    pointAddJacobian($$(p7), $$(twoP))
+    Field.copy(p7.x.$ptr(), p15.x.$ptr())
+    Field.copy(p7.y.$ptr(), p15.y.$ptr())
+    Field.copy(p7.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p7), $$(p5))
 
     let p9 = T.PointJ.$make()
-    Field.copy(p9.x.$ptr(), p7.x.$ptr())
-    Field.copy(p9.y.$ptr(), p7.y.$ptr())
-    Field.copy(p9.z.$ptr(), p7.z.$ptr())
-    pointAddJacobian($$(p9), $$(twoP))
+    Field.copy(p9.x.$ptr(), p15.x.$ptr())
+    Field.copy(p9.y.$ptr(), p15.y.$ptr())
+    Field.copy(p9.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p9), $$(p7))
 
     let p11 = T.PointJ.$make()
-    Field.copy(p11.x.$ptr(), p9.x.$ptr())
-    Field.copy(p11.y.$ptr(), p9.y.$ptr())
-    Field.copy(p11.z.$ptr(), p9.z.$ptr())
-    pointAddJacobian($$(p11), $$(twoP))
+    Field.copy(p11.x.$ptr(), p15.x.$ptr())
+    Field.copy(p11.y.$ptr(), p15.y.$ptr())
+    Field.copy(p11.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p11), $$(p9))
 
     let p13 = T.PointJ.$make()
-    Field.copy(p13.x.$ptr(), p11.x.$ptr())
-    Field.copy(p13.y.$ptr(), p11.y.$ptr())
-    Field.copy(p13.z.$ptr(), p11.z.$ptr())
-    pointAddJacobian($$(p13), $$(twoP))
+    Field.copy(p13.x.$ptr(), p15.x.$ptr())
+    Field.copy(p13.y.$ptr(), p15.y.$ptr())
+    Field.copy(p13.z.$ptr(), p15.z.$ptr())
+    pointAddJacobian($$(p13), $$(p11))
 
-    let p15 = T.PointJ.$make()
-    Field.copy(p15.x.$ptr(), p13.x.$ptr())
-    Field.copy(p15.y.$ptr(), p13.y.$ptr())
-    Field.copy(p15.z.$ptr(), p13.z.$ptr())
-    pointAddJacobian($$(p15), $$(twoP))
+    // p15 still contains 2P here.
+    pointAddJacobian($$(p15), $$(p13))
 
-    // Sparse width-5 wNAF: retain only nonzero digits and their bit positions.
-    // Width-5 guarantees at most ceil(257 / 5) = 52 nonzero digits.
-    let wpos = T.WNAF_Pos.$make()
-    let wdig = T.WNAF_Digit.$make()
-    let wcount: u32 = 0
-
-    // Direct width-5 wNAF recoding from the original scalar limbs.
-    // carry represents the signed correction from previously emitted digits;
-    // no 256-bit working scalar or whole-value right shifts are required.
-    let carry: i32 = 0
-
-    for (let bit: u32 = 0; bit < 257; bit += 1) {
-        let qbits: u32 = 0
-
-        if (bit < 256) {
-            const wi = bit >> 5
-            const sh = bit & 31
-            qbits = k[wi] >> sh
-
-            if (sh > 27 && wi < 7) {
-                qbits |= k[wi + 1] << (32 - sh)
-            }
-
-            qbits &= 0x1f
-        }
-
-        let d: i8 = 0
-        const x = $cast2<i32>(qbits) + carry
-
-        if ((x & 1) != 0) {
-            d = $cast2<i8>(x & 0x1f)
-            if (d >= 16) d -= 32
-        }
-
-        if (d != 0) {
-            wpos[wcount] = $cast2<u16>(bit)
-            wdig[wcount] = d
-            wcount += 1
-        }
-
-        carry = ($cast2<i32>(qbits & 1) + carry - $cast2<i32>(d)) >> 1
-    }
+    // Pack the odd multiples contiguously for the hot constant-time selector.
+    let table = T.PointTableWords.$make()
+    packTablePoint($$(table), 0, $$(p1))
+    packTablePoint($$(table), 1, $$(p3))
+    packTablePoint($$(table), 2, $$(p5))
+    packTablePoint($$(table), 3, $$(p7))
+    packTablePoint($$(table), 4, $$(p9))
+    packTablePoint($$(table), 5, $$(p11))
+    packTablePoint($$(table), 6, $$(p13))
+    packTablePoint($$(table), 7, $$(p15))
 
     let r = T.PointJ.$make()
-    let have = false
     let q = T.PointJ.$make()
-    let prevBit: i32 = 0
 
-    for (let wi = $cast2<i32>(wcount) - 1; wi >= 0; wi -= 1) {
-        const bit = $cast2<i32>(wpos[wi])
-        const d = wdig[wi]
+    let d = win[63]
+    let sign = $cast2<u32>(d) >> 31
+    let ad = $cast2<u32>(d < 0 ? -d : d)
+    ctSelectPoint($$(r), ad >> 1, $$(table))
+    pointNegateYIf($$(r), sign)
 
-        if (have) {
-            const gap = prevBit - bit
-            for (let j: i32 = 0; j < gap; j += 1) pointDouble($$(r))
-        }
+    for (let w: i32 = 62; w >= 0; w -= 1) {
+        pointDouble($$(r))
+        pointDouble($$(r))
+        pointDouble($$(r))
+        pointDouble($$(r))
 
-        const ad = d < 0 ? -d : d
+        d = win[w]
+        sign = $cast2<u32>(d) >> 31
+        ad = $cast2<u32>(d < 0 ? -d : d)
 
-        // Once r exists, a positive digit can use the immutable table point
-        // directly. pointAddJacobian() destroys only its first operand.
-        if (d > 0 && have) {
-            if (ad == 1) pointAddJacobian($$(r), $$(p1))
-            else if (ad == 3) pointAddJacobian($$(r), $$(p3))
-            else if (ad == 5) pointAddJacobian($$(r), $$(p5))
-            else if (ad == 7) pointAddJacobian($$(r), $$(p7))
-            else if (ad == 9) pointAddJacobian($$(r), $$(p9))
-            else if (ad == 11) pointAddJacobian($$(r), $$(p11))
-            else if (ad == 13) pointAddJacobian($$(r), $$(p13))
-            else pointAddJacobian($$(r), $$(p15))
-            prevBit = bit
-            continue
-        }
-
-        // The first nonzero digit and negative digits still need q:
-        // first digit is copied into r; negative digits need writable Y.
-        if (ad == 1) {
-            Field.copy(q.x.$ptr(), p1.x.$ptr())
-            Field.copy(q.y.$ptr(), p1.y.$ptr())
-            Field.copy(q.z.$ptr(), p1.z.$ptr())
-        } else if (ad == 3) {
-            Field.copy(q.x.$ptr(), p3.x.$ptr())
-            Field.copy(q.y.$ptr(), p3.y.$ptr())
-            Field.copy(q.z.$ptr(), p3.z.$ptr())
-        } else if (ad == 5) {
-            Field.copy(q.x.$ptr(), p5.x.$ptr())
-            Field.copy(q.y.$ptr(), p5.y.$ptr())
-            Field.copy(q.z.$ptr(), p5.z.$ptr())
-        } else if (ad == 7) {
-            Field.copy(q.x.$ptr(), p7.x.$ptr())
-            Field.copy(q.y.$ptr(), p7.y.$ptr())
-            Field.copy(q.z.$ptr(), p7.z.$ptr())
-        } else if (ad == 9) {
-            Field.copy(q.x.$ptr(), p9.x.$ptr())
-            Field.copy(q.y.$ptr(), p9.y.$ptr())
-            Field.copy(q.z.$ptr(), p9.z.$ptr())
-        } else if (ad == 11) {
-            Field.copy(q.x.$ptr(), p11.x.$ptr())
-            Field.copy(q.y.$ptr(), p11.y.$ptr())
-            Field.copy(q.z.$ptr(), p11.z.$ptr())
-        } else if (ad == 13) {
-            Field.copy(q.x.$ptr(), p13.x.$ptr())
-            Field.copy(q.y.$ptr(), p13.y.$ptr())
-            Field.copy(q.z.$ptr(), p13.z.$ptr())
-        } else {
-            Field.copy(q.x.$ptr(), p15.x.$ptr())
-            Field.copy(q.y.$ptr(), p15.y.$ptr())
-            Field.copy(q.z.$ptr(), p15.z.$ptr())
-        }
-
-        if (d < 0) {
-            let ny = T.U256.$make()
-            for (const j of $range(T.U256_LEN)) ny[j] = 0
-            Field.sub(ny.$ptr(), q.y.$ptr())
-            Field.copy(q.y.$ptr(), ny.$ptr())
-        }
-
-        if (!have) {
-            Field.copy(r.x.$ptr(), q.x.$ptr())
-            Field.copy(r.y.$ptr(), q.y.$ptr())
-            Field.copy(r.z.$ptr(), q.z.$ptr())
-            have = true
-        } else {
-            pointAddJacobian($$(r), $$(q))
-        }
-
-        prevBit = bit
+        ctSelectPoint($$(q), ad >> 1, $$(table))
+        pointNegateYIf($$(q), sign)
+        pointAddJacobian($$(r), $$(q))
     }
+
+    // If even input k was replaced by n-k, -(n-k)P = kP.
+    pointNegateYIf($$(r), flipResult)
 
     Field.copy(p.$$.x.$ptr(), r.x.$ptr())
     Field.copy(p.$$.y.$ptr(), r.y.$ptr())

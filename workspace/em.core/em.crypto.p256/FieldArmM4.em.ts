@@ -67,6 +67,51 @@ export function copy(a: T.U256_Ref, b: T.U256_Ref) {
 }
 
 
+export function doublePoint(p: $$<T.PointJ>) {
+    // ePrint 2014/130 algorithm 10.
+    // Keeping this inside the backend removes the Engine -> proxy -> backend
+    // boundary for every primitive in the hot doubling path.
+
+    let t1 = T.U256.$make()
+    T.copyU256(t1.$ptr(), p.$$.z.$ptr())
+    square(t1.$ptr())
+
+    mul(p.$$.z.$ptr(), p.$$.y.$ptr())
+
+    let t2 = T.U256.$make()
+    T.copyU256(t2.$ptr(), p.$$.x.$ptr())
+    add(t2.$ptr(), t1.$ptr())
+
+    let t3 = T.U256.$make()
+    T.copyU256(t3.$ptr(), p.$$.x.$ptr())
+    sub(t3.$ptr(), t1.$ptr())
+    mul(t3.$ptr(), t2.$ptr())
+
+    T.copyU256(t1.$ptr(), t3.$ptr())
+    half(t1.$ptr())
+    add(t3.$ptr(), t1.$ptr())
+
+    T.copyU256(t2.$ptr(), t3.$ptr())
+    square(t2.$ptr())
+
+    square(p.$$.y.$ptr())
+    T.copyU256(t1.$ptr(), p.$$.y.$ptr())
+    square(t1.$ptr())
+
+    mul(p.$$.y.$ptr(), p.$$.x.$ptr())
+
+    T.copyU256(p.$$.x.$ptr(), p.$$.y.$ptr())
+    times2(p.$$.x.$ptr())
+    sub(t2.$ptr(), p.$$.x.$ptr())
+    T.copyU256(p.$$.x.$ptr(), t2.$ptr())
+
+    sub(p.$$.y.$ptr(), p.$$.x.$ptr())
+    mul(p.$$.y.$ptr(), t3.$ptr())
+    sub(p.$$.y.$ptr(), t1.$ptr())
+}
+
+
+
 export function inv(a: T.U256_Ref) {
     // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized
     // P256_modinv schedule.  Input and output remain in Montgomery form.

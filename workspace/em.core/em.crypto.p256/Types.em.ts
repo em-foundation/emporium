@@ -5,11 +5,11 @@ export const U256_LEN = 8
 export type U256_BASE = u32
 
 export class U256 extends $vector<U256_BASE> { $len = U256_LEN }
-export class NAF257 extends $vector<i8> { $len = 257 }
+export class Window64 extends $vector<i8> { $len = 64 }
 
-export const WNAF_MAX = 52
-export class WNAF_Pos extends $vector<u16> { $len = WNAF_MAX }
-export class WNAF_Digit extends $vector<i8> { $len = WNAF_MAX }
+export const POINT_WORDS = 3 * U256_LEN
+export const TABLE_POINTS = 8
+export class PointTableWords extends $vector<u32> { $len = POINT_WORDS * TABLE_POINTS }
 
 export type U256_Ref = ptr_t<U256_BASE>
 
