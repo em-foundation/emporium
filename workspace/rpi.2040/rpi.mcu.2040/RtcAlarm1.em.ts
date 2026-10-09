@@ -33,16 +33,22 @@ export function disable() {
 
 export function enable(thresh: T.RtcThresh, handler: Handler) {
     cur_hlr = handler
-    // printf`cur = %08d, thr = %08d\n`($R.TIMER.TIMELR.$$, thresh)
     $R.TIMER.ALARM1.$$ = thresh
     $R.TIMER_SET.INTE.$$ = ALARM_MASK
 }
 
 export function getRawTime(): T.RawTime {
+    let hi: u32
+    let lo: u32
+    while (true) {
+        hi = $R.TIMER.TIMEHR.$$
+        lo = $R.TIMER.TIMELR.$$
+        if (hi == $R.TIMER.TIMEHR.$$) break
+    }
+    const hi_lo: u64 = (<u64>hi << 32) | lo
     let res = T.RawTime.$make()
-    const hi_low: u64 = readHiLo()
-    res.secs = <u32>(hi_low / 1_000_000)
-    res.subs = T.UsecsToRawSubs(<u32>(hi_low % 1_000_000))
+    res.secs = <u32>(hi_lo / 1_000_000)
+    res.subs = T.UsecsToRawSubs(<u32>(hi_lo % 1_000_000))
     return res
 }
 
@@ -56,11 +62,4 @@ export function TIMER_IRQ_1_isr$$() {
     const hlr = cur_hlr
     disable()
     if (hlr != $null) hlr()
-}
-
-function readHiLo(): u64 {
-    const lo = $R.TIMER.TIMELR.$$
-    const hi = $R.TIMER.TIMEHR.$$
-    const hi_lo: u64 = (<u64>hi << 32) | lo
-    return hi_lo
 }

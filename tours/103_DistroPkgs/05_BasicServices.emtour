@@ -1,0 +1,229 @@
+title: Basic Services
+
+files:
+  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/Mcu.em.ts
+  - rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
+  - rpi.2040:rpi.mcu.2040/GpioT.em.ts
+  - .assets/img-103-05-01.png
+  - .assets/img-103-05-02.png
+
+steps:
+  - cmds:
+      - open 1
+    text: |
+      {[ht,$start]&thinsp;Back to Basics}
+
+      We return now to {[cu]BlinkerP} &ndash; to see how {[cu]BoardC} bridges portable **EMS** code with a distro's HW-specific content.
+
+      We've already visited {[cu]BoardC} &ndash; in a **Language Overview** {[tr,100/03/09]} as well as when touring **Basic Examples** {[tr,101/01/05]}.
+
+      The next tours in this group approach {[cu]BoardC} differently, layering functionality to support more complex examples:
+
+      {[bi,arrow_circle_right]}&nbsp; **Basic Services** &mdash; {[cu]DebugP}, {[cu]FiberP}, {[cu]HelloP}<br>
+      {[bi,arrow_circle_right]}&nbsp; **Timers&thinsp;+&thinsp;Interrupts** &mdash; {[cu]OneShot[1-3]P}<br>
+      {[bi,arrow_circle_right]}&nbsp; **Sleep&thinsp;+&thinsp;Wakeup** &mdash; {[cu]Alarm[1-2]P}, {[cu]TickerP}<br>
+      {[bi,arrow_circle_right]}&nbsp; **Edge Interrupts** &mdash; {[cu]Button[1-3]P}<br>
+
+      <div class="em-info">
+
+      Support for **CoreMark** [&thinsp;{[tr,102/01/01]}, {[tr,102/07/03]}&thinsp;] will also fall into place as we incrementally expand {[cu]BoardC}.
+
+      </div>
+
+  - cmds:
+      - open 2
+      - fold 2 3 4
+      - fold 2 6 8
+      - fold 2 11 13
+      - fold 2 14 15
+      - fold 2 17 24
+      - fold 2 25 28
+      - fold 2 55 88
+      - mark 2 A 5
+      - mark 2 B 29
+      - mark 2 C 39
+      - mark 2 D 55
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Import&thinsp;&middot;&thinsp;Export}
+
+      While supplied by the `rpi.2040` distro in this case, all {[cu]BoardC} composites follow a common design pattern:
+
+      {[cu]BoardC} will typically {[ck]import}{[bm,A]} a large number of units &ndash; many portable [{[cu]LedT}], some distro-supplied [{[cu]GpioT}].
+
+      &nbsp;💡&thinsp;Use **F12** to navigate to any of these imported files
+
+      {[cu]BoardC} will also {[ck]export}{[bm,B]} named delegates [&thinsp;{[cu]AppLed}&thinsp;] created by cloning **EMS** templates.
+
+      {[cu]BoardC} then defines a set of default values {[bm,C]} applied when reading {[bm,D]} the distro's special `em-boards` file.
+
+      <div class="em-info">
+
+      So now, let's see how all of these pieces come together within the {[cu]BoardC} {[cs]em$configure} meta-function.
+
+      </div>
+
+  - cmds:
+      - open 2
+      - fold 2 3 4
+      - fold 2 6 8
+      - fold 2 11 13
+      - fold 2 14 15
+      - fold 2 17 24
+      - fold 2 25 28
+      - fold 2 57 61
+      - fold 2 69 71
+      - fold 2 72 74
+      - fold 2 83 85
+      - fold 2 87 88
+      - mark 2 A 5
+      - mark 2 B 29
+      - mark 2 C 39
+      - mark 2 D 55
+      - mark 2 E 56
+      - mark 2 F 64
+      - mark 2 G 65
+    focus: [2, 60]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% &ndash; Configuration}
+
+      A {[cu]BoardC}{[cs]em$configure} function has four key tasks:
+
+      {[BM,D]} fetch info on the current {[em]Board} from `em-boards`<br>
+      {[BM,E]} force inclusion of core modules at build-time<br>
+      {[BM,F]} bind compatible delegates to module proxies<br>
+      {[BM,G]} bind values to module config parameters<br>
+
+      Among the portable units seen here, {[cu]Common} stands apart by using "empty" delegates for _unbound_ proxies {[tr,100/03/08]}.
+
+      <div class="em-info">
+
+      Adding services via {[cu]BoardC} over the next several tours will in fact require binding more {[cu]Common} proxies.
+
+      </div>
+
+      Take a peek at {[cu]BoardController}, which invokes several {[cu]Common} proxies during program startup and shutdown.
+
+      &nbsp;💡&thinsp;Select any proxy or config name, and then hit **F12**.
+
+  - cmds:
+      - view 6
+      - reveal 2
+    text: |
+      {[ht,developer_board]&thinsp;%[cu]BoardC% &ndash; Ingesting <code>em-boards</code>}
+
+      Our review of {[cu]BoardC} twice referred to `em-boards` &ndash; a special file co-located in the same `*.distro.*` bucket:
+
+      {[BM,C]}{[cu]BoardC} defines default values applied to `em-boards`.<br>
+      {[BM,D]}{[cs]$board} finds a selected {[em]Board} in `em-boards`.<br>
+
+      We've already talked about the special roles of {[em]Board} and {[em]Setup} in selecting the current distro package {[tr,103/01/02]}.
+
+      We've also seen how {[cn]"em.lang.BoardKind"}{[dc,1]} finds its way into `props.json` at program build-time {[tr,103/02/06]}.
+
+      In short, the {[cs]$board} intrinsic {[bm,D]} ingests the `em-boards` text [YAML] and returns an initialized object matching {[dc,1]}.
+
+      <div class="em-info">
+
+      **TypeScript** "duck-typing" doesn't require the shape of {[bm,C]} to precisely match an `em-boards` entry.
+
+      </div>
+
+  - cmds:
+      - open 3
+    text: |
+      {[ht,$peek]&thinsp;%[cu]Mcu% &ndash; Distro Reset Processing}
+
+      The next three stops will visit target-specific **EMS Modules** that implement abstract **EMS Interfaces**.
+
+      Starting with {[cu]Mcu}, its {[cf]startup} function serves an initial entry-point for preparing the target HW device.
+
+      <div class="em-info">
+
+      We'll address {[cf]isWarm} on a later tour &ndash; in the context of awakening from a low-power, deep-sleep.
+
+      </div>
+
+      Needless to say, the implementation of {[cf]startup} closely tracks the MCU itself &ndash; and varies widely between distros.
+
+      At the same time, {[cf]startup} invokes its (portable) {[cu]Debug} counterpart when ready &ndash; and signals status using `dbgA`.
+
+  - cmds:
+      - open 4
+    text: |
+      {[ht,$peek]&thinsp;%[cu]ConsoleUart0% &ndash; Distro Byte Output}
+
+      One of the basic delegates bound to {[cu]Common}, this module implements {[cf]flush} and {[cf]put} using a UART peripheral.
+
+      Given the "poll-per-byte" intent of the {[cu]ConsoleUartI} in&shy;terface, these methods have relatively simple definitions.
+
+      More complexity occurs in {[cs]em$startup} &ndash; during one-time UART initialization happening prior to program {[cs]em$run}:
+
+      {[bi,arrow_circle_right]}&nbsp;run-time configuration of {[cn]TxPin}<br>
+      {[bi,arrow_circle_right]}&nbsp;reset the UART peripheral<br>
+      {[bi,arrow_circle_right]}&nbsp;establish 115200 baud<br>
+      {[bi,arrow_circle_right]}&nbsp;enable UART transmit<br>
+
+      <div class="em-info">
+
+      Recall that {[cu]BoardC} binds its {[cu]AppOutPin} delegate to the {[cn]TxPin} proxy at build-time.
+
+      </div>
+
+  - cmds:
+      - open 5
+      - mark 5 C 11
+    focus: [5, 1]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]GpioT% &ndash; Distro Pin I/O}
+
+      Used heavily by {[cu]BoardC}, the {[cu]GpioT} **Template** instantiates a delegate **Module** that implements the {[cu]GpioI} **Interface**.
+
+      <div class="em-info">
+
+      Declaring over a dozen methods, all of their implemen&shy;tations boil down to just one or two register accesses.
+
+      </div>
+
+      Note how the {[cu]GpioI} {[cs]$clone} produced by {[cu]GpioT} defines {[cn]pin_num}{[bm,C]} &ndash; a build-time {[cs]$config} bound by {[cu]BoardC}.
+
+  - cmds:
+      - open 2
+      - fold 2 3 4
+      - fold 2 6 8
+      - fold 2 6 8
+      - fold 2 11 13
+      - fold 2 14 15
+      - fold 2 17 24
+      - fold 2 25 28
+      - fold 2 55 88
+    focus: [2, 1]
+
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Use **F12** to visit {[cu]BoardController} and {[cu]Console}.
+
+      {[bi,task_alt]} Find {[cu]BoardC} and `*.mcu.*` modules in other distros
+
+      {[bi,task_alt]} Grok how all this machinery keeps {[cu]DebugP} portable.
+
+  - cmds:
+      - view 7
+      - reveal 2
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      You've now studied enough of {[cu]BoardC} to support a group of our **Basic Examples** {[dc,1]} across multiple distro packages.
+
+      <div class="em-info">
+
+      And we've (almost!) covered all the pieces required to sup&shy;port **CoreMark** {[cu]ActiveRunnerP}&thinsp;{[tr,102/01/01]} as well.
+
+      </div>
+
+      From here, we'll move to {[cu]BoardC} support for programs in group {[dc,2]} &ndash; requiring us to manage HW interrupts.
+
+      {[hc]}

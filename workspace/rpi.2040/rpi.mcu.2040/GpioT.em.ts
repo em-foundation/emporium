@@ -56,8 +56,6 @@ export namespace em$template {
     }
 
     export function reset(): void {
-        // $R.GPIO.RegGPIOInputEn.$$ &= ~mask
-        // $R.GPIO.RegGPIOOutputEn.$$ &= ~mask
     }
 
     export function set(): void {

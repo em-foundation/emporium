@@ -143,4 +143,7 @@ export function em$generate() {
         |-> $OBJDUMP -h $OUT/main.out
     `)
     out.close()
+    out = $outfile('load.sh', 0o755)
+    out.addText(`echo '*** use the Wokwi simulator to load this program ***'`)
+    out.close()
 }

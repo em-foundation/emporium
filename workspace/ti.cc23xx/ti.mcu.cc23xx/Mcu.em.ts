@@ -21,8 +21,6 @@ export function isWarm(): bool_t {
 export function startup(): void {
     Debug.startup()
     $['%%a:'](2)
-    $R.CKMD.LFCLKSEL.$$ = e$`CKMD_LFCLKSEL_MAIN_LFXT`
-    $R.CKMD.LFXTCTL.$$ = $R.CKMD_LFXTCTL_EN
     $R.CKMD.IMSET.$$ =
         $R.CKMD_IMSET_HFXTFAULT |
         $R.CKMD_IMSET_TRACKREFLOSS |
@@ -31,4 +29,6 @@ export function startup(): void {
         $R.CLKCTL.IDLECFG.$$ = 1
         $R.VIMS.CCHCTRL.$$ = 0
     }
+    $R.CKMD.LFCLKSEL.$$ = e$`CKMD_LFCLKSEL_MAIN_LFXT`
+    $R.CKMD.LFXTCTL.$$ = $R.CKMD_LFXTCTL_EN
 }

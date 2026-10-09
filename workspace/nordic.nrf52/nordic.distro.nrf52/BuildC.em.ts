@@ -59,7 +59,7 @@ export function em$configure() {
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrEmpty
-    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
+    for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {
@@ -73,13 +73,13 @@ export function em$generate() {
             cmem_sram: { orig: 0x20008000, len: 0x00008000 }
         },
         [
-            { name: 'FLASH_CCFG', sect: '.ccfg', desc: { orig: 0x4e020000, len: 0x800 } }
         ]
 
     )
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
-    let libflav = opt == 'Oz' ? 'small' : 'balanced'
+    let libarch = 'v6m'
+    let libflav = 'balanced'
     let out = $outfile('build.sh', 0o755)
     out.addFrag(`
         |-> #!/bin/sh
@@ -107,8 +107,10 @@ export function em$generate() {
         |->     -D__EM_MCU_null__ \\
         |->     -D__EM_LANG__=1 \\
         |->     -D__GNUC__ \\
+        |->     -D__FPU_PRESENT=1 \\
+        |->     -D__FPU_USED=1 \\
         |->     --std=c++14 \\
-        |->     -triple thumbv6m-none-eabi \\
+        |->     -triple thumbv7em-none-eabi \\
         |->     -target-cpu cortex-m4 \\
         |->     -ffunction-sections \\
         |->     -fdata-sections \\
@@ -140,8 +142,8 @@ export function em$generate() {
         |-> "
         |-> 
         |-> LIBS="
-        |->     $TOOLS/lib/libc_v6m_t_le_eabi_${libflav}.a \\
-        |->     $TOOLS/lib/strops_v6m_t_le_eabi_${libflav}.a \\
+        |->     $TOOLS/lib/libc_${libarch}_t_le_eabi_${libflav}.a \\
+        |->     $TOOLS/lib/strops_${libarch}_t_le_eabi_${libflav}.a \\
         |-> "
         |-> 
         |-> $CC -c $CFLAGS $CINCS $COPTS -x c++ main.cpp -o $OUT/main.obj
