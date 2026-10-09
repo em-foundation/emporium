@@ -1,11 +1,10 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as Mem from '@em.utils/Mem.em'
-import * as FieldI from '@em.crypto.p256/FieldI.em'
+import * as MathOpsI from '@em.crypto.p256/MathOpsI.em'
 import * as T from '@em.crypto.p256/Types.em'
 
-export const Field = $proxy<FieldI.$I>()
+export const MathOps = $proxy<MathOpsI.$I>()
 
 const G_X = $config<T.U256>()
 const G_Y = $config<T.U256>()
@@ -33,114 +32,114 @@ export function validatePublicKey(pk: $$<T.PubKey>): bool_t {
 
 export function makePublicKey(sk: T.U256, pk_OUT: $$<T.PubKey>) {
     let p = T.PointJ.$make()
-    Field.copy(p.x.$ptr(), G_X.$ptr())
-    Field.copy(p.y.$ptr(), G_Y.$ptr())
+    MathOps.copy(p.x.$ptr(), G_X.$ptr())
+    MathOps.copy(p.y.$ptr(), G_Y.$ptr())
     fieldToMont(p.x.$ptr())
     fieldToMont(p.y.$ptr())
-    Field.copy(p.z.$ptr(), MONT_R.$ptr())
+    MathOps.copy(p.z.$ptr(), MONT_R.$ptr())
     pointMul(sk.$ptr(), $$(p))
     pointToAffine($$(p))
-    Field.copy(pk_OUT.$$.x.$ptr(), p.x.$ptr())
-    Field.copy(pk_OUT.$$.y.$ptr(), p.y.$ptr())
+    MathOps.copy(pk_OUT.$$.x.$ptr(), p.x.$ptr())
+    MathOps.copy(pk_OUT.$$.y.$ptr(), p.y.$ptr())
 }
 
 export function ecdh(sk: T.U256, peer_pk: $$<T.PubKey>, secret_OUT: T.U256_Ref) {
     let p = T.PointJ.$make()
-    Field.copy(p.x.$ptr(), peer_pk.$$.x.$ptr())
-    Field.copy(p.y.$ptr(), peer_pk.$$.y.$ptr())
+    MathOps.copy(p.x.$ptr(), peer_pk.$$.x.$ptr())
+    MathOps.copy(p.y.$ptr(), peer_pk.$$.y.$ptr())
     fieldToMont(p.x.$ptr())
     fieldToMont(p.y.$ptr())
-    Field.copy(p.z.$ptr(), MONT_R.$ptr())
+    MathOps.copy(p.z.$ptr(), MONT_R.$ptr())
     pointMul(sk.$ptr(), $$(p))
     pointToAffine($$(p))
-    Field.copy(secret_OUT, p.x.$ptr())
+    MathOps.copy(secret_OUT, p.x.$ptr())
 }
 
 // FIELD FUNCTIONS
 
 function fieldToMont(a: T.U256_Ref) {
-    Field.mul(a, MONT_R2.$ptr())
+    MathOps.mul(a, MONT_R2.$ptr())
 }
 
 function fieldFromMont(a: T.U256_Ref) {
-    Field.mul(a, MONT_ONE.$ptr())
+    MathOps.mul(a, MONT_ONE.$ptr())
 }
 
 function fieldSquare(a: T.U256_Ref) {
-    Field.square(a)
+    MathOps.square(a)
 }
 
 // POINT FUNCTIONS
 
 function pointAddAffine(p: $$<T.PointJ>, q: $$<T.PointJ>) {
     let z1z1 = T.U256.$make()
-    Field.copy(z1z1.$ptr(), p.$$.z.$ptr())
+    MathOps.copy(z1z1.$ptr(), p.$$.z.$ptr())
     fieldSquare(z1z1.$ptr())
 
     let u2 = T.U256.$make()
-    Field.copy(u2.$ptr(), q.$$.x.$ptr())
-    Field.mul(u2.$ptr(), z1z1.$ptr())
+    MathOps.copy(u2.$ptr(), q.$$.x.$ptr())
+    MathOps.mul(u2.$ptr(), z1z1.$ptr())
 
     let s2 = T.U256.$make()
-    Field.copy(s2.$ptr(), q.$$.y.$ptr())
-    Field.mul(s2.$ptr(), p.$$.z.$ptr())
-    Field.mul(s2.$ptr(), z1z1.$ptr())
+    MathOps.copy(s2.$ptr(), q.$$.y.$ptr())
+    MathOps.mul(s2.$ptr(), p.$$.z.$ptr())
+    MathOps.mul(s2.$ptr(), z1z1.$ptr())
 
     let h = T.U256.$make()
-    Field.copy(h.$ptr(), u2.$ptr())
-    Field.sub(h.$ptr(), p.$$.x.$ptr())
+    MathOps.copy(h.$ptr(), u2.$ptr())
+    MathOps.sub(h.$ptr(), p.$$.x.$ptr())
 
     let hh = T.U256.$make()
-    Field.copy(hh.$ptr(), h.$ptr())
+    MathOps.copy(hh.$ptr(), h.$ptr())
     fieldSquare(hh.$ptr())
 
     // Z3 = (Z1 + H)^2 - Z1^2 - H^2.  Original Z1 is now dead.
-    Field.add(p.$$.z.$ptr(), h.$ptr())
+    MathOps.add(p.$$.z.$ptr(), h.$ptr())
     fieldSquare(p.$$.z.$ptr())
-    Field.sub(p.$$.z.$ptr(), z1z1.$ptr())
-    Field.sub(p.$$.z.$ptr(), hh.$ptr())
+    MathOps.sub(p.$$.z.$ptr(), z1z1.$ptr())
+    MathOps.sub(p.$$.z.$ptr(), hh.$ptr())
 
     // I = 4*HH, reusing hh.
-    Field.times2(hh.$ptr())
-    Field.times2(hh.$ptr())
+    MathOps.times2(hh.$ptr())
+    MathOps.times2(hh.$ptr())
 
     // J = H*I, reusing u2.
-    Field.copy(u2.$ptr(), h.$ptr())
-    Field.mul(u2.$ptr(), hh.$ptr())
+    MathOps.copy(u2.$ptr(), h.$ptr())
+    MathOps.mul(u2.$ptr(), hh.$ptr())
 
     // r = 2*(S2 - Y1), reusing s2.
-    Field.sub(s2.$ptr(), p.$$.y.$ptr())
-    Field.times2(s2.$ptr())
+    MathOps.sub(s2.$ptr(), p.$$.y.$ptr())
+    MathOps.times2(s2.$ptr())
 
     // 2*Y1*J, reusing z1z1.  Original Y1 is then dead.
-    Field.copy(z1z1.$ptr(), p.$$.y.$ptr())
-    Field.mul(z1z1.$ptr(), u2.$ptr())
-    Field.times2(z1z1.$ptr())
+    MathOps.copy(z1z1.$ptr(), p.$$.y.$ptr())
+    MathOps.mul(z1z1.$ptr(), u2.$ptr())
+    MathOps.times2(z1z1.$ptr())
 
     // V = X1*I, directly into p.y.  Original X1 is then dead.
-    Field.copy(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), hh.$ptr())
+    MathOps.copy(p.$$.y.$ptr(), p.$$.x.$ptr())
+    MathOps.mul(p.$$.y.$ptr(), hh.$ptr())
 
     // X3 = r^2 - J - 2V, directly into p.x.
-    Field.copy(p.$$.x.$ptr(), s2.$ptr())
+    MathOps.copy(p.$$.x.$ptr(), s2.$ptr())
     fieldSquare(p.$$.x.$ptr())
-    Field.sub(p.$$.x.$ptr(), u2.$ptr())
-    Field.copy(h.$ptr(), p.$$.y.$ptr())
-    Field.times2(h.$ptr())
-    Field.sub(p.$$.x.$ptr(), h.$ptr())
+    MathOps.sub(p.$$.x.$ptr(), u2.$ptr())
+    MathOps.copy(h.$ptr(), p.$$.y.$ptr())
+    MathOps.times2(h.$ptr())
+    MathOps.sub(p.$$.x.$ptr(), h.$ptr())
 
     // Y3 = r*(V - X3) - 2*Y1*J, directly into p.y.
-    Field.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.y.$ptr(), s2.$ptr())
-    Field.sub(p.$$.y.$ptr(), z1z1.$ptr())
+    MathOps.sub(p.$$.y.$ptr(), p.$$.x.$ptr())
+    MathOps.mul(p.$$.y.$ptr(), s2.$ptr())
+    MathOps.sub(p.$$.y.$ptr(), z1z1.$ptr())
 }
 
 function pointDouble(p: $$<T.PointJ>) {
-    Field.doublePoint(p)
+    MathOps.doublePoint(p)
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
-    Field.addPointJacobian(p, q)
+    MathOps.addPointJacobian(p, q)
 }
 
 function ctEqMask(a: u32, b: u32): u32 {
@@ -183,7 +182,7 @@ function pointNegateYIf(p: $$<T.PointJ>, neg: u32) {
     // Always form -Y, then select Y or -Y with a full-word mask.
     let ny = T.U256.$make()
     for (const i of $range(T.U256_LEN)) ny[i] = 0
-    Field.sub(ny.$ptr(), p.$$.y.$ptr())
+    MathOps.sub(ny.$ptr(), p.$$.y.$ptr())
 
     const mask = $cast2<u32>(0) - neg
     for (const i of $range(T.U256_LEN)) {
@@ -249,52 +248,52 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     scalarRewriteFixed4(kk.$ptr(), $$(win))
 
     let p1 = T.PointJ.$make()
-    Field.copy(p1.x.$ptr(), p.$$.x.$ptr())
-    Field.copy(p1.y.$ptr(), p.$$.y.$ptr())
-    Field.copy(p1.z.$ptr(), p.$$.z.$ptr())
+    MathOps.copy(p1.x.$ptr(), p.$$.x.$ptr())
+    MathOps.copy(p1.y.$ptr(), p.$$.y.$ptr())
+    MathOps.copy(p1.z.$ptr(), p.$$.z.$ptr())
 
     // Match Emil's table construction closely: use the future 15P slot as
     // temporary 2P storage, then overwrite it with 15P at the end.
     let p15 = T.PointJ.$make()
-    Field.copy(p15.x.$ptr(), p1.x.$ptr())
-    Field.copy(p15.y.$ptr(), p1.y.$ptr())
-    Field.copy(p15.z.$ptr(), p1.z.$ptr())
+    MathOps.copy(p15.x.$ptr(), p1.x.$ptr())
+    MathOps.copy(p15.y.$ptr(), p1.y.$ptr())
+    MathOps.copy(p15.z.$ptr(), p1.z.$ptr())
     pointDouble($$(p15))
 
     let p3 = T.PointJ.$make()
-    Field.copy(p3.x.$ptr(), p15.x.$ptr())
-    Field.copy(p3.y.$ptr(), p15.y.$ptr())
-    Field.copy(p3.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p3.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p3.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p3.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p3), $$(p1))
 
     let p5 = T.PointJ.$make()
-    Field.copy(p5.x.$ptr(), p15.x.$ptr())
-    Field.copy(p5.y.$ptr(), p15.y.$ptr())
-    Field.copy(p5.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p5.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p5.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p5.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p5), $$(p3))
 
     let p7 = T.PointJ.$make()
-    Field.copy(p7.x.$ptr(), p15.x.$ptr())
-    Field.copy(p7.y.$ptr(), p15.y.$ptr())
-    Field.copy(p7.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p7.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p7.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p7.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p7), $$(p5))
 
     let p9 = T.PointJ.$make()
-    Field.copy(p9.x.$ptr(), p15.x.$ptr())
-    Field.copy(p9.y.$ptr(), p15.y.$ptr())
-    Field.copy(p9.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p9.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p9.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p9.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p9), $$(p7))
 
     let p11 = T.PointJ.$make()
-    Field.copy(p11.x.$ptr(), p15.x.$ptr())
-    Field.copy(p11.y.$ptr(), p15.y.$ptr())
-    Field.copy(p11.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p11.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p11.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p11.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p11), $$(p9))
 
     let p13 = T.PointJ.$make()
-    Field.copy(p13.x.$ptr(), p15.x.$ptr())
-    Field.copy(p13.y.$ptr(), p15.y.$ptr())
-    Field.copy(p13.z.$ptr(), p15.z.$ptr())
+    MathOps.copy(p13.x.$ptr(), p15.x.$ptr())
+    MathOps.copy(p13.y.$ptr(), p15.y.$ptr())
+    MathOps.copy(p13.z.$ptr(), p15.z.$ptr())
     pointAddJacobian($$(p13), $$(p11))
 
     // p15 still contains 2P here.
@@ -338,9 +337,9 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     // If even input k was replaced by n-k, -(n-k)P = kP.
     pointNegateYIf($$(r), flipResult)
 
-    Field.copy(p.$$.x.$ptr(), r.x.$ptr())
-    Field.copy(p.$$.y.$ptr(), r.y.$ptr())
-    Field.copy(p.$$.z.$ptr(), r.z.$ptr())
+    MathOps.copy(p.$$.x.$ptr(), r.x.$ptr())
+    MathOps.copy(p.$$.y.$ptr(), r.y.$ptr())
+    MathOps.copy(p.$$.z.$ptr(), r.z.$ptr())
 }
 
 function scalarAddSmall(a: T.U256_Ref, v: u32) {
@@ -379,14 +378,14 @@ function scalarSubSmall(a: T.U256_Ref, v: u32) {
 
 function pointToAffine(p: $$<T.PointJ>) {
     let zi = T.U256.$make()
-    Field.copy(zi.$ptr(), p.$$.z.$ptr())
-    Field.inv(zi.$ptr())
+    MathOps.copy(zi.$ptr(), p.$$.z.$ptr())
+    MathOps.inv(zi.$ptr())
     let zi2 = T.U256.$make()
-    Field.copy(zi2.$ptr(), zi.$ptr())
+    MathOps.copy(zi2.$ptr(), zi.$ptr())
     fieldSquare(zi2.$ptr())
-    Field.mul(p.$$.x.$ptr(), zi2.$ptr())
-    Field.mul(zi2.$ptr(), zi.$ptr())
-    Field.mul(p.$$.y.$ptr(), zi2.$ptr())
+    MathOps.mul(p.$$.x.$ptr(), zi2.$ptr())
+    MathOps.mul(zi2.$ptr(), zi.$ptr())
+    MathOps.mul(p.$$.y.$ptr(), zi2.$ptr())
     fieldFromMont(p.$$.x.$ptr())
     fieldFromMont(p.$$.y.$ptr())
     for (const i of $range(T.U256_LEN)) p.$$.z[i] = 0

@@ -1,7 +1,7 @@
 import '@$$emscript'
-export const $U = $declare('MODULE', FieldI)
+export const $U = $declare('MODULE', MathOpsI)
 
-import * as FieldI from '@em.crypto.p256/FieldI.em'
+import * as MathOpsI from '@em.crypto.p256/MathOpsI.em'
 import * as T from '@em.crypto.p256/Types.em'
 
 export namespace em$meta { }
