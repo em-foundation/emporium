@@ -88,6 +88,66 @@ export function doublePoint(p: $$<T.PointJ>) {
 }
 
 
+export function addPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
+    // Rearranged like Emil Lenngren's P256_add_j.
+    // Composite backend operation keeps the hot Jacobian-add sequence local
+    // to the selected field backend, matching doublePoint() structurally.
+
+    let t1 = T.U256.$make()
+    copy(t1.$ptr(), q.$$.z.$ptr())
+    square(t1.$ptr())
+
+    mul(p.$$.x.$ptr(), t1.$ptr())
+
+    mul(t1.$ptr(), q.$$.z.$ptr())
+    mul(p.$$.y.$ptr(), t1.$ptr())
+
+    copy(t1.$ptr(), p.$$.z.$ptr())
+    square(t1.$ptr())
+
+    let t2 = T.U256.$make()
+    copy(t2.$ptr(), q.$$.x.$ptr())
+    mul(t2.$ptr(), t1.$ptr())
+
+    mul(t1.$ptr(), p.$$.z.$ptr())
+    mul(t1.$ptr(), q.$$.y.$ptr())
+
+    sub(p.$$.x.$ptr(), t2.$ptr())
+
+    let t3 = T.U256.$make()
+    copy(t3.$ptr(), p.$$.x.$ptr())
+    square(t3.$ptr())
+
+    mul(p.$$.z.$ptr(), p.$$.x.$ptr())
+    mul(p.$$.z.$ptr(), q.$$.z.$ptr())
+
+    mul(p.$$.x.$ptr(), t3.$ptr())
+
+    sub(p.$$.y.$ptr(), t1.$ptr())
+
+    mul(t2.$ptr(), t3.$ptr())
+
+    copy(t3.$ptr(), p.$$.y.$ptr())
+    square(t3.$ptr())
+
+    mul(t1.$ptr(), p.$$.x.$ptr())
+
+    sub(t3.$ptr(), p.$$.x.$ptr())
+    copy(p.$$.x.$ptr(), t2.$ptr())
+    times2(p.$$.x.$ptr())
+    sub(t3.$ptr(), p.$$.x.$ptr())
+    copy(p.$$.x.$ptr(), t3.$ptr())
+
+    copy(t3.$ptr(), t2.$ptr())
+    sub(t3.$ptr(), p.$$.x.$ptr())
+    mul(t3.$ptr(), p.$$.y.$ptr())
+    sub(t3.$ptr(), t1.$ptr())
+    copy(p.$$.y.$ptr(), t3.$ptr())
+}
+
+
+
+
 
 export function inv(a: T.U256_Ref) {
     // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized

@@ -140,75 +140,7 @@ function pointDouble(p: $$<T.PointJ>) {
 }
 
 function pointAddJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
-    // Rearranged like Emil Lenngren's P256_add_j, but aggressively reuse
-    // p.{x,y,z} and only three U256 temporaries.
-
-    // t1 = Z1^2
-    let t1 = T.U256.$make()
-    Field.copy(t1.$ptr(), q.$$.z.$ptr())
-    fieldSquare(t1.$ptr())
-
-    // X2 = U2 = X2 * Z1^2
-    Field.mul(p.$$.x.$ptr(), t1.$ptr())
-
-    // Y2 = S2 = Y2 * Z1^3
-    Field.mul(t1.$ptr(), q.$$.z.$ptr())
-    Field.mul(p.$$.y.$ptr(), t1.$ptr())
-
-    // t1 = Z2^2
-    Field.copy(t1.$ptr(), p.$$.z.$ptr())
-    fieldSquare(t1.$ptr())
-
-    // t2 = U1 = X1 * Z2^2
-    let t2 = T.U256.$make()
-    Field.copy(t2.$ptr(), q.$$.x.$ptr())
-    Field.mul(t2.$ptr(), t1.$ptr())
-
-    // t1 = S1 = Y1 * Z2^3
-    Field.mul(t1.$ptr(), p.$$.z.$ptr())
-    Field.mul(t1.$ptr(), q.$$.y.$ptr())
-
-    // X2 = H = U2 - U1
-    Field.sub(p.$$.x.$ptr(), t2.$ptr())
-
-    // t3 = HH = H^2
-    let t3 = T.U256.$make()
-    Field.copy(t3.$ptr(), p.$$.x.$ptr())
-    fieldSquare(t3.$ptr())
-
-    // Z3 = Z2 * H * Z1
-    Field.mul(p.$$.z.$ptr(), p.$$.x.$ptr())
-    Field.mul(p.$$.z.$ptr(), q.$$.z.$ptr())
-
-    // X2 = HHH = H * HH
-    Field.mul(p.$$.x.$ptr(), t3.$ptr())
-
-    // Y2 = r = S2 - S1
-    Field.sub(p.$$.y.$ptr(), t1.$ptr())
-
-    // t2 = V = U1 * HH
-    Field.mul(t2.$ptr(), t3.$ptr())
-
-    // t3 = r^2
-    Field.copy(t3.$ptr(), p.$$.y.$ptr())
-    fieldSquare(t3.$ptr())
-
-    // t1 = S1 * HHH
-    Field.mul(t1.$ptr(), p.$$.x.$ptr())
-
-    // t3 = r^2 - HHH - 2V = X3
-    Field.sub(t3.$ptr(), p.$$.x.$ptr())
-    Field.copy(p.$$.x.$ptr(), t2.$ptr())
-    Field.times2(p.$$.x.$ptr())
-    Field.sub(t3.$ptr(), p.$$.x.$ptr())
-    Field.copy(p.$$.x.$ptr(), t3.$ptr())
-
-    // Y3 = r * (V - X3) - S1*HHH
-    Field.copy(t3.$ptr(), t2.$ptr())
-    Field.sub(t3.$ptr(), p.$$.x.$ptr())
-    Field.mul(t3.$ptr(), p.$$.y.$ptr())
-    Field.sub(t3.$ptr(), t1.$ptr())
-    Field.copy(p.$$.y.$ptr(), t3.$ptr())
+    Field.addPointJacobian(p, q)
 }
 
 function ctEqMask(a: u32, b: u32): u32 {
