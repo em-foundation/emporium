@@ -67,47 +67,188 @@ export function copy(a: T.U256_Ref, b: T.U256_Ref) {
 }
 
 
+a$`naked,noinline`
 export function doublePoint(p: $$<T.PointJ>) {
-    // ePrint 2014/130 algorithm 10.
-    // Keeping this inside the backend removes the Engine -> proxy -> backend
-    // boundary for every primitive in the hot doubling path.
+    e$`
+        asm volatile (
+            R"(
+                push    {r4-r11,lr}
+                sub     sp,#96
+                mov     r4,r0
 
-    let t1 = T.U256.$make()
-    T.copyU256(t1.$ptr(), p.$$.z.$ptr())
-    square(t1.$ptr())
+                /* t1 = Z1^2 */
+                mov     r0,sp
+                add     r1,r4,#64
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                mov     r0,sp
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L6squareEN2em5ptr_tIjEE
 
-    mul(p.$$.z.$ptr(), p.$$.y.$ptr())
+                /* Z2 = Y1 * Z1 */
+                add     r0,r4,#64
+                add     r1,r4,#32
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3mulEN2em5ptr_tIjEES2_
 
-    let t2 = T.U256.$make()
-    T.copyU256(t2.$ptr(), p.$$.x.$ptr())
-    add(t2.$ptr(), t1.$ptr())
+                /* t2 = X1 + t1 */
+                add     r0,sp,#32
+                mov     r1,r4
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                add     r0,sp,#32
+                mov     r1,sp
+                bl      92f
 
-    let t3 = T.U256.$make()
-    T.copyU256(t3.$ptr(), p.$$.x.$ptr())
-    sub(t3.$ptr(), t1.$ptr())
-    mul(t3.$ptr(), t2.$ptr())
+                /* t3 = (X1 - t1) * t2 */
+                add     r0,sp,#64
+                mov     r1,r4
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                add     r0,sp,#64
+                mov     r1,sp
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3subEN2em5ptr_tIjEES2_
+                add     r0,sp,#64
+                add     r1,sp,#32
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3mulEN2em5ptr_tIjEES2_
 
-    T.copyU256(t1.$ptr(), t3.$ptr())
-    half(t1.$ptr())
-    add(t3.$ptr(), t1.$ptr())
+                /* t3 = 3/2 * t3 */
+                mov     r0,sp
+                add     r1,sp,#64
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                mov     r0,sp
+                bl      93f
+                add     r0,sp,#64
+                mov     r1,sp
+                bl      92f
 
-    T.copyU256(t2.$ptr(), t3.$ptr())
-    square(t2.$ptr())
+                /* t2 = t3^2 */
+                add     r0,sp,#32
+                add     r1,sp,#64
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                add     r0,sp,#32
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L6squareEN2em5ptr_tIjEE
 
-    square(p.$$.y.$ptr())
-    T.copyU256(t1.$ptr(), p.$$.y.$ptr())
-    square(t1.$ptr())
+                /* Y2 = Y1^2; t1 = Y2^2 */
+                add     r0,r4,#32
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L6squareEN2em5ptr_tIjEE
+                mov     r0,sp
+                add     r1,r4,#32
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                mov     r0,sp
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L6squareEN2em5ptr_tIjEE
 
-    mul(p.$$.y.$ptr(), p.$$.x.$ptr())
+                /* Y2 = X1 * Y2 */
+                add     r0,r4,#32
+                mov     r1,r4
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3mulEN2em5ptr_tIjEES2_
 
-    T.copyU256(p.$$.x.$ptr(), p.$$.y.$ptr())
-    times2(p.$$.x.$ptr())
-    sub(t2.$ptr(), p.$$.x.$ptr())
-    T.copyU256(p.$$.x.$ptr(), t2.$ptr())
+                /* X2 = 2 * Y2 */
+                mov     r0,r4
+                add     r1,r4,#32
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+                mov     r0,r4
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L6times2EN2em5ptr_tIjEE
 
-    sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    mul(p.$$.y.$ptr(), t3.$ptr())
-    sub(p.$$.y.$ptr(), t1.$ptr())
+                /* X2 = t2 - X2 */
+                add     r0,sp,#32
+                mov     r1,r4
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3subEN2em5ptr_tIjEES2_
+                mov     r0,r4
+                add     r1,sp,#32
+                ldm     r1!,{r5-r12}
+                stm     r0!,{r5-r12}
+
+                /* Y2 = t3 * (Y2 - X2) - t1 */
+                add     r0,r4,#32
+                mov     r1,r4
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3subEN2em5ptr_tIjEES2_
+                add     r0,r4,#32
+                add     r1,sp,#64
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3mulEN2em5ptr_tIjEES2_
+                add     r0,r4,#32
+                mov     r1,sp
+                bl      _ZN27em_crypto_p256_MathOpsArmM4L3subEN2em5ptr_tIjEES2_
+
+                add     sp,#96
+                pop     {r4-r11,pc}
+
+                b       99f
+
+                /* add helper: r0=dst, r1=src */
+92:
+                push    {r4-r11}
+                push    {r0}
+                mov     r2,r1
+                mov     r1,r0
+                ldm     r2,{r2-r9}
+                ldm     r1!,{r0,r10,r11,r12}
+                adds    r2,r0
+                adcs    r3,r10
+                adcs    r4,r11
+                adcs    r5,r12
+                ldm     r1,{r0,r1,r11,r12}
+                adcs    r6,r0
+                adcs    r7,r1
+                adcs    r8,r11
+                adcs    r9,r12
+                movs    r10,#0
+                adcs    r10,r10
+                subs    r2,#0xffffffff
+                sbcs    r3,#0xffffffff
+                sbcs    r4,#0xffffffff
+                sbcs    r5,#0
+                sbcs    r6,#0
+                sbcs    r7,#0
+                sbcs    r8,#1
+                sbcs    r9,#0xffffffff
+                sbcs    r10,#0
+                adds    r0,r2,r10
+                adcs    r1,r3,r10
+                adcs    r2,r4,r10
+                adcs    r3,r5,#0
+                adcs    r4,r6,#0
+                adcs    r5,r7,#0
+                adcs    r6,r8,r10,lsr #31
+                adcs    r7,r9,r10
+                pop     {r8}
+                stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
+
+                /* half helper: r0=dst */
+93:
+                push    {r4-r11}
+                push    {r0}
+                ldm     r0,{r0-r7}
+                lsl     r8,r0,#31
+                adds    r0,r0,r8,asr #31
+                adcs    r1,r1,r8,asr #31
+                adcs    r2,r2,r8,asr #31
+                adcs    r3,#0
+                adcs    r4,#0
+                adcs    r5,#0
+                adcs    r6,r6,r8,lsr #31
+                adcs    r7,r7,r8,asr #31
+                rrxs    r7,r7
+                rrxs    r6,r6
+                rrxs    r5,r5
+                rrxs    r4,r4
+                rrxs    r3,r3
+                rrxs    r2,r2
+                rrxs    r1,r1
+                rrx     r0,r0
+                pop     {r8}
+                stm     r8,{r0-r7}
+                pop     {r4-r11}
+                bx      lr
+
+99:
+            )"
+        );
+    `
 }
 
 
