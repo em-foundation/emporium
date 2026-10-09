@@ -320,18 +320,13 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     pointNegateYIf($$(r), sign)
 
     for (let w: i32 = 62; w >= 0; w -= 1) {
-        pointDouble($$(r))
-        pointDouble($$(r))
-        pointDouble($$(r))
-        pointDouble($$(r))
-
         d = win[w]
         sign = $cast2<u32>(d) >> 31
         ad = $cast2<u32>(d < 0 ? -d : d)
 
         ctSelectPoint($$(q), ad >> 1, $$(table))
         pointNegateYIf($$(q), sign)
-        pointAddJacobian($$(r), $$(q))
+        MathOps.quadDoubleAddPointJacobian($$(r), $$(q))
     }
 
     // If even input k was replaced by n-k, -(n-k)P = kP.

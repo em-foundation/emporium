@@ -148,6 +148,15 @@ export function addPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
 
 
 
+export function quadDoubleAddPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
+    doublePoint(p)
+    doublePoint(p)
+    doublePoint(p)
+    doublePoint(p)
+    addPointJacobian(p, q)
+}
+
+
 export function inv(a: T.U256_Ref) {
     // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized
     // P256_modinv schedule.  Input and output remain in Montgomery form.
