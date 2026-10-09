@@ -6,12 +6,11 @@ files:
   - .assets/img-102-08-01.png
   - .assets/img-102-08-02.png
   - .assets/img-102-08-03.png
-  - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - .assets/img-102-08-04.png
 
 steps:
   - cmds:
       - view 2
-      - reveal 6
 
     text: |
       {[ht,$start]&thinsp;Signal Capture on Real Hardware}
@@ -30,7 +29,6 @@ steps:
 
   - cmds:
       - view 3
-      - reveal 6
     text: |
       {[ht,monitor_heart]&thinsp;A Real Hardware Logic Analyzer}
 
@@ -53,7 +51,6 @@ steps:
 
   - cmds:
       - view 4
-      - reveal 6
     text: |
       {[ht,settings]&thinsp;Configuring PulseView}
 
@@ -75,7 +72,6 @@ steps:
 
   - cmds:
       - view 5
-      - reveal 6
     text: |
       {[ht,cycle]&thinsp;Steady-State Workflow}
 
@@ -114,6 +110,30 @@ steps:
       💡&thinsp;Practice scrolling&thinsp;&middot;&thinsp;zooming within the signal capture.
 
       ❓&thinsp;And don't hesitate to ask for help at [Discussions](https://github.com/em-foundation/emporium/discussions).
+
+  - cmds:
+      - view 6
+    text: |
+      {[ht,monitor_heart]&thinsp;Using Saleae Logic 2}
+
+      **PulseView** provides essential tooling for viewing logic cap&shy;tures &ndash; whether sourced from simulated or real HW.
+
+      The **Logic 2** software from [Saleae](https://www.saleae.com/downloads) offers an advanced al&shy;ternative &ndash; but without support for `PI_PICO-$$sim`.
+
+      <div class="em-info">
+
+      Fortunately, **Logic 2** works with the inexpensive (Saleae-compatible) logic analyzers described earlier {[tr,102/08/02]}.
+
+      </div>
+
+      {[DC,1]} ensure **Logic 2** detects your analyzer<br>
+      {[DC,2]} select the **File &gt; Presets** menu item<br>
+      {[DC,3]} **Import** the file `emporium/EMporium.logic2Preset`<br>
+      {[DC,4]} **Load** the newly-created **EMporium** preset<br>
+      {[DC,5]} click the **Start** button to begin recording<br>
+      {[DC,6]} click the **Stop** button to end recording<br>
+
+      ❓&thinsp;Visit the [Discussions](https://github.com/em-foundation/emporium/discussions) for more information.
 
   - cmds:
       - open 1
