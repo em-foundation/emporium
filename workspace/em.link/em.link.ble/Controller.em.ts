@@ -6,6 +6,7 @@ import * as Connection from '@em.link.ble/Connection.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as LedI from '@em.hal/LedI.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
 import * as Registry from '@em.link/Registry.em'
@@ -17,6 +18,7 @@ export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
+const l2_rx_adr = $config<Heap.Adr>()
 
 const controllerF = $config<FiberMgr.Obj>()
 const reqF = $config<FiberMgr.Obj>()
@@ -32,8 +34,9 @@ export namespace em$meta {
         controllerF.$$val = FiberMgr.em$meta.create($cb(controllerFB))
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
-        rx_adr.$$val = Heap.em$meta.alloc(Binder.em$meta.getRxBufSize())
-        tx_adr.$$val = Heap.em$meta.alloc(Binder.em$meta.getTxBufSize())
+        rx_adr.$$val = Heap.em$meta.alloc(40)
+        tx_adr.$$val = Heap.em$meta.alloc(40)
+        l2_rx_adr.$$val = Heap.em$meta.alloc(Binder.em$meta.getRxBufSize())
         LnkTx.em$meta.bindAttBuf(tx_adr.$$val)
     }
 }
@@ -49,6 +52,7 @@ const adv_req = <$$<TB.AdvReqHdr>>Heap.opaq(rx_adr)
 const conn_pkt = <$$<TB.ConnPkt>>Heap.opaq(rx_adr)
 const lnk_req = <$$<TB.LnkHdr>>Heap.opaq(rx_adr)
 const rx_buf = <TL.BufPtr>Heap.opaq(rx_adr)
+const l2_rx_buf = <TL.BufPtr>Heap.opaq(l2_rx_adr)
 const scan_rsp = <$$<TB.AdvHdr>>Heap.opaq(tx_adr)
 
 enum State {
@@ -83,6 +87,9 @@ var null_pkt_cnt: u8
 var upd_flag: bool_t
 var smp_pair_rsp_sent: bool_t
 var smp_pair_rsp_tx_seen: bool_t
+var l2_rx_active: bool_t
+var l2_rx_len: u16
+var l2_rx_need: u16
 
 export function start() {
     if (cur_state != State.IDLE) {
@@ -98,6 +105,9 @@ export function start() {
     null_pkt_cnt = 0
     smp_pair_rsp_sent = false
     smp_pair_rsp_tx_seen = false
+    l2_rx_active = false
+    l2_rx_len = 0
+    l2_rx_need = 0
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -204,24 +214,40 @@ function doExch(end_ms: u16) {
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     LnkTx.ack(lnk_req)
 
-    if (smp_pair_rsp_tx_seen) {
-        printf`POST-RSP RX: flags=%02x len=%d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
-        lnk_req.$$.print()
-        fail()
-    }
-
     if (lnk_req.$$.pduLen > 0) {
         let handled = false
+        const llid = lnk_req.$$.lnkFlags & 0x03
+        const pdu = lnk_req.$$.pduPtr()
 
-        if (!lnk_req.$$.isCtrl()) {
+        if (l2_rx_active && llid == TB.LL_CONT) {
+            Mem.cpy($$(l2_rx_buf[l2_rx_len]), $$(pdu[0]), lnk_req.$$.pduLen)
+            l2_rx_len += lnk_req.$$.pduLen
+            handled = true
+
+            if (l2_rx_len >= l2_rx_need) {
+                printf`REASSEMBLED SMP len=%d\n`(l2_rx_len)
+                for (const i of $range(l2_rx_len)) printf`%02x `(l2_rx_buf[i])
+                printf`\n`()
+                fail()
+            }
+        } else if (!lnk_req.$$.isCtrl() && llid == TB.LL_START) {
             const l2 = lnk_req.$$.l2capPkt()
-            const pdu = lnk_req.$$.pduPtr()
 
-            if (l2.$$.cid16() == TB.L2CAP_CID_SMP && pdu[4] == 0x01) {
-                printf`SMP Pairing Request: io=%02x oob=%02x auth=%02x key=%d ikd=%02x rkd=%02x\n`(
-                    pdu[5], pdu[6], pdu[7], pdu[8], pdu[9], pdu[10]
-                )
+            if (smp_pair_rsp_tx_seen && l2.$$.cid16() == TB.L2CAP_CID_SMP && pdu[4] == 0x0c) {
+                l2_rx_need = pdu[0] | (pdu[1] << 8)
+                l2_rx_need += 4
+                l2_rx_len = lnk_req.$$.pduLen
+                Mem.cpy($$(l2_rx_buf[0]), $$(pdu[0]), l2_rx_len)
+                l2_rx_active = l2_rx_len < l2_rx_need
+                handled = true
 
+                if (!l2_rx_active) {
+                    printf`REASSEMBLED SMP len=%d\n`(l2_rx_len)
+                    for (const i of $range(l2_rx_len)) printf`%02x `(l2_rx_buf[i])
+                    printf`\n`()
+                    fail()
+                }
+            } else if (l2.$$.cid16() == TB.L2CAP_CID_SMP && pdu[4] == 0x01) {
                 const rsp = LnkTx.getAttPkt()
                 if (rsp == $null) {
                     printf`SMP Pairing Response: no TX buffer\n`()
@@ -257,8 +283,6 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     const tx = LnkTx.choose(lnk_req)
 
     if (smp_pair_rsp_sent && !smp_pair_rsp_tx_seen) {
-        printf`SMP Pairing Response TX:\n`()
-        TB.dumpPkt($$(tx[0]))
         smp_pair_rsp_tx_seen = true
     }
 
