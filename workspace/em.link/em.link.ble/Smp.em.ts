@@ -34,6 +34,7 @@ class State extends $struct {
     pairRspTxSeen: bool_t
     peerPk: T.PubKey
     localPk: T.PubKey
+    secret: T.U256
 }
 
 var state: State
@@ -123,9 +124,11 @@ function workFB(_: arg_t) {
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
     Engine.makePublicKey(sk, $$(state.localPk))
+    Engine.ecdh(sk, $$(state.peerPk), state.secret.$ptr())
     T.print(state.peerPk.x.$ptr(), t$`peer.x`)
     T.print(state.peerPk.y.$ptr(), t$`peer.y`)
     T.print(state.localPk.x.$ptr(), t$`local.x`)
     T.print(state.localPk.y.$ptr(), t$`local.y`)
+    T.print(state.secret.$ptr(), t$`secret`)
     fail()
 }
