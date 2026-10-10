@@ -200,9 +200,7 @@ function doExch(end_ms: u16) {
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     LnkTx.ack(lnk_req)
     if (lnk_req.$$.pduLen > 0) {
-        printf`RX flags=%02x len=%d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
-        lnk_req.$$.print()
-        fail()
+        reqF.$$.post()
     }
     return LnkTx.choose(lnk_req)
 }
@@ -330,6 +328,20 @@ function reqFB(_: arg_t) {
                     }
                 }
                 LnkTx.setAttReady()
+                break
+            }
+            case TB.L2CAP_CID_SMP: {
+                const pdu = lnk_req.$$.pduPtr()
+                const op = pdu[4]
+                if (op == 0x01) {
+                    printf`SMP Pairing Request: io=%02x oob=%02x auth=%02x key=%d ikd=%02x rkd=%02x\n`(
+                        pdu[5], pdu[6], pdu[7], pdu[8], pdu[9], pdu[10]
+                    )
+                    fail()
+                }
+                printf`SMP opcode=%02x\n`(op)
+                lnk_req.$$.print()
+                fail()
                 break
             }
             default: {
