@@ -1,21 +1,47 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as EngineC from '@em.crypto.p256/EngineC.em'
+import * as T from '@em.crypto.p256/Types.em'
+import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
+import * as TL from '@em.link/Types.em'
+
+const Engine = $delegate(EngineC.Engine)
 
 const PAIRING_REQ = 0x01
 const PAIRING_RSP = 0x02
 const PUBLIC_KEY = 0x0c
+const PUBLIC_KEY_LEN = 69
 
-var pair_rsp_sent: bool_t
-var pair_rsp_tx_seen: bool_t
+const LOCAL_SK = $config<T.U256>()
+const workF = $config<FiberMgr.Obj>()
+
+export namespace em$meta {
+    export function em$construct() {
+        workF.$$val = FiberMgr.em$meta.create($cb(workFB))
+        T.em$meta.initU256(LOCAL_SK.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
+    }
+}
+
+//>> ---- em$targ ---- <<//
+
+class State extends $struct {
+    pairRspSent: bool_t
+    pairRspTxSeen: bool_t
+    peerPk: T.PubKey
+    localPk: T.PubKey
+}
+
+var state: State
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
     if (L2Cap.active() && llid == TB.LL_CONT) {
-        if (L2Cap.append(req)) dumpReassembled()
+        if (L2Cap.append(req)) publicKeyReady()
         return true
     }
     if (req.$$.isCtrl() || llid != TB.LL_START) return false
@@ -26,8 +52,8 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         sendPairRsp()
         return true
     }
-    if (pdu[4] == PUBLIC_KEY && pair_rsp_tx_seen) {
-        if (L2Cap.begin(req)) dumpReassembled()
+    if (pdu[4] == PUBLIC_KEY && state.pairRspTxSeen) {
+        if (L2Cap.begin(req)) publicKeyReady()
         return true
     }
     unexpected(req)
@@ -35,13 +61,13 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
 }
 
 export function reset() {
-    pair_rsp_sent = false
-    pair_rsp_tx_seen = false
+    state.pairRspSent = false
+    state.pairRspTxSeen = false
     L2Cap.reset()
 }
 
 export function txChosen() {
-    if (pair_rsp_sent && !pair_rsp_tx_seen) pair_rsp_tx_seen = true
+    if (state.pairRspSent && !state.pairRspTxSeen) state.pairRspTxSeen = true
 }
 
 export function unexpected(req: $$<TB.LnkHdr>) {
@@ -51,13 +77,22 @@ export function unexpected(req: $$<TB.LnkHdr>) {
     fail()
 }
 
-function dumpReassembled() {
+function loadLeU256(dst: T.U256_Ref, src: TL.BufPtr) {
+    for (const i of $range(T.U256_LEN)) {
+        const j = i << 2
+        dst[i] = <u32>src[j] | (<u32>src[j + 1] << 8) | (<u32>src[j + 2] << 16) | (<u32>src[j + 3] << 24)
+    }
+}
+
+function publicKeyReady() {
     const data = L2Cap.data()
-    const len = L2Cap.len()
-    printf`REASSEMBLED SMP len=%d\n`(len)
-    for (const i of $range(len)) printf`%02x `(data[i])
-    printf`\n`()
-    fail()
+    if (L2Cap.len() != PUBLIC_KEY_LEN || data[4] != PUBLIC_KEY) {
+        printf`BAD SMP PUBLIC KEY len=%d op=%02x\n`(L2Cap.len(), data[4])
+        fail()
+    }
+    loadLeU256(state.peerPk.x.$ptr(), <TL.BufPtr>$$(data[5]))
+    loadLeU256(state.peerPk.y.$ptr(), <TL.BufPtr>$$(data[37]))
+    workF.$$.post()
 }
 
 function sendPairRsp() {
@@ -81,5 +116,16 @@ function sendPairRsp() {
     out[10] = 0x00
     rsp.$$.pduLen = 11
     LnkTx.setAttReady()
-    pair_rsp_sent = true
+    state.pairRspSent = true
+}
+
+function workFB(_: arg_t) {
+    let sk = T.U256.$make()
+    Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
+    Engine.makePublicKey(sk, $$(state.localPk))
+    T.print(state.peerPk.x.$ptr(), t$`peer.x`)
+    T.print(state.peerPk.y.$ptr(), t$`peer.y`)
+    T.print(state.localPk.x.$ptr(), t$`local.x`)
+    T.print(state.localPk.y.$ptr(), t$`local.y`)
+    fail()
 }
