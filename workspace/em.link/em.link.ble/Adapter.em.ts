@@ -18,6 +18,9 @@ export const Led = $proxy<LedI.$I>()
 export const OneShot = $proxy<OneShotI.$I>()
 export const RadioDriver = $proxy<RadioDriverI.$I>()
 
+const RX_BUF_SIZE = 128
+const TX_BUF_SIZE = 128
+
 const controllerF = $config<FiberMgr.Obj>()
 const reqF = $config<FiberMgr.Obj>()
 const rspF = $config<FiberMgr.Obj>()
@@ -31,8 +34,8 @@ export namespace em$meta {
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
         rspF.$$val = FiberMgr.em$meta.create($cb(rspFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
-        rx_adr.$$val = Heap.em$meta.alloc(40)
-        tx_adr.$$val = Heap.em$meta.alloc(40)
+        rx_adr.$$val = Heap.em$meta.alloc(RX_BUF_SIZE)
+        tx_adr.$$val = Heap.em$meta.alloc(TX_BUF_SIZE)
         LnkTx.em$meta.bindAttBuf(tx_adr.$$val)
     }
 }
@@ -135,7 +138,7 @@ function controller() {
                     null_pkt_cnt = 0
                 }
                 const t1 = MsCounter.stop()
-                const ci = Connection.params().$$.interval
+                const ci = Connection.params().$$.interval_us
                 const dt = (t1 == 0) ? ci : (t1 > ci) ? ((ci * 2) - t1) : ci - (ci - t1)
                 MsCounter.start()
                 setTimeout(dt)
