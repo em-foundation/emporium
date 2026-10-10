@@ -78,8 +78,8 @@ export function em$generate() {
     )
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
-    let libarch = 'v7em_fpv4_sp_d16_hard'
-    let libflav = 'balanced'
+    let libarch = 'v6m'
+    let libflav = 'small'
     let out = $outfile('build.sh', 0o755)
     out.addFrag(`
         |-> #!/bin/sh

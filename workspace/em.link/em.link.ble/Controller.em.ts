@@ -200,7 +200,9 @@ function doExch(end_ms: u16) {
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     LnkTx.ack(lnk_req)
     if (lnk_req.$$.pduLen > 0) {
-        reqF.$$.post()
+        printf`RX flags=%02x len=%d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
+        lnk_req.$$.print()
+        fail()
     }
     return LnkTx.choose(lnk_req)
 }

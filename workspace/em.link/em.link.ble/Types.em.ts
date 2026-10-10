@@ -59,6 +59,7 @@ export const GATT_PRIMARY_SERVICE = 0x2800
 
 export const L2CAP_CID_ATT = 0x0004
 export const L2CAP_CID_LE_SIG = 0x0005
+export const L2CAP_CID_SMP = 0x0006
 
 export const L2CAP_COMMAND_REJECT_RSP = 0x01
 export const L2CAP_REJ_CMD_NOT_UNDERSTOOD = 0x0000
