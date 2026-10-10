@@ -81,6 +81,8 @@ var cur_adv_mask: u8
 var cur_state: State = State.IDLE
 var null_pkt_cnt: u8
 var upd_flag: bool_t
+var smp_pair_rsp_sent: bool_t
+var smp_pair_rsp_tx_seen: bool_t
 
 export function start() {
     if (cur_state != State.IDLE) {
@@ -94,6 +96,8 @@ export function start() {
     adv_power = params.$$.radio_power
     cur_adv_mask = 0
     null_pkt_cnt = 0
+    smp_pair_rsp_sent = false
+    smp_pair_rsp_tx_seen = false
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -199,10 +203,66 @@ function doExch(end_ms: u16) {
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     LnkTx.ack(lnk_req)
-    if (lnk_req.$$.pduLen > 0) {
-        reqF.$$.post()
+
+    if (smp_pair_rsp_tx_seen) {
+        printf`POST-RSP RX: flags=%02x len=%d\n`(lnk_req.$$.lnkFlags, lnk_req.$$.pduLen)
+        lnk_req.$$.print()
+        fail()
     }
-    return LnkTx.choose(lnk_req)
+
+    if (lnk_req.$$.pduLen > 0) {
+        let handled = false
+
+        if (!lnk_req.$$.isCtrl()) {
+            const l2 = lnk_req.$$.l2capPkt()
+            const pdu = lnk_req.$$.pduPtr()
+
+            if (l2.$$.cid16() == TB.L2CAP_CID_SMP && pdu[4] == 0x01) {
+                printf`SMP Pairing Request: io=%02x oob=%02x auth=%02x key=%d ikd=%02x rkd=%02x\n`(
+                    pdu[5], pdu[6], pdu[7], pdu[8], pdu[9], pdu[10]
+                )
+
+                const rsp = LnkTx.getAttPkt()
+                if (rsp == $null) {
+                    printf`SMP Pairing Response: no TX buffer\n`()
+                    fail()
+                }
+
+                rsp.$$.init(TB.LL_START)
+                const out = rsp.$$.pduPtr()
+                out[0] = 0x07
+                out[1] = 0x00
+                out[2] = 0x06
+                out[3] = 0x00
+                out[4] = 0x02
+                out[5] = 0x03
+                out[6] = 0x00
+                out[7] = 0x08
+                out[8] = 0x10
+                out[9] = 0x00
+                out[10] = 0x00
+                rsp.$$.pduLen = 11
+
+                LnkTx.setAttReady()
+                smp_pair_rsp_sent = true
+                handled = true
+            }
+        }
+
+        if (!handled) {
+            reqF.$$.post()
+        }
+    }
+
+    const tx = LnkTx.choose(lnk_req)
+
+    if (smp_pair_rsp_sent && !smp_pair_rsp_tx_seen) {
+        printf`SMP Pairing Response TX:\n`()
+        TB.dumpPkt($$(tx[0]))
+        smp_pair_rsp_tx_seen = true
+    }
+
+    return tx
 }
 
 function exchProf(params: $$<TL.Params>) {
@@ -332,14 +392,7 @@ function reqFB(_: arg_t) {
             }
             case TB.L2CAP_CID_SMP: {
                 const pdu = lnk_req.$$.pduPtr()
-                const op = pdu[4]
-                if (op == 0x01) {
-                    printf`SMP Pairing Request: io=%02x oob=%02x auth=%02x key=%d ikd=%02x rkd=%02x\n`(
-                        pdu[5], pdu[6], pdu[7], pdu[8], pdu[9], pdu[10]
-                    )
-                    fail()
-                }
-                printf`SMP opcode=%02x\n`(op)
+                printf`SMP opcode=%02x\n`(pdu[4])
                 lnk_req.$$.print()
                 fail()
                 break
