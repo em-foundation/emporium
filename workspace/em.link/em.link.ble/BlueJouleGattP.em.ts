@@ -4,7 +4,6 @@ export const $U = $declare('MODULE')
 import * as AppSchema from '@em.link.ble/BlueJouleGattS.em'
 import * as Binder from '@em.link.ble/Binder.em'
 import * as BoardC from '@$distro/BoardC.em'
-import * as Common from '@em.mcu/Common.em'
 import * as Controller from '@em.link.ble/Controller.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Registry from '@em.link/Registry.em'

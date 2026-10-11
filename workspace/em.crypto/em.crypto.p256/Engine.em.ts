@@ -1,7 +1,8 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', P256I)
 
 import * as MathOpsI from '@em.crypto.p256/MathOpsI.em'
+import * as P256I from '@em.crypto.p256/P256I.em'
 import * as T from '@em.crypto.p256/Types.em'
 
 export const MathOps = $proxy<MathOpsI.$I>()
