@@ -19,8 +19,8 @@ export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
-const controllerF = $config<FiberMgr.Obj>()
 const reqF = $config<FiberMgr.Obj>()
+const statusF = $config<FiberMgr.Obj>()
 const status_cb = $config<TL.RecvDoneFxn>()
 
 export namespace em$meta {
@@ -28,8 +28,8 @@ export namespace em$meta {
         status_cb.$$val = h
     }
     export function em$construct() {
-        controllerF.$$val = FiberMgr.em$meta.create($cb(controllerFB))
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
+        statusF.$$val = FiberMgr.em$meta.create($cb(statusFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
@@ -80,6 +80,7 @@ var adv_power: i8
 var cur_adv_mask: u8
 var cur_state: State = State.IDLE
 var null_pkt_cnt: u8
+var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
 
 export function start() {
@@ -112,7 +113,7 @@ function controller() {
                 radioOff()
                 if (adv_count-- == 0) {
                     setState(State.IDLE)
-                    status_cb(TL.ConnectionStatus.TIMEOUT)
+                    notifyStatus(TL.ConnectionStatus.TIMEOUT)
                     return
                 }
                 setTimeout(adv_inter * 1000)
@@ -134,7 +135,7 @@ function controller() {
             }
             case State.CONN: {
                 Connection.open(conn_pkt)
-                status_cb(TL.ConnectionStatus.OPENING)
+                notifyStatus(TL.ConnectionStatus.OPENING)
                 anchor.reset()
                 LnkTx.reset()
                 doExch(1000)
@@ -146,7 +147,7 @@ function controller() {
                 const air_us = (RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
                 if (air_us == 0) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
-                        status_cb(TL.ConnectionStatus.HANGUP)
+                        notifyStatus(TL.ConnectionStatus.HANGUP)
                         return
                     }
                 } else {
@@ -165,7 +166,7 @@ function controller() {
             case State.CLOSING: {
                 radioOff()
                 setState(State.IDLE)
-                status_cb(TL.ConnectionStatus.CLOSED)
+                notifyStatus(TL.ConnectionStatus.CLOSED)
                 return
             }
             case State.IDLE: {
@@ -173,10 +174,6 @@ function controller() {
             }
         }
     }
-}
-
-function controllerFB(_: arg_t) {
-    controller()
 }
 
 function doAdvScan(chan: u8) {
@@ -211,7 +208,17 @@ function exchProf(params: $$<TL.Params>) {
 }
 
 function radioHandler() {
-    controllerF.$$.post()
+    controller()
+}
+
+
+function notifyStatus(status: TL.ConnectionStatus) {
+    pending_status = status
+    statusF.$$.post()
+}
+
+function statusFB(_: arg_t) {
+    status_cb(pending_status)
 }
 
 function radioOff() {
@@ -368,7 +375,7 @@ function setTimeout(usecs: u32) {
 }
 
 function timerHandler() {
-    controllerF.$$.post()
+    controller()
 }
 
 const HFCLK_GUARD_US = 650
