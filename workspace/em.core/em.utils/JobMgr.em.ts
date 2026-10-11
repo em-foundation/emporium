@@ -39,6 +39,9 @@ export namespace em$meta {
         job.$$._body = body
         job.$$._fiber = fiber
         job.$$._state = State.IDLE
+        for (const i of $range(NUM_ARGS)) {
+            job.$$._args[i] = 0
+        }
         return job
     }
 }
