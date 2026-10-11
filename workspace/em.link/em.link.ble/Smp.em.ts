@@ -1,39 +1,39 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as EngineC from '@em.crypto.p256/EngineC.em'
 import * as T from '@em.crypto.p256/Types.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
+import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
+const Engine = $delegate(EngineC.Engine)
 
 const PAIRING_REQ = 0x01
 const PAIRING_RSP = 0x02
 const PUBLIC_KEY = 0x0c
 const PUBLIC_KEY_LEN = 69
 
-const LOCAL_X = $config<T.U256>()
-const LOCAL_Y = $config<T.U256>()
-const workF = $config<FiberMgr.Obj>()
+const LOCAL_SK = $config<T.U256>()
+const work_f = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
-        workF.$$val = FiberMgr.em$meta.create($cb(workFB))
-        T.em$meta.initU256(LOCAL_X.$$val, 'dad0b653_94221cf9_b051e1fe_ca5787d0_98dfe637_fc90b9ef_945d0c37_72581180')
-        T.em$meta.initU256(LOCAL_Y.$$val, '5271a046_1cdb8252_d61f1c45_6fa3e59a_b1f45b33_accf5f58_389e0577_b8990bb3')
+        work_f.$$val = FiberMgr.em$meta.create($cb(workFB))
+        T.em$meta.initU256(LOCAL_SK.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
     }
 }
 
 //>> ---- em$targ ---- <<//
 
-class State extends $struct {
-    pairRspSent: bool_t
-    pairRspTxSeen: bool_t
-}
-
-var state: State
+var pair_rsp_sent: bool_t
+var pair_rsp_tx_seen: bool_t
+var peer_pk: T.PubKey
+var local_pk: T.PubKey
+var secret: T.U256
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
@@ -49,7 +49,7 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         sendPairRsp()
         return true
     }
-    if (pdu[4] == PUBLIC_KEY && state.pairRspTxSeen) {
+    if (pdu[4] == PUBLIC_KEY && pair_rsp_tx_seen) {
         if (L2Cap.begin(req)) publicKeyReady()
         return true
     }
@@ -58,13 +58,13 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
 }
 
 export function reset() {
-    state.pairRspSent = false
-    state.pairRspTxSeen = false
+    pair_rsp_sent = false
+    pair_rsp_tx_seen = false
     L2Cap.reset()
 }
 
 export function txChosen() {
-    if (state.pairRspSent && !state.pairRspTxSeen) state.pairRspTxSeen = true
+    if (pair_rsp_sent && !pair_rsp_tx_seen) pair_rsp_tx_seen = true
     if (!LnkTx.takeAttAck()) return
     if (!L2Cap.txActive()) return
     if (L2Cap.txAcked()) halt()
@@ -78,13 +78,22 @@ export function unexpected(req: $$<TB.LnkHdr>) {
     fail()
 }
 
+function loadLeU256(dst: T.U256_Ref, src: TL.BufPtr) {
+    for (const i of $range(T.U256_LEN)) {
+        const j = i << 2
+        dst[i] = <u32>src[j] | (<u32>src[j + 1] << 8) | (<u32>src[j + 2] << 16) | (<u32>src[j + 3] << 24)
+    }
+}
+
 function publicKeyReady() {
     const data = L2Cap.data()
     if (L2Cap.len() != PUBLIC_KEY_LEN || data[4] != PUBLIC_KEY) {
         printf`BAD SMP PUBLIC KEY len=%d op=%02x\n`(L2Cap.len(), data[4])
         fail()
     }
-    workF.$$.post()
+    loadLeU256(peer_pk.x.$ptr(), <TL.BufPtr>$$(data[5]))
+    loadLeU256(peer_pk.y.$ptr(), <TL.BufPtr>$$(data[37]))
+    work_f.$$.post()
 }
 
 function sendPairRsp() {
@@ -108,7 +117,7 @@ function sendPairRsp() {
     out[10] = 0x00
     rsp.$$.pduLen = 11
     LnkTx.setAttReady()
-    state.pairRspSent = true
+    pair_rsp_sent = true
 }
 
 function stageTx() {
@@ -129,13 +138,18 @@ function storeLeU256(dst: TL.BufPtr, src: T.U256_Ref) {
 }
 
 function workFB(_: arg_t) {
+    let sk = T.U256.$make()
+    Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
+    Engine.makePublicKey(sk, $$(local_pk))
+    Engine.ecdh(sk, $$(peer_pk), secret.$ptr())
+    // stage local public key
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
     out[1] = 0x00
     out[2] = 0x06
     out[3] = 0x00
     out[4] = PUBLIC_KEY
-    storeLeU256(<TL.BufPtr>$$(out[5]), LOCAL_X.$ptr())
-    storeLeU256(<TL.BufPtr>$$(out[37]), LOCAL_Y.$ptr())
+    storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
+    storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
 }
