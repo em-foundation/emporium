@@ -1,6 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
+import * as CryptoC from '@nordic.distro.nrf52/CryptoC.em'
+
 import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
@@ -58,6 +60,7 @@ export function em$configure(): void {
     const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
+    $using(CryptoC)
     AlarmMgr.Rtc.$$dlg = Rtc
     AppBut.Edge.$$dlg = AppButEdge
     AppButEdge.Pin.$$dlg = AppButPin
