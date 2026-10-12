@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as CmacProviderI from '@em.crypto.cmac/CmacProviderI.em'
 import * as Crypto from '@em.crypto/Crypto.em'
 import * as T from '@em.crypto.p256/Types.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
@@ -10,27 +11,40 @@ import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
+const F4_MSG_LEN = 65
+const NONCE_LEN = 16
+const PAIRING_CONFIRM = 0x03
+const PAIRING_CONFIRM_LEN = 21
+const PAIRING_RANDOM = 0x04
 const PAIRING_REQ = 0x01
 const PAIRING_RSP = 0x02
 const PUBLIC_KEY = 0x0c
 const PUBLIC_KEY_LEN = 69
 
+class F4Msg extends $vector<u8> { $len = F4_MSG_LEN }
+class Nonce extends $vector<u8> { $len = NONCE_LEN }
+
+const LOCAL_NB = $config<Nonce>()
 const LOCAL_SK = $config<T.U256>()
 const work_f = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
         work_f.$$val = FiberMgr.em$meta.create($cb(workFB))
+        for (const i of $range(NONCE_LEN)) LOCAL_NB.$$val[i] = i
         T.em$meta.initU256(LOCAL_SK.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
     }
 }
 
 //>> ---- em$targ ---- <<//
 
+var local_pk_tx_done: bool_t
+var pair_confirm_sent: bool_t
 var pair_rsp_sent: bool_t
 var pair_rsp_tx_seen: bool_t
 var peer_pk: T.PubKey
 var local_pk: T.PubKey
+var confirm_b: CmacProviderI.Mac
 var secret: T.U256
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
@@ -43,6 +57,11 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
     const l2 = req.$$.l2capPkt()
     if (l2.$$.cid16() != TB.L2CAP_CID_SMP) return false
     const pdu = req.$$.pduPtr()
+    if (pair_confirm_sent && pdu[4] == PAIRING_RANDOM) {
+        printf`SMP Pairing Random\n`()
+        req.$$.print()
+        halt()
+    }
     if (pdu[4] == PAIRING_REQ) {
         sendPairRsp()
         return true
@@ -56,6 +75,8 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
 }
 
 export function reset() {
+    local_pk_tx_done = false
+    pair_confirm_sent = false
     pair_rsp_sent = false
     pair_rsp_tx_seen = false
     L2Cap.reset()
@@ -65,7 +86,13 @@ export function txChosen() {
     if (pair_rsp_sent && !pair_rsp_tx_seen) pair_rsp_tx_seen = true
     if (!LnkTx.takeAttAck()) return
     if (!L2Cap.txActive()) return
-    if (L2Cap.txAcked()) halt()
+    if (L2Cap.txAcked()) {
+        if (!local_pk_tx_done) {
+            local_pk_tx_done = true
+            sendPairConfirm()
+        }
+        return
+    }
     stageTx()
 }
 
@@ -74,6 +101,14 @@ export function unexpected(req: $$<TB.LnkHdr>) {
     printf`SMP opcode=%02x\n`(pdu[4])
     req.$$.print()
     fail()
+}
+
+function f4(u: T.U256_Ref, v: T.U256_Ref, x: ptr_t<u8>, out: ptr_t<u8>) {
+    let msg = F4Msg.$make()
+    storeBeU256(msg.$ptr(), u)
+    storeBeU256(<TL.BufPtr>$$(msg[32]), v)
+    msg[64] = 0
+    Crypto.Cmac.compute(x, msg.$frame(0), out)
 }
 
 function loadLeU256(dst: T.U256_Ref, src: TL.BufPtr) {
@@ -92,6 +127,18 @@ function publicKeyReady() {
     loadLeU256(peer_pk.x.$ptr(), <TL.BufPtr>$$(data[5]))
     loadLeU256(peer_pk.y.$ptr(), <TL.BufPtr>$$(data[37]))
     work_f.$$.post()
+}
+
+function sendPairConfirm() {
+    const out = L2Cap.beginTx(PAIRING_CONFIRM_LEN)
+    out[0] = 0x11
+    out[1] = 0x00
+    out[2] = 0x06
+    out[3] = 0x00
+    out[4] = PAIRING_CONFIRM
+    storeLe128(<TL.BufPtr>$$(out[5]), confirm_b.$ptr())
+    stageTx()
+    pair_confirm_sent = true
 }
 
 function sendPairRsp() {
@@ -124,6 +171,21 @@ function stageTx() {
     if (L2Cap.stageTx(pkt)) LnkTx.setAttReady()
 }
 
+function storeBeU256(dst: ptr_t<u8>, src: T.U256_Ref) {
+    for (const i of $range(T.U256_LEN)) {
+        const w = src[T.U256_LEN - 1 - i]
+        const j = i << 2
+        dst[j] = w >> 24
+        dst[j + 1] = w >> 16
+        dst[j + 2] = w >> 8
+        dst[j + 3] = w
+    }
+}
+
+function storeLe128(dst: TL.BufPtr, src: ptr_t<u8>) {
+    for (const i of $range(NONCE_LEN)) dst[i] = src[NONCE_LEN - 1 - i]
+}
+
 function storeLeU256(dst: TL.BufPtr, src: T.U256_Ref) {
     for (const i of $range(T.U256_LEN)) {
         const j = i << 2
@@ -140,6 +202,8 @@ function workFB(_: arg_t) {
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
     Crypto.P256.makePublicKey(sk, $$(local_pk))
     Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
+    // fixed nonce for bring-up; replace with fresh random Nb
+    f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
     // stage local public key
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
