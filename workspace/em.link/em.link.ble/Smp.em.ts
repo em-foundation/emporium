@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as EngineC from '@em.crypto.p256/EngineC.em'
+import * as Crypto from '@em.crypto/Crypto.em'
 import * as T from '@em.crypto.p256/Types.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
@@ -9,8 +9,6 @@ import * as LnkTx from '@em.link.ble/LnkTx.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
-
-const Engine = $delegate(EngineC.Engine)
 
 const PAIRING_REQ = 0x01
 const PAIRING_RSP = 0x02
@@ -140,8 +138,8 @@ function storeLeU256(dst: TL.BufPtr, src: T.U256_Ref) {
 function workFB(_: arg_t) {
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
-    Engine.makePublicKey(sk, $$(local_pk))
-    Engine.ecdh(sk, $$(peer_pk), secret.$ptr())
+    Crypto.P256.makePublicKey(sk, $$(local_pk))
+    Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
     // stage local public key
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
