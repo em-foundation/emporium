@@ -3,12 +3,15 @@ import * as Fs from 'fs'
 import em from '../../em.core/em.lang/emscript'
 
 const TYPE_MAP = new Map<string, string>([
+    ['CCM', 'CCM'],
     ['CLOCK', 'CLOCK'],
+    ['ECB', 'ECB'],
     ['GPIOTE', 'GPIOTE'],
     ['NVMC', 'NVMC'],
     ['P0', 'GPIO'],
     ['POWER', 'POWER'],
     ['RADIO', 'RADIO'],
+    ['RNG', 'RNG'],
     ['RTC0', 'RTC'],
     ['TIMER0', 'TIMER'],
     ['UART0', 'UART'],

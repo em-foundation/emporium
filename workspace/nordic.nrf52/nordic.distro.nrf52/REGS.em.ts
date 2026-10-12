@@ -297,6 +297,64 @@ export interface RTC_t {
     CC: dim_t<$Reg, 4>
 }
 
+// -------- RNG -------- //
+
+export interface RNG_t {
+    TASKS_START: $Reg
+    TASKS_STOP: $Reg
+    RESERVED: dim_t<$Reg, 62>
+    EVENTS_VALRDY: $Reg
+    RESERVED1: dim_t<$Reg, 63>
+    SHORTS: $Reg
+    RESERVED2: dim_t<$Reg, 64>
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED3: dim_t<$Reg, 126>
+    CONFIG: $Reg
+    VALUE: $Reg
+}
+
+// -------- ECB -------- //
+
+export interface ECB_t {
+    TASKS_STARTECB: $Reg
+    TASKS_STOPECB: $Reg
+    RESERVED: dim_t<$Reg, 62>
+    EVENTS_ENDECB: $Reg
+    EVENTS_ERRORECB: $Reg
+    RESERVED1: dim_t<$Reg, 127>
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED2: dim_t<$Reg, 126>
+    ECBDATAPTR: $Reg
+}
+
+// -------- CCM -------- //
+
+export interface CCM_t {
+    TASKS_KSGEN: $Reg
+    TASKS_CRYPT: $Reg
+    TASKS_STOP: $Reg
+    RESERVED: dim_t<$Reg, 61>
+    EVENTS_ENDKSGEN: $Reg
+    EVENTS_ENDCRYPT: $Reg
+    EVENTS_ERROR: $Reg
+    RESERVED1: dim_t<$Reg, 61>
+    SHORTS: $Reg
+    RESERVED2: dim_t<$Reg, 64>
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED3: dim_t<$Reg, 61>
+    MICSTATUS: $Reg
+    RESERVED4: dim_t<$Reg, 63>
+    ENABLE: $Reg
+    MODE: $Reg
+    CNFPTR: $Reg
+    INPTR: $Reg
+    OUTPTR: $Reg
+    SCRATCHPTR: $Reg
+}
+
 // -------- NVMC -------- //
 
 export interface NVMC_t {
@@ -317,6 +375,89 @@ export interface NVMC_t {
 
 // -------- CONSTANTS -------- //
 
+export const CCM_TASKS_KSGEN_TASKS_KSGEN_Pos: any = '0UL'
+export const CCM_TASKS_KSGEN_TASKS_KSGEN_Msk: any = '0x1UL << CCM_TASKS_KSGEN_TASKS_KSGEN_Pos'
+export const CCM_TASKS_KSGEN_TASKS_KSGEN_Trigger: any = '1UL'
+export const CCM_TASKS_CRYPT_TASKS_CRYPT_Pos: any = '0UL'
+export const CCM_TASKS_CRYPT_TASKS_CRYPT_Msk: any = '0x1UL << CCM_TASKS_CRYPT_TASKS_CRYPT_Pos'
+export const CCM_TASKS_CRYPT_TASKS_CRYPT_Trigger: any = '1UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Pos: any = '0UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Msk: any = '0x1UL << CCM_TASKS_STOP_TASKS_STOP_Pos'
+export const CCM_TASKS_STOP_TASKS_STOP_Trigger: any = '1UL'
+export const CCM_EVENTS_ENDKSGEN_EVENTS_ENDKSGEN_Pos: any = '0UL'
+export const CCM_EVENTS_ENDKSGEN_EVENTS_ENDKSGEN_Msk: any = '0x1UL << CCM_EVENTS_ENDKSGEN_EVENTS_ENDKSGEN_Pos'
+export const CCM_EVENTS_ENDKSGEN_EVENTS_ENDKSGEN_NotGenerated: any = '0UL'
+export const CCM_EVENTS_ENDKSGEN_EVENTS_ENDKSGEN_Generated: any = '1UL'
+export const CCM_EVENTS_ENDCRYPT_EVENTS_ENDCRYPT_Pos: any = '0UL'
+export const CCM_EVENTS_ENDCRYPT_EVENTS_ENDCRYPT_Msk: any = '0x1UL << CCM_EVENTS_ENDCRYPT_EVENTS_ENDCRYPT_Pos'
+export const CCM_EVENTS_ENDCRYPT_EVENTS_ENDCRYPT_NotGenerated: any = '0UL'
+export const CCM_EVENTS_ENDCRYPT_EVENTS_ENDCRYPT_Generated: any = '1UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Pos: any = '0UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Msk: any = '0x1UL << CCM_EVENTS_ERROR_EVENTS_ERROR_Pos'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_NotGenerated: any = '0UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Generated: any = '1UL'
+export const CCM_SHORTS_ENDKSGEN_CRYPT_Pos: any = '0UL'
+export const CCM_SHORTS_ENDKSGEN_CRYPT_Msk: any = '0x1UL << CCM_SHORTS_ENDKSGEN_CRYPT_Pos'
+export const CCM_SHORTS_ENDKSGEN_CRYPT_Disabled: any = '0UL'
+export const CCM_SHORTS_ENDKSGEN_CRYPT_Enabled: any = '1UL'
+export const CCM_INTENSET_ERROR_Pos: any = '2UL'
+export const CCM_INTENSET_ERROR_Msk: any = '0x1UL << CCM_INTENSET_ERROR_Pos'
+export const CCM_INTENSET_ERROR_Disabled: any = '0UL'
+export const CCM_INTENSET_ERROR_Enabled: any = '1UL'
+export const CCM_INTENSET_ERROR_Set: any = '1UL'
+export const CCM_INTENSET_ENDCRYPT_Pos: any = '1UL'
+export const CCM_INTENSET_ENDCRYPT_Msk: any = '0x1UL << CCM_INTENSET_ENDCRYPT_Pos'
+export const CCM_INTENSET_ENDCRYPT_Disabled: any = '0UL'
+export const CCM_INTENSET_ENDCRYPT_Enabled: any = '1UL'
+export const CCM_INTENSET_ENDCRYPT_Set: any = '1UL'
+export const CCM_INTENSET_ENDKSGEN_Pos: any = '0UL'
+export const CCM_INTENSET_ENDKSGEN_Msk: any = '0x1UL << CCM_INTENSET_ENDKSGEN_Pos'
+export const CCM_INTENSET_ENDKSGEN_Disabled: any = '0UL'
+export const CCM_INTENSET_ENDKSGEN_Enabled: any = '1UL'
+export const CCM_INTENSET_ENDKSGEN_Set: any = '1UL'
+export const CCM_INTENCLR_ERROR_Pos: any = '2UL'
+export const CCM_INTENCLR_ERROR_Msk: any = '0x1UL << CCM_INTENCLR_ERROR_Pos'
+export const CCM_INTENCLR_ERROR_Disabled: any = '0UL'
+export const CCM_INTENCLR_ERROR_Enabled: any = '1UL'
+export const CCM_INTENCLR_ERROR_Clear: any = '1UL'
+export const CCM_INTENCLR_ENDCRYPT_Pos: any = '1UL'
+export const CCM_INTENCLR_ENDCRYPT_Msk: any = '0x1UL << CCM_INTENCLR_ENDCRYPT_Pos'
+export const CCM_INTENCLR_ENDCRYPT_Disabled: any = '0UL'
+export const CCM_INTENCLR_ENDCRYPT_Enabled: any = '1UL'
+export const CCM_INTENCLR_ENDCRYPT_Clear: any = '1UL'
+export const CCM_INTENCLR_ENDKSGEN_Pos: any = '0UL'
+export const CCM_INTENCLR_ENDKSGEN_Msk: any = '0x1UL << CCM_INTENCLR_ENDKSGEN_Pos'
+export const CCM_INTENCLR_ENDKSGEN_Disabled: any = '0UL'
+export const CCM_INTENCLR_ENDKSGEN_Enabled: any = '1UL'
+export const CCM_INTENCLR_ENDKSGEN_Clear: any = '1UL'
+export const CCM_MICSTATUS_MICSTATUS_Pos: any = '0UL'
+export const CCM_MICSTATUS_MICSTATUS_Msk: any = '0x1UL << CCM_MICSTATUS_MICSTATUS_Pos'
+export const CCM_MICSTATUS_MICSTATUS_CheckFailed: any = '0UL'
+export const CCM_MICSTATUS_MICSTATUS_CheckPassed: any = '1UL'
+export const CCM_ENABLE_ENABLE_Pos: any = '0UL'
+export const CCM_ENABLE_ENABLE_Msk: any = '0x3UL << CCM_ENABLE_ENABLE_Pos'
+export const CCM_ENABLE_ENABLE_Disabled: any = '0UL'
+export const CCM_ENABLE_ENABLE_Enabled: any = '2UL'
+export const CCM_MODE_LENGTH_Pos: any = '24UL'
+export const CCM_MODE_LENGTH_Msk: any = '0x1UL << CCM_MODE_LENGTH_Pos'
+export const CCM_MODE_LENGTH_Default: any = '0UL'
+export const CCM_MODE_LENGTH_Extended: any = '1UL'
+export const CCM_MODE_DATARATE_Pos: any = '16UL'
+export const CCM_MODE_DATARATE_Msk: any = '0x1UL << CCM_MODE_DATARATE_Pos'
+export const CCM_MODE_DATARATE_1Mbit: any = '0UL'
+export const CCM_MODE_DATARATE_2Mbit: any = '1UL'
+export const CCM_MODE_MODE_Pos: any = '0UL'
+export const CCM_MODE_MODE_Msk: any = '0x1UL << CCM_MODE_MODE_Pos'
+export const CCM_MODE_MODE_Encryption: any = '0UL'
+export const CCM_MODE_MODE_Decryption: any = '1UL'
+export const CCM_CNFPTR_CNFPTR_Pos: any = '0UL'
+export const CCM_CNFPTR_CNFPTR_Msk: any = '0xFFFFFFFFUL << CCM_CNFPTR_CNFPTR_Pos'
+export const CCM_INPTR_INPTR_Pos: any = '0UL'
+export const CCM_INPTR_INPTR_Msk: any = '0xFFFFFFFFUL << CCM_INPTR_INPTR_Pos'
+export const CCM_OUTPTR_OUTPTR_Pos: any = '0UL'
+export const CCM_OUTPTR_OUTPTR_Msk: any = '0xFFFFFFFFUL << CCM_OUTPTR_OUTPTR_Pos'
+export const CCM_SCRATCHPTR_SCRATCHPTR_Pos: any = '0UL'
+export const CCM_SCRATCHPTR_SCRATCHPTR_Msk: any = '0xFFFFFFFFUL << CCM_SCRATCHPTR_SCRATCHPTR_Pos'
 export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Pos: any = '0UL'
 export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Msk: any = '0x1UL << CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Pos'
 export const CLOCK_TASKS_HFCLKSTART_TASKS_HFCLKSTART_Trigger: any = '1UL'
@@ -450,6 +591,42 @@ export const CLOCK_TRACECONFIG_TRACEPORTSPEED_32MHz: any = '0UL'
 export const CLOCK_TRACECONFIG_TRACEPORTSPEED_16MHz: any = '1UL'
 export const CLOCK_TRACECONFIG_TRACEPORTSPEED_8MHz: any = '2UL'
 export const CLOCK_TRACECONFIG_TRACEPORTSPEED_4MHz: any = '3UL'
+export const ECB_TASKS_STARTECB_TASKS_STARTECB_Pos: any = '0UL'
+export const ECB_TASKS_STARTECB_TASKS_STARTECB_Msk: any = '0x1UL << ECB_TASKS_STARTECB_TASKS_STARTECB_Pos'
+export const ECB_TASKS_STARTECB_TASKS_STARTECB_Trigger: any = '1UL'
+export const ECB_TASKS_STOPECB_TASKS_STOPECB_Pos: any = '0UL'
+export const ECB_TASKS_STOPECB_TASKS_STOPECB_Msk: any = '0x1UL << ECB_TASKS_STOPECB_TASKS_STOPECB_Pos'
+export const ECB_TASKS_STOPECB_TASKS_STOPECB_Trigger: any = '1UL'
+export const ECB_EVENTS_ENDECB_EVENTS_ENDECB_Pos: any = '0UL'
+export const ECB_EVENTS_ENDECB_EVENTS_ENDECB_Msk: any = '0x1UL << ECB_EVENTS_ENDECB_EVENTS_ENDECB_Pos'
+export const ECB_EVENTS_ENDECB_EVENTS_ENDECB_NotGenerated: any = '0UL'
+export const ECB_EVENTS_ENDECB_EVENTS_ENDECB_Generated: any = '1UL'
+export const ECB_EVENTS_ERRORECB_EVENTS_ERRORECB_Pos: any = '0UL'
+export const ECB_EVENTS_ERRORECB_EVENTS_ERRORECB_Msk: any = '0x1UL << ECB_EVENTS_ERRORECB_EVENTS_ERRORECB_Pos'
+export const ECB_EVENTS_ERRORECB_EVENTS_ERRORECB_NotGenerated: any = '0UL'
+export const ECB_EVENTS_ERRORECB_EVENTS_ERRORECB_Generated: any = '1UL'
+export const ECB_INTENSET_ERRORECB_Pos: any = '1UL'
+export const ECB_INTENSET_ERRORECB_Msk: any = '0x1UL << ECB_INTENSET_ERRORECB_Pos'
+export const ECB_INTENSET_ERRORECB_Disabled: any = '0UL'
+export const ECB_INTENSET_ERRORECB_Enabled: any = '1UL'
+export const ECB_INTENSET_ERRORECB_Set: any = '1UL'
+export const ECB_INTENSET_ENDECB_Pos: any = '0UL'
+export const ECB_INTENSET_ENDECB_Msk: any = '0x1UL << ECB_INTENSET_ENDECB_Pos'
+export const ECB_INTENSET_ENDECB_Disabled: any = '0UL'
+export const ECB_INTENSET_ENDECB_Enabled: any = '1UL'
+export const ECB_INTENSET_ENDECB_Set: any = '1UL'
+export const ECB_INTENCLR_ERRORECB_Pos: any = '1UL'
+export const ECB_INTENCLR_ERRORECB_Msk: any = '0x1UL << ECB_INTENCLR_ERRORECB_Pos'
+export const ECB_INTENCLR_ERRORECB_Disabled: any = '0UL'
+export const ECB_INTENCLR_ERRORECB_Enabled: any = '1UL'
+export const ECB_INTENCLR_ERRORECB_Clear: any = '1UL'
+export const ECB_INTENCLR_ENDECB_Pos: any = '0UL'
+export const ECB_INTENCLR_ENDECB_Msk: any = '0x1UL << ECB_INTENCLR_ENDECB_Pos'
+export const ECB_INTENCLR_ENDECB_Disabled: any = '0UL'
+export const ECB_INTENCLR_ENDECB_Enabled: any = '1UL'
+export const ECB_INTENCLR_ENDECB_Clear: any = '1UL'
+export const ECB_ECBDATAPTR_ECBDATAPTR_Pos: any = '0UL'
+export const ECB_ECBDATAPTR_ECBDATAPTR_Msk: any = '0xFFFFFFFFUL << ECB_ECBDATAPTR_ECBDATAPTR_Pos'
 export const GPIOTE_TASKS_OUT_TASKS_OUT_Pos: any = '0UL'
 export const GPIOTE_TASKS_OUT_TASKS_OUT_Msk: any = '0x1UL << GPIOTE_TASKS_OUT_TASKS_OUT_Pos'
 export const GPIOTE_TASKS_OUT_TASKS_OUT_Trigger: any = '1UL'
@@ -2420,6 +2597,36 @@ export const RADIO_POWER_POWER_Pos: any = '0UL'
 export const RADIO_POWER_POWER_Msk: any = '0x1UL << RADIO_POWER_POWER_Pos'
 export const RADIO_POWER_POWER_Disabled: any = '0UL'
 export const RADIO_POWER_POWER_Enabled: any = '1UL'
+export const RNG_TASKS_START_TASKS_START_Pos: any = '0UL'
+export const RNG_TASKS_START_TASKS_START_Msk: any = '0x1UL << RNG_TASKS_START_TASKS_START_Pos'
+export const RNG_TASKS_START_TASKS_START_Trigger: any = '1UL'
+export const RNG_TASKS_STOP_TASKS_STOP_Pos: any = '0UL'
+export const RNG_TASKS_STOP_TASKS_STOP_Msk: any = '0x1UL << RNG_TASKS_STOP_TASKS_STOP_Pos'
+export const RNG_TASKS_STOP_TASKS_STOP_Trigger: any = '1UL'
+export const RNG_EVENTS_VALRDY_EVENTS_VALRDY_Pos: any = '0UL'
+export const RNG_EVENTS_VALRDY_EVENTS_VALRDY_Msk: any = '0x1UL << RNG_EVENTS_VALRDY_EVENTS_VALRDY_Pos'
+export const RNG_EVENTS_VALRDY_EVENTS_VALRDY_NotGenerated: any = '0UL'
+export const RNG_EVENTS_VALRDY_EVENTS_VALRDY_Generated: any = '1UL'
+export const RNG_SHORTS_VALRDY_STOP_Pos: any = '0UL'
+export const RNG_SHORTS_VALRDY_STOP_Msk: any = '0x1UL << RNG_SHORTS_VALRDY_STOP_Pos'
+export const RNG_SHORTS_VALRDY_STOP_Disabled: any = '0UL'
+export const RNG_SHORTS_VALRDY_STOP_Enabled: any = '1UL'
+export const RNG_INTENSET_VALRDY_Pos: any = '0UL'
+export const RNG_INTENSET_VALRDY_Msk: any = '0x1UL << RNG_INTENSET_VALRDY_Pos'
+export const RNG_INTENSET_VALRDY_Disabled: any = '0UL'
+export const RNG_INTENSET_VALRDY_Enabled: any = '1UL'
+export const RNG_INTENSET_VALRDY_Set: any = '1UL'
+export const RNG_INTENCLR_VALRDY_Pos: any = '0UL'
+export const RNG_INTENCLR_VALRDY_Msk: any = '0x1UL << RNG_INTENCLR_VALRDY_Pos'
+export const RNG_INTENCLR_VALRDY_Disabled: any = '0UL'
+export const RNG_INTENCLR_VALRDY_Enabled: any = '1UL'
+export const RNG_INTENCLR_VALRDY_Clear: any = '1UL'
+export const RNG_CONFIG_DERCEN_Pos: any = '0UL'
+export const RNG_CONFIG_DERCEN_Msk: any = '0x1UL << RNG_CONFIG_DERCEN_Pos'
+export const RNG_CONFIG_DERCEN_Disabled: any = '0UL'
+export const RNG_CONFIG_DERCEN_Enabled: any = '1UL'
+export const RNG_VALUE_VALUE_Pos: any = '0UL'
+export const RNG_VALUE_VALUE_Msk: any = '0xFFUL << RNG_VALUE_VALUE_Pos'
 export const RTC_TASKS_START_TASKS_START_Pos: any = '0UL'
 export const RTC_TASKS_START_TASKS_START_Msk: any = '0x1UL << RTC_TASKS_START_TASKS_START_Pos'
 export const RTC_TASKS_START_TASKS_START_Trigger: any = '1UL'
@@ -2934,12 +3141,15 @@ export const UICR_NFCPINS_PROTECT_NFC: any = '1UL'
 
 // -------- INSTANCES -------- //
 
+export const CCM = {} as CCM_t
 export const CLOCK = {} as CLOCK_t
+export const ECB = {} as ECB_t
 export const GPIOTE = {} as GPIOTE_t
 export const NVMC = {} as NVMC_t
 export const P0 = {} as GPIO_t
 export const POWER = {} as POWER_t
 export const RADIO = {} as RADIO_t
+export const RNG = {} as RNG_t
 export const RTC0 = {} as RTC_t
 export const TIMER0 = {} as TIMER_t
 export const UART0 = {} as UART_t
