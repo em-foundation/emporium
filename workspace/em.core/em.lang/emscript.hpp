@@ -110,7 +110,7 @@ namespace em {
         constexpr bool operator!=(std::nullptr_t) const {
             return $start != null;
         }
-        frame_t<T> $frame(i16 beg, u16 len = 0) {
+        frame_t<T> $frame(i16 beg, u16 len = 0) const {
             return create($start, $len, beg, len);
         }
         struct Iterator {
@@ -249,12 +249,12 @@ namespace em {
         static constexpr u16 $len = N;
         inline T &operator[](u16 index) { return $$[index]; }
         inline const T &operator[](u16 index) const { return $$[index]; }
-        frame_t<T> $frame(i16 beg, u16 len = 0) {
-            return frame_t<T>::create($$, $len, beg, len);
+        frame_t<T> $frame(i16 beg, u16 len = 0) const {
+            return frame_t<T>::create((T *)$$, $len, beg, len);
         }
         operator arg_t() const { return (arg_t)(&$$[0]); }
-        operator frame_t<T>() { return $frame(0, 0); }
-        operator index_t<T>() { return index_t<T>(&$$[0]); }
+        operator frame_t<T>() const { return $frame(0, 0); }
+        operator index_t<T>() const { return index_t<T>((T *)&$$[0]); }
         operator opaq_t() const { return (opaq_t)(&$$[0]); }
         ptr_t<T> $ptr() { return ptr_t<T>(&$$[0]); }
         ptr_t<T> $ptr() const { return ptr_t<T>((T *)&$$[0]); }
