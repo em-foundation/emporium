@@ -1,6 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Aes128I from '@em.hal/Aes128I.em'
+import * as Aes128N from '@em.hal/Aes128N.em'
 import * as BusyWaitI from '@em.hal/BusyWaitI.em'
 import * as BusyWaitN from '@em.hal/BusyWaitN.em'
 import * as ConsoleUartI from '@em.hal/ConsoleUartI.em'
@@ -18,6 +20,7 @@ import * as UptimerN from '@em.hal/UptimerN.em'
 import * as UsCounterI from '@em.hal/UsCounterI.em'
 import * as UsCounterN from '@em.hal/UsCounterN.em'
 
+export const Aes128 = $proxy<Aes128I.$I>()
 export const BusyWait = $proxy<BusyWaitI.$I>()
 export const ConsoleUart = $proxy<ConsoleUartI.$I>()
 export const GlobalInterrupts = $proxy<GlobalInterruptsI.$I>()
@@ -29,6 +32,7 @@ export const UsCounter = $proxy<UsCounterI.$I>()
 
 export namespace em$meta {
     export function em$configure() {
+        if (Aes128.$U === null) Aes128.$$dlg = Aes128N
         if (BusyWait.$U === null) BusyWait.$$dlg = BusyWaitN
         if (ConsoleUart.$U === null) ConsoleUart.$$dlg = ConsoleUartN
         if (GlobalInterrupts.$U === null) GlobalInterrupts.$$dlg = GlobalInterruptsN
