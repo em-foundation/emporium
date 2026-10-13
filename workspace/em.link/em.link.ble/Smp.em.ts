@@ -11,6 +11,7 @@ import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
+const DHKEY_CHECK = 0x0d
 const F4_MSG_LEN = 65
 const NONCE_LEN = 16
 const PAIRING_CONFIRM = 0x03
@@ -40,11 +41,13 @@ export namespace em$meta {
 
 var local_pk_tx_done: bool_t
 var pair_confirm_sent: bool_t
+var pair_random_sent: bool_t
 var pair_rsp_sent: bool_t
 var pair_rsp_tx_seen: bool_t
 var peer_pk: T.PubKey
 var local_pk: T.PubKey
 var confirm_b: CmacProviderI.Mac
+var peer_na: Nonce
 var secret: T.U256
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
@@ -57,8 +60,13 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
     const l2 = req.$$.l2capPkt()
     if (l2.$$.cid16() != TB.L2CAP_CID_SMP) return false
     const pdu = req.$$.pduPtr()
-    if (pair_confirm_sent && pdu[4] == PAIRING_RANDOM) {
-        printf`SMP Pairing Random\n`()
+    if (pair_confirm_sent && !pair_random_sent && pdu[4] == PAIRING_RANDOM) {
+        loadLe128(peer_na.$ptr(), <TL.BufPtr>$$(pdu[5]))
+        sendPairRandom()
+        return true
+    }
+    if (pair_random_sent && pdu[4] == DHKEY_CHECK) {
+        printf`SMP DHKey Check\n`()
         req.$$.print()
         halt()
     }
@@ -77,6 +85,7 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
 export function reset() {
     local_pk_tx_done = false
     pair_confirm_sent = false
+    pair_random_sent = false
     pair_rsp_sent = false
     pair_rsp_tx_seen = false
     L2Cap.reset()
@@ -111,6 +120,10 @@ function f4(u: T.U256_Ref, v: T.U256_Ref, x: ptr_t<u8>, out: ptr_t<u8>) {
     Crypto.Cmac.compute(x, msg.$frame(), out)
 }
 
+function loadLe128(dst: ptr_t<u8>, src: TL.BufPtr) {
+    for (const i of $range(NONCE_LEN)) dst[i] = src[NONCE_LEN - 1 - i]
+}
+
 function loadLeU256(dst: T.U256_Ref, src: TL.BufPtr) {
     for (const i of $range(T.U256_LEN)) {
         const j = i << 2
@@ -139,6 +152,18 @@ function sendPairConfirm() {
     storeLe128(<TL.BufPtr>$$(out[5]), confirm_b.$ptr())
     stageTx()
     pair_confirm_sent = true
+}
+
+function sendPairRandom() {
+    const out = L2Cap.beginTx(PAIRING_CONFIRM_LEN)
+    out[0] = 0x11
+    out[1] = 0x00
+    out[2] = 0x06
+    out[3] = 0x00
+    out[4] = PAIRING_RANDOM
+    storeLe128(<TL.BufPtr>$$(out[5]), LOCAL_NB.$ptr())
+    stageTx()
+    pair_random_sent = true
 }
 
 function sendPairRsp() {
