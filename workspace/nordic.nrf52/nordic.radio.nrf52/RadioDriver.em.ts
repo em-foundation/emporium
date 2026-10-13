@@ -70,8 +70,9 @@ export function enable() {
         case TL.Phy.BLE_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
             $R.RADIO.MODECNF0.$$ |= $R.RADIO_MODECNF0_RU_Msk
-            // $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | $R.RADIO_PCNF0_S1INCL_Msk
-            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos)
+            // S1 exists in RAM for connection packets, but not on the air.
+            // Keep the two-byte advertising layout unchanged.
+            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | (acc_adr != 0 ? $R.RADIO_PCNF0_S1INCL_Msk : 0)
             $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
             $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
             $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? ((acc_adr >> 24) & 0xff) : 0x8e

@@ -182,9 +182,11 @@ export interface L2capPkt {
     cmdDataPtr(this: L2capPkt): TL.BufPtr
 }
 
+// Data-channel RAM layout; S1 is present in RAM but has zero on-air bits.
 export class LnkHdr extends $struct {
     lnkFlags: u8
     pduLen: u8
+    s1: u8
 }
 export interface LnkHdr {
     addAttPkt(this: LnkHdr, opcode: u8, data: TL.BufFrame): void
@@ -534,7 +536,7 @@ LnkHdr.prototype.attPkt = function (this: LnkHdr): $$<AttPkt> {
 
 LnkHdr.prototype.frame = function (this: LnkHdr): TL.BufFrame {
     const bp = $cast2<TL.BufPtr>($$(this))
-    return bp.$frame(this.pduLen + 2)
+    return bp.$frame(this.pduLen + $sizeof<LnkHdr>())
 }
 
 LnkHdr.prototype.isCtrl = function (this: LnkHdr): bool_t {
@@ -544,6 +546,7 @@ LnkHdr.prototype.isCtrl = function (this: LnkHdr): bool_t {
 LnkHdr.prototype.init = function (this: LnkHdr, lnk_id: u8) {
     this.lnkFlags = lnk_id
     this.pduLen = 0
+    this.s1 = 0
 }
 
 LnkHdr.prototype.l2capPkt = function (this: LnkHdr): $$<L2capPkt> {
@@ -557,7 +560,10 @@ LnkHdr.prototype.pduPtr = function (this: LnkHdr): TL.BufPtr {
 }
 
 LnkHdr.prototype.print = function (this: LnkHdr): void {
-    dumpPkt($$(this))
+    const bp = $cast2<TL.BufPtr>($$(this))
+    printf`%02x %02x `(bp[0], bp[1])
+    for (const i of $range(this.pduLen)) printf`%02x `(bp[i + $sizeof<LnkHdr>()])
+    printf`\n`()
 }
 
 LnkHdr.prototype.setSeq = function (this: LnkHdr, req_flags: u8, tx_sn: u8) {
