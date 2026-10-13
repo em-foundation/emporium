@@ -108,7 +108,7 @@ function f4(u: T.U256_Ref, v: T.U256_Ref, x: ptr_t<u8>, out: ptr_t<u8>) {
     storeBeU256(msg.$ptr(), u)
     storeBeU256(<TL.BufPtr>$$(msg[32]), v)
     msg[64] = 0
-    Crypto.Cmac.compute(x, msg.$frame(0), out)
+    Crypto.Cmac.compute(x, msg.$frame(), out)
 }
 
 function loadLeU256(dst: T.U256_Ref, src: TL.BufPtr) {
