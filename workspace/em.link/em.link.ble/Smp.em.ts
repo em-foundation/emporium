@@ -68,6 +68,7 @@ var peer_check: Nonce
 var mac_key: CmacProviderI.Mac
 var ltk: CmacProviderI.Mac
 var addresses_ready: bool_t
+var responder_check_sent: bool_t
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
@@ -125,6 +126,7 @@ export function reset() {
     pair_random_sent = false
     pair_rsp_sent = false
     pair_rsp_tx_seen = false
+    responder_check_sent = false
     L2Cap.reset()
 }
 
@@ -133,6 +135,10 @@ export function txChosen() {
     if (!LnkTx.takeAttAck()) return
     if (!L2Cap.txActive()) return
     if (L2Cap.txAcked()) {
+        if (responder_check_sent) {
+            printf`SMP responder DHKey Check ACK\n`()
+            halt()
+        }
         if (!local_pk_tx_done) {
             local_pk_tx_done = true
             sendPairConfirm()
@@ -183,17 +189,17 @@ function f5() {
     Crypto.Cmac.compute(t.$ptr(), msg.$frame(), ltk.$ptr())
 }
 
-function f6(out: ptr_t<u8>) {
+function f6(out: ptr_t<u8>, responder: bool_t) {
     let msg = F6Msg.$make()
     for (const i of $range(NONCE_LEN)) {
-        msg[i] = peer_na[i]
-        msg[16 + i] = LOCAL_NB.$ptr()[i]
+        msg[i] = responder ? LOCAL_NB.$ptr()[i] : peer_na[i]
+        msg[16 + i] = responder ? peer_na[i] : LOCAL_NB.$ptr()[i]
         msg[32 + i] = 0 // Just Works R
     }
-    for (const i of $range(3)) msg[48 + i] = central_io[i]
+    for (const i of $range(3)) msg[48 + i] = responder ? (i == 0 ? 0x08 : (i == 2 ? 0x03 : 0)) : central_io[i]
     for (const i of $range(ADDR_LEN)) {
-        msg[51 + i] = central_addr[i]
-        msg[58 + i] = peripheral_addr[i]
+        msg[51 + i] = responder ? peripheral_addr[i] : central_addr[i]
+        msg[58 + i] = responder ? central_addr[i] : peripheral_addr[i]
     }
     Crypto.Cmac.compute(mac_key.$ptr(), msg.$frame(), out)
 }
@@ -326,7 +332,7 @@ function verifyFB(_: arg_t) {
     }
     f5()
     let expected = Nonce.$make()
-    f6(expected.$ptr())
+    f6(expected.$ptr(), false)
     for (const i of $range(NONCE_LEN)) {
         if (expected[i] != peer_check[i]) {
             printf`SMP DHKey Check FAIL byte=%d expected=%02x got=%02x\n`(i, expected[i], peer_check[i])
@@ -334,5 +340,15 @@ function verifyFB(_: arg_t) {
         }
     }
     printf`SMP DHKey Check PASS\n`()
-    halt()
+    let responder_check = Nonce.$make()
+    f6(responder_check.$ptr(), true)
+    const out = L2Cap.beginTx(PAIRING_CONFIRM_LEN)
+    out[0] = 0x11
+    out[1] = 0x00
+    out[2] = 0x06
+    out[3] = 0x00
+    out[4] = DHKEY_CHECK
+    storeLe128(<TL.BufPtr>$$(out[5]), responder_check.$ptr())
+    stageTx()
+    responder_check_sent = true
 }
