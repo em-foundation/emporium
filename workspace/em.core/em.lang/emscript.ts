@@ -186,7 +186,7 @@ namespace em {
 
     export interface frame_t<T> extends index_t<T> {
         $len: u16
-        $frame(beg: i16, len: u16): frame_t<T>
+        $frame(beg?: i16, len?: u16): frame_t<T>
         [Symbol.iterator](): Iterator<ptr_t<T>>
     }
 
@@ -233,8 +233,8 @@ namespace em {
                 },
             }
         }
-        $frame(beg: i16, len: u16 = 0): frame_t<T> {
-            return frame$create<T>(this.items, this.$start, beg, len)
+        $frame(beg: i16 = 0, len: u16 = 0): frame_t<T> {
+            return frame$create<T>(this.items, this.$start, this.$len, beg, len)
         }
     }
 
@@ -245,12 +245,13 @@ namespace em {
     function frame$create<T>(
         arr: T[],
         start: u16,
+        dim: u16,
         beg: i16,
         len: u16
     ): frame_t<T> {
-        start = beg < 0 ? arr.length + beg : start + beg
-        len = len == 0 ? arr.length - start : len
-        return new em$frame<T>(arr, start, len)
+        const idx = beg < 0 ? dim + beg : beg
+        len = len == 0 ? dim - idx : len
+        return new em$frame<T>(arr, start + idx, len)
     }
 
     // #endregion
@@ -376,7 +377,7 @@ namespace em {
             this.idx += 1
         }
         $frame(len: u16) {
-            return frame$create<T>(this.arr, 0, this.idx, len)
+            return frame$create<T>(this.arr, this.idx, len, 0, len)
         }
     }
 
@@ -629,8 +630,8 @@ namespace em {
             this.elems.push(e)
             return new em$oref<T>(this.elems, this.elems.length - 1, this.cname)
         }
-        $frame(beg: i16, len: u16 = 0) {
-            return frame$create<T>(this.elems, 0, beg, len)
+        $frame(beg: i16 = 0, len: u16 = 0) {
+            return frame$create<T>(this.elems, 0, this.$len, beg, len)
         }
         $null(): ref_t<T> {
             return new em$oref<T>(this.elems, -1, this.cname)
@@ -1023,8 +1024,8 @@ namespace em {
                 },
             }
         }
-        $frame(beg: i16, len: u16 = 0) {
-            return frame$create<T>(this.items, 0, beg, len)
+        $frame(beg: i16 = 0, len: u16 = 0) {
+            return frame$create<T>(this.items, 0, this.$len, beg, len)
         }
         $ptr(): ptr_t<T> {
             return new em$ptr<T>(this.items)
