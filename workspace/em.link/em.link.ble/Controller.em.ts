@@ -41,6 +41,7 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const ALL_ADV_CHANS = 0x7
+const SMP_ADDR_LEN = 7
 const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
 
@@ -60,6 +61,8 @@ enum State {
     CLOSING,
     IDLE,
 }
+
+class SmpAddr extends $vector<u8> { $len = SMP_ADDR_LEN }
 
 class Anchor extends $struct {
     usecs: u32
@@ -135,6 +138,7 @@ function controller() {
             }
             case State.CONN: {
                 Connection.open(conn_pkt)
+                setSmpAddresses()
                 notifyStatus(TL.ConnectionStatus.OPENING)
                 anchor.reset()
                 LnkTx.reset()
@@ -174,6 +178,18 @@ function controller() {
             }
         }
     }
+}
+
+function setSmpAddresses() {
+    let central = SmpAddr.$make()
+    let peripheral = SmpAddr.$make()
+    central[0] = (conn_pkt.$$.advType & 0x40) ? 1 : 0
+    peripheral[0] = (conn_pkt.$$.advType & 0x80) ? 1 : 0
+    for (const i of $range(TL.ADDR_SIZE)) {
+        central[i + 1] = conn_pkt.$$.initA[TL.ADDR_SIZE - 1 - i]
+        peripheral[i + 1] = conn_pkt.$$.advA[TL.ADDR_SIZE - 1 - i]
+    }
+    Smp.setAddresses(central.$ptr(), peripheral.$ptr())
 }
 
 function doAdvScan(chan: u8) {

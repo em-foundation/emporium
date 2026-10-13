@@ -13,6 +13,9 @@ import * as TL from '@em.link/Types.em'
 
 const DHKEY_CHECK = 0x0d
 const F4_MSG_LEN = 65
+const F5_MSG_LEN = 53
+const F6_MSG_LEN = 65
+const ADDR_LEN = 7
 const NONCE_LEN = 16
 const PAIRING_CONFIRM = 0x03
 const PAIRING_CONFIRM_LEN = 21
@@ -23,15 +26,24 @@ const PUBLIC_KEY = 0x0c
 const PUBLIC_KEY_LEN = 69
 
 class F4Msg extends $vector<u8> { $len = F4_MSG_LEN }
+class F5Msg extends $vector<u8> { $len = F5_MSG_LEN }
+class DhkeyBytes extends $vector<u8> { $len = 32 }
+class F6Msg extends $vector<u8> { $len = F6_MSG_LEN }
+class Addr extends $vector<u8> { $len = ADDR_LEN }
 class Nonce extends $vector<u8> { $len = NONCE_LEN }
 
+const F5_SALT = $config<Nonce>()
 const LOCAL_NB = $config<Nonce>()
 const LOCAL_SK = $config<T.U256>()
 const work_f = $config<FiberMgr.Obj>()
+const verify_f = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
         work_f.$$val = FiberMgr.em$meta.create($cb(workFB))
+        verify_f.$$val = FiberMgr.em$meta.create($cb(verifyFB))
+        const salt = [0x6c, 0x88, 0x83, 0x91, 0xaa, 0xf5, 0xa5, 0x38, 0x60, 0x37, 0x0b, 0xdb, 0x5a, 0x60, 0x83, 0xbe]
+        for (const i of $range(NONCE_LEN)) F5_SALT.$$val[i] = salt[i]
         for (const i of $range(NONCE_LEN)) LOCAL_NB.$$val[i] = i
         T.em$meta.initU256(LOCAL_SK.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
     }
@@ -49,6 +61,13 @@ var local_pk: T.PubKey
 var confirm_b: CmacProviderI.Mac
 var peer_na: Nonce
 var secret: T.U256
+var central_addr: Addr
+var peripheral_addr: Addr
+var central_io: Addr
+var peer_check: Nonce
+var mac_key: CmacProviderI.Mac
+var ltk: CmacProviderI.Mac
+var addresses_ready: bool_t
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
@@ -66,11 +85,18 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         return true
     }
     if (pair_random_sent && pdu[4] == DHKEY_CHECK) {
-        printf`SMP DHKey Check\n`()
-        req.$$.print()
-        halt()
+        if (pdu[0] != 0x11 || pdu[1] != 0x00) {
+            printf`BAD SMP DHKey Check length\n`()
+            fail()
+        }
+        loadLe128(peer_check.$ptr(), <TL.BufPtr>$$(pdu[5]))
+        verify_f.$$.post()
+        return true
     }
     if (pdu[4] == PAIRING_REQ) {
+        central_io[0] = pdu[7] // AuthReq
+        central_io[1] = pdu[6] // OOB
+        central_io[2] = pdu[5] // IOcap
         sendPairRsp()
         return true
     }
@@ -82,7 +108,18 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
     return true
 }
 
+// Supply connection-setup addresses in f5/f6 order: type (0 public, 1 random),
+// then six address bytes most significant first. Call after reset, before DHKey Check.
+export function setAddresses(central: ptr_t<u8>, peripheral: ptr_t<u8>) {
+    for (const i of $range(ADDR_LEN)) {
+        central_addr[i] = central[i]
+        peripheral_addr[i] = peripheral[i]
+    }
+    addresses_ready = true
+}
+
 export function reset() {
+    addresses_ready = false
     local_pk_tx_done = false
     pair_confirm_sent = false
     pair_random_sent = false
@@ -118,6 +155,47 @@ function f4(u: T.U256_Ref, v: T.U256_Ref, x: ptr_t<u8>, out: ptr_t<u8>) {
     storeBeU256(<TL.BufPtr>$$(msg[32]), v)
     msg[64] = 0
     Crypto.Cmac.compute(x, msg.$frame(), out)
+}
+
+function f5() {
+    let key = DhkeyBytes.$make()
+    let t = Nonce.$make()
+    let msg = F5Msg.$make()
+    storeBeU256(key.$ptr(), secret.$ptr())
+    Crypto.Cmac.compute(F5_SALT.$ptr(), key.$frame(0, 32), t.$ptr())
+    msg[1] = 0x62 // "btle"
+    msg[2] = 0x74
+    msg[3] = 0x6c
+    msg[4] = 0x65
+    for (const i of $range(NONCE_LEN)) {
+        msg[5 + i] = peer_na[i]
+        msg[21 + i] = LOCAL_NB.$ptr()[i]
+    }
+    for (const i of $range(ADDR_LEN)) {
+        msg[37 + i] = central_addr[i]
+        msg[44 + i] = peripheral_addr[i]
+    }
+    msg[51] = 0x01 // length = 256 bits, big-endian
+    msg[52] = 0x00
+    msg[0] = 0
+    Crypto.Cmac.compute(t.$ptr(), msg.$frame(), mac_key.$ptr())
+    msg[0] = 1
+    Crypto.Cmac.compute(t.$ptr(), msg.$frame(), ltk.$ptr())
+}
+
+function f6(out: ptr_t<u8>) {
+    let msg = F6Msg.$make()
+    for (const i of $range(NONCE_LEN)) {
+        msg[i] = peer_na[i]
+        msg[16 + i] = LOCAL_NB.$ptr()[i]
+        msg[32 + i] = 0 // Just Works R
+    }
+    for (const i of $range(3)) msg[48 + i] = central_io[i]
+    for (const i of $range(ADDR_LEN)) {
+        msg[51 + i] = central_addr[i]
+        msg[58 + i] = peripheral_addr[i]
+    }
+    Crypto.Cmac.compute(mac_key.$ptr(), msg.$frame(), out)
 }
 
 function loadLe128(dst: ptr_t<u8>, src: TL.BufPtr) {
@@ -239,4 +317,22 @@ function workFB(_: arg_t) {
     storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
     storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
+}
+
+function verifyFB(_: arg_t) {
+    if (!addresses_ready) {
+        printf`SMP missing connection addresses: call setAddresses()\n`()
+        fail()
+    }
+    f5()
+    let expected = Nonce.$make()
+    f6(expected.$ptr())
+    for (const i of $range(NONCE_LEN)) {
+        if (expected[i] != peer_check[i]) {
+            printf`SMP DHKey Check FAIL byte=%d expected=%02x got=%02x\n`(i, expected[i], peer_check[i])
+            fail()
+        }
+    }
+    printf`SMP DHKey Check PASS\n`()
+    halt()
 }
