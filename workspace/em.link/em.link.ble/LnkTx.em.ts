@@ -32,6 +32,7 @@ const att_rsp = <$$<TB.LnkHdr>>Heap.opaq(att_adr)
 var ctrl_rsp: CtrlRsp
 var empty_rsp: TB.LnkHdr
 var att_ack_flag: bool_t
+var ctrl_ack_flag: bool_t
 var att_flag: bool_t
 var ctrl_flag: bool_t
 var tx_kind: TxKind = TxKind.NONE
@@ -40,6 +41,7 @@ var tx_sn: u8
 export function ack(req: $$<TB.LnkHdr>) {
     if (tx_kind != TxKind.NONE && req.$$.updateTxAck($$(tx_sn))) {
         if (tx_kind == TxKind.ATT) att_ack_flag = true
+        if (tx_kind == TxKind.CTRL) ctrl_ack_flag = true
         tx_kind = TxKind.NONE
     }
 }
@@ -75,6 +77,7 @@ export function reset() {
     ctrl_flag = false
     att_flag = false
     att_ack_flag = false
+    ctrl_ack_flag = false
     tx_sn = 0
     empty_rsp.init(TB.LL_CONT)
 }
@@ -86,6 +89,12 @@ export function setAttReady() {
 export function takeAttAck(): bool_t {
     const acked = att_ack_flag
     att_ack_flag = false
+    return acked
+}
+
+export function takeCtrlAck(): bool_t {
+    const acked = ctrl_ack_flag
+    ctrl_ack_flag = false
     return acked
 }
 

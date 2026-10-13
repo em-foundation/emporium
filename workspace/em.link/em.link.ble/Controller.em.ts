@@ -21,6 +21,7 @@ const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
 const reqF = $config<FiberMgr.Obj>()
 const statusF = $config<FiberMgr.Obj>()
+const encAckF = $config<FiberMgr.Obj>()
 const status_cb = $config<TL.RecvDoneFxn>()
 
 export namespace em$meta {
@@ -30,6 +31,7 @@ export namespace em$meta {
     export function em$construct() {
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
         statusF.$$val = FiberMgr.em$meta.create($cb(statusFB))
+        encAckF.$$val = FiberMgr.em$meta.create($cb(encAckFB))
         RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
@@ -43,6 +45,8 @@ export namespace em$meta {
 const ALL_ADV_CHANS = 0x7
 const LL_ENC_REQ = 0x03
 const LL_ENC_REQ_LEN = 23
+const LL_ENC_RSP = 0x04
+const LL_START_ENC_REQ = 0x05
 const SMP_ADDR_LEN = 7
 const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
@@ -87,6 +91,8 @@ var cur_state: State = State.IDLE
 var null_pkt_cnt: u8
 var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
+var enc_rsp_pending: bool_t
+var enc_rsp_acked: bool_t
 
 export function start() {
     if (cur_state != State.IDLE) {
@@ -101,6 +107,8 @@ export function start() {
     cur_adv_mask = 0
     null_pkt_cnt = 0
     Smp.reset()
+    enc_rsp_pending = false
+    enc_rsp_acked = false
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -140,6 +148,8 @@ function controller() {
             }
             case State.CONN: {
                 Connection.open(conn_pkt)
+                enc_rsp_pending = false
+                enc_rsp_acked = false
                 setSmpAddresses()
                 notifyStatus(TL.ConnectionStatus.OPENING)
                 anchor.reset()
@@ -209,6 +219,11 @@ function doExch(end_ms: u16) {
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     LnkTx.ack(lnk_req)
+    if (LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
+        enc_rsp_pending = false
+        enc_rsp_acked = true
+        encAckF.$$.post()
+    }
     if (lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) reqF.$$.post()
     const tx = LnkTx.choose(lnk_req)
     Smp.txChosen()
@@ -242,6 +257,10 @@ function statusFB(_: arg_t) {
     status_cb(pending_status)
 }
 
+function encAckFB(_: arg_t) {
+    printf`BLE LL_ENC_RSP ACK\n`()
+}
+
 function radioOff() {
     RadioDriver.disable()
 }
@@ -270,7 +289,22 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
                 printf`SMP bad LL_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
                 fail()
             }
-            printf`SMP LL_ENC_REQ\n`()
+            // Fixed SKDs/IVs for packet-at-a-time bring-up only.
+            rsp_pkt.$$.init(TB.LL_CTRL)
+            const out = rsp_pkt.$$.pduPtr()
+            out[0] = LL_ENC_RSP
+            for (const i of $range(8)) out[1 + i] = i
+            for (const i of $range(4)) out[9 + i] = 8 + i
+            rsp_pkt.$$.pduLen = 13
+            enc_rsp_pending = true
+            return true
+        }
+        case LL_START_ENC_REQ: {
+            if (lnk_req.$$.pduLen != 1) {
+                printf`SMP bad LL_START_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
+                fail()
+            }
+            printf`SMP LL_START_ENC_REQ\n`()
             lnk_req.$$.print()
             halt()
             return false
