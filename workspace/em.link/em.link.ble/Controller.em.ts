@@ -41,6 +41,8 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const ALL_ADV_CHANS = 0x7
+const LL_ENC_REQ = 0x03
+const LL_ENC_REQ_LEN = 23
 const SMP_ADDR_LEN = 7
 const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
@@ -234,6 +236,9 @@ function notifyStatus(status: TL.ConnectionStatus) {
 }
 
 function statusFB(_: arg_t) {
+    if (pending_status == TL.ConnectionStatus.OPENING) printf`BLE CONNECTION OPEN\n`()
+    if (pending_status == TL.ConnectionStatus.HANGUP) printf`BLE CONNECTION HANGUP (RX timeout)\n`()
+    if (pending_status == TL.ConnectionStatus.CLOSED) printf`BLE CONNECTION CLOSED\n`()
     status_cb(pending_status)
 }
 
@@ -253,10 +258,21 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
     let rsp_data = TB.LL_REJECT_DATA.$frame(0)
     let unk_flag = false
     const opcode = req_pdu[0]
+    printf`BLE LL_CTRL opcode=%02x len=%d\n`(opcode, lnk_req.$$.pduLen)
     switch (opcode) {
         case TB.LL_CONN_UPDATE_IND: {
             const upd = $cast2<$$<TB.ConnUpdData>>($$(req_pdu[1]))
             Connection.update(upd)
+            return false
+        }
+        case LL_ENC_REQ: {
+            if (lnk_req.$$.pduLen != LL_ENC_REQ_LEN) {
+                printf`SMP bad LL_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
+                fail()
+            }
+            printf`SMP LL_ENC_REQ\n`()
+            lnk_req.$$.print()
+            halt()
             return false
         }
         case TB.LL_FEATURE_REQ: {
@@ -272,6 +288,7 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             break
         }
         case TB.LL_TERMINATE_IND: {
+            if (lnk_req.$$.pduLen >= 2) printf`BLE LL_TERMINATE reason=%02x\n`(req_pdu[1])
             setState(State.CLOSING)
             return false
         }

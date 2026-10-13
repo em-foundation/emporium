@@ -37,11 +37,13 @@ const LOCAL_NB = $config<Nonce>()
 const LOCAL_SK = $config<T.U256>()
 const work_f = $config<FiberMgr.Obj>()
 const verify_f = $config<FiberMgr.Obj>()
+const ack_f = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
         work_f.$$val = FiberMgr.em$meta.create($cb(workFB))
         verify_f.$$val = FiberMgr.em$meta.create($cb(verifyFB))
+        ack_f.$$val = FiberMgr.em$meta.create($cb(ackFB))
         const salt = [0x6c, 0x88, 0x83, 0x91, 0xaa, 0xf5, 0xa5, 0x38, 0x60, 0x37, 0x0b, 0xdb, 0x5a, 0x60, 0x83, 0xbe]
         for (const i of $range(NONCE_LEN)) F5_SALT.$$val[i] = salt[i]
         for (const i of $range(NONCE_LEN)) LOCAL_NB.$$val[i] = i
@@ -69,6 +71,8 @@ var mac_key: CmacProviderI.Mac
 var ltk: CmacProviderI.Mac
 var addresses_ready: bool_t
 var responder_check_sent: bool_t
+var responder_check_acked: bool_t
+var peer_check_seen: bool_t
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
@@ -86,15 +90,18 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         return true
     }
     if (pair_random_sent && pdu[4] == DHKEY_CHECK) {
+        if (peer_check_seen) return true
         if (pdu[0] != 0x11 || pdu[1] != 0x00) {
             printf`BAD SMP DHKey Check length\n`()
             fail()
         }
+        peer_check_seen = true
         loadLe128(peer_check.$ptr(), <TL.BufPtr>$$(pdu[5]))
         verify_f.$$.post()
         return true
     }
     if (pdu[4] == PAIRING_REQ) {
+        if (pair_rsp_sent) return true
         central_io[0] = pdu[7] // AuthReq
         central_io[1] = pdu[6] // OOB
         central_io[2] = pdu[5] // IOcap
@@ -127,6 +134,8 @@ export function reset() {
     pair_rsp_sent = false
     pair_rsp_tx_seen = false
     responder_check_sent = false
+    responder_check_acked = false
+    peer_check_seen = false
     L2Cap.reset()
 }
 
@@ -135,9 +144,9 @@ export function txChosen() {
     if (!LnkTx.takeAttAck()) return
     if (!L2Cap.txActive()) return
     if (L2Cap.txAcked()) {
-        if (responder_check_sent) {
-            printf`SMP responder DHKey Check ACK\n`()
-            halt()
+        if (responder_check_sent && !responder_check_acked) {
+            responder_check_acked = true
+            ack_f.$$.post()
         }
         if (!local_pk_tx_done) {
             local_pk_tx_done = true
@@ -323,6 +332,10 @@ function workFB(_: arg_t) {
     storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
     storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
+}
+
+function ackFB(_: arg_t) {
+    printf`SMP responder DHKey Check ACK\n`()
 }
 
 function verifyFB(_: arg_t) {

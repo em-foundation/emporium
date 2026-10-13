@@ -241,7 +241,7 @@ export const GATT_PRIMARY_SERVICE_DATA = $table<u8>([
 ])
 
 export const LL_FEATURE_RSP_DATA = $table<u8>([
-    LL_FEATURE_RSP, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // *no* length extension
+    LL_FEATURE_RSP, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  // LE Encryption supported; no length extension
 ])
 
 export const LL_LENGTH_RSP_DATA = $table<u8>([
