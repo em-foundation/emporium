@@ -69,6 +69,7 @@ enum State {
 }
 
 class SmpAddr extends $vector<u8> { $len = SMP_ADDR_LEN }
+class Skd extends $vector<u8> { $len = 16 }
 
 class Anchor extends $struct {
     usecs: u32
@@ -93,6 +94,7 @@ var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
 var enc_rsp_pending: bool_t
 var enc_rsp_acked: bool_t
+var session_skd: Skd
 
 export function start() {
     if (cur_state != State.IDLE) {
@@ -259,6 +261,9 @@ function statusFB(_: arg_t) {
 
 function encAckFB(_: arg_t) {
     printf`BLE LL_ENC_RSP ACK\n`()
+    Smp.deriveSessionKey(session_skd.$ptr())
+    printf`SMP session key DERIVED (encryption not enabled)\n`()
+    halt()
 }
 
 function radioOff() {
@@ -289,11 +294,15 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
                 printf`SMP bad LL_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
                 fail()
             }
+            for (const i of $range(8)) session_skd[i] = req_pdu[11 + i]
             // Fixed SKDs/IVs for packet-at-a-time bring-up only.
             rsp_pkt.$$.init(TB.LL_CTRL)
             const out = rsp_pkt.$$.pduPtr()
             out[0] = LL_ENC_RSP
-            for (const i of $range(8)) out[1 + i] = i
+            for (const i of $range(8)) {
+                out[1 + i] = i
+                session_skd[8 + i] = i
+            }
             for (const i of $range(4)) out[9 + i] = 8 + i
             rsp_pkt.$$.pduLen = 13
             enc_rsp_pending = true

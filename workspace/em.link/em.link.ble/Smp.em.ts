@@ -1,7 +1,9 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
+import * as Aes128I from '@em.hal/Aes128I.em'
 import * as CmacProviderI from '@em.crypto.cmac/CmacProviderI.em'
+import * as Common from '@em.mcu/Common.em'
 import * as Crypto from '@em.crypto/Crypto.em'
 import * as T from '@em.crypto.p256/Types.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
@@ -69,6 +71,7 @@ var central_io: Addr
 var peer_check: Nonce
 var mac_key: CmacProviderI.Mac
 var ltk: CmacProviderI.Mac
+var session_key: Aes128I.Block
 var addresses_ready: bool_t
 var responder_check_sent: bool_t
 var responder_check_acked: bool_t
@@ -124,6 +127,14 @@ export function setAddresses(central: ptr_t<u8>, peripheral: ptr_t<u8>) {
         peripheral_addr[i] = peripheral[i]
     }
     addresses_ready = true
+}
+
+// Input is SKDm || SKDs in Link Layer wire byte order.
+// AES-128 provider consumes cryptographic byte order.
+export function deriveSessionKey(skd: ptr_t<u8>) {
+    let block = Aes128I.Block.$make()
+    for (const i of $range(Aes128I.BLOCK_LEN)) block[i] = skd[Aes128I.BLOCK_LEN - 1 - i]
+    Common.Aes128.encrypt(ltk.$ptr(), block.$ptr(), session_key.$ptr())
 }
 
 export function reset() {
