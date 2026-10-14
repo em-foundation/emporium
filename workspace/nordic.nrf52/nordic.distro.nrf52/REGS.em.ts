@@ -1,5 +1,5 @@
-import '@$$emscript'
-export const $U = $declare('COMPOSITE')
+import em from '@$$emscript'
+export const $U = em.$declare('COMPOSITE')
 
 export function em$generate() {
     let out = $outfile('nordic.distro.nrf52/REGS.hpp')

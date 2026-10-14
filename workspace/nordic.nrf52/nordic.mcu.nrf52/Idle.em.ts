@@ -1,8 +1,6 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', IdleI)
 
-import * as $R from '@nordic.distro.nrf52/REGS.em'
-
 import * as Debug from '@em.lang/Debug.em'
 import * as IdleI from '@em.hal/IdleI.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'

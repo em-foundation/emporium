@@ -6,6 +6,8 @@ files:
   - .assets/img-102-05-01.png
   - .assets/img-102-05-02.png
 
+reveal: 1
+
 steps:
   - cmds:
       - open 2

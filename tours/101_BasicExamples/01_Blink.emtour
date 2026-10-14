@@ -6,6 +6,8 @@ files:
   - rpi.2040:rpi.distro.2040/BoardC.em.ts
   - .assets/img-101-01-03.png
 
+reveal: 1
+
 steps:
   - cmds:
       - open 1
@@ -89,7 +91,6 @@ steps:
       - mark 4 B 57
 
     focus: [4, 30]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$details]&thinsp;&thinsp;%[cu]BoardC% &ndash; Closer Look}

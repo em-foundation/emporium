@@ -11,7 +11,7 @@ import * as REGS from '@ti.distro.cc23xx/REGS.em'
 import * as StartupC from '@ti.distro.cc23xx/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
-const NVIC_INTRS = [
+const NVIC_INTRS = <Array<string>>[
     'CPUIRQ0',
     'CPUIRQ1',
     'CPUIRQ2',
@@ -41,8 +41,8 @@ export function em$configure() {
     $using(REGS)
     $using(StartupC)
     $using(TargC)
-    IntrVec.IsrDefault.$$dlg = $isbare() ? IsrEmpty : IsrDebug
-    for (let name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
+    IntrVec.IsrDefault.$$dlg = IsrEmpty
+    for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {

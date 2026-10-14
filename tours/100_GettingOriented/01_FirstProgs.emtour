@@ -30,7 +30,6 @@ steps:
       - mark 1 A 2
       - mark 1 B 5
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$details]&thinsp;%[cu]HelloP% &ndash; Details}
@@ -43,7 +42,11 @@ steps:
 
       {[BM,B]} Note the somewhat unusual {[cd]printf} syntax.
 
-      You can also use the {[cb,target]} *action button* to reveal this file within the **EM&bull;Browser** content hierarchy.
+      <div class="em-info">
+
+      You'll also notice that the **EM&bull;Builder Content** view reveals this file's position within the **EMS** hierarchy.
+
+      </div>
 
       And now, let's execute this **EMS** program&thinsp;&hellip;
 
@@ -74,7 +77,7 @@ steps:
   - cmds:
       - open 2
     focus: [2, 1]
-    acts: [$build, $reveal]
+    acts: [$build]
     text: |
 
       {[ht,$build]&thinsp;%[cu]BlinkerP% &ndash; Build&thinsp;+&thinsp;Load}

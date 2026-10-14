@@ -9,6 +9,7 @@ files:
 steps:
   - cmds:
       - view 3
+      - reveal 2
     text: |
       {[ht,$start]&thinsp;Transforming CoreMark}
 
@@ -21,7 +22,7 @@ steps:
       If you've chosen a <span class="em codicon codicon-circuit-board"></span>&thinsp;{[em]Board} during the prior tour, switch back now to the `rpi.2040://PI_PICO-sim$$` target.
 
       </div>
-      
+
   - cmds:
       - open 1
       - mark 1 R 25
@@ -76,6 +77,7 @@ steps:
 
   - cmds:
       - view 4
+      - reveal 2
     text: |
       {[ht,monitor_heart]&thinsp;%[cu]SleepyRunnerP% &ndash; Signal Capture}
 
@@ -104,6 +106,7 @@ steps:
 
   - cmds:
       - view 3
+      - reveal 2
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

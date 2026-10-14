@@ -1,0 +1,304 @@
+title: Distro Gallery
+
+files:
+  - .assets/img-103-09-01.png
+  - .assets/img-103-09-02.png
+  - .assets/img-103-09-03.png
+  - .assets/img-103-09-04.png
+  - .assets/img-103-09-05.png
+  - .assets/img-103-09-06.png
+  - .assets/img-103-09-07.png
+  - .assets/img-103-09-08.png
+  - .assets/img-103-09-09.png
+  - .assets/img-103-09-10.png
+  - .assets/img-103-09-11.png
+  - .assets/img-103-09-12.png
+
+steps:
+  - cmds:
+      - view 1
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040
+    text: |
+      {[ht,$start]&thinsp;Distro Gallery}
+
+      The last handful of tours examined the details of (MCU-specific) content supplied by our `rpi.2040` distro {[dc,R]}.
+
+      This tour takes a bird's-eye view of those sources &ndash; plac&shy;ing files from {[dc,R]} next to counterparts from distros {[dc,N]} and {[dc,T]}.
+
+      We'll use capitalized markers [{[bm,A]}&thinsp;] to highlight com&shy;mon elements to aid viewing source files side-by-side.
+
+      We'll then use numeric circles [&thinsp;{[dc,1]}&thinsp;] to highlight additional details within these files as needed.
+
+      <div class="em-info">
+
+      **VS Code**💡&ndash; hide the **Primary Sidebar** and **Bottom Panel** to best view _code triptych_ series that follows.
+
+      </div>
+
+  - cmds:
+      - view 2
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.distro.2040/BuildC.em.ts
+    text: |
+      {[ht,photo]&thinsp;%[cu]BuildC%}
+
+      Recalling its special relationship with the **EMS** translator, {[cu]BuildC}&thinsp;{[tr,103/03/01]} provides an entry-point into any distro.
+
+      We've peeked earlier at {[cs]em$configure} in these files, not&shy;ing _commonality_ in declaring MCU interrupts {[tr,103/06/04]}.
+
+      Synthesis of `build.sh` and `load.sh` scripts within their {[cs]em$generate} implementations follows suit:
+
+      {[BM,A]} specification of the MCU's memory map<br>
+      {[BM,B]} compiler flags reflecting the CPU's architecture<br>
+      {[BM,C]} a platform-specific command for loading executables<br>
+
+      {[DC,1]} a repeatable pattern for any MCU with **JLink** support
+
+      <div class="em-info">
+
+      A future utility might synthesize `build.sh` fragments for these (and other) distros using **Segger** compilers.
+
+      </div>
+
+  - cmds:
+      - view 3
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.distro.2040/BoardC.em.ts
+
+    text: |
+      {[ht,photo]&thinsp;%[cu]BoardC%}
+
+      Having made _many_ stops at the `rpi.2040` {[dc,R]} {[cu]BoardC}, we see almost identical code in its distro {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} counterparts.
+
+      Some details about their {[cs]em$configure} implementations:
+
+      {[BM,A]} per-board bindings of logical pin names<br>
+      {[BM,B]} assigning a (MCU-specific) scalar for {[cu]BusyWait}<br>
+
+      {[DC,1]} set {[cn]MHZ_P} [=&thinsp;48] to match the MCU system clock<br>
+      {[DC,2]} disable on-board SPI FLASH to save power<br>
+
+      Similar to a top-level HW module in VHDL/Verilog, {[cu]BoardC} serves as a "collection" point for distro content.
+
+      <div class="em-info">
+
+      Yes, you can shamelessly "cut-copy-paste" proven vers&shy;ions of {[cu]BoardC} when implementing new **EMS** distros&thinsp;!!
+
+      </div>
+
+  - cmds:
+      - view 5
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/GpioT.em.ts
+
+    text: |
+      {[ht,photo]&thinsp;%[cu]GpioT%}
+
+      Evolving from bare-metal code fragments {[tr,103/04/03]}, {[cu]GpioT} {[tr,103/05/07]} supports a basic capability of the distro's MCU.
+
+      Despite expected differences in register-level ac&shy;cess to in&shy;dividual pins, {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} employ a consistent design:
+
+      {[BM,A]} a {[cn]pin_num} config parameter assigned in {[cu]BoardC}<br>
+      {[BM,B]} mapping external {[cn]pin_num} to internal constants<br>
+      {[BM,C]} prepare the underlying GPIO pin for output<br>
+      {[BM,D]} change the output state of the underlying GPIO pin<br>
+
+      MCUs with _multiple_ GPIO banks [eg `0xB_09`] require more advanced de&shy;coding of {[cn]pin_num} at&thinsp;{[bm,B]}.
+
+      <div class="em-info">
+
+      In practice, {[cu]GpioT} will evolve organically within a new distro &ndash; code what you need, stub-out the rest.
+
+      </div>
+
+  - cmds:
+      - view 4
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/ConsoleUart0.em.ts
+
+    text: |
+      {[ht,photo]&thinsp;%[cu]ConsoleUart%}
+
+      For pedagogical reasons, we purposely crafted a mini&shy;mal {[cu]ConsoleUart} for our `rpi.2040`&thinsp;{[dc,R]}&thinsp; distro &thinsp;{[tr,103/05/06]}.
+
+      The {[cu]ConsoleUart} drivers supplied by distros {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} rep&shy;resent a more typical implementation pattern:
+
+      {[BM,A]} flush any pending output to the HW UART<br>
+      {[BM,B]} write a single output byte, polling for completion<br>
+
+      {[DC,1]} bind {[cu]Idle} sleep callbacks at build-time<br>
+      {[DC,2]} re-use {[cf]sleepLeave} in {[cs]em$startup}<br>
+      {[DC,3]} disable the HW UART and reset {[cu]TxPin}<br>
+      {[DC,4]} configure and enable the HW UART<br>
+
+      <div class="em-info">
+
+      Prefer the minimalist approach {[dc,R]} when coding a new distro; add the {[cu]Idle} callbacks when further along.
+
+      </div>
+
+  - cmds:
+      - view 6
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/Mcu.em.ts
+
+    text: |
+      {[ht,photo]&thinsp;%[cu]Mcu%}
+
+      The {[cu]Mcu} module contains initialization code executed very soon after HW RESET {[tr,103/05/05]}.
+
+      Highly reflective of the underlying HW architecture, each {[cu]Mcu} implementation does contain some common traits:     
+
+      {[BM,A]} a stub satisfying most MCU HW needs<br>
+      {[BM,B]} initial activity on the `DbgB` pin<br>
+
+      {[DC,1]} distinguish `setup-sram` from `setup-flash`<br>
+      {[DC,2]} vendor-supplied silicon workarounds ["magic"]<br>
+      {[DC,3]} CACHE setup for FLASH execution<br>
+      {[DC,4]} low-frequency CLOCK for deep-sleep<br>
+
+      <div class="em-info">
+
+      Often coded in tandem with {[cu]GpioT} in early distro devel&shy;opment, keep {[cu]Mcu} minimal for as long as reasonable.
+
+      </div>
+
+  - cmds:
+      - view 8
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/OneShotAlarm0.em.ts
+    text: |
+      {[ht,photo]&thinsp;%[cu]OneShot%}
+
+      Our first driver to handle interrupts, {[cu]OneShot} also man&shy;ages a HW TIMER in a very transparent manner {[tr,103/06/05]}.
+
+      Except for some low-level HW details, the {[cu]OneShot} drivers for distros {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} follow a very predictable pattern:
+
+      {[BM,A]} declare use of some HW TIMER INTR<br>
+      {[BM,B]} stop TIMER, disable INTR, allow deep-sleep<br>
+      {[BM,C]} inhibit deep-sleep, enable INTR, arm/start TIMER<br>
+      {[BM,D]} handle TIMER INTR, invoke client-supplied callback<br>
+
+      <div class="em-info">
+
+      By far the easiest class of peripheral to manage when initially supporting HW interrupts within a new distro.
+
+      </div>
+
+  - cmds:
+      - view 7
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/EdgeAux.em.ts
+    text: |
+      {[ht,photo]&thinsp;%[cu]EdgeAux%}
+
+      The {[cu]EdgeAux} module provides common build-time and run-time support for distro's {[cu]EdgeT} clones {[tr,103/08/01]}.
+
+      While {[cu]EdgeT} effectively extends its distro's {[cu]GpioT} temp&shy;late, {[cu]EdgeAux} manages interrupts in a regular manner:
+
+      {[BM,A]} define fields of a {[ct]HandlerInfo} struct<br>
+      {[BM,B]} declare use of some INTR for a GPIO group<br>
+      {[BM,C]} add new handler descriptor to build-time table<br>
+      {[BM,D]} enable the GPIO group INTR once in {[cs]em$startup}<br> 
+      {[BM,E]} service INTRs and invoke any matching handlers<br>
+
+      {[DC,1]} the {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} versions fully match handlers in {[cf]*_isr$$}<br>
+
+      <div class="em-info">
+
+      Surprisingly tricky compared with {[cu]OneShot}, defer devel&shy;opment of the {[cu]EdgeT}+{[cu]EdgeAux} pair until needs arise.
+
+      </div>
+
+  - cmds:
+      - view 9
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/Idle.em.ts
+    text: |
+      {[ht,photo]&thinsp;%[cu]Idle%}
+
+      Anchoring drivers that use interrupts, {[cu]Idle} halts the CPU and awaits incoming events in a low-power state &thinsp;{[tr,103/06/07]}.
+
+      While clearly touching the MCU directly, {[cu]Idle} maintains design consistency across distros {[dc,R]}&thinsp;&middot;&thinsp;{[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
+
+      {[BM,A]} initial `DbgB` signalling always occurs at {[cs]em$startup}<br>
+      {[BM,B]} pause the CPU while keeping peripherals powered<br>
+      {[BM,C]} turn off most peripherals and enter MCU deep-sleep<br>
+      {[BM,D]} stock implementations of abstract {[cu]IdleI} methods<br>
+
+      <div class="em-info">
+
+      Initial {[cu]Idle} implementations might _only_ use {[cf]doPause}, adding {[cf]doSleep} later as a low-power optimization.
+
+      </div>
+
+  - cmds:
+      - view 10
+      - reveal nordic.nrf52
+      - reveal ti.cc23xx
+      - reveal rpi.2040:rpi.mcu.2040/RtcAlarm1.em.ts
+
+    text: |
+      {[ht,photo]&thinsp;%[cu]Rtc%}
+
+      More advanced than {[cu]OneShot}, the {[cu]Rtc} driver must ad&shy;dress challenges of low-power and long-range {[tr,103/07/05]}.
+
+      Achieving low power in {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]} boils down to using the MCU's (32&thinsp;kHz) LFCLK when entering deep-sleep.
+
+      Achieving long-range heavily depends upon counter width and resolution within the underlying HW: 
+
+      {[BM,A]} initialize the RTC and enable its interrupt <br>
+      {[BM,B]} read then normalize RTC HW counters<br>
+      {[BM,C]} convert to an RTC-specific counter threshold<br>
+
+      &ensp;&ensp;{[dc,1]}&thinsp; [<small>64-bit @ 1&mu;s</small>] &thinsp;&middot;&thinsp; {[dc,2]}&thinsp; [<small>24-bit @ 32kHz</small>] &thinsp;&middot;&thinsp; {[dc,3]}&thinsp; [<small>67-bit @ 8&mu;s</small>]
+
+      <div class="em-info">
+
+      While a conventional timer {[dc,R]} can simplify matters, you really _will_ want a low-power {[cu]Rtc} in any new distro.
+
+      </div>
+
+  - cmds:
+      - view 11
+      - reveal ti.cc23xx:ti.mcu.cc23xx/Rtc.em.ts
+      - reveal nordic.nrf52:nordic.mcu.nrf52/Rtc.em.ts
+
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Deep-dive into the full {[cu]Rtc} drivers of distro {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}
+
+      {[bi,task_alt]} Explore the unique {[cu]Rtc} _range_ issues within {[dc,N]}.
+
+      {[bi,task_alt]} Grok why LFCLK sources impact {[cu]Rtc} _power_ {[dc,N]}&thinsp;&middot;&thinsp;{[dc,T]}.
+
+  - cmds:
+      - view 12
+      - reveal em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      Congratulations on conquering **Distro Packages** 🏔️ &ndash; one of our most challenging **EM&bull;Tour** bundles.
+
+      Hinting at the importance of _low-power_, we'll climb that mountain in our next set of tours &ndash; **Energy Efficiency**.
+
+      We'll focus on profiling MCU energy con&shy;sumption (meas&shy;ured in &mu;J) when active {[dc,A]} as well as in deep-sleep {[dc,S]}.
+
+      <div class="em-info">
+
+      Why does the lower-performance **TI CC23xx** achieve better overall energy-efficiency {[dc,E]} than the **nRF52**&thinsp;??
+
+      </div>
+
+      {[hc]}

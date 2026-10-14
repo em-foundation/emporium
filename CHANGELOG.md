@@ -1,5 +1,18 @@
 # Changelog
 
+## release-26.10
+
+* Added Distro Packages tours (103)
+* Added distro build and register-access workflows
+* Added timers, interrupts, sleep, and GPIO walkthroughs
+* Added distro gallery spanning Raspberry Pi, nRF52, and CC23xx
+* Added Saleae Logic 2 as a PulseView alternative
+* Improved Tour Guide source folding and Content-view reveal
+* Improved board/setup behavior for distro development workflows
+* Added GNU linker-script and map-file VS Code extensions
+* EM•Script pinned to 26.3.4
+* EM•Builder pinned to 26.3.0
+
 ## release-26.09
 
 * Added CoreMark tours (102)

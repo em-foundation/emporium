@@ -10,6 +10,7 @@ files:
 steps:
   - cmds:
       - view 5
+      - reveal 2
     text: |
       {[ht,$start]&thinsp;Benchmark Infrastructure}
 
@@ -26,7 +27,6 @@ steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: [$reveal]
     text: |
       {[ht,$look]&thinsp;%[cu]BenchAlgI% &ndash; Quick Look}
 
@@ -126,6 +126,7 @@ steps:
       {[in]If you haven't already noticed, we've defined a local %[ct]UT% moniker for %[cu]Utils% at line %[bm,A]% to improve readability.}
 
   - cmds:
+      - open 2
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 

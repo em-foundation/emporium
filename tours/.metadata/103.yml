@@ -1,0 +1,65 @@
+group_id: "103"
+title: "Distro Packages"
+tours:
+  - "103_01"
+  - "103_02"
+  - "103_03"
+  - "103_04"
+  - "103_05"
+  - "103_06"
+  - "103_07"
+  - "103_08"
+  - "103_09"
+summary: >
+  Introduces EMS distro packages as the portability substrate that connects portable application code to concrete MCU hardware. The group works backward from a generated C++ target project into BuildC, register facades, board configuration, basic MCU services, timers, interrupts, deep sleep, and GPIO edge handling, then closes with a cross-distro gallery showing how the same architectural roles are implemented across Raspberry Pi RP2040, Nordic nRF52, and TI CC23xx platforms.
+concepts_progression:
+  - 103_01 introduces the distro portability model, package structure, board/setup selection, and the role of BuildC in connecting portable EMS programs to hardware.
+  - 103_02 works backward from a minimal target program into its generated C++ project, build artifacts, and build properties.
+  - 103_03 examines BuildC and StartupC as the synthesis layer that generates target C++ code, linker/build inputs, and load scripts.
+  - 103_04 moves below generated artifacts into register access, comparing vendor headers with the EMS $R register facade and showing how REGS metadata is generated.
+  - 103_05 introduces the core board and MCU service layer through BoardC configuration, reset handling, console output, and GPIO services.
+  - 103_06 adds one-shot timers, interrupt declarations, ARM interrupt support, and idle processing to show how asynchronous hardware services enter a distro.
+  - 103_07 extends the timer/idle model into RTC-based wakeup, deep sleep, and sleep enter/leave callbacks using SleepyRunnerP as the workload.
+  - 103_08 adds GPIO edge interrupts, following the path from the portable EdgeI interface through the EdgeT template and shared interrupt helper.
+  - 103_09 closes with a visual gallery comparing corresponding distro components across Raspberry Pi RP2040, Nordic nRF52, and TI CC23xx implementations.
+concepts_introduced:
+  - EMS distro packages
+  - distro portability substrate
+  - board and setup selection
+  - BuildC
+  - generated C++ target projects
+  - generated build artifacts
+  - build properties
+  - StartupC
+  - linker-script generation
+  - build-script generation
+  - load-script generation
+  - EMS register facade
+  - $R register access
+  - REGS metadata
+  - register-facade generation
+  - BoardC
+  - em-boards configuration
+  - MCU reset processing
+  - console UART service
+  - GPIO service
+  - one-shot timers
+  - interrupt declaration and vector support
+  - ARM interrupt support
+  - IdleI implementation
+  - RTC wakeup
+  - deep sleep
+  - sleep enter and leave callbacks
+  - GPIO edge interrupts
+  - EdgeI
+  - EdgeT driver template
+  - shared edge-interrupt dispatch
+  - cross-distro implementation comparison
+prerequisites:
+  - 101_BasicExamples
+issues_and_notes:
+  - The group deliberately moves from the portable application boundary downward into increasingly hardware-specific distro implementation details, then returns to a cross-platform comparison in the final gallery.
+  - Raspberry Pi RP2040 is used for several detailed implementation walkthroughs, while Nordic nRF52 and TI CC23xx provide parallel implementations and comparison points throughout the group.
+  - SleepyRunnerP from the CoreMark tour group is reused as a concrete workload for the deep-sleep walkthrough; understanding the full CoreMark internals is not required for this group.
+  - The metadata.ts-generated per-tour files remain authoritative for source paths, stop counts, markers, and source snapshots; this group file captures sequence-level teaching intent.
+  - Run the repository metadata validator after copying this file into tours/.metadata.

@@ -1,6 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', ConsoleUartI)
 
+import * as $R from '@ti.distro.cc23xx/REGS.em'
+
 import * as ConsoleUartI from '@em.hal/ConsoleUartI.em'
 import * as GpioI from '@em.hal/GpioI.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
@@ -14,7 +16,7 @@ export namespace em$meta {
     }
 }
 
-import * as $R from '@ti.distro.cc23xx/REGS.em'
+//>> ---- em$targ ---- <<//
 
 export function em$startup(): void {
     sleepLeave()

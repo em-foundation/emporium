@@ -4,14 +4,15 @@ files:
   - .assets/img-101-02-01.png
   - em.core/em.lang/Debug.em.ts
 
+reveal: 1
+
 steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal"]
     text: |
 
-      {[ht,$start]&thinsp;%[cu]Debug% &ndash; Real-Time Debug}
+      {[ht,$start]&thinsp;%[cu]DebugP% &ndash; Real-Time Debug}
 
       The {[cu]DebugP} program introduces some elementary debug capabilities provided by the **EMS** language.
 
@@ -116,7 +117,6 @@ steps:
   - cmds:
       - open 3
     focus: [3, 1]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$look]&thinsp; Portable Implementation}

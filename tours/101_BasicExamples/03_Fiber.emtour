@@ -5,11 +5,13 @@ files:
   - .assets/img-101-03-01.png
   - .assets/img-101-03-02.png
 
+reveal: 1
+
 steps:
   - cmds:
       - open 1
     focus: [1, 1]
-    acts: ["$reveal", "$build"]
+    acts: ["$build"]
     text: |
 
       {[ht,$start]&thinsp;%[cu]FiberP% &ndash; Threading with Fibers}
@@ -54,7 +56,6 @@ steps:
       - mark 2 D 14
       - mark 2 E 18
     focus: [2, 6]
-    acts: ["$reveal"]
     text: |
 
       {[ht,$details]&thinsp;%[cu]FiberMgr% &ndash; Details}
@@ -123,7 +124,7 @@ steps:
 
       {[BM,J]} The {[cf]run} function repeatedly calls {[cf]dispatch} to atomically work through {[cn]ready_list}.
 
-      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts in a low-power sleep mode.
+      {[BM,K]} When no more {[ct]Fiber} objects remain ready, the {[cn]Idle} proxy puts the MCU in a low-power sleep mode.
 
       {[BM,L]} {[ct]Fiber}.{[cf]post} atomically adds the current object [{[cn]this}] to the {[cn]ready_list} at run-time.
 
@@ -150,7 +151,6 @@ steps:
 
   - cmds:
       - view 3
-    acts: [$build]
     text: |
 
       {[ht,measuring_tape]&thinsp;&thinsp;%[cu]FiberP% &ndash; Program Size}

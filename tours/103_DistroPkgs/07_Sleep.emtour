@@ -1,0 +1,223 @@
+title: Sleep + Wakeup
+
+files:
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
+  - rpi.2040:rpi.distro.2040/BoardC.em.ts
+  - rpi.2040:rpi.mcu.2040/RtcAlarm1.em.ts
+  - rpi.2040:rpi.mcu.2040/Idle.em.ts
+  - em.core:em.utils/LedT.em.ts
+  - .assets/img-103-07-01.png
+  - .assets/img-103-05-02.png
+
+steps:
+  - cmds:
+      - open 1
+      - mark 1 A 26
+      - mark 1 B 32
+    focus: [1, 1]
+    text: |
+      {[ht,$start]&thinsp;Deep-Sleep}
+
+      The `em.hal` bucket within the (portable) `em.core` pack&shy;age contains two complementary MCU timer abstractions:
+
+      {[bi,arrow_circle_right]}&thinsp;{[cu]OneShotI} &mdash; "pausing" the CPU for a short interval<br>
+      {[bi,arrow_circle_right]}&thinsp;{[cu]RtcI} &mdash; entering _deep-sleep_ over a longer interval<br>
+
+      To motivate our {[cu]RtcI} implementation, we'll return to the (portable) {[cu]SleepyRunnerP} app analyzed earlier &thinsp;{[tr,102/07/05]}.
+
+      Using {[cu]TickerMgr}{[bm,A]}, this program awakens from deep-sleep every second &ndash; and runs _one_ **CoreMark** iteration&thinsp;{[bm,B]}.
+
+      <div class="em-info">
+
+      An earlier diagram illustrates how {[cu]TickerMgr} maintains its own portability via internal {[cu]RtcI} proxies {[tr,101/08/01]}.
+
+      </div>
+
+      Since {[cu]FiberMgr} calls the distro's {[cu]Common}.{[cn]Idle} dele&shy;gate {[tr,101/03/05]}&thinsp;, we'll finally visit {[cu]Idle}.{[cf]doSleep} &ndash; as promised&thinsp;&hellip;
+
+  - cmds:
+      - open 2
+      - fold 2 4 7
+      - fold 2 8 19
+      - fold 2 22 51
+      - fold 2 53 57
+      - fold 2 58 72
+      - fold 2 74 87
+      - mark 2 A 20
+      - mark 2 B 22
+    focus: [2, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]BoardC% Additions}
+
+      Of the additions shown here, only the {[cu]Rtc} delegate {[bm,A]} originates within the `rpi.2040` distro package.
+
+      Adjacent to deep-sleep support within this (ARM-based) distro, the {[cu]UsCounter} delegate at&thinsp;{[bm,B]} deserves mention.
+
+      Drawn from {[cs]'@em.arch.arm'}, this implementation of {[cu]UsCounterI} uses the generic ARM **SysTick** timer.
+
+      <div class="em-info">
+
+      You'll soon learn why **SysTick** comes up short in serving as our distro's optimal {[cu]Rtc} or {[cu]OneShot} timer.
+
+      </div>
+
+      The **SysTick** peripheral can, however, measure the passage of time at the resolution of the CPU instruction clock.
+
+      &ensp;💡&thinsp;Use **F12** to inspect {[cu]UsCounter} in more detail.
+
+  - cmds:
+      - open 3
+      - fold 3 38 57
+      - mark 3 A 14
+      - mark 3 B 26
+      - mark 3 C 61
+    focus: [3, 16]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Interrupts}
+
+      Similar to the distro's {[cu]OneShot} driver {[tr,103/06/03]}, its {[cu]Rtc} im&shy;plementation manages {[cs]$R}.{[cn]TIMER}.{[cn]ALARM1} interrupts.
+
+      <div class="em-info">
+
+      You'll also learn why our `rpi.2040` distro can use the _same_ {[cs]$R}.{[cn]TIMER} peripheral for both {[cu]OneShot} and {[cu]Rtc}.
+
+      </div>
+
+      Other than using a (slightly) different interrupt source {[bm,A]}, use of {[cs]$R}.{[cn]TIMER} by the {[cu]Rtc} driver should look familiar.
+
+      Unlike {[cu]OneShot}, {[cu]Rtc} enables {[cn]IRQn}{[bm,B]} just _once_ at start&shy;up; {[cf]*_isr$$}, however, clears {[cn]IRQn}{[bm,C]} when triggered.
+
+  - cmds:
+      - open 3
+      - fold 3 9 39
+      - fold 3 57 100
+      - mark 3 A 8
+      - mark 3 B 40
+      - mark 3 C 55
+    focus: [3, 1]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Rtc% Driver &ndash; Time Functions}
+
+      Our driver must also implement two {[cu]RtcI} methods which operate upon {[cs]'@em.utils/TimeTypes.em'}{[bm,A]} values:
+
+      {[BM,B]} {[cf]getRawTime} &mdash; 64-bit seconds&thinsp;&middot;&thinsp;sub-seconds pair<br>
+      {[BM,C]} {[cf]toThresh} &mdash; quarter-seconds to opaque timer limit<br>
+
+      Like many candidate {[cu]RtcI} peripherals, {[cs]$R}.{[cn]TIMER} pro&shy;vides a pair of 32-bit registers marking time since reset.
+
+      <div class="em-info">
+
+      The exact protocol to read and scale these registers {[bm,B]} will vary with each distro's choice for its {[cu]RtcI} timer.
+
+      </div>
+
+  - cmds:
+      - view 6
+      - reveal 3
+    text: |
+      {[ht,timer]&thinsp;Timer Design Space}
+
+      We've hinted that properties of timer periph&shy;erals make them more (or less) suitable for {[cu]Rtc} or {[cu]OneShot} drivers.
+
+      When characterizing a candidate timer, we'll consider four independent dimensions of the design space:
+
+      {[DC,1]}&thinsp; **Resolution** &mdash; smallest interval it can distinguish <br>
+      {[DC,2]}&thinsp; **Range** &mdash; longest interval it can represent<br>
+      {[DC,3]}&thinsp; **Accuracy** &mdash;closeness to real elapsed time<br>
+      {[DC,4]}&thinsp; **Power** &mdash; energy needed to keep it running<br>
+
+      {[cu]OneShot}&ensp;|&ensp; {[dc,1]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,4]} &ensp;|&ensp; _short, precise timing_<br>
+      {[cu]Rtc&nbsp;&nbsp;&nbsp;&nbsp;}&ensp;|&ensp; {[dc,4]}&thinsp;›&thinsp;{[dc,2]}&thinsp;›&thinsp;{[dc,3]}&thinsp;›&thinsp;{[dc,1]} &ensp;|&ensp; _long, low-power timing_
+
+      <div class="em-info">
+
+      Since we can't measure {[dc,4]} on {[em]PI_PICO-sim$$}, our distro uses the _same_ timer for its {[cu]OneShot} and {[cu]Rtc} drivers.
+
+      </div>
+
+  - cmds:
+      - open 4
+      - fold 4 22 30
+      - fold 4 52 100
+      - mark 4 A 14
+      - mark 4 a 18
+      - mark 4 B 41
+      - mark 4 b 50
+      - mark 4 C 44
+      - mark 4 c 48
+      - mark 4 D 46
+
+    focus: [4, 13]
+    text: |
+      {[ht,$details]&thinsp;%[cu]Idle% &ndash; &thinsp;Enter&thinsp;&middot;&thinsp;Leave&thinsp; Deep-Sleep}
+
+      Our earlier pass through {[cu]Idle}&thinsp;{[tr,103/06/07]} illustrated how {[cf]doPause} took control when awaiting a {[cu]OneShot} interrupt.
+
+      By contrast, {[cu]Rtc} drivers would want {[cu]Idle} to enter a very low-power sleep mode implemented within {[cf]doSleep}.
+
+      To save power, {[cu]Idle} enables _other_ drivers to receive call&shy;backs when entering (or leaving) deep-sleep:
+
+      {[bm,A]}{[BM,a]}&thinsp;drivers register {[ct]SleepCB} functions at build-time<br>
+      {[bm,B]}{[BM,b]}{[cf]doSleep} invokes driver callbacks at run-time<br>
+      {[bm,C]}{[BM,c]}{[cf]doSleep} directly resets&thinsp;&middot;&thinsp;restarts the `Dbg*` pins
+
+      Having made the necessary preparations, the {[cf]doSleep} function finally puts the MCU into deep-sleep at {[bm,D]}.
+
+      &nbsp;⚠️ Details can vary widely from one MCU to the next&thinsp;!!
+
+  - cmds:
+      - open 5
+      - fold 5 36 54
+      - fold 5 63 100
+      - mark 5 A 18
+      - mark 5 B 55
+      - mark 5 C 59
+    focus: [5, 14]
+    text: |
+      {[ht,$peek]&thinsp;%[cu]LedT% &ndash; Deep-Sleep Callbacks}
+
+      To illustrate {[cu]Idle} callbacks, consider the (portable) {[cu]LedT} template whose clones control {[cn]Pin} proxies.
+
+      To save energy, we want to reset (or re-enable) `AppLed` and `SysLed` GPIOs when entering (or leaving) deep-sleep.
+
+      {[BM,A]} {[cu]LedT} registers {[cn]sleep*} callbacks at build-time.<br>
+      {[BM,B]} {[cf]sleepEnter} puts {[cn]Pin} in its hi-Z input state<br>
+      {[BM,C]} {[cf]sleepLeave} puts {[cn]Pin} in its inactive output state<br>
+
+      <div class="em-info">
+
+      Note how {[cu]LedT} calls {[cf]sleepLeave} within {[cs]em$startup}.
+
+      </div>
+
+      In general, _any_ **EMS** driver can register {[cu]Idle} call&shy;backs to shutdown its HW peripheral during low-power deep-sleep.
+
+  - cmds:
+      - view 6
+      - reveal em.core:em.arch.arm/UsCounterSystick.em.ts
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} Rate **SysTick**'s suitability as an {[cu]Rtc} or {[cu]OneShot} timer.
+
+      {[bi,task_alt]} Find {[cu]Rtc} and {[cu]Idle} implementations in other distros.
+
+      {[bi,task_alt]} Execute {[cu]SleepyRunnerP} on real hardware.
+
+  - cmds:
+      - view 7
+      - reveal 2
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      With distro support for (low-power) deep-sleep in place, we can now run all **Basic Examples** from group {[dc,3]}.
+
+      <div class="em-info">
+
+      We can also support {[cu]SleepyRunnerP} &ndash; a portable app underlying our <b>EM&bull;Mark</b> energy-efficiency metric. 
+
+      </div>
+
+      Before taking up <b>EM&bull;Mark</b> in a future tour bundle, let's finish up with **Edge Interrupts** needed for group {[dc,4]}.
+
+      {[hc]}

@@ -11,7 +11,7 @@ steps:
       - mark 1 A 6
       - mark 1 B 32
     focus: [1, 1]
-    acts: [$reveal, $build]
+    acts: [$build]
     text: |
 
       {[ht,$start]&thinsp;Pausing Execution}
@@ -30,8 +30,8 @@ steps:
       - mark 2 B 11
       - mark 2 C 17
       - mark 2 D 17
+      - reveal 1
     focus: [2, 1]
-    acts: [$reveal]
     text: |
 
       {[ht,$details]&thinsp;%[cu]Poller% &ndash; Details}
@@ -48,6 +48,7 @@ steps:
 
   - cmds:
       - view 4
+      - reveal 1
     text: |
 
       {[ht,monitor_heart]&thinsp;&thinsp;Signal Captures}
@@ -63,8 +64,8 @@ steps:
   - cmds:
       - open 3
       - mark 3 P 84
+      - reveal 1
     focus: [3, 84]
-    acts: [$reveal]
     text: |
 
       {[ht,$peek]&thinsp;%[cu]BoardC% &ndash; A Quick Look}
@@ -73,10 +74,11 @@ steps:
 
       By convention, {[cu]BoardC} will also {[ck]export} its {[cu]OneShot} {[cs]$delegate} for direct use by clients like {[cu]OneShot3P}.
 
-      {[in]Review tour %[tr,101/04]% if needed.}
+      {[in]Review tour %[tr,101/04]% &thinsp;if needed.}
 
   - cmds:
       - view 4
+      - reveal 1
     text: |
 
       {[ht,$extra]&thinsp;Extra Credit}
@@ -89,6 +91,7 @@ steps:
 
   - cmds:
       - view 4
+      - reveal 1
     text: |
 
       {[ht,$steps]&thinsp;Next Steps}

@@ -4,6 +4,8 @@ files:
   - em.prog:em.benchmark.coremark/StateBench.em.ts
   - .assets/img-102-04-01.png
 
+reveal: 1
+
 steps:
   - cmds:
       - view 2

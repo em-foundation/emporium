@@ -23,6 +23,7 @@ steps:
 
   - cmds:
       - open 1
+      - reveal 1
     focus: [1, 93]
     text: |
       {[ht,files]&thinsp;Legacy Sources}
@@ -42,6 +43,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 3
     text: |
       {[ht,account_tree]&thinsp;EM&bull;Script Modules}
 
@@ -102,6 +104,7 @@ steps:
       {[in]<b>CoreMark</b> defines the algorithm CRCs as invariant re&shy;sults; the final CRC depends on the iteration count.}
 
   - cmds:
+      - open 3
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -113,6 +116,7 @@ steps:
 
   - cmds:
       - view 2
+      - reveal 3
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 

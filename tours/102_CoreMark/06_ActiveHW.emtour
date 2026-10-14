@@ -10,6 +10,7 @@ files:
 steps:
   - cmds:
       - view 6
+      - reveal 1
     text: |
       {[ht,$start]&thinsp;Running on Real HW}
 
@@ -18,7 +19,7 @@ steps:
       But before visiting {[cu]SleepyRunnerP} in next tour, let's take a giant step forward in your mastery of **EMS**:
 
       <div class="em-info">
-      
+
       Let's execute {[cu]ActiveRunner} on <u>real</u> hardware&thinsp;!!
 
       </div>
@@ -37,6 +38,10 @@ steps:
 
   - cmds:
       - view 4
+      - reveal nordic.nrf52
+      - reveal nordic.nrf54
+      - reveal ti.cc23xx
+      - reveal rpi.2040
     text: |
       {[ht,developer_board]&thinsp;Choose Your Board}
 
@@ -57,7 +62,6 @@ steps:
       Future tours explain the labeling within these pictures.
 
       </div>
-      
 
   - cmds:
       - open 2
@@ -101,9 +105,9 @@ steps:
 
       But when targeting a real hardware platform, we'll require a **Serial Monitor** to capture any {[cd]printf} output.
 
-
   - cmds:
       - view 5
+      - reveal 3
     text: |
       {[ht,cable]&thinsp;Using the Serial Monitor}
 
@@ -125,7 +129,7 @@ steps:
       - open 1
       - mark 1 C 29
     acts: [$build]
-    focus: [1,1]
+    focus: [1, 1]
     text: |
       {[ht,celebration]&thinsp;And Now&thinsp;&hellip;}
 
@@ -148,7 +152,6 @@ steps:
       The four `crc` values will remain invariant, however.
 
       </div>
-
 
   - cmds:
       - open 1
