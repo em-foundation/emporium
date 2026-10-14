@@ -8,14 +8,13 @@ import * as Heap from '@em.utils/Heap.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
-import * as RadioDriverI from '@em.link/RadioDriverI.em'
+import * as Link from '@em.link/Link.em'
 import * as Registry from '@em.link/Registry.em'
 import * as Smp from '@em.link.ble/Smp.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
-export const RadioDriver = $proxy<RadioDriverI.$I>()
 
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
@@ -32,7 +31,7 @@ export namespace em$meta {
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
         statusF.$$val = FiberMgr.em$meta.create($cb(statusFB))
         encAckF.$$val = FiberMgr.em$meta.create($cb(encAckFB))
-        RadioDriver.em$meta.bindHandler($cb(radioHandler))
+        Link.RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
         L2Cap.em$meta.allocRx(Binder.em$meta.getRxBufSize())
@@ -162,7 +161,7 @@ function controller() {
             }
             case State.CONN_PAUSE: {
                 radioOff()
-                const air_us = (RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
+                const air_us = (Link.RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
                 if (air_us == 0) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         notifyStatus(TL.ConnectionStatus.HANGUP)
@@ -210,13 +209,13 @@ function doAdvScan(chan: u8) {
     Binder.initAdvPkt(adv_hdr)
     Registry.setupParams($cb(scanProf))
     radioOn()
-    RadioDriver.startTx(adv_hdr.$$.frame(), chan)
+    Link.RadioDriver.startTx(adv_hdr.$$.frame(), chan)
 }
 
 function doExch(end_ms: u16) {
     Registry.setupParams($cb(exchProf))
     radioOn()
-    RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
+    Link.RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
@@ -267,14 +266,14 @@ function encAckFB(_: arg_t) {
 }
 
 function radioOff() {
-    RadioDriver.disable()
+    Link.RadioDriver.disable()
 }
 
 function radioOn() {
     if (cur_state == State.ADV_SCAN) {
         Led.wink(1)
     }
-    RadioDriver.enable()
+    Link.RadioDriver.enable()
 }
 
 function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
@@ -447,7 +446,7 @@ function setState(s: State) {
 }
 
 function setTimeout(usecs: u32) {
-    RadioDriver.pause(usecs, $cb(timerHandler))
+    Link.RadioDriver.pause(usecs, $cb(timerHandler))
 }
 
 function timerHandler() {
@@ -460,7 +459,7 @@ const RX_GUARD_US = 0
 Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
     const interval_us = Connection.params().$$.interval_us
     if (air_us != 0) {
-        const rx_end_us = RadioDriver.getRxEndTimeUs()
+        const rx_end_us = Link.RadioDriver.getRxEndTimeUs()
         this.usecs = rx_end_us - air_us
         this.valid = true
     } else if (this.valid) {
@@ -469,7 +468,7 @@ Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
         return interval_us
     }
     const wake_us = this.usecs + interval_us - HFCLK_GUARD_US - RX_GUARD_US
-    const now_us = RadioDriver.nowTimeUs()
+    const now_us = Link.RadioDriver.nowTimeUs()
     return wake_us > now_us ? wake_us - now_us : 0
 }
 

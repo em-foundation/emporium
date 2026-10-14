@@ -1,16 +1,15 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as BoardC from '@$distro/BoardC.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
+import * as Link from '@em.link/Link.em'
+import * as LinkC from '@em.link/LinkC.em'
 import * as Registry from '@em.link/Registry.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 import * as TT from '@em.utils/TimeTypes.em'
-
-export const RadioDriver = $delegate(BoardC.RadioDriver)
 
 const ticker = $config<TickerMgr.Obj>()
 const tx_adr = $config<Heap.Adr>()
@@ -20,6 +19,7 @@ const ADV_DATA = $table<u8>()
 
 export namespace em$meta {
     export function em$configure() {
+        $using(LinkC)
         Registry.DEFAULT_PARAMS.$$val.radio_phy = TL.Phy.BLE_1M
         Registry.DEFAULT_PARAMS.$$val.radio_power = 0
     }
@@ -48,10 +48,10 @@ export function em$run() {
 }
 
 function tickCb() {
-    RadioDriver.enable()
+    Link.RadioDriver.enable()
     for (const chan of $range(37, 40)) {
-        RadioDriver.startTx(adv_hdr.$$.frame(), chan)
-        RadioDriver.waitReady()
+        Link.RadioDriver.startTx(adv_hdr.$$.frame(), chan)
+        Link.RadioDriver.waitReady()
     }
-    RadioDriver.disable()
+    Link.RadioDriver.disable()
 }
