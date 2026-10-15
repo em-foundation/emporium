@@ -48,7 +48,6 @@ function tickCb() {
 function statusHandler(stat: TL.ConnectionStatus) {
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
-            $['%%a:'](3)
             if (CACHE_STATS) CacheStats.start()
             break
         case TL.ConnectionStatus.CLOSED:

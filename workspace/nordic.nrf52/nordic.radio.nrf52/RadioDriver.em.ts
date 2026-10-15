@@ -141,7 +141,6 @@ export function startCw(chan: u8, power: i8) {
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
-    // $['%%d:'](2)
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
@@ -164,7 +163,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
-    $['%%a:'](1)
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
@@ -188,7 +186,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_IRQn`)
-    // $['%%d:'](1)
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
@@ -201,9 +198,6 @@ export function waitReady() {
 }
 
 export function RADIO_isr$$() {
-    $['%%a']
-    // $['%%>'](<u8>$R.RADIO.STATE.$$)
-    // $['%%>'](<u16>$R.RADIO.INTENSET.$$)
     IntrVec.NVIC_clear(e$`RADIO_IRQn`)
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
@@ -304,7 +298,6 @@ function rtcHandler() {
         return
     }
     rx_timeout = true
-    $['%%a:'](2)
     $R.RADIO.TASKS_DISABLE.$$ = 1
     stopCrypto()
     /// TODO -- track RADIO END event
@@ -323,7 +316,6 @@ function setPacketFormat(encrypted: bool_t) {
 }
 
 function setState(s: State) {
-    // $['%%d:'](s)
     cur_state = s
 }
 

@@ -2,7 +2,7 @@
 .extensions/
 .history/
 .screenshots/
-.saleae/
+.debug/
 **/.junk/
 node_modules/
 /tools/

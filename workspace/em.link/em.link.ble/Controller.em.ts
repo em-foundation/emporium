@@ -94,7 +94,6 @@ var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
 var enc_rsp_pending: bool_t
 var enc_rsp_acked: bool_t
-var enc_final_sent: bool_t
 var enc_rx_enabled: bool_t
 var enc_start_pending: bool_t
 var enc_tx_enabled: bool_t
@@ -123,7 +122,6 @@ export function start() {
     Smp.reset()
     enc_rsp_pending = false
     enc_rsp_acked = false
-    enc_final_sent = false
     enc_rx_enabled = false
     enc_start_pending = false
     enc_tx_enabled = false
@@ -287,7 +285,6 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         rx_ctr_lo = 1
         rx_next_sn = (lnk_req.$$.lnkFlags & 0x08) ^ 0x08
         enc_tx_enabled = true
-        enc_final_sent = true
         return chooseEncryptedTx()
     }
     if (fresh) {
@@ -304,7 +301,6 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         encAckF.$$.post()
     }
     if (fresh && lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) {
-        $['%%d+']
         reqF.$$.post()
     }
     if (enc_tx_enabled) return chooseEncryptedTx()
@@ -335,9 +331,6 @@ function exchProf(params: $$<TL.Params>) {
 }
 
 function radioHandler() {
-    if (enc_final_sent) {
-        enc_final_sent = false
-    }
     controller()
 }
 
@@ -462,7 +455,6 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
 }
 
 function reqFB(_: arg_t) {
-    $['%%d-']
     if (lnk_req.$$.isCtrl()) {
         const rsp = LnkTx.getCtrlPkt()
         if (rsp == $null) return
