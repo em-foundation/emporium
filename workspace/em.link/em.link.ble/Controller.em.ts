@@ -74,7 +74,6 @@ class SmpAddr extends $vector<u8> { $len = SMP_ADDR_LEN }
 
 class Anchor extends $struct {
     usecs: u32
-    valid: bool_t
 }
 interface Anchor {
     nextPause(this: Anchor, air_us: u32): u32
@@ -253,6 +252,10 @@ function doAdvScan(chan: u8) {
 function doExch(end_ms: u16) {
     Registry.setupParams($cb(exchProf))
     radioOn()
+    const deadline = anchor.usecs + Connection.params().$$.interval_us - HFCLK_GUARD_US
+    const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
+    const limit_ms: u16 = remaining >= 1000 ? <u16>(remaining / 1000) : 1
+    if (end_ms > limit_ms) end_ms = limit_ms
     Link.RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
 }
 
@@ -571,17 +574,14 @@ Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
     if (air_us != 0) {
         const rx_end_us = Link.RadioDriver.getRxEndTimeUs()
         this.usecs = rx_end_us - air_us
-        this.valid = true
-    } else if (this.valid) {
-        this.usecs += interval_us
-    } else {
-        return interval_us
     }
-    const wake_us = this.usecs + interval_us - HFCLK_GUARD_US - RX_GUARD_US
+    this.usecs += interval_us
+    const wake_us = this.usecs - HFCLK_GUARD_US - RX_GUARD_US
     const now_us = Link.RadioDriver.nowTimeUs()
-    return wake_us > now_us ? wake_us - now_us : 0
+    const remaining = <i32>(wake_us - now_us)
+    return remaining > 0 ? <u32>remaining : 0
 }
 
 Anchor.prototype.reset = function (this: Anchor): void {
-    this.valid = false
+    this.usecs = Link.RadioDriver.getRxEndTimeUs() + 1250 + Connection.params().$$.winOff_us
 }
