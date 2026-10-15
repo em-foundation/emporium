@@ -98,8 +98,16 @@ var enc_rsp_acked: bool_t
 var enc_final_sent: bool_t
 var enc_rx_enabled: bool_t
 var enc_start_pending: bool_t
+var enc_tx_enabled: bool_t
+var enc_tx_pending: bool_t
+var enc_tx_sn: u8
+var rx_ctr_hi: u8
+var rx_ctr_lo: u32
+var rx_next_sn: u8
 var session_iv: Iv
 var session_skd: Skd
+var tx_ctr_hi: u8
+var tx_ctr_lo: u32
 
 export function start() {
     if (cur_state != State.IDLE) {
@@ -119,6 +127,13 @@ export function start() {
     enc_final_sent = false
     enc_rx_enabled = false
     enc_start_pending = false
+    enc_tx_enabled = false
+    enc_tx_pending = false
+    rx_ctr_hi = 0
+    rx_ctr_lo = 0
+    rx_next_sn = 0
+    tx_ctr_hi = 0
+    tx_ctr_lo = 0
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -128,8 +143,22 @@ export function stop() {
     setState(State.IDLE)
 }
 
+function chooseEncryptedTx(): TL.BufFrame {
+    let tx = LnkTx.choose(lnk_req)
+    tx[0] = (tx[0] & ~0x04) | (rx_next_sn >> 1)
+    const params = Registry.getParams()
+    params.$$.ble_tx_ctr_hi = tx_ctr_hi
+    params.$$.ble_tx_ctr_lo = tx_ctr_lo
+    params.$$.ble_tx_encrypted = true
+    if (tx[1] != 0) {
+        enc_tx_pending = true
+        enc_tx_sn = tx[0] & 0x08
+    }
+    Smp.txChosen()
+    return tx
+}
+
 function controller() {
-    $['%%c:'](cur_state)
     while (true) {
         switch (cur_state) {
             case State.ADV_PAUSE: {
@@ -228,12 +257,20 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
-    if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
+    const fresh = (lnk_req.$$.lnkFlags & 0x08) == rx_next_sn
+    if (enc_tx_pending && (lnk_req.$$.lnkFlags & 0x04) != (enc_tx_sn >> 1)) {
+        tx_ctr_lo += 1
+        if (tx_ctr_lo == 0) tx_ctr_hi += 1
+        if (tx_ctr_hi > 0x7f) fail()
+        enc_tx_pending = false
+    }
+    LnkTx.ack(lnk_req)
+    if (enc_rx_enabled && !enc_tx_enabled && lnk_req.$$.pduLen > 0) {
         if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
-            reqF.$$.post()
+            printf`SMP expected encrypted LL_START_ENC_RSP FAIL\n`()
+            fail()
             return $null
         }
-        LnkTx.ack(lnk_req)
         const rsp = LnkTx.getCtrlPkt()
         if (rsp == $null) {
             printf`SMP START_ENC_RSP buffer unavailable FAIL\n`()
@@ -244,20 +281,30 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         rsp.$$.pduPtr()[0] = LL_START_ENC_RSP
         rsp.$$.pduLen = 1
         LnkTx.setCtrlReady()
-        const params = Registry.getParams()
-        params.$$.ble_tx_ctr_hi = 0
-        params.$$.ble_tx_ctr_lo = 0
-        params.$$.ble_tx_encrypted = true
+        rx_ctr_lo = 1
+        rx_next_sn = (lnk_req.$$.lnkFlags & 0x08) ^ 0x08
+        enc_tx_enabled = true
         enc_final_sent = true
-        return LnkTx.choose(lnk_req)
+        return chooseEncryptedTx()
     }
-    LnkTx.ack(lnk_req)
+    if (fresh) {
+        rx_next_sn ^= 0x08
+        if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
+            rx_ctr_lo += 1
+            if (rx_ctr_lo == 0) rx_ctr_hi += 1
+            if (rx_ctr_hi > 0x7f) fail()
+        }
+    }
     if (LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
         enc_rsp_pending = false
         enc_rsp_acked = true
         encAckF.$$.post()
     }
-    if (lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) reqF.$$.post()
+    if (fresh && lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) {
+        $['%%d+']
+        reqF.$$.post()
+    }
+    if (enc_tx_enabled) return chooseEncryptedTx()
     const tx = LnkTx.choose(lnk_req)
     if (enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
         enc_rx_enabled = true
@@ -275,19 +322,18 @@ function exchProf(params: $$<TL.Params>) {
     params.$$.ble_crc_init = Connection.params().$$.crcInit
     params.$$.ble_exch_buf = $null
     params.$$.ble_chain = $cb(exchChain)
-    params.$$.ble_rx_ctr_hi = 0
-    params.$$.ble_rx_ctr_lo = 0
+    params.$$.ble_rx_ctr_hi = rx_ctr_hi
+    params.$$.ble_rx_ctr_lo = rx_ctr_lo
     params.$$.ble_rx_encrypted = enc_rx_enabled
-    params.$$.ble_tx_encrypted = false
+    params.$$.ble_rx_next_sn = rx_next_sn
+    params.$$.ble_tx_ctr_hi = tx_ctr_hi
+    params.$$.ble_tx_ctr_lo = tx_ctr_lo
+    params.$$.ble_tx_encrypted = enc_tx_enabled
 }
 
 function radioHandler() {
     if (enc_final_sent) {
-        radioOff()
-        printf`SMP encrypted LL_START_ENC_RSP verified PASS\n`()
-        printf`SMP peripheral encrypted LL_START_ENC_RSP transmitted\n`()
-        halt()
-        return
+        enc_final_sent = false
     }
     controller()
 }
@@ -413,17 +459,7 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
 }
 
 function reqFB(_: arg_t) {
-    if (enc_rx_enabled) {
-        if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
-            printf`SMP expected encrypted LL_START_ENC_RSP FAIL\n`()
-            lnk_req.$$.print()
-            fail()
-            return
-        }
-        printf`SMP encrypted LL_START_ENC_RSP verified PASS\n`()
-        halt()
-        return
-    }
+    $['%%d-']
     if (lnk_req.$$.isCtrl()) {
         const rsp = LnkTx.getCtrlPkt()
         if (rsp == $null) return

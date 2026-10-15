@@ -3,6 +3,7 @@ export const $U = $declare('MODULE', RtcI)
 
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RtcI from '@em.hal/RtcI.em'
 import * as T from '@em.utils/TimeTypes.em'
@@ -17,9 +18,17 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
+const AUX_MIN_LEAD_TICKS = 3
+const AUX_OVERDUE_TICKS = 3277
+const COUNTER_MASK = 0x00ffffff
 const SUBS_Cnt = 15  // 32kHz 
 const SUBS_Msk = (1 << SUBS_Cnt) - 1
 
+var aux_arm_after: u32
+var aux_arm_before: u32
+var aux_deadline: u32
+var aux_fired: u32 = 0
+var aux_reported: bool_t = false
 var cur_hlr = <Handler>$null
 var cur_hlr_aux = <Handler>$null
 
@@ -51,9 +60,22 @@ export function enable(thresh: T.RtcThresh, handler: Handler) {
 }
 
 export function enableAux(thresh: T.RtcThresh, handler: Handler) {
+    const key = GlobalInterrupts.disable()
+    $R.RTC0.INTENCLR.$$ = $R.RTC_INTENCLR_COMPARE1_Msk
+    $R.RTC0.EVENTS_COMPARE[1].$$ = 0
+    aux_arm_before = $R.RTC0.COUNTER.$$
+    aux_deadline = thresh & COUNTER_MASK
+    const lead: u32 = (aux_deadline - aux_arm_before) & COUNTER_MASK
+    if (lead < AUX_MIN_LEAD_TICKS || lead >= 0x00800000) {
+        aux_deadline = (aux_arm_before + AUX_MIN_LEAD_TICKS) & COUNTER_MASK
+    }
+    aux_reported = false
     cur_hlr_aux = handler
-    $R.RTC0.CC[1].$$ = thresh
+    $R.RTC0.CC[1].$$ = aux_deadline
     $R.RTC0.INTENSET.$$ = $R.RTC_INTENSET_COMPARE1_Msk
+    aux_arm_after = $R.RTC0.COUNTER.$$
+    $['%%c']
+    GlobalInterrupts.restore(key)
 }
 
 export function enableAuxUsecs(usecs: u32, handler: Handler) {
@@ -89,15 +111,37 @@ export function RTC0_isr$$() {
         return
     }
     if ($R.RTC0.EVENTS_COMPARE[0].$$) {
+        checkAux()
         const hlr = cur_hlr
         disable()
         if (hlr != $null) hlr()
     }
     if ($R.RTC0.EVENTS_COMPARE[1].$$) {
+        aux_fired += 1
         const hlr = cur_hlr_aux
         disableAux()
-        if (hlr != $null) hlr()
+        if (hlr != $null) {
+            $['%%c:'](1)
+            hlr()
+        }
     }
+}
+
+function checkAux() {
+    if (cur_hlr_aux == $null || aux_reported) return
+    const now: u32 = $R.RTC0.COUNTER.$$
+    const overdue: u32 = (now - aux_deadline) & COUNTER_MASK
+    if (overdue < AUX_OVERDUE_TICKS || overdue >= 0x00800000) return
+    const compare: u32 = $R.RTC0.CC[1].$$
+    const event: u32 = $R.RTC0.EVENTS_COMPARE[1].$$
+    const enabled: u32 = $R.RTC0.INTENSET.$$
+    const before: u32 = aux_arm_before
+    const after: u32 = aux_arm_after
+    const deadline: u32 = aux_deadline
+    const fired: u32 = aux_fired
+    aux_reported = true
+    printf`RTC AUX overdue before=%d after=%d target=%d now=%d\n`(before, after, deadline, now)
+    printf`RTC AUX compare=%d event=%d inten=%08x fired=%d late_ticks=%d\n`(compare, event, enabled, fired, overdue)
 }
 
 function usecsToTicks(usecs: u32): u32 {

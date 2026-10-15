@@ -30,10 +30,8 @@ export function wait() {
     // while (!ready) {
     //     Idle.exec()
     // }
-    $['%%c+']
     while ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) {
     }
-    $['%%c-']
 }
 
 function rtcHandler() {

@@ -32,6 +32,7 @@ export class Params extends $struct {
     ble_rx_ctr_hi: u8
     ble_rx_ctr_lo: u32
     ble_rx_encrypted: bool_t
+    ble_rx_next_sn: u8
     ble_tx_ctr_hi: u8
     ble_tx_ctr_lo: u32
     ble_tx_encrypted: bool_t

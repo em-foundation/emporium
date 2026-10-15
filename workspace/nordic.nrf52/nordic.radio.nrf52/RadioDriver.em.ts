@@ -31,6 +31,7 @@ export namespace em$meta {
 const CCM_POLL_LIMIT = 10000
 const MAX_PLAIN_LEN = 27
 const PPI_CCM = (1 << 24) | (1 << 25)
+const RADIO_DISABLE_POLL_LIMIT = 1000000
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -50,9 +51,26 @@ var tx_crypto: bool_t = false
 export function disable() {
     Rtc.disableAux()
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
+    const state_before: u32 = $R.RADIO.STATE.$$
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
-    while ($R.RADIO.EVENTS_DISABLED.$$ == 0) { }
+    let polls: u32 = 0
+    while ($R.RADIO.EVENTS_DISABLED.$$ == 0 && polls < RADIO_DISABLE_POLL_LIMIT) {
+        polls += 1
+    }
+    if ($R.RADIO.EVENTS_DISABLED.$$ == 0) {
+        const state_after: u32 = $R.RADIO.STATE.$$
+        const end: u32 = $R.RADIO.EVENTS_END.$$
+        const ready: u32 = $R.RADIO.EVENTS_READY.$$
+        const shorts: u32 = $R.RADIO.SHORTS.$$
+        const driver_state: u32 = cur_state
+        const timed_out: u32 = rx_timeout ? 1 : 0
+        stopCrypto()
+        printf`RADIO disable timeout FAIL before=%d after=%d driver=%d rx_timeout=%d\n`(state_before, state_after, driver_state, timed_out)
+        printf`RADIO events end=%d ready=%d shorts=%08x polls=%d\n`(end, ready, shorts, polls)
+        fail()
+        return
+    }
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.SHORTS.$$ = 0
     stopCrypto()
@@ -146,6 +164,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
     }
     $R.RADIO.TASKS_RXEN.$$ = 1
+    $['%%a:'](1)
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
@@ -182,7 +201,7 @@ export function waitReady() {
 }
 
 export function RADIO_isr$$() {
-    // $['%%a']
+    $['%%a']
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
     // $['%%>'](<u16>$R.RADIO.INTENSET.$$)
     IntrVec.NVIC_clear(e$`RADIO_IRQn`)
@@ -194,12 +213,15 @@ export function RADIO_isr$$() {
             if (rx_timeout) break
             rx_end_time = nowTimeUs()
             Rtc.disableAux()
-            if (rx_crypto) {
-                if ($R.RADIO.CRCSTATUS.$$ == 0) {
+            if (cur_phy == TL.Phy.BLE_1M) {
+                const max_len: u32 = ($R.RADIO.PCNF1.$$ & $R.RADIO_PCNF1_MAXLEN_Msk) >> $R.RADIO_PCNF1_MAXLEN_Pos
+                if ($R.RADIO.CRCSTATUS.$$ == 0 || cur_rx_buf[1] > max_len) {
                     stopCrypto()
                     cur_rx_buf = $null
                     break
                 }
+            }
+            if (rx_crypto) {
                 if (cur_rx_buf[1] == 0) {
                     stopCrypto()
                 } else {
@@ -207,8 +229,12 @@ export function RADIO_isr$$() {
                     while ($R.CCM.EVENTS_ENDCRYPT.$$ == 0 && $R.CCM.EVENTS_ERROR.$$ == 0 && polls < CCM_POLL_LIMIT) {
                         polls += 1
                     }
-                    const plain = Link.PacketCrypto.completeRx()
+                    let plain = Link.PacketCrypto.completeRx()
                     rx_crypto = false
+                    if ((cur_rx_buf[0] & 0x08) != cur_params.$$.ble_rx_next_sn
+                        && (cur_params.$$.ble_rx_ctr_lo != 0 || cur_params.$$.ble_rx_ctr_hi != 0)) {
+                        plain = retryRx()
+                    }
                     if (plain == $null) {
                         cur_rx_buf = $null
                         break
@@ -246,6 +272,29 @@ export function RADIO_isr$$() {
     if (radio_handler != $null) radio_handler()
 }
 
+function retryRx(): TL.BufPtr {
+    let counter_hi = cur_params.$$.ble_rx_ctr_hi
+    let counter_lo = cur_params.$$.ble_rx_ctr_lo
+    if (counter_lo == 0) counter_hi -= 1
+    counter_lo -= 1
+    Link.PacketCrypto.prepareRx(cur_rx_buf, counter_lo, counter_hi)
+    $R.PPI.CHENCLR.$$ = PPI_CCM
+    $R.CCM.TASKS_KSGEN.$$ = 1
+    let polls: u32 = 0
+    while ($R.CCM.EVENTS_ENDKSGEN.$$ == 0 && $R.CCM.EVENTS_ERROR.$$ == 0 && polls < CCM_POLL_LIMIT) {
+        polls += 1
+    }
+    if ($R.CCM.EVENTS_ENDKSGEN.$$ == 0 || $R.CCM.EVENTS_ERROR.$$ != 0) {
+        return Link.PacketCrypto.completeRx()
+    }
+    $R.CCM.TASKS_CRYPT.$$ = 1
+    polls = 0
+    while ($R.CCM.EVENTS_ENDCRYPT.$$ == 0 && $R.CCM.EVENTS_ERROR.$$ == 0 && polls < CCM_POLL_LIMIT) {
+        polls += 1
+    }
+    return Link.PacketCrypto.completeRx()
+}
+
 function rtcHandler() {
     Rtc.disableAux()
     if (pause_handler != $null) {
@@ -255,6 +304,7 @@ function rtcHandler() {
         return
     }
     rx_timeout = true
+    $['%%a:'](2)
     $R.RADIO.TASKS_DISABLE.$$ = 1
     stopCrypto()
     /// TODO -- track RADIO END event
