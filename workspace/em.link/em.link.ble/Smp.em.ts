@@ -131,10 +131,11 @@ export function setAddresses(central: ptr_t<u8>, peripheral: ptr_t<u8>) {
 
 // Input is SKDm || SKDs in Link Layer wire byte order.
 // AES-128 provider consumes cryptographic byte order.
-export function deriveSessionKey(skd: ptr_t<u8>) {
+export function deriveSessionKey(skd: ptr_t<u8>): ptr_t<u8> {
     let block = Aes128I.Block.$make()
     for (const i of $range(Aes128I.BLOCK_LEN)) block[i] = skd[Aes128I.BLOCK_LEN - 1 - i]
     Common.Aes128.encrypt(ltk.$ptr(), block.$ptr(), session_key.$ptr())
+    return session_key.$ptr()
 }
 
 export function reset() {

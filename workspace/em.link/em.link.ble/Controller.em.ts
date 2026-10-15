@@ -46,6 +46,7 @@ const LL_ENC_REQ = 0x03
 const LL_ENC_REQ_LEN = 23
 const LL_ENC_RSP = 0x04
 const LL_START_ENC_REQ = 0x05
+const LL_START_ENC_RSP = 0x06
 const SMP_ADDR_LEN = 7
 const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
@@ -67,8 +68,9 @@ enum State {
     IDLE,
 }
 
-class SmpAddr extends $vector<u8> { $len = SMP_ADDR_LEN }
+class Iv extends $vector<u8> { $len = 8 }
 class Skd extends $vector<u8> { $len = 16 }
+class SmpAddr extends $vector<u8> { $len = SMP_ADDR_LEN }
 
 class Anchor extends $struct {
     usecs: u32
@@ -93,6 +95,10 @@ var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
 var enc_rsp_pending: bool_t
 var enc_rsp_acked: bool_t
+var enc_final_sent: bool_t
+var enc_rx_enabled: bool_t
+var enc_start_pending: bool_t
+var session_iv: Iv
 var session_skd: Skd
 
 export function start() {
@@ -110,6 +116,9 @@ export function start() {
     Smp.reset()
     enc_rsp_pending = false
     enc_rsp_acked = false
+    enc_final_sent = false
+    enc_rx_enabled = false
+    enc_start_pending = false
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -219,6 +228,29 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
+    if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
+        if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
+            reqF.$$.post()
+            return $null
+        }
+        LnkTx.ack(lnk_req)
+        const rsp = LnkTx.getCtrlPkt()
+        if (rsp == $null) {
+            printf`SMP START_ENC_RSP buffer unavailable FAIL\n`()
+            fail()
+            return $null
+        }
+        rsp.$$.init(TB.LL_CTRL)
+        rsp.$$.pduPtr()[0] = LL_START_ENC_RSP
+        rsp.$$.pduLen = 1
+        LnkTx.setCtrlReady()
+        const params = Registry.getParams()
+        params.$$.ble_tx_ctr_hi = 0
+        params.$$.ble_tx_ctr_lo = 0
+        params.$$.ble_tx_encrypted = true
+        enc_final_sent = true
+        return LnkTx.choose(lnk_req)
+    }
     LnkTx.ack(lnk_req)
     if (LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
         enc_rsp_pending = false
@@ -227,6 +259,10 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     }
     if (lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) reqF.$$.post()
     const tx = LnkTx.choose(lnk_req)
+    if (enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
+        enc_rx_enabled = true
+        enc_start_pending = false
+    }
     Smp.txChosen()
     return tx
 }
@@ -239,9 +275,20 @@ function exchProf(params: $$<TL.Params>) {
     params.$$.ble_crc_init = Connection.params().$$.crcInit
     params.$$.ble_exch_buf = $null
     params.$$.ble_chain = $cb(exchChain)
+    params.$$.ble_rx_ctr_hi = 0
+    params.$$.ble_rx_ctr_lo = 0
+    params.$$.ble_rx_encrypted = enc_rx_enabled
+    params.$$.ble_tx_encrypted = false
 }
 
 function radioHandler() {
+    if (enc_final_sent) {
+        radioOff()
+        printf`SMP encrypted LL_START_ENC_RSP verified PASS\n`()
+        printf`SMP peripheral encrypted LL_START_ENC_RSP transmitted\n`()
+        halt()
+        return
+    }
     controller()
 }
 
@@ -260,9 +307,20 @@ function statusFB(_: arg_t) {
 
 function encAckFB(_: arg_t) {
     printf`BLE LL_ENC_RSP ACK\n`()
-    Smp.deriveSessionKey(session_skd.$ptr())
-    printf`SMP session key DERIVED (encryption not enabled)\n`()
-    halt()
+    const key = Smp.deriveSessionKey(session_skd.$ptr())
+    Link.PacketCrypto.configure(key, session_iv.$ptr(), 0)
+    const rsp = LnkTx.getCtrlPkt()
+    if (rsp == $null) {
+        printf`SMP START_ENC_REQ buffer unavailable FAIL\n`()
+        fail()
+        return
+    }
+    rsp.$$.init(TB.LL_CTRL)
+    rsp.$$.pduPtr()[0] = LL_START_ENC_REQ
+    rsp.$$.pduLen = 1
+    enc_start_pending = true
+    LnkTx.setCtrlReady()
+    printf`SMP session key configured; LL_START_ENC_REQ queued\n`()
 }
 
 function radioOff() {
@@ -294,6 +352,7 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
                 fail()
             }
             for (const i of $range(8)) session_skd[i] = req_pdu[11 + i]
+            for (const i of $range(4)) session_iv[i] = req_pdu[19 + i]
             // Fixed SKDs/IVs for packet-at-a-time bring-up only.
             rsp_pkt.$$.init(TB.LL_CTRL)
             const out = rsp_pkt.$$.pduPtr()
@@ -302,7 +361,10 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
                 out[1 + i] = i
                 session_skd[8 + i] = i
             }
-            for (const i of $range(4)) out[9 + i] = 8 + i
+            for (const i of $range(4)) {
+                out[9 + i] = 8 + i
+                session_iv[4 + i] = 8 + i
+            }
             rsp_pkt.$$.pduLen = 13
             enc_rsp_pending = true
             return true
@@ -351,6 +413,17 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
 }
 
 function reqFB(_: arg_t) {
+    if (enc_rx_enabled) {
+        if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
+            printf`SMP expected encrypted LL_START_ENC_RSP FAIL\n`()
+            lnk_req.$$.print()
+            fail()
+            return
+        }
+        printf`SMP encrypted LL_START_ENC_RSP verified PASS\n`()
+        halt()
+        return
+    }
     if (lnk_req.$$.isCtrl()) {
         const rsp = LnkTx.getCtrlPkt()
         if (rsp == $null) return
@@ -413,7 +486,8 @@ function reqFB(_: arg_t) {
 }
 
 function rxAirtimeUs(pkt: $$<TB.LnkHdr>): u32 {
-    return (10 + pkt.$$.pduLen) * 8
+    const mic_len = enc_rx_enabled && pkt.$$.pduLen > 0 ? 4 : 0
+    return (10 + pkt.$$.pduLen + mic_len) * 8
 }
 
 var cnt = 0
