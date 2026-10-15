@@ -10,6 +10,7 @@ const TYPE_MAP = new Map<string, string>([
     ['NVMC', 'NVMC'],
     ['P0', 'GPIO'],
     ['POWER', 'POWER'],
+    ['PPI', 'PPI'],
     ['RADIO', 'RADIO'],
     ['RNG', 'RNG'],
     ['RTC0', 'RTC'],
