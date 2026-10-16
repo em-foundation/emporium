@@ -168,7 +168,6 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_IRQn`)
-    $['%%c']
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
@@ -187,7 +186,6 @@ export function waitReady() {
 }
 
 export function RADIO_isr$$() {
-    $['%%a']
     IntrVec.NVIC_clear(e$`RADIO_IRQn`)
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
