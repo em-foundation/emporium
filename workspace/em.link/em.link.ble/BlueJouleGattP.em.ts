@@ -37,7 +37,7 @@ export namespace em$meta {
 const CACHE_STATS = false
 
 export function em$run() {
-    ticker.$$.start(TT.Secs30p2_initMsecs(500), $cb(tickCb))
+    ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
 }
 

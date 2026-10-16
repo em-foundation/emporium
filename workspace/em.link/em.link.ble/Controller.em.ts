@@ -341,14 +341,11 @@ function notifyStatus(status: TL.ConnectionStatus) {
 }
 
 function statusFB(_: arg_t) {
-    if (pending_status == TL.ConnectionStatus.OPENING) printf`BLE CONNECTION OPEN\n`()
     if (pending_status == TL.ConnectionStatus.HANGUP) printf`BLE CONNECTION HANGUP (RX timeout)\n`()
-    if (pending_status == TL.ConnectionStatus.CLOSED) printf`BLE CONNECTION CLOSED\n`()
     status_cb(pending_status)
 }
 
 function encAckFB(_: arg_t) {
-    printf`BLE LL_ENC_RSP ACK\n`()
     const key = Smp.deriveSessionKey(session_skd.$ptr())
     Link.PacketCrypto.configure(key, session_iv.$ptr(), 0)
     const rsp = LnkTx.getCtrlPkt()
@@ -362,7 +359,6 @@ function encAckFB(_: arg_t) {
     rsp.$$.pduLen = 1
     enc_start_pending = true
     LnkTx.setCtrlReady()
-    printf`SMP session key configured; LL_START_ENC_REQ queued\n`()
 }
 
 function radioOff() {
@@ -381,7 +377,6 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
     let rsp_data = TB.LL_REJECT_DATA.$frame(0)
     let unk_flag = false
     const opcode = req_pdu[0]
-    printf`BLE LL_CTRL opcode=%02x len=%d\n`(opcode, lnk_req.$$.pduLen)
     switch (opcode) {
         case TB.LL_CONN_UPDATE_IND: {
             const upd = $cast2<$$<TB.ConnUpdData>>($$(req_pdu[1]))
@@ -434,7 +429,6 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             break
         }
         case TB.LL_TERMINATE_IND: {
-            if (lnk_req.$$.pduLen >= 2) printf`BLE LL_TERMINATE reason=%02x\n`(req_pdu[1])
             setState(State.CLOSING)
             return false
         }

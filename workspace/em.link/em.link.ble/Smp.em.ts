@@ -347,7 +347,6 @@ function workFB(_: arg_t) {
 }
 
 function ackFB(_: arg_t) {
-    printf`SMP responder DHKey Check ACK\n`()
 }
 
 function verifyFB(_: arg_t) {
@@ -364,7 +363,6 @@ function verifyFB(_: arg_t) {
             fail()
         }
     }
-    printf`SMP DHKey Check PASS\n`()
     let responder_check = Nonce.$make()
     f6(responder_check.$ptr(), true)
     const out = L2Cap.beginTx(PAIRING_CONFIRM_LEN)
