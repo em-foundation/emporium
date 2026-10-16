@@ -144,7 +144,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         const usecs = Rtc.getRawUsecs()
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
     }
-    $['%%c']
     $R.RADIO.TASKS_RXEN.$$ = 1
 }
 
@@ -169,6 +168,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+    $['%%c']
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
