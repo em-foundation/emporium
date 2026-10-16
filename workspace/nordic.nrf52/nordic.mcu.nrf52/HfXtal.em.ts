@@ -3,6 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
+import * as Common from '@em.mcu/Common.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
@@ -34,8 +35,10 @@ export function start(handler: Handler) {
         $R.CLOCK.INTENSET.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
         IntrVec.NVIC_enable(e$`POWER_CLOCK_IRQn`)
     }
-    $['%%d']
+    $['%%d+']
     $R.CLOCK.TASKS_HFCLKSTART.$$ = 1
+    Common.BusyWait.wait(5)
+    $['%%d-']
     GlobalInterrupts.restore(key)
 }
 
@@ -54,13 +57,11 @@ export function stop() {
 export function wait() {
     while ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) {
     }
-    $['%%c']
 }
 
 export function POWER_CLOCK_isr$$() {
     IntrVec.NVIC_clear(e$`POWER_CLOCK_IRQn`)
     if ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) return
-    $['%%c']
     $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
     $R.CLOCK.EVENTS_HFCLKSTARTED.$$ = 0
     const handler = ready_handler

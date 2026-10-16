@@ -144,6 +144,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         const usecs = Rtc.getRawUsecs()
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
     }
+    $['%%c']
     $R.RADIO.TASKS_RXEN.$$ = 1
 }
 
@@ -186,6 +187,7 @@ export function waitReady() {
 }
 
 export function RADIO_isr$$() {
+    $['%%a']
     IntrVec.NVIC_clear(e$`RADIO_IRQn`)
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
