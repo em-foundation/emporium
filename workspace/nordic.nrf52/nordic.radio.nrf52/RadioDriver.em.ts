@@ -4,6 +4,7 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as HfXtal from '@nordic.mcu.nrf52/HfXtal.em'
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
@@ -49,6 +50,11 @@ var rx_timeout: volatile_t<bool_t> = false
 var tx_crypto: bool_t = false
 
 export function disable() {
+    const key = GlobalInterrupts.disable()
+    const starting = cur_state == State.SETUP
+    setState(State.IDLE)
+    if (starting) HfXtal.stop()
+    GlobalInterrupts.restore(key)
     Rtc.disableAux()
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
     const state_before: u32 = $R.RADIO.STATE.$$
@@ -79,39 +85,8 @@ export function disable() {
 }
 
 export function enable() {
-    HfXtal.start()
-    cur_params = Registry.getParams()
-    cur_phy = cur_params.$$.radio_phy
-    const acc_adr = cur_params.$$.ble_acc_adr
-    const crc_init = cur_params.$$.ble_crc_init
-    setState(State.SETUP)
-    switch (cur_phy) {
-        case TL.Phy.PROP_1M: {
-            $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
-            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos)
-            $R.RADIO.PCNF1.$$ = (240 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
-            $R.RADIO.BASE0.$$ = 0xAAAABBBB
-            $R.RADIO.PREFIX0.$$ = 0xCC
-            break
-        }
-        case TL.Phy.BLE_1M: {
-            $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
-            $R.RADIO.MODECNF0.$$ |= $R.RADIO_MODECNF0_RU_Msk
-            // S1 exists in RAM for connection packets, but not on the air.
-            // Keep the two-byte advertising layout unchanged.
-            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | (acc_adr != 0 ? $R.RADIO_PCNF0_S1INCL_Msk : 0)
-            $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
-            $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
-            $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? ((acc_adr >> 24) & 0xff) : 0x8e
-            $R.RADIO.CRCCNF.$$ = (3 << $R.RADIO_CRCCNF_LEN_Pos) | $R.RADIO_CRCCNF_SKIPADDR_Msk
-            $R.RADIO.CRCPOLY.$$ = 0x65b
-            $R.RADIO.CRCINIT.$$ = crc_init != 0 ? crc_init : 0x555555
-            break
-        }
-        default: fail()
-    }
-    $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
-    // Common.BusyWait.wait(10) // TODO: needed for SRAM setup
+    HfXtal.start($null)
+    setup()
     HfXtal.wait()
     setState(State.READY)
 }
@@ -138,6 +113,13 @@ export function startCw(chan: u8, power: i8) {
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_Pos4dBm
     $R.RADIO.FREQUENCY.$$ = 40
     $R.RADIO.TASKS_TXEN.$$ = 1
+}
+
+export function startEnable() {
+    const key = GlobalInterrupts.disable()
+    setup()
+    HfXtal.start($cb(hfReadyHandler))
+    GlobalInterrupts.restore(key)
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
@@ -191,8 +173,14 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
 
 export function waitReady() {
     Idle.setLevel(1)
-    while (cur_state != State.READY) {
+    while (true) {
+        const key = GlobalInterrupts.disable()
+        if (cur_state == State.READY) {
+            GlobalInterrupts.restore(key)
+            break
+        }
         Idle.exec()
+        GlobalInterrupts.restore(key)
     }
     Idle.setLevel(0)
 }
@@ -266,6 +254,12 @@ export function RADIO_isr$$() {
     if (radio_handler != $null) radio_handler()
 }
 
+function hfReadyHandler() {
+    if (cur_state != State.SETUP) return
+    setState(State.READY)
+    if (radio_handler != $null) radio_handler()
+}
+
 function retryRx(): TL.BufPtr {
     let counter_hi = cur_params.$$.ble_rx_ctr_hi
     let counter_lo = cur_params.$$.ble_rx_ctr_lo
@@ -317,6 +311,38 @@ function setPacketFormat(encrypted: bool_t) {
 
 function setState(s: State) {
     cur_state = s
+}
+
+function setup() {
+    cur_params = Registry.getParams()
+    cur_phy = cur_params.$$.radio_phy
+    const acc_adr = cur_params.$$.ble_acc_adr
+    const crc_init = cur_params.$$.ble_crc_init
+    setState(State.SETUP)
+    switch (cur_phy) {
+        case TL.Phy.PROP_1M: {
+            $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
+            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos)
+            $R.RADIO.PCNF1.$$ = (240 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
+            $R.RADIO.BASE0.$$ = 0xAAAABBBB
+            $R.RADIO.PREFIX0.$$ = 0xCC
+            break
+        }
+        case TL.Phy.BLE_1M: {
+            $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
+            $R.RADIO.MODECNF0.$$ |= $R.RADIO_MODECNF0_RU_Msk
+            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | (acc_adr != 0 ? $R.RADIO_PCNF0_S1INCL_Msk : 0)
+            $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
+            $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
+            $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? ((acc_adr >> 24) & 0xff) : 0x8e
+            $R.RADIO.CRCCNF.$$ = (3 << $R.RADIO_CRCCNF_LEN_Pos) | $R.RADIO_CRCCNF_SKIPADDR_Msk
+            $R.RADIO.CRCPOLY.$$ = 0x65b
+            $R.RADIO.CRCINIT.$$ = crc_init != 0 ? crc_init : 0x555555
+            break
+        }
+        default: fail()
+    }
+    $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
 }
 
 function stopCrypto() {

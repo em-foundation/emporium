@@ -60,10 +60,12 @@ const scan_rsp = <$$<TB.AdvHdr>>Heap.opaq(tx_adr)
 
 enum State {
     ADV_PAUSE,
+    ADV_READY,
     ADV_SCAN,
     CONN,
     CONN_PAUSE,
     EXCH,
+    EXCH_READY,
     CLOSING,
     IDLE,
 }
@@ -90,6 +92,8 @@ var adv_power: i8
 var cur_adv_mask: u8
 var cur_state: State = State.IDLE
 var null_pkt_cnt: u8
+var pending_chan: u8
+var pending_end_ms: u16
 var pending_status: TL.ConnectionStatus
 var upd_flag: bool_t
 var enc_rsp_pending: bool_t
@@ -169,6 +173,11 @@ function controller() {
                 setState(State.ADV_SCAN)
                 return
             }
+            case State.ADV_READY: {
+                setState(State.ADV_SCAN)
+                Link.RadioDriver.startTx(adv_hdr.$$.frame(), pending_chan)
+                return
+            }
             case State.ADV_SCAN: {
                 if (cur_adv_mask == NUM_ADV_CHANS) {
                     cur_adv_mask = 0
@@ -191,7 +200,6 @@ function controller() {
                 anchor.reset()
                 LnkTx.reset()
                 doExch(1000)
-                setState(State.CONN_PAUSE)
                 return
             }
             case State.CONN_PAUSE: {
@@ -212,7 +220,16 @@ function controller() {
             case State.EXCH: {
                 upd_flag = Connection.next()
                 doExch(upd_flag ? 1000 : TB.INTERVAL_FUDGE * 3)
+                return
+            }
+            case State.EXCH_READY: {
+                const deadline = anchor.usecs + Connection.params().$$.interval_us - HFCLK_GUARD_US
+                const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
+                const limit_ms: u16 = remaining >= 1000 ? <u16>(remaining / 1000) : 1
+                let end_ms = pending_end_ms
+                if (end_ms > limit_ms) end_ms = limit_ms
                 setState(State.CONN_PAUSE)
+                Link.RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
                 return
             }
             case State.CLOSING: {
@@ -243,18 +260,16 @@ function setSmpAddresses() {
 function doAdvScan(chan: u8) {
     Binder.initAdvPkt(adv_hdr)
     Registry.setupParams($cb(scanProf))
+    pending_chan = chan
+    setState(State.ADV_READY)
     radioOn()
-    Link.RadioDriver.startTx(adv_hdr.$$.frame(), chan)
 }
 
 function doExch(end_ms: u16) {
     Registry.setupParams($cb(exchProf))
+    pending_end_ms = end_ms
+    setState(State.EXCH_READY)
     radioOn()
-    const deadline = anchor.usecs + Connection.params().$$.interval_us - HFCLK_GUARD_US
-    const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
-    const limit_ms: u16 = remaining >= 1000 ? <u16>(remaining / 1000) : 1
-    if (end_ms > limit_ms) end_ms = limit_ms
-    Link.RadioDriver.startRx(rx_buf, Connection.channel(), end_ms)
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
@@ -366,10 +381,10 @@ function radioOff() {
 }
 
 function radioOn() {
-    if (cur_state == State.ADV_SCAN) {
+    if (cur_state == State.ADV_READY) {
         Led.wink(1)
     }
-    Link.RadioDriver.enable()
+    Link.RadioDriver.startEnable()
 }
 
 function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {

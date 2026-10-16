@@ -17,6 +17,7 @@ export interface $I {
     getRxEndTimeUs(): u32
     nowTimeUs(): u32
     pause(usecs: u32, handler: Handler): void
+    startEnable(): void
     startRx(buf: TL.BufPtr, chan: u8, timeout: u16): void
     startTx(buf: TL.BufFrame, chan: u8): void
     waitReady(): void

@@ -101,6 +101,11 @@ export function pause(usecs: u32, handler: RadioDriverI.Handler) {
     Rtc.enableAuxUsecs(Rtc.getRawUsecs() + usecs, $cb(rtcHandler))
 }
 
+export function startEnable() {
+    enable()
+    if (handler != $null) handler()
+}
+
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $['%%d:'](2)
     setState(State.RX)

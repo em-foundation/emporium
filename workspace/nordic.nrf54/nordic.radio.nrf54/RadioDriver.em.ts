@@ -110,6 +110,11 @@ export function startCw(chan: u8, power: i8) {
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
+export function startEnable() {
+    enable()
+    if (radio_handler != $null) radio_handler()
+}
+
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
     cur_rx_buf = buf

@@ -48,7 +48,8 @@ export function em$run() {
 }
 
 function tickCb() {
-    Link.RadioDriver.enable()
+    Link.RadioDriver.startEnable()
+    Link.RadioDriver.waitReady()
     for (const chan of $range(37, 40)) {
         Link.RadioDriver.startTx(adv_hdr.$$.frame(), chan)
         Link.RadioDriver.waitReady()

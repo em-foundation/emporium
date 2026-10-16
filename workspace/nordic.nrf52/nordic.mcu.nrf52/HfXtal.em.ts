@@ -3,38 +3,67 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf52/REGS.em'
 
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Idle from '@nordic.mcu.nrf52/Idle.em'
-import * as Rtc from '@nordic.mcu.nrf52/Rtc.em'
+import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
-export namespace em$meta { }
+export type Handler = cb_t<[]>
+
+export namespace em$meta {
+    export function em$construct() {
+        IntrVec.em$meta.useIntr('POWER_CLOCK')
+    }
+}
 
 //>> ---- em$targ ---- <<//
 
-var ready: volatile_t<bool_t> = false
+var pause_level: u32
+var ready_handler: Handler = $null
 
-export function start() {
-    ready = false
-    $R.CLOCK.INTENSET.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
+export function start(handler: Handler) {
+    const key = GlobalInterrupts.disable()
+    IntrVec.NVIC_disable(e$`POWER_CLOCK_IRQn`)
+    $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
     $R.CLOCK.EVENTS_HFCLKSTARTED.$$ = 0
+    IntrVec.NVIC_clear(e$`POWER_CLOCK_IRQn`)
+    if (ready_handler != $null) Idle.setLevel(pause_level)
+    ready_handler = handler
+    if (handler != $null) {
+        pause_level = Idle.getLevel()
+        Idle.setLevel(1)
+        $R.CLOCK.INTENSET.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
+        IntrVec.NVIC_enable(e$`POWER_CLOCK_IRQn`)
+    }
     $R.CLOCK.TASKS_HFCLKSTART.$$ = 1
+    GlobalInterrupts.restore(key)
 }
 
 export function stop() {
+    const key = GlobalInterrupts.disable()
+    if (ready_handler != $null) Idle.setLevel(pause_level)
+    ready_handler = $null
+    $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
+    IntrVec.NVIC_disable(e$`POWER_CLOCK_IRQn`)
     $R.CLOCK.TASKS_HFCLKSTOP.$$ = 1
     $R.CLOCK.EVENTS_HFCLKSTARTED.$$ = 0
+    IntrVec.NVIC_clear(e$`POWER_CLOCK_IRQn`)
+    GlobalInterrupts.restore(key)
 }
 
 export function wait() {
-    // const ctr = Rtc.getCounter()
-    // Rtc.enableAux(ctr + 13, $cb(rtcHandler)) // ~400us
-    // while (!ready) {
-    //     Idle.exec()
-    // }
     while ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) {
     }
 }
 
-function rtcHandler() {
-    ready = true
-    Rtc.disableAux()
+export function POWER_CLOCK_isr$$() {
+    IntrVec.NVIC_clear(e$`POWER_CLOCK_IRQn`)
+    if ($R.CLOCK.EVENTS_HFCLKSTARTED.$$ == 0) return
+    $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_HFCLKSTARTED_Set
+    $R.CLOCK.EVENTS_HFCLKSTARTED.$$ = 0
+    const handler = ready_handler
+    ready_handler = $null
+    if (handler != $null) {
+        Idle.setLevel(pause_level)
+        handler()
+    }
 }
