@@ -33,6 +33,7 @@ const CCM_POLL_LIMIT = 10000
 const MAX_PLAIN_LEN = 27
 const PPI_CCM = (1 << 24) | (1 << 25)
 const RADIO_DISABLE_POLL_LIMIT = 1000000
+const TIFS_US = 150
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -47,12 +48,15 @@ var pause_handler: RadioDriverI.Handler = $null
 var rx_crypto: bool_t = false
 var rx_end_time: u32
 var rx_timeout: volatile_t<bool_t> = false
+var tifs_pending: bool_t = false
 var tx_crypto: bool_t = false
 
 export function disable() {
     const key = GlobalInterrupts.disable()
     const starting = cur_state == State.SETUP
     setState(State.IDLE)
+    tifs_pending = false
+    $R.RADIO.SHORTS.$$ = 0
     if (starting) HfXtal.stop()
     GlobalInterrupts.restore(key)
     Rtc.disableAux()
@@ -123,6 +127,7 @@ export function startEnable() {
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
+    const automatic = tifs_pending && cur_state == State.TX
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
@@ -144,10 +149,25 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         const usecs = Rtc.getRawUsecs()
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
     }
-    $R.RADIO.TASKS_RXEN.$$ = 1
+    let shorts: u32 = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
+    if (cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_chain != $null) {
+        shorts |= $R.RADIO_SHORTS_DISABLED_TXEN_Msk
+    }
+    if (automatic) {
+        if (!armTifs(shorts, $R.RADIO_STATE_STATE_RxRu, $R.RADIO_STATE_STATE_Rx)) {
+            rx_timeout = true
+            cancelExchange()
+        }
+    } else {
+        $R.RADIO.EVENTS_DISABLED.$$ = 0
+        $R.RADIO.EVENTS_READY.$$ = 0
+        $R.RADIO.SHORTS.$$ = shorts
+        $R.RADIO.TASKS_RXEN.$$ = 1
+    }
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
+    const automatic = tifs_pending && cur_state == State.RX
     setState(State.TX)
     cur_chan = chan
     let tx_buf = $cast2<TL.BufPtr>($$(buf[0]))
@@ -166,9 +186,21 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.DATAWHITEIV.$$ = chan
     $R.RADIO.TXADDRESS.$$ = 0
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
-    TimeFence.wait()
-    IntrVec.NVIC_enable(e$`RADIO_IRQn`)
-    $R.RADIO.TASKS_TXEN.$$ = 1
+    let shorts: u32 = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
+    if (cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_exch_buf != $null) {
+        shorts |= $R.RADIO_SHORTS_DISABLED_RXEN_Msk
+    }
+    if (automatic) {
+        IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+        if (!armTifs(shorts, $R.RADIO_STATE_STATE_TxRu, $R.RADIO_STATE_STATE_Tx)) cancelExchange()
+    } else {
+        TimeFence.wait()
+        $R.RADIO.EVENTS_DISABLED.$$ = 0
+        $R.RADIO.EVENTS_READY.$$ = 0
+        $R.RADIO.SHORTS.$$ = shorts
+        IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+        $R.RADIO.TASKS_TXEN.$$ = 1
+    }
 }
 
 export function waitReady() {
@@ -189,7 +221,21 @@ export function RADIO_isr$$() {
     IntrVec.NVIC_clear(e$`RADIO_IRQn`)
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
-    TimeFence.enable(81)
+    const shorts = $R.RADIO.SHORTS.$$
+    tifs_pending = cur_phy == TL.Phy.BLE_1M
+        && ((cur_state == State.RX && (shorts & $R.RADIO_SHORTS_DISABLED_TXEN_Msk) != 0)
+            || (cur_state == State.TX && (shorts & $R.RADIO_SHORTS_DISABLED_RXEN_Msk) != 0))
+    if (tifs_pending) {
+        $R.RADIO.SHORTS.$$ = shorts & ~$R.RADIO_SHORTS_READY_START_Msk
+        $R.RADIO.EVENTS_READY.$$ = 0
+        if (!waitDisabled()) {
+            fail()
+            return
+        }
+        $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_END_DISABLE_Msk
+    } else {
+        TimeFence.enable(81)
+    }
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
@@ -249,6 +295,30 @@ export function RADIO_isr$$() {
             return
         }
     }
+    stopTifs()
+    TimeFence.disable()
+    setState(State.READY)
+    if (radio_handler != $null) radio_handler()
+}
+
+function armTifs(shorts: u32, ramp_state: u32, active_state: u32): bool_t {
+    const key = GlobalInterrupts.disable()
+    if ($R.RADIO.EVENTS_READY.$$ != 0 || $R.RADIO.STATE.$$ != ramp_state) {
+        GlobalInterrupts.restore(key)
+        return false
+    }
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
+    $R.RADIO.SHORTS.$$ = shorts
+    const armed = $R.RADIO.EVENTS_READY.$$ == 0 || $R.RADIO.STATE.$$ == active_state
+    if (armed) tifs_pending = false
+    GlobalInterrupts.restore(key)
+    return armed
+}
+
+function cancelExchange() {
+    Rtc.disableAux()
+    stopCrypto()
+    stopTifs()
     TimeFence.disable()
     setState(State.READY)
     if (radio_handler != $null) radio_handler()
@@ -292,6 +362,8 @@ function rtcHandler() {
         return
     }
     rx_timeout = true
+    tifs_pending = false
+    $R.RADIO.SHORTS.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
     stopCrypto()
     TimeFence.disable()
@@ -320,6 +392,7 @@ function setup() {
     const acc_adr = cur_params.$$.ble_acc_adr
     const crc_init = cur_params.$$.ble_crc_init
     setState(State.SETUP)
+    tifs_pending = false
     switch (cur_phy) {
         case TL.Phy.PROP_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Nrf_1Mbit
@@ -331,7 +404,8 @@ function setup() {
         }
         case TL.Phy.BLE_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
-            $R.RADIO.MODECNF0.$$ |= $R.RADIO_MODECNF0_RU_Msk
+            $R.RADIO.MODECNF0.$$ &= ~$R.RADIO_MODECNF0_RU_Msk
+            $R.RADIO.TIFS.$$ = TIFS_US
             $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | (acc_adr != 0 ? $R.RADIO_PCNF0_S1INCL_Msk : 0)
             $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
             $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
@@ -354,4 +428,21 @@ function stopCrypto() {
     $R.CCM.ENABLE.$$ = 0
     rx_crypto = false
     tx_crypto = false
+}
+
+function stopTifs() {
+    $R.RADIO.SHORTS.$$ = 0
+    if (!tifs_pending) return
+    tifs_pending = false
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
+    $R.RADIO.TASKS_DISABLE.$$ = 1
+    if (!waitDisabled()) fail()
+}
+
+function waitDisabled(): bool_t {
+    let polls: u32 = 0
+    while ($R.RADIO.EVENTS_DISABLED.$$ == 0 && polls < RADIO_DISABLE_POLL_LIMIT) {
+        polls += 1
+    }
+    return $R.RADIO.EVENTS_DISABLED.$$ != 0
 }

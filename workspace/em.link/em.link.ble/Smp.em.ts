@@ -76,6 +76,7 @@ var addresses_ready: bool_t
 var responder_check_sent: bool_t
 var responder_check_acked: bool_t
 var peer_check_seen: bool_t
+var secret_ready: bool_t
 
 export function accept(req: $$<TB.LnkHdr>): bool_t {
     const llid = req.$$.lnkFlags & 0x03
@@ -100,7 +101,7 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         }
         peer_check_seen = true
         loadLe128(peer_check.$ptr(), <TL.BufPtr>$$(pdu[5]))
-        verify_f.$$.post()
+        if (secret_ready) verify_f.$$.post()
         return true
     }
     if (pdu[4] == PAIRING_REQ) {
@@ -152,6 +153,7 @@ export function reset() {
     responder_check_sent = false
     responder_check_acked = false
     peer_check_seen = false
+    secret_ready = false
     L2Cap.reset()
 }
 
@@ -338,10 +340,10 @@ function workFB(_: arg_t) {
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
     Crypto.P256.makePublicKey(sk, $$(local_pk))
-    Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
     // fixed nonce for bring-up; replace with fresh random Nb
     f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
     // stage local public key
+    $['%%d+']
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
     out[1] = 0x00
@@ -351,6 +353,14 @@ function workFB(_: arg_t) {
     storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
     storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
+    $['%%d-']
+    $['%%c+']
+    Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
+    $['%%c-']
+    const key = Common.GlobalInterrupts.disable()
+    secret_ready = true
+    if (peer_check_seen) verify_f.$$.post()
+    Common.GlobalInterrupts.restore(key)
 }
 
 function ackFB(_: arg_t) {
