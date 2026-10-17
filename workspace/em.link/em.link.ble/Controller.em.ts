@@ -281,6 +281,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         enc_tx_pending = false
     }
     LnkTx.ack(lnk_req)
+    Smp.txAcked()
     if (enc_rx_enabled && !enc_tx_enabled && lnk_req.$$.pduLen > 0) {
         if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
             printf`SMP expected encrypted LL_START_ENC_RSP FAIL\n`()

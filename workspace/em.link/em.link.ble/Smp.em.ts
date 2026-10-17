@@ -151,8 +151,7 @@ export function reset() {
     L2Cap.reset()
 }
 
-export function txChosen() {
-    if (pair_rsp_sent && !pair_rsp_tx_seen) pair_rsp_tx_seen = true
+export function txAcked() {
     if (!LnkTx.takeAttAck()) return
     if (!L2Cap.txActive()) return
     if (L2Cap.txAcked()) {
@@ -167,6 +166,10 @@ export function txChosen() {
         return
     }
     stageTx()
+}
+
+export function txChosen() {
+    if (pair_rsp_sent && !pair_rsp_tx_seen) pair_rsp_tx_seen = true
 }
 
 export function unexpected(req: $$<TB.LnkHdr>) {
