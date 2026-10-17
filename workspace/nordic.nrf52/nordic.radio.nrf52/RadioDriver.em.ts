@@ -53,6 +53,8 @@ export function disable() {
     const key = GlobalInterrupts.disable()
     const starting = cur_state == State.SETUP
     setState(State.IDLE)
+    $['%%c-']
+    $['%%d-']
     if (starting) HfXtal.stop()
     GlobalInterrupts.restore(key)
     Rtc.disableAux()
@@ -160,6 +162,11 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     if (tx_crypto) {
         tx_buf = Link.PacketCrypto.prepareTx(tx_buf, cur_params.$$.ble_tx_ctr_lo, cur_params.$$.ble_tx_ctr_hi)
     }
+    if (cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_acc_adr != 0 && !encrypted
+        && (buf[0] & 0x03) == 0x02 && buf[1] == 21
+        && buf[5] == 0x06 && buf[6] == 0x00 && buf[7] == 0x03) {
+        $['%%d+']
+    }
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(tx_buf)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
@@ -168,6 +175,7 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
     TimeFence.wait()
     IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+    $['%%c+']
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
@@ -235,6 +243,8 @@ export function RADIO_isr$$() {
             break
         }
         case State.TX: {
+            $['%%c-']
+            $['%%d-']
             if (tx_crypto) {
                 Link.PacketCrypto.completeTx()
                 tx_crypto = false
@@ -294,6 +304,7 @@ function rtcHandler() {
     rx_timeout = true
     $R.RADIO.TASKS_DISABLE.$$ = 1
     stopCrypto()
+    TimeFence.disable()
     /// TODO -- track RADIO END event
     setState(State.READY)
     if (radio_handler != $null) radio_handler()

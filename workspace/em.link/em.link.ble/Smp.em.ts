@@ -138,6 +138,10 @@ export function deriveSessionKey(skd: ptr_t<u8>): ptr_t<u8> {
     return session_key.$ptr()
 }
 
+export function publicKeyTxActive(): bool_t {
+    return !local_pk_tx_done && L2Cap.txActive()
+}
+
 export function reset() {
     addresses_ready = false
     local_pk_tx_done = false

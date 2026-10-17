@@ -42,6 +42,9 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const ALL_ADV_CHANS = 0x7
+const CHAIN_RESERVE_US = 2500
+const CHAIN_RX_TIMEOUT_MS = 1
+const CHAIN_TX_LIMIT = 4
 const LL_ENC_REQ = 0x03
 const LL_ENC_REQ_LEN = 23
 const LL_ENC_RSP = 0x04
@@ -103,6 +106,9 @@ var enc_start_pending: bool_t
 var enc_tx_enabled: bool_t
 var enc_tx_pending: bool_t
 var enc_tx_sn: u8
+var event_rx_air_us: u32
+var event_rx_count: u8
+var event_rx_end_us: u32
 var rx_ctr_hi: u8
 var rx_ctr_lo: u32
 var rx_next_sn: u8
@@ -204,7 +210,7 @@ function controller() {
             }
             case State.CONN_PAUSE: {
                 radioOff()
-                const air_us = (Link.RadioDriver.getRxBuf() != $null) ? rxAirtimeUs(lnk_req) : 0
+                const air_us = event_rx_air_us
                 if (air_us == 0) {
                     if (++null_pkt_cnt >= NULL_PKT_LIMIT) {
                         notifyStatus(TL.ConnectionStatus.HANGUP)
@@ -266,6 +272,9 @@ function doAdvScan(chan: u8) {
 }
 
 function doExch(end_ms: u16) {
+    event_rx_air_us = 0
+    event_rx_count = 0
+    event_rx_end_us = 0
     Registry.setupParams($cb(exchProf))
     pending_end_ms = end_ms
     setState(State.EXCH_READY)
@@ -273,6 +282,13 @@ function doExch(end_ms: u16) {
 }
 
 function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
+    const params = Registry.getParams()
+    params.$$.ble_exch_buf = $null
+    if (event_rx_count == 0) {
+        event_rx_air_us = rxAirtimeUs(lnk_req)
+        event_rx_end_us = Link.RadioDriver.getRxEndTimeUs()
+    }
+    event_rx_count += 1
     const fresh = (lnk_req.$$.lnkFlags & 0x08) == rx_next_sn
     if (enc_tx_pending && (lnk_req.$$.lnkFlags & 0x04) != (enc_tx_sn >> 1)) {
         tx_ctr_lo += 1
@@ -320,7 +336,18 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         reqF.$$.post()
     }
     if (enc_tx_enabled) return chooseEncryptedTx()
-    const tx = LnkTx.choose(lnk_req)
+    let tx = LnkTx.choose(lnk_req)
+    tx[0] &= ~0x10
+    const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - HFCLK_GUARD_US
+    const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
+    if (!enc_rx_enabled && lnk_req.$$.pduLen == 0
+        && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
+        && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT
+        && remaining > CHAIN_RESERVE_US) {
+        tx[0] |= 0x10
+        params.$$.ble_exch_buf = rx_buf
+        params.$$.ble_exch_end_ms = CHAIN_RX_TIMEOUT_MS
+    }
     if (enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
         enc_rx_enabled = true
         enc_start_pending = false
@@ -574,8 +601,7 @@ const RX_GUARD_US = 0
 Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
     const interval_us = Connection.params().$$.interval_us
     if (air_us != 0) {
-        const rx_end_us = Link.RadioDriver.getRxEndTimeUs()
-        this.usecs = rx_end_us - air_us
+        this.usecs = event_rx_end_us - air_us
     }
     this.usecs += interval_us
     const wake_us = this.usecs - HFCLK_GUARD_US - RX_GUARD_US
