@@ -343,7 +343,6 @@ function workFB(_: arg_t) {
     // fixed nonce for bring-up; replace with fresh random Nb
     f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
     // stage local public key
-    $['%%d+']
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
     out[1] = 0x00
@@ -353,10 +352,7 @@ function workFB(_: arg_t) {
     storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
     storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
-    $['%%d-']
-    $['%%c+']
     Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
-    $['%%c-']
     const key = Common.GlobalInterrupts.disable()
     secret_ready = true
     if (peer_check_seen) verify_f.$$.post()
