@@ -25,6 +25,10 @@
 - The scored window excludes the advertising period before connection.
 - The goal is a repeatable connection-energy impulse suitable for EM•Scope / BlueJoule scoring.
 
+## Related Reports
+
+- [EMR 10 — BlueJoule-GATT-Secure Definition](010-bluejoule-gatt-secure-definition.md) (secure variant of this benchmark)
+
 ## 1. Benchmark Purpose
 
 BlueJoule-GATT measures the energy required for a BLE peripheral to complete a short, repeatable, application-level GATT transaction.
