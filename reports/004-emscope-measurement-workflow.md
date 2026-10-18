@@ -5,9 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Automated measurement milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Reference baseline:** [`002-zephyr-reference-implementation.md`](002-zephyr-reference-implementation.md)  
-**Candidate baseline:** [`003-emscript-candidate-implementation.md`](003-emscript-candidate-implementation.md)  
 **Tooling:** EM•Scope v25.6.x
 
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
@@ -23,6 +20,12 @@
 - Current engineering scores show the EM•Script candidate using about **22–23% less event energy** than the Zephyr reference.
 - The EM•Script candidate scores about **29% higher** in EM•eralds.
 - This turns BlueJoule-GATT from a manually inspected waveform into a reproducible benchmark workflow.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 2 — Zephyr Reference Implementation](002-zephyr-reference-implementation.md)
+- [EMR 3 — EM•Script Candidate Implementation](003-emscript-candidate-implementation.md)
 
 ## 1. Purpose
 

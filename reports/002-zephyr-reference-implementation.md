@@ -5,8 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Reference implementation milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)
-
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
 
 ## TLDR
@@ -19,6 +17,10 @@
 - The packet trace shows a **124.364 ms** connection transaction over **17 connection events**.
 - The measured connection charge is about **56.99 µC**.
 - At 3.0 V, this corresponds to about **171.0 µJ**.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
 
 ## 1. Purpose
 

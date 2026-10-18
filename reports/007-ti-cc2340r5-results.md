@@ -5,9 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** TI results milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Measurement workflow:** [`004-emscope-measurement-workflow.md`](004-emscope-measurement-workflow.md)  
-**Nordic comparison:** [`005-nrf52-results-and-cross-generation-comparison.md`](005-nrf52-results-and-cross-generation-comparison.md)  
 **Tooling:** EM•Scope v25.6.x
 
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
@@ -28,6 +25,12 @@
 - SimpleLink shows an unexpectedly high active floor during the connection.
 - Zephyr drops much lower between connection intervals than SimpleLink.
 - The TI EM•Script result extends the tiny-code comparison beyond Nordic hardware.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 4 — EM•Scope Measurement Workflow](004-emscope-measurement-workflow.md)
+- [EMR 5 — nRF52 Results and Cross-Generation Comparison](005-nrf52-results-and-cross-generation-comparison.md)
 
 ## 1. Purpose
 

@@ -5,9 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Results milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Measurement workflow:** [`004-emscope-measurement-workflow.md`](004-emscope-measurement-workflow.md)  
-**nRF54 baseline results:** [`005-nrf52-results-and-cross-generation-comparison.md`](005-nrf52-results-and-cross-generation-comparison.md)  
 **Related FLPR strategy:** `L2 260619 nRF54 RISC-V EMS Strategy`  
 **Tooling:** EM•Scope v25.6.x, Joulescope
 
@@ -25,6 +22,12 @@
 - The FLPR image is about **31% larger** than M33, better than the rough **40%** overhead seen or expected in earlier FLPR work.
 - The FLPR image fits comfortably inside one retained 16 KB SRAM block.
 - Key result: same-class energy from Arm and RISC-V, with a tiny retained-SRAM FLPR image.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 4 — EM•Scope Measurement Workflow](004-emscope-measurement-workflow.md)
+- [EMR 5 — nRF52 Results and Cross-Generation Comparison](005-nrf52-results-and-cross-generation-comparison.md)
 
 ## 1. Purpose
 

@@ -5,10 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Event-drilldown milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**EM•Script candidate precedent:** [`003-emscript-candidate-implementation.md`](003-emscript-candidate-implementation.md)  
-**Measurement workflow:** [`004-emscope-measurement-workflow.md`](004-emscope-measurement-workflow.md)  
-**TI same-device results:** [`007-ti-cc2340r5-results.md`](007-ti-cc2340r5-results.md)  
 **Tooling:** EM•Scope v25.6.x, Joulescope  
 
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
@@ -25,6 +21,13 @@
 * The radio exchange itself is not the main differentiator.
 * The visible difference is the post-exchange software tail: processing the received ATT request and preparing the next outbound response.
 * An EM•Script SRAM build is included as a secondary execution-locality note.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 3 — EM•Script Candidate Implementation](003-emscript-candidate-implementation.md)
+- [EMR 4 — EM•Scope Measurement Workflow](004-emscope-measurement-workflow.md)
+- [EMR 7 — TI CC2340R5 SimpleLink, Zephyr, and EM•Script Results](007-ti-cc2340r5-results.md)
 
 ## 1. Purpose
 

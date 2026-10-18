@@ -5,9 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Candidate implementation milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Reference baseline:** [`002-zephyr-reference-implementation.md`](002-zephyr-reference-implementation.md)
-
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
 
 ## TLDR
@@ -22,6 +19,11 @@
 - At 3.0 V, this corresponds to about **135.3 µJ**.
 - The Zephyr reference measured about **171.0 µJ**.
 - The EM•Script candidate is therefore about **21% lower energy** for this transaction.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 2 — Zephyr Reference Implementation](002-zephyr-reference-implementation.md)
 
 ## 1. Purpose
 

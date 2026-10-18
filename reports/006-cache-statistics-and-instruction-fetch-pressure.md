@@ -5,8 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Cache-statistics milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Cross-generation scores:** [`005-nrf52-results-and-cross-generation-comparison.md`](005-nrf52-results-and-cross-generation-comparison.md)  
 **Tooling:** EM•Scope v25.6.x
 
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
@@ -25,6 +23,11 @@
 - On nRF52, Zephyr has 14.7× more cache misses.
 - Same-board comparisons are the meaningful comparisons.
 - The data supports the tiny-code locality claim.
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 5 — nRF52 Results and Cross-Generation Comparison](005-nrf52-results-and-cross-generation-comparison.md)
 
 ## 1. Purpose
 

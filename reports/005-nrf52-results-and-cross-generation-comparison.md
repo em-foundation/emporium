@@ -5,8 +5,6 @@
 **Origin:** BlueJoule-GATT Dev — archived private development repository  
 **Original milestone:** Cross-generation results milestone
 
-**Benchmark definition:** [`001-bluejoule-gatt-definition.md`](001-bluejoule-gatt-definition.md)  
-**Measurement workflow:** [`004-emscope-measurement-workflow.md`](004-emscope-measurement-workflow.md)  
 **Tooling:** EM•Scope v25.6.x
 
 > Imported into EM•porium with technical content preserved. Historical results have not been revalidated; exact firmware provenance is incomplete.
@@ -31,6 +29,11 @@ At 3.0 V:
     Platform        Nordic/Zephyr    EM•Script    EM•Script gain
     nRF52 @ 3.0 V      28.16          30.44          +8.1%
     nRF54 @ 3.0 V      46.00          58.28         +26.7%
+
+## Related Reports
+
+- [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
+- [EMR 4 — EM•Scope Measurement Workflow](004-emscope-measurement-workflow.md)
 
 ## 1. Purpose
 
