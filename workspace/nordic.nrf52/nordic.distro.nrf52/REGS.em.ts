@@ -16,6 +16,26 @@ export interface POWER_RAM_t {
     RESERVED: $Reg
 }
 
+// -------- PPI_TASKS_CHG -------- //
+
+export interface PPI_TASKS_CHG_t {
+    EN: $Reg
+    DIS: $Reg
+}
+
+// -------- PPI_CH -------- //
+
+export interface PPI_CH_t {
+    EEP: $Reg
+    TEP: $Reg
+}
+
+// -------- PPI_FORK -------- //
+
+export interface PPI_FORK_t {
+    TEP: $Reg
+}
+
 // -------- UICR -------- //
 
 export interface UICR_t {
@@ -3757,5 +3777,6 @@ export const RADIO = {} as RADIO_t
 export const RNG = {} as RNG_t
 export const RTC0 = {} as RTC_t
 export const TIMER0 = {} as TIMER_t
+export const TIMER1 = {} as TIMER_t
 export const UART0 = {} as UART_t
 export const UICR = {} as UICR_t

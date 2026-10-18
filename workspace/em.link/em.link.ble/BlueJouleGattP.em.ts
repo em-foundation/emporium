@@ -36,12 +36,16 @@ export namespace em$meta {
 
 const CACHE_STATS = false
 
+var cycle_active: bool_t = false
+
 export function em$run() {
     ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
     FiberMgr.run()
 }
 
 function tickCb() {
+    if (cycle_active) return
+    cycle_active = true
     Controller.start()
 }
 
@@ -58,6 +62,7 @@ function statusHandler(stat: TL.ConnectionStatus) {
         case TL.ConnectionStatus.HANGUP:
             // halt()
             Controller.stop()
+            cycle_active = false
             break
     }
 }

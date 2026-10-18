@@ -139,6 +139,12 @@ export function deriveSessionKey(skd: ptr_t<u8>): ptr_t<u8> {
     return session_key.$ptr()
 }
 
+export function em$startup() {
+    let sk = T.U256.$make()
+    Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
+    Crypto.P256.makePublicKey(sk, $$(local_pk))
+}
+
 export function publicKeyTxActive(): bool_t {
     return !local_pk_tx_done && L2Cap.txActive()
 }
@@ -339,7 +345,6 @@ function storeLeU256(dst: TL.BufPtr, src: T.U256_Ref) {
 function workFB(_: arg_t) {
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
-    Crypto.P256.makePublicKey(sk, $$(local_pk))
     // fixed nonce for bring-up; replace with fresh random Nb
     f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
     // stage local public key

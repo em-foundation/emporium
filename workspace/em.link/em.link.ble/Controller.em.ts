@@ -293,7 +293,10 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (enc_tx_pending && (lnk_req.$$.lnkFlags & 0x04) != (enc_tx_sn >> 1)) {
         tx_ctr_lo += 1
         if (tx_ctr_lo == 0) tx_ctr_hi += 1
-        if (tx_ctr_hi > 0x7f) fail()
+        if (tx_ctr_hi > 0x7f) {
+            printf`Controller TX packet counter exhausted FAIL\n`()
+            fail()
+        }
         enc_tx_pending = false
     }
     LnkTx.ack(lnk_req)
@@ -324,7 +327,10 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
             rx_ctr_lo += 1
             if (rx_ctr_lo == 0) rx_ctr_hi += 1
-            if (rx_ctr_hi > 0x7f) fail()
+            if (rx_ctr_hi > 0x7f) {
+                printf`Controller RX packet counter exhausted FAIL\n`()
+                fail()
+            }
         }
     }
     if (LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
@@ -368,6 +374,8 @@ function exchProf(params: $$<TL.Params>) {
     params.$$.ble_rx_ctr_lo = rx_ctr_lo
     params.$$.ble_rx_encrypted = enc_rx_enabled
     params.$$.ble_rx_next_sn = rx_next_sn
+    params.$$.ble_rx_start_us = anchor.usecs - RX_START_LEAD_US
+    params.$$.ble_rx_start_valid = cur_state == State.EXCH && !upd_flag
     params.$$.ble_tx_ctr_hi = tx_ctr_hi
     params.$$.ble_tx_ctr_lo = tx_ctr_lo
     params.$$.ble_tx_encrypted = enc_tx_enabled
@@ -595,8 +603,10 @@ function timerHandler() {
     controller()
 }
 
-const HFCLK_GUARD_US = 650
+const HFCLK_GUARD_US = 850
 const RX_GUARD_US = 0
+const RX_START_LEAD_US = 50
+const RX_WAKE_DELAY_US = 0
 
 Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
     const interval_us = Connection.params().$$.interval_us
@@ -604,7 +614,7 @@ Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
         this.usecs = event_rx_end_us - air_us
     }
     this.usecs += interval_us
-    const wake_us = this.usecs - HFCLK_GUARD_US - RX_GUARD_US
+    const wake_us = this.usecs - HFCLK_GUARD_US - RX_GUARD_US + RX_WAKE_DELAY_US
     const now_us = Link.RadioDriver.nowTimeUs()
     const remaining = <i32>(wake_us - now_us)
     return remaining > 0 ? <u32>remaining : 0

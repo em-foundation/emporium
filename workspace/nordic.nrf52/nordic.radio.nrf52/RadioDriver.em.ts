@@ -32,7 +32,15 @@ export namespace em$meta {
 const CCM_POLL_LIMIT = 10000
 const MAX_PLAIN_LEN = 27
 const PPI_CCM = (1 << 24) | (1 << 25)
+const PPI_RX_START = 1 << 4
+const PPI_RX_TRACE = (1 << 0) | (1 << 2) | (1 << 3) | PPI_RX_START
 const RADIO_DISABLE_POLL_LIMIT = 1000000
+const RADIO_RX_RAMP_US = 140
+const RTC_COUNTER_MASK = 0x00ffffff
+const RTC_PERIOD_US = 512000000
+const RTC_TRACE_LEAD_TICKS = 4
+const RX_SCHEDULE_MAX_US = 5000
+const RX_SCHEDULE_MIN_US = 20
 const TIFS_US = 150
 
 enum State {
@@ -48,10 +56,14 @@ var pause_handler: RadioDriverI.Handler = $null
 var rx_crypto: bool_t = false
 var rx_end_time: u32
 var rx_timeout: volatile_t<bool_t> = false
+var rx_trace_active: bool_t = false
+var rx_trace_epoch_tick: u32
+var rx_trace_pause_level: u32
 var tifs_pending: bool_t = false
 var tx_crypto: bool_t = false
 
 export function disable() {
+    stopRxTrace()
     const key = GlobalInterrupts.disable()
     const starting = cur_state == State.SETUP
     setState(State.IDLE)
@@ -63,12 +75,13 @@ export function disable() {
     IntrVec.NVIC_disable(e$`RADIO_IRQn`)
     const state_before: u32 = $R.RADIO.STATE.$$
     $R.RADIO.EVENTS_DISABLED.$$ = 0
-    $R.RADIO.TASKS_DISABLE.$$ = 1
+    if (state_before != $R.RADIO_STATE_STATE_Disabled) $R.RADIO.TASKS_DISABLE.$$ = 1
     let polls: u32 = 0
-    while ($R.RADIO.EVENTS_DISABLED.$$ == 0 && polls < RADIO_DISABLE_POLL_LIMIT) {
+    while (state_before != $R.RADIO_STATE_STATE_Disabled
+        && $R.RADIO.EVENTS_DISABLED.$$ == 0 && polls < RADIO_DISABLE_POLL_LIMIT) {
         polls += 1
     }
-    if ($R.RADIO.EVENTS_DISABLED.$$ == 0) {
+    if (state_before != $R.RADIO_STATE_STATE_Disabled && $R.RADIO.EVENTS_DISABLED.$$ == 0) {
         const state_after: u32 = $R.RADIO.STATE.$$
         const end: u32 = $R.RADIO.EVENTS_END.$$
         const ready: u32 = $R.RADIO.EVENTS_READY.$$
@@ -86,6 +99,33 @@ export function disable() {
     stopCrypto()
     HfXtal.stop()
     setState(State.IDLE)
+}
+
+export function em$startup() {
+    if (($R.PPI.CHEN.$$ & PPI_RX_TRACE) != 0
+        || ($R.RTC0.INTENSET.$$ & $R.RTC_INTENSET_COMPARE2_Msk) != 0
+        || ($R.RTC0.EVTEN.$$ & $R.RTC_EVTEN_COMPARE2_Msk) != 0) {
+        printf`RadioDriver RX trace resource unavailable FAIL\n`()
+        fail()
+        return
+    }
+    $R.PPI.CH[0].EEP.$$ = e$`(uint32_t)&NRF_RADIO->EVENTS_READY`
+    $R.PPI.CH[0].TEP.$$ = e$`(uint32_t)&NRF_TIMER1->TASKS_CAPTURE[0]`
+    $R.PPI.FORK[0].TEP.$$ = 0
+    $R.PPI.CH[2].EEP.$$ = e$`(uint32_t)&NRF_RADIO->EVENTS_END`
+    $R.PPI.CH[2].TEP.$$ = e$`(uint32_t)&NRF_TIMER1->TASKS_CAPTURE[2]`
+    $R.PPI.CH[3].EEP.$$ = e$`(uint32_t)&NRF_RTC0->EVENTS_COMPARE[2]`
+    $R.PPI.CH[3].TEP.$$ = e$`(uint32_t)&NRF_TIMER1->TASKS_START`
+    $R.PPI.FORK[3].TEP.$$ = e$`(uint32_t)&NRF_TIMER1->TASKS_CLEAR`
+    $R.PPI.CH[4].EEP.$$ = e$`(uint32_t)&NRF_TIMER1->EVENTS_COMPARE[3]`
+    $R.PPI.CH[4].TEP.$$ = e$`(uint32_t)&NRF_RADIO->TASKS_RXEN`
+    $R.TIMER1.TASKS_STOP.$$ = 1
+    $R.TIMER1.INTENCLR.$$ = $R.TIMER_INTENCLR_COMPARE0_Msk | $R.TIMER_INTENCLR_COMPARE1_Msk
+        | $R.TIMER_INTENCLR_COMPARE2_Msk | $R.TIMER_INTENCLR_COMPARE3_Msk
+    $R.TIMER1.SHORTS.$$ = 0
+    $R.TIMER1.MODE.$$ = $R.TIMER_MODE_MODE_Timer
+    $R.TIMER1.BITMODE.$$ = $R.TIMER_BITMODE_BITMODE_32Bit
+    $R.TIMER1.PRESCALER.$$ = 4
 }
 
 export function enable() {
@@ -136,7 +176,10 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     rx_crypto = cur_params.$$.ble_rx_encrypted
     if (cur_phy == TL.Phy.BLE_1M) setPacketFormat(rx_crypto)
     if (rx_crypto) {
-        if (cur_phy != TL.Phy.BLE_1M || cur_params.$$.ble_acc_adr == 0) fail()
+        if (cur_phy != TL.Phy.BLE_1M || cur_params.$$.ble_acc_adr == 0) {
+            printf`RadioDriver startRx crypto profile FAIL phy=%d access=%08x\n`(<u32>cur_phy, cur_params.$$.ble_acc_adr)
+            fail()
+        }
         Link.PacketCrypto.prepareRx(buf, cur_params.$$.ble_rx_ctr_lo, cur_params.$$.ble_rx_ctr_hi)
     }
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(buf)
@@ -161,8 +204,9 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     } else {
         $R.RADIO.EVENTS_DISABLED.$$ = 0
         $R.RADIO.EVENTS_READY.$$ = 0
+        $R.RADIO.EVENTS_ADDRESS.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
-        $R.RADIO.TASKS_RXEN.$$ = 1
+        startRxTrace()
     }
 }
 
@@ -175,7 +219,10 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     tx_crypto = encrypted && buf[1] != 0
     if (cur_phy == TL.Phy.BLE_1M) setPacketFormat(encrypted)
     if (encrypted) {
-        if (cur_phy != TL.Phy.BLE_1M || cur_params.$$.ble_acc_adr == 0 || buf[1] > MAX_PLAIN_LEN) fail()
+        if (cur_phy != TL.Phy.BLE_1M || cur_params.$$.ble_acc_adr == 0 || buf[1] > MAX_PLAIN_LEN) {
+            printf`RadioDriver startTx crypto profile FAIL phy=%d access=%08x len=%d\n`(<u32>cur_phy, cur_params.$$.ble_acc_adr, buf[1])
+            fail()
+        }
     }
     if (tx_crypto) {
         tx_buf = Link.PacketCrypto.prepareTx(tx_buf, cur_params.$$.ble_tx_ctr_lo, cur_params.$$.ble_tx_ctr_hi)
@@ -218,9 +265,24 @@ export function waitReady() {
 }
 
 export function RADIO_isr$$() {
-    IntrVec.NVIC_clear(e$`RADIO_IRQn`)
+    if ($R.RADIO.EVENTS_END.$$ == 0) return
+    let captured_end_us: u32 = 0
+    let captured_end_valid: bool_t = false
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
     $R.RADIO.EVENTS_END.$$ = 0
+    e$`__DSB()`
+    IntrVec.NVIC_clear(e$`RADIO_IRQn`)
+    if (cur_state == State.RX && rx_trace_active) {
+        stopRxTrace()
+        if (cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_acc_adr != 0
+            && $R.RADIO.CRCSTATUS.$$ != 0 && $R.RADIO.EVENTS_ADDRESS.$$ != 0) {
+            if ($R.RTC0.EVENTS_COMPARE[2].$$ != 0 && $R.TIMER1.CC[0].$$ != 0
+                && $R.TIMER1.CC[2].$$ >= $R.TIMER1.CC[0].$$) {
+                captured_end_us = getCapturedRxEndTime()
+                captured_end_valid = true
+            }
+        }
+    }
     const shorts = $R.RADIO.SHORTS.$$
     tifs_pending = cur_phy == TL.Phy.BLE_1M
         && ((cur_state == State.RX && (shorts & $R.RADIO_SHORTS_DISABLED_TXEN_Msk) != 0)
@@ -229,6 +291,7 @@ export function RADIO_isr$$() {
         $R.RADIO.SHORTS.$$ = shorts & ~$R.RADIO_SHORTS_READY_START_Msk
         $R.RADIO.EVENTS_READY.$$ = 0
         if (!waitDisabled()) {
+            printf`RadioDriver ISR TIFS disable timeout FAIL driver=%d radio=%d ready=%d shorts=%08x\n`(<u32>cur_state, $R.RADIO.STATE.$$, $R.RADIO.EVENTS_READY.$$, $R.RADIO.SHORTS.$$)
             fail()
             return
         }
@@ -239,7 +302,7 @@ export function RADIO_isr$$() {
     switch (cur_state) {
         case State.RX: {
             if (rx_timeout) break
-            rx_end_time = nowTimeUs()
+            rx_end_time = captured_end_valid ? captured_end_us : nowTimeUs()
             Rtc.disableAux()
             if (cur_phy == TL.Phy.BLE_1M) {
                 const max_len: u32 = ($R.RADIO.PCNF1.$$ & $R.RADIO_PCNF1_MAXLEN_Msk) >> $R.RADIO_PCNF1_MAXLEN_Pos
@@ -267,7 +330,10 @@ export function RADIO_isr$$() {
                         cur_rx_buf = $null
                         break
                     }
-                    if (plain[1] > MAX_PLAIN_LEN) fail()
+                    if (plain[1] > MAX_PLAIN_LEN) {
+                        printf`RadioDriver decrypted RX length FAIL len=%d\n`(plain[1])
+                        fail()
+                    }
                     Mem.cpy(cur_rx_buf, plain, 3 + plain[1])
                 }
             }
@@ -324,6 +390,14 @@ function cancelExchange() {
     if (radio_handler != $null) radio_handler()
 }
 
+function getCapturedRxEndTime(): u32 {
+    const ticks = rx_trace_epoch_tick
+    const rtc_us = rtcTicksToUsecs(ticks)
+    let end_us: u32 = rtc_us + $R.TIMER1.CC[2].$$
+    if (end_us >= RTC_PERIOD_US) end_us -= RTC_PERIOD_US
+    return end_us
+}
+
 function hfReadyHandler() {
     if (cur_state != State.SETUP) return
     setState(State.READY)
@@ -363,6 +437,7 @@ function rtcHandler() {
     }
     rx_timeout = true
     tifs_pending = false
+    stopRxTrace()
     $R.RADIO.SHORTS.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
     stopCrypto()
@@ -370,6 +445,10 @@ function rtcHandler() {
     /// TODO -- track RADIO END event
     setState(State.READY)
     if (radio_handler != $null) radio_handler()
+}
+
+function rtcTicksToUsecs(ticks: u32): u32 {
+    return ((ticks >> 9) * 15625) + (((ticks & 0x1ff) * 15625) >> 9)
 }
 
 function setPacketFormat(encrypted: bool_t) {
@@ -415,9 +494,56 @@ function setup() {
             $R.RADIO.CRCINIT.$$ = crc_init != 0 ? crc_init : 0x555555
             break
         }
-        default: fail()
+        default: {
+            printf`RadioDriver setup PHY unsupported FAIL phy=%d\n`(<u32>cur_phy)
+            fail()
+        }
     }
     $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
+}
+
+function startRxTrace() {
+    const key = GlobalInterrupts.disable()
+    $R.TIMER1.TASKS_STOP.$$ = 1
+    $R.TIMER1.TASKS_CLEAR.$$ = 1
+    $R.TIMER1.CC[0].$$ = 0
+    $R.TIMER1.CC[2].$$ = 0
+    $R.TIMER1.CC[3].$$ = 0
+    $R.TIMER1.EVENTS_COMPARE[3].$$ = 0
+    $R.RTC0.EVTENCLR.$$ = $R.RTC_EVTEN_COMPARE2_Msk
+    $R.RTC0.EVENTS_COMPARE[2].$$ = 0
+    rx_trace_epoch_tick = ($R.RTC0.COUNTER.$$ + RTC_TRACE_LEAD_TICKS) & RTC_COUNTER_MASK
+    $R.RTC0.CC[2].$$ = rx_trace_epoch_tick
+    let scheduled: bool_t = false
+    const schedule_requested = cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_acc_adr != 0
+        && cur_params.$$.ble_rx_start_valid
+    if (schedule_requested) {
+        const start_us = cur_params.$$.ble_rx_start_us % RTC_PERIOD_US
+        const epoch_us = rtcTicksToUsecs(rx_trace_epoch_tick)
+        let remaining: i32 = <i32>start_us - <i32>epoch_us
+        if (remaining > RTC_PERIOD_US / 2) remaining -= RTC_PERIOD_US
+        if (remaining < -RTC_PERIOD_US / 2) remaining += RTC_PERIOD_US
+        remaining -= RADIO_RX_RAMP_US
+        if (remaining >= RX_SCHEDULE_MIN_US && remaining <= RX_SCHEDULE_MAX_US) {
+            $R.TIMER1.CC[3].$$ = <u32>remaining
+            scheduled = true
+        }
+    }
+    const counter: u32 = $R.RTC0.COUNTER.$$
+    const lead: u32 = (rx_trace_epoch_tick - counter) & RTC_COUNTER_MASK
+    if (lead < 2 || lead >= 0x00800000) {
+        scheduled = false
+        rx_trace_epoch_tick = (counter + RTC_TRACE_LEAD_TICKS) & RTC_COUNTER_MASK
+        $R.RTC0.CC[2].$$ = rx_trace_epoch_tick
+        $R.RTC0.EVENTS_COMPARE[2].$$ = 0
+    }
+    rx_trace_active = true
+    rx_trace_pause_level = Idle.getLevel()
+    Idle.setLevel(1)
+    $R.PPI.CHENSET.$$ = scheduled ? PPI_RX_TRACE : PPI_RX_TRACE & ~PPI_RX_START
+    $R.RTC0.EVTENSET.$$ = $R.RTC_EVTEN_COMPARE2_Msk
+    if (!scheduled) $R.RADIO.TASKS_RXEN.$$ = 1
+    GlobalInterrupts.restore(key)
 }
 
 function stopCrypto() {
@@ -430,13 +556,25 @@ function stopCrypto() {
     tx_crypto = false
 }
 
+function stopRxTrace() {
+    if (!rx_trace_active) return
+    $R.PPI.CHENCLR.$$ = PPI_RX_TRACE
+    $R.RTC0.EVTENCLR.$$ = $R.RTC_EVTEN_COMPARE2_Msk
+    $R.TIMER1.TASKS_STOP.$$ = 1
+    rx_trace_active = false
+    Idle.setLevel(rx_trace_pause_level)
+}
+
 function stopTifs() {
     $R.RADIO.SHORTS.$$ = 0
     if (!tifs_pending) return
     tifs_pending = false
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.TASKS_DISABLE.$$ = 1
-    if (!waitDisabled()) fail()
+    if (!waitDisabled()) {
+        printf`RadioDriver stopTifs disable timeout FAIL driver=%d radio=%d ready=%d shorts=%08x\n`(<u32>cur_state, $R.RADIO.STATE.$$, $R.RADIO.EVENTS_READY.$$, $R.RADIO.SHORTS.$$)
+        fail()
+    }
 }
 
 function waitDisabled(): bool_t {

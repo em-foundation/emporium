@@ -44,24 +44,36 @@ var tx_cipher: Packet
 var tx_direction: u8
 
 export function completeRx(): TL.BufPtr {
-    if (!configured) fail()
+    if (!configured) {
+        printf`PacketCrypto completeRx unconfigured FAIL\n`()
+        fail()
+    }
     $R.PPI.CHENCLR.$$ = PPI_CCM
     const err = $R.CCM.EVENTS_ERROR.$$
     const done = $R.CCM.EVENTS_ENDCRYPT.$$
     const mic_ok = $R.CCM.MICSTATUS.$$
     $R.CCM.ENABLE.$$ = 0
-    if (err != 0) fail()
+    if (err != 0) {
+        printf`PacketCrypto completeRx CCM error FAIL error=%d done=%d mic=%d\n`(err, done, mic_ok)
+        fail()
+    }
     if (done == 0 || mic_ok == 0) return $null
     return rx_plain.$ptr()
 }
 
 export function completeTx() {
-    if (!configured) fail()
+    if (!configured) {
+        printf`PacketCrypto completeTx unconfigured FAIL\n`()
+        fail()
+    }
     $R.PPI.CHENCLR.$$ = PPI_CCM
     const err = $R.CCM.EVENTS_ERROR.$$
     const done = $R.CCM.EVENTS_ENDCRYPT.$$
     $R.CCM.ENABLE.$$ = 0
-    if (err != 0 || done == 0) fail()
+    if (err != 0 || done == 0) {
+        printf`PacketCrypto completeTx CCM completion FAIL error=%d done=%d\n`(err, done)
+        fail()
+    }
 }
 
 export function configure(key: ptr_t<u8>, iv: ptr_t<u8>, direction: u8) {
@@ -83,15 +95,24 @@ export function disable() {
 }
 
 export function prepareRx(buf: TL.BufPtr, ctr_lo: u32, ctr_hi: u8) {
-    if (!configured || buf == $null) fail()
+    if (!configured || buf == $null) {
+        printf`PacketCrypto prepareRx invalid state FAIL configured=%d null_buf=%d\n`(configured ? 1 : 0, buf == $null ? 1 : 0)
+        fail()
+    }
     setNonce(ctr_lo, ctr_hi, tx_direction ^ 1)
     arm(true, buf, rx_plain.$ptr())
     $R.PPI.CHENSET.$$ = PPI_KSGEN | PPI_CRYPT
 }
 
 export function prepareTx(buf: TL.BufPtr, ctr_lo: u32, ctr_hi: u8): TL.BufPtr {
-    if (!configured || buf == $null) fail()
-    if (buf[1] > MAX_PLAIN_LEN) fail()
+    if (!configured || buf == $null) {
+        printf`PacketCrypto prepareTx invalid state FAIL configured=%d null_buf=%d\n`(configured ? 1 : 0, buf == $null ? 1 : 0)
+        fail()
+    }
+    if (buf[1] > MAX_PLAIN_LEN) {
+        printf`PacketCrypto prepareTx length FAIL len=%d\n`(buf[1])
+        fail()
+    }
     setNonce(ctr_lo, ctr_hi, tx_direction)
     arm(false, buf, tx_cipher.$ptr())
     $R.PPI.CHENSET.$$ = PPI_KSGEN

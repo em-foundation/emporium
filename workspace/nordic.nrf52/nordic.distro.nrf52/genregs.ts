@@ -15,6 +15,7 @@ const TYPE_MAP = new Map<string, string>([
     ['RNG', 'RNG'],
     ['RTC0', 'RTC'],
     ['TIMER0', 'TIMER'],
+    ['TIMER1', 'TIMER'],
     ['UART0', 'UART'],
     ['UICR', 'UICR'],
 ])
@@ -70,7 +71,8 @@ function scanStruct(): string | null {
         if (ln === null) return null
         let m = ln.match(/====\s+(\w+)/)
         if (m === null) {
-            m = ln.match(/\@brief\s+(\w+).+\(Unspecified\)/)
+            m = ln.match(/\@brief\s+(\w+)\s+\[[^\]]+\]/)
+                ?? ln.match(/\@brief\s+(\w+).+\(Unspecified\)/)
             if (m === null) continue
         }
         const tk = m![1]
