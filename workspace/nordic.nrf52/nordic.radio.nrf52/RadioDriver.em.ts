@@ -186,8 +186,6 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITEIV.$$ = chan
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
-    $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
-    IntrVec.NVIC_enable(e$`RADIO_IRQn`)
     if (timeout > 0) {
         const usecs = Rtc.getRawUsecs()
         Rtc.enableAuxUsecs(usecs + (timeout * 1000), $cb(rtcHandler))
@@ -206,6 +204,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.RADIO.EVENTS_READY.$$ = 0
         $R.RADIO.EVENTS_ADDRESS.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
+        enableEndInterrupt()
         startRxTrace()
     }
 }
@@ -232,20 +231,18 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITEIV.$$ = chan
     $R.RADIO.TXADDRESS.$$ = 0
-    $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
     let shorts: u32 = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_END_DISABLE_Msk
     if (cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_exch_buf != $null) {
         shorts |= $R.RADIO_SHORTS_DISABLED_RXEN_Msk
     }
     if (automatic) {
-        IntrVec.NVIC_enable(e$`RADIO_IRQn`)
         if (!armTifs(shorts, $R.RADIO_STATE_STATE_TxRu, $R.RADIO_STATE_STATE_Tx)) cancelExchange()
     } else {
         TimeFence.wait()
         $R.RADIO.EVENTS_DISABLED.$$ = 0
         $R.RADIO.EVENTS_READY.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
-        IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+        enableEndInterrupt()
         $R.RADIO.TASKS_TXEN.$$ = 1
     }
 }
@@ -266,6 +263,7 @@ export function waitReady() {
 
 export function RADIO_isr$$() {
     if ($R.RADIO.EVENTS_END.$$ == 0) return
+    const shorts: u32 = $R.RADIO.SHORTS.$$
     let captured_end_us: u32 = 0
     let captured_end_valid: bool_t = false
     $R.RADIO.INTENCLR.$$ = $R.RADIO.INTENSET.$$
@@ -283,7 +281,6 @@ export function RADIO_isr$$() {
             }
         }
     }
-    const shorts = $R.RADIO.SHORTS.$$
     tifs_pending = cur_phy == TL.Phy.BLE_1M
         && ((cur_state == State.RX && (shorts & $R.RADIO_SHORTS_DISABLED_TXEN_Msk) != 0)
             || (cur_state == State.TX && (shorts & $R.RADIO_SHORTS_DISABLED_RXEN_Msk) != 0))
@@ -373,6 +370,7 @@ function armTifs(shorts: u32, ramp_state: u32, active_state: u32): bool_t {
         GlobalInterrupts.restore(key)
         return false
     }
+    enableEndInterrupt()
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.SHORTS.$$ = shorts
     const armed = $R.RADIO.EVENTS_READY.$$ == 0 || $R.RADIO.STATE.$$ == active_state
@@ -388,6 +386,18 @@ function cancelExchange() {
     TimeFence.disable()
     setState(State.READY)
     if (radio_handler != $null) radio_handler()
+}
+
+function enableEndInterrupt() {
+    const key = GlobalInterrupts.disable()
+    $R.RADIO.INTENCLR.$$ = $R.RADIO_INTENCLR_END_Msk
+    $R.RADIO.EVENTS_END.$$ = 0
+    e$`(void)NRF_RADIO->EVENTS_END`
+    e$`__DSB()`
+    IntrVec.NVIC_clear(e$`RADIO_IRQn`)
+    $R.RADIO.INTENSET.$$ = $R.RADIO_INTENSET_END_Msk
+    IntrVec.NVIC_enable(e$`RADIO_IRQn`)
+    GlobalInterrupts.restore(key)
 }
 
 function getCapturedRxEndTime(): u32 {

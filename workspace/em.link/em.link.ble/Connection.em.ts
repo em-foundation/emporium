@@ -25,6 +25,7 @@ var evt_cnt: u16
 var instant: u16
 var paramsA: Params
 var paramsB: Params
+var update_pending: bool_t = false
 
 // TODO: consider smaller struct for paramsB
 
@@ -35,15 +36,16 @@ export function channel(): u8 {
 
 export function close() {
     cur_params = $null
+    update_pending = false
 }
 
 export function next(): bool_t {
     const ch = chan_num + chan_hop
     chan_num = ch > 36 ? (ch - 37) : ch
     evt_cnt += 1
-    if (evt_cnt != instant) return false
+    if (!update_pending || evt_cnt != instant) return false
     Mem.cpy($$(paramsA), $$(paramsB), $sizeof<Params>())
-    instant = 0
+    update_pending = false
     return true
 }
 
@@ -54,7 +56,9 @@ export function open(pkt: $$<TB.ConnPkt>) {
     scanTiming($$(paramsA), upd)
     chan_hop = pkt.$$.hopSca & 0x1f
     chan_num = chan_hop
+    evt_cnt = 0
     instant = 0
+    update_pending = false
     cur_params = $$(paramsA)
 }
 
@@ -66,6 +70,7 @@ export function update(data: $$<TB.ConnUpdData>) {
     Mem.cpy($$(paramsB), $$(paramsA), $sizeof<Params>())
     scanTiming($$(paramsB), data)
     instant = Mem.scan16($$(data.$$.instant[0]))
+    update_pending = true
 }
 
 function scanTiming(params: $$<Params>, data: $$<TB.ConnUpdData>) {
