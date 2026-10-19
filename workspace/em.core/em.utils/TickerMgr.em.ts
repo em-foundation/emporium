@@ -38,7 +38,7 @@ function alarmFB(a: arg_t) {
     const ticker = $$(ticker_tab[<u16>a])
     if (ticker.$$._tick_cb == $null) return
     ticker.$$._tick_cb()
-    ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)
+    if (ticker.$$._tick_cb != $null) ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate) // FIX: do not rearm after callback stops ticker
 }
 
 Ticker.prototype.start = function (this: Ticker, rate_qs: T.Secs30p2, tick_cb: Callback) {
