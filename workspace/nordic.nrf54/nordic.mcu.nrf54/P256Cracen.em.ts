@@ -9,12 +9,14 @@ import '@$$emscript'
 export const $U = $declare('MODULE', P256ProviderI)
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
+import * as Common from '@em.mcu/Common.em'
 import * as Microcode from '@nordic.mcu.nrf54/CracenMicrocode.em'
 import * as P256ProviderI from '@em.crypto.p256/P256ProviderI.em'
 import * as T from '@em.crypto.p256/Types.em'
 
 // Keep readback diagnostics in the correctness harness; disable for energy runs.
 export const verify_microcode = $config<bool_t>(true)
+export const light_pause = $config<bool_t>(false)
 
 const RAM_BASE = 0x51808000
 const MICROCODE_BASE = 0x5180c000
@@ -30,6 +32,7 @@ const ORDER = $config<T.U256>()
 
 export namespace em$meta {
     export function em$construct() {
+        if (light_pause.$$val) Common.Irq.em$meta.useIntr('CRACEN')
         T.em$meta.initU256(G_X.$$val, '6b17d1f2_e12c4247_f8bce6e5_63a440f2_77037d81_2deb33a0_f4a13945_d898c296')
         T.em$meta.initU256(G_Y.$$val, '4fe342e2_fe1a7f9b_8ee7eb4a_7c0f9e16_2bce3357_6b315ece_cbb64068_37bf51f5')
         T.em$meta.initU256(ORDER.$$val, 'ffffffff_00000000_ffffffff_ffffffff_bce6faad_a7179e84_f3b9cac2_fc632551')
@@ -41,6 +44,7 @@ export namespace em$meta {
 var initialized: bool_t = false
 var active: bool_t = false
 var slot_bytes: u32
+var done: volatile_t<bool_t> = false
 
 // Explicit initialization lets a standalone test measure microcode loading
 // separately. Provider calls also initialize lazily. Keep module power enabled
@@ -135,7 +139,7 @@ function acquire() {
         return
     }
     active = true
-    // This first provider exclusively owns CRACEN and uses polling, no NVIC IRQ.
+    // This provider exclusively owns CRACEN; arm its IRQ only for an operation.
     $R.CRACEN.INTENCLR.$$ = 7
     // Match NCS cracen_acquire while isolating first-operation bring-up.
     if ($R.CRACEN.ENABLE.$$ == 0) {
@@ -157,6 +161,10 @@ function acquire() {
 }
 
 function release() {
+    if (light_pause) {
+        Common.Irq.disable(e$`CRACEN_IRQn`)
+        $R.CRACEN.INTENCLR.$$ = $R.CRACEN_INTENCLR_PKEIKG_Msk
+    }
     // Clear private operands and results using volatile register writes.
     if (initialized) {
         for (const slot of $range(8, 14)) {
@@ -189,11 +197,31 @@ function prepareCommand(op: u32) {
 
 function run(): u32 {
     $R.CRACENCORE.PK.POINTERS.$$ = 12 | (8 << 8) | (10 << 16)
-    e$`__DMB()`
-    $R.CRACENCORE.PK.CONTROL.$$ = 3 // START | CLEAR_IRQ
-    e$`__DSB()`
-    let polls: u32 = 0
-    while (($R.CRACENCORE.PK.STATUS.$$ & BUSY_MASK) != 0 && polls < POLL_LIMIT) polls += 1
+    // Only thread-context callers with interrupts enabled can pause. Keep the
+    // original polling path for startup/ISR/interrupt-masked callers.
+    const pause_wait = light_pause && Common.GlobalInterrupts.isEnabled() && e$`(__get_IPSR() == 0)`
+    if (pause_wait) {
+        const key = Common.GlobalInterrupts.disable()
+        done = false
+        $R.CRACENCORE.PK.CONTROL.$$ = 2
+        $R.CRACEN.EVENTS_PKEIKG.$$ = 0
+        Common.Irq.clear(e$`CRACEN_IRQn`)
+        $R.CRACEN.INTENSET.$$ = $R.CRACEN_INTENSET_PKEIKG_Msk
+        Common.Irq.enable(e$`CRACEN_IRQn`)
+        e$`__DMB()`
+        $R.CRACENCORE.PK.CONTROL.$$ = 3
+        e$`__DSB()`
+        Common.GlobalInterrupts.restore(key)
+        waitDone()
+        Common.Irq.disable(e$`CRACEN_IRQn`)
+        $R.CRACEN.INTENCLR.$$ = $R.CRACEN_INTENCLR_PKEIKG_Msk
+    } else {
+        e$`__DMB()`
+        $R.CRACENCORE.PK.CONTROL.$$ = 3 // START | CLEAR_IRQ
+        e$`__DSB()`
+        let polls: u32 = 0
+        while (($R.CRACENCORE.PK.STATUS.$$ & BUSY_MASK) != 0 && polls < POLL_LIMIT) polls += 1
+    }
     const status = $R.CRACENCORE.PK.STATUS.$$ & STATUS_MASK
     if ((status & BUSY_MASK) != 0) {
         stopWithError(t$`operation timeout`, status)
@@ -201,6 +229,35 @@ function run(): u32 {
     }
     e$`__DMB()`
     return status
+}
+
+function waitDone() {
+    const level = Common.Idle.getLevel()
+    Common.Idle.setLevel(1) // pause: preserve peripheral power and clocks
+    while (true) {
+        // Mask across the predicate and WFI entry. A completion arriving in
+        // this gap remains pending and wakes WFI instead of being lost.
+        const key = Common.GlobalInterrupts.disable()
+        if (done) {
+            Common.GlobalInterrupts.restore(key)
+            break
+        }
+        Common.Idle.exec()
+        Common.GlobalInterrupts.restore(key)
+        // Radio/timer IRQs can also wake us. Only our ISR sets done.
+    }
+    Common.Idle.setLevel(level)
+}
+
+export function CRACEN_isr$$() {
+    if ($R.CRACEN.EVENTS_PKEIKG.$$ != 0) {
+        const status = $R.CRACENCORE.PK.STATUS.$$
+        $R.CRACENCORE.PK.CONTROL.$$ = 2
+        $R.CRACEN.EVENTS_PKEIKG.$$ = 0
+        e$`__DMB()`
+        if ((status & BUSY_MASK) == 0) done = true
+    }
+    Common.Irq.clear(e$`CRACEN_IRQn`)
 }
 
 function operandAddress(slot: u32): u32 {
