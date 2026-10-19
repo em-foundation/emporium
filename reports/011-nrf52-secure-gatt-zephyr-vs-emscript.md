@@ -1,7 +1,7 @@
 # EMR 11 — nRF52 Secure GATT: Zephyr versus EM•Script
 
 **Report date:** 2026-10-18  
-**Status:** Draft for review  
+**Status:** Engineering results — point-in-time snapshot\
 **Repository snapshot:** EM•porium `dev` at [`dac6930`](https://github.com/em-foundation/emporium/tree/dac6930e6788bb843670e73f8f6cedc05386faef)
 
 ## TLDR
@@ -171,11 +171,11 @@ The green selection covers the complete connection. The purple selection highlig
 
 ![Zephyr secure connection with the complete transaction marked in green and the pairing-computation region marked in purple.](assets/011-fig1.png)
 
-**Figure 1 — Zephyr secure connection.** The green selection measures **268.010 ms** and **892.638 µJ**.
+<p align="center"><strong>Figure 1 — Zephyr secure connection</strong><br>268.010 ms · 892.638 µJ</p>
 
 ![EM•Script secure connection with the complete transaction marked in green and the pairing-computation region marked in purple.](assets/011-fig2.png)
 
-**Figure 2 — EM•Script secure connection.** The green selection measures **255.369 ms** and **692.768 µJ**.
+<p align="center"><strong>Figure 2 — EM•Script secure connection</strong><br>255.369 ms · 692.768 µJ</p>
 
 The figures use manually placed boundaries, including quiet margins around the transaction. Their displayed durations therefore differ slightly from the capture-wide extraction. The energy readings remain consistent with the averages.
 
@@ -222,11 +222,11 @@ Figures 3 and 4 zoom into selected events immediately before the sustained pairi
 
 ![Zephyr event before sustained pairing computation, with the selected event marked in blue and the following computation region marked in purple.](assets/011-fig3.png)
 
-**Figure 3 — Zephyr event before sustained pairing computation.** The blue selection measures **2.479 ms** and **17.156 µJ**.
+<p align="center"><strong>Figure 3 — Zephyr pre-computation event</strong><br>2.479 ms · 17.156 µJ</p>
 
 ![EM•Script event before sustained pairing computation, with the selected event marked in blue and the following computation region marked in purple.](assets/011-fig4.png)
 
-**Figure 4 — EM•Script event before sustained pairing computation.** The blue selection measures **1.514 ms** and **14.767 µJ**.
+<p align="center"><strong>Figure 4 — EM•Script pre-computation event</strong><br>1.514 ms · 14.767 µJ</p>
 
 | Selected event | EM•Script | Zephyr |
 | --- | ---: | ---: |
