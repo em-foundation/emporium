@@ -9,9 +9,13 @@ import * as T from '@em.crypto.p256/Types.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
+import * as Link from '@em.link/Link.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
+
+export const halt_after_key_exchange = $config<bool_t>(false)
+export const halt_after_dhkey_check = $config<bool_t>(false)
 
 const DHKEY_CHECK = 0x0d
 const F4_MSG_LEN = 65
@@ -58,6 +62,7 @@ export namespace em$meta {
 var local_pk_tx_done: bool_t
 var pair_confirm_sent: bool_t
 var pair_random_sent: bool_t
+var pair_rsp_pending: bool_t
 var pair_rsp_sent: bool_t
 var pair_rsp_tx_seen: bool_t
 var peer_pk: T.PubKey
@@ -105,10 +110,11 @@ export function accept(req: $$<TB.LnkHdr>): bool_t {
         return true
     }
     if (pdu[4] == PAIRING_REQ) {
-        if (pair_rsp_sent) return true
+        if (pair_rsp_sent || pair_rsp_pending) return true
         central_io[0] = pdu[7] // AuthReq
         central_io[1] = pdu[6] // OOB
         central_io[2] = pdu[5] // IOcap
+        pair_rsp_pending = true
         sendPairRsp()
         return true
     }
@@ -154,6 +160,7 @@ export function reset() {
     local_pk_tx_done = false
     pair_confirm_sent = false
     pair_random_sent = false
+    pair_rsp_pending = false
     pair_rsp_sent = false
     pair_rsp_tx_seen = false
     responder_check_sent = false
@@ -165,6 +172,10 @@ export function reset() {
 
 export function txAcked() {
     if (!LnkTx.takeAttAck()) return
+    if (pair_rsp_pending) { // FIX: retry pairing response after the preceding GATT reply releases the shared buffer
+        sendPairRsp()
+        return
+    }
     if (!L2Cap.txActive()) return
     if (L2Cap.txAcked()) {
         if (responder_check_sent && !responder_check_acked) {
@@ -173,7 +184,11 @@ export function txAcked() {
         }
         if (!local_pk_tx_done) {
             local_pk_tx_done = true
-            sendPairConfirm()
+            if (halt_after_key_exchange) {
+                if (secret_ready) ack_f.$$.post()
+            } else {
+                sendPairConfirm()
+            }
         }
         return
     }
@@ -288,10 +303,7 @@ function sendPairRandom() {
 
 function sendPairRsp() {
     const rsp = LnkTx.getAttPkt()
-    if (rsp == $null) {
-        printf`SMP Pairing Response: no TX buffer\n`()
-        fail()
-    }
+    if (rsp == $null) return // FIX: a busy shared TX buffer defers the response instead of halting
     rsp.$$.init(TB.LL_START)
     const out = rsp.$$.pduPtr()
     out[0] = 0x07
@@ -308,6 +320,7 @@ function sendPairRsp() {
     rsp.$$.pduLen = 11
     LnkTx.setAttReady()
     pair_rsp_sent = true
+    pair_rsp_pending = false
 }
 
 function stageTx() {
@@ -346,7 +359,7 @@ function workFB(_: arg_t) {
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
     // fixed nonce for bring-up; replace with fresh random Nb
-    f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
+    if (!halt_after_key_exchange) f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
     // stage local public key
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
@@ -360,11 +373,24 @@ function workFB(_: arg_t) {
     Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
     const key = Common.GlobalInterrupts.disable()
     secret_ready = true
-    if (peer_check_seen) verify_f.$$.post()
+    if (halt_after_key_exchange) {
+        if (local_pk_tx_done) ack_f.$$.post()
+    } else if (peer_check_seen) verify_f.$$.post()
     Common.GlobalInterrupts.restore(key)
 }
 
 function ackFB(_: arg_t) {
+    if (halt_after_dhkey_check && responder_check_acked) {
+        Link.RadioDriver.disable()
+        printf`BLE checkpoint: peer DHKey Check verified; local DHKey Check acknowledged; stopped before LL encryption\n`()
+        halt()
+        return
+    }
+    if (halt_after_key_exchange && secret_ready && local_pk_tx_done) {
+        Link.RadioDriver.disable()
+        printf`BLE checkpoint: peer public key received; CRACEN ECDH complete; local public key acknowledged; stopped before CMAC/encryption\n`()
+        halt()
+    }
 }
 
 function verifyFB(_: arg_t) {

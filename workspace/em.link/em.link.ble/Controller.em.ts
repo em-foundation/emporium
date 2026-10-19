@@ -15,6 +15,7 @@ import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
+export const hfclk_guard_us = $config<u32>(850) // Wake early enough for crystal settling and RX ramp-up.
 
 const rx_adr = $config<Heap.Adr>()
 const tx_adr = $config<Heap.Adr>()
@@ -229,7 +230,7 @@ function controller() {
                 return
             }
             case State.EXCH_READY: {
-                const deadline = anchor.usecs + Connection.params().$$.interval_us - HFCLK_GUARD_US
+                const deadline = anchor.usecs + Connection.params().$$.interval_us - hfclk_guard_us
                 const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
                 const limit_ms: u16 = remaining >= 1000 ? <u16>(remaining / 1000) : 1
                 let end_ms = pending_end_ms
@@ -344,7 +345,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (enc_tx_enabled) return chooseEncryptedTx()
     let tx = LnkTx.choose(lnk_req)
     tx[0] &= ~0x10
-    const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - HFCLK_GUARD_US
+    const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
     const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
     if (!enc_rx_enabled && lnk_req.$$.pduLen == 0
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
@@ -392,7 +393,9 @@ function notifyStatus(status: TL.ConnectionStatus) {
 }
 
 function statusFB(_: arg_t) {
-    if (pending_status == TL.ConnectionStatus.HANGUP) printf`BLE CONNECTION HANGUP (RX timeout)\n`()
+    if (pending_status == TL.ConnectionStatus.HANGUP) {
+        printf`BLE CONNECTION HANGUP (RX timeout)\n`()
+    }
     status_cb(pending_status)
 }
 
@@ -603,7 +606,6 @@ function timerHandler() {
     controller()
 }
 
-const HFCLK_GUARD_US = 850
 const RX_GUARD_US = 0
 const RX_START_LEAD_US = 50
 const RX_WAKE_DELAY_US = 0
@@ -614,7 +616,7 @@ Anchor.prototype.nextPause = function (this: Anchor, air_us: u32): u32 {
         this.usecs = event_rx_end_us - air_us
     }
     this.usecs += interval_us
-    const wake_us = this.usecs - HFCLK_GUARD_US - RX_GUARD_US + RX_WAKE_DELAY_US
+    const wake_us = this.usecs - hfclk_guard_us - RX_GUARD_US + RX_WAKE_DELAY_US
     const now_us = Link.RadioDriver.nowTimeUs()
     const remaining = <i32>(wake_us - now_us)
     return remaining > 0 ? <u32>remaining : 0

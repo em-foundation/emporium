@@ -1,12 +1,15 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
+import * as Aes128Ecb from '@nordic.mcu.nrf54/Aes128Ecb.em'
+import * as CmacEngine from '@em.crypto.cmac/Engine.em'
+import * as Common from '@em.mcu/Common.em'
 import * as Crypto from '@em.crypto/Crypto.em'
-import * as CmacN from '@em.crypto.cmac/CmacN.em'
 import * as P256Cracen from '@nordic.mcu.nrf54/P256Cracen.em'
 
-// First checkpoint: standalone P-256. AES/CMAC and packet crypto follow.
 export function em$configure() {
-    Crypto.Cmac.$$dlg = CmacN // Unsupported until the AES/CMAC checkpoint.
+    Common.Aes128.$$dlg = Aes128Ecb
+    CmacEngine.Aes.$$dlg = Aes128Ecb
+    Crypto.Cmac.$$dlg = CmacEngine
     Crypto.P256.$$dlg = P256Cracen
 }

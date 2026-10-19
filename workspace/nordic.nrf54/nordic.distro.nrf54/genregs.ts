@@ -5,9 +5,11 @@ import em from '../../em.core/em.lang/emscript'
 
 const TYPE_SET = new Set<string>([
     'CACHE',
+    'CCM',
     'CLOCK',
     'CRACEN',
     'CRACENCORE',
+    'ECB',
     'FICR',
     'GPIO',
     'GPIOTE',
@@ -26,9 +28,11 @@ const TYPE_SET = new Set<string>([
 ])
 const INSTS = [
     ['APPLICATION_ICACHE', 'CACHE'],
+    ['CCM00', 'CCM'],
     ['CLOCK', 'CLOCK'],
     ['CRACEN', 'CRACEN'],
     ['CRACENCORE', 'CRACENCORE'],
+    ['ECB00', 'ECB'],
     ['FICR', 'FICR'],
     ['GPIOTE20', 'GPIOTE'],
     ['GRTC', 'GRTC'],

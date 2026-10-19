@@ -38,6 +38,66 @@ export interface CACHE_t {
     WRITELOCK: $Reg
 }
 
+// -------- CCM_KEY -------- //
+
+export interface CCM_KEY_t {
+    VALUE: dim_t<$Reg, 4>
+}
+
+// -------- CCM_NONCE -------- //
+
+export interface CCM_NONCE_t {
+    VALUE: dim_t<$Reg, 4>
+}
+
+// -------- CCM_IN -------- //
+
+export interface CCM_IN_t {
+    PTR: $Reg
+}
+
+// -------- CCM_OUT -------- //
+
+export interface CCM_OUT_t {
+    PTR: $Reg
+}
+
+// -------- CCM -------- //
+
+export interface CCM_t {
+    TASKS_START: $Reg
+    TASKS_STOP: $Reg
+    TASKS_RATEOVERRIDE: $Reg
+    RESERVED: dim_t<$Reg, 29>
+    SUBSCRIBE_START: $Reg
+    SUBSCRIBE_STOP: $Reg
+    SUBSCRIBE_RATEOVERRIDE: $Reg
+    RESERVED1: dim_t<$Reg, 30>
+    EVENTS_END: $Reg
+    EVENTS_ERROR: $Reg
+    RESERVED2: dim_t<$Reg, 30>
+    PUBLISH_END: $Reg
+    PUBLISH_ERROR: $Reg
+    RESERVED3: dim_t<$Reg, 94>
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED4: dim_t<$Reg, 61>
+    MACSTATUS: $Reg
+    ERRORSTATUS: $Reg
+    RESERVED5: dim_t<$Reg, 62>
+    ENABLE: $Reg
+    MODE: $Reg
+    RESERVED6: dim_t<$Reg, 2>
+    KEY: CCM_KEY_t
+    NONCE: CCM_NONCE_t
+    IN: CCM_IN_t
+    RESERVED7: $Reg
+    OUT: CCM_OUT_t
+    RESERVED8: dim_t<$Reg, 2>
+    RATEOVERRIDE: $Reg
+    ADATAMASK: $Reg
+}
+
 // -------- CLOCK_XO -------- //
 
 export interface CLOCK_XO_t {
@@ -230,6 +290,51 @@ export interface CRACENCORE_t {
     PK: CRACENCORE_PK_t
     RESERVED3: dim_t<$Reg, 1006>
     IKG: CRACENCORE_IKG_t
+}
+
+// -------- ECB_KEY -------- //
+
+export interface ECB_KEY_t {
+    VALUE: dim_t<$Reg, 4>
+}
+
+// -------- ECB_IN -------- //
+
+export interface ECB_IN_t {
+    PTR: $Reg
+}
+
+// -------- ECB_OUT -------- //
+
+export interface ECB_OUT_t {
+    PTR: $Reg
+}
+
+// -------- ECB -------- //
+
+export interface ECB_t {
+    TASKS_START: $Reg
+    TASKS_STOP: $Reg
+    RESERVED: dim_t<$Reg, 30>
+    SUBSCRIBE_START: $Reg
+    SUBSCRIBE_STOP: $Reg
+    RESERVED1: dim_t<$Reg, 30>
+    EVENTS_END: $Reg
+    EVENTS_ERROR: $Reg
+    RESERVED2: dim_t<$Reg, 30>
+    PUBLISH_END: $Reg
+    PUBLISH_ERROR: $Reg
+    RESERVED3: dim_t<$Reg, 95>
+    INTENSET: $Reg
+    INTENCLR: $Reg
+    RESERVED4: dim_t<$Reg, 61>
+    ERRORSTATUS: $Reg
+    RESERVED5: dim_t<$Reg, 67>
+    KEY: ECB_KEY_t
+    RESERVED6: dim_t<$Reg, 4>
+    IN: ECB_IN_t
+    RESERVED7: $Reg
+    OUT: ECB_OUT_t
 }
 
 // -------- FICR_INFO -------- //
@@ -1290,6 +1395,214 @@ export const CACHE_WRITELOCK_WRITELOCK_Min: any = '0x0UL'
 export const CACHE_WRITELOCK_WRITELOCK_Max: any = '0x1UL'
 export const CACHE_WRITELOCK_WRITELOCK_Unlocked: any = '0x0UL'
 export const CACHE_WRITELOCK_WRITELOCK_Locked: any = '0x1UL'
+export const CCM_KEY_VALUE_MaxCount: any = '4UL'
+export const CCM_KEY_VALUE_MaxIndex: any = '3UL'
+export const CCM_KEY_VALUE_MinIndex: any = '0UL'
+export const CCM_KEY_VALUE_ResetValue: any = '0x00000000UL'
+export const CCM_KEY_VALUE_VALUE_Pos: any = '0UL'
+export const CCM_KEY_VALUE_VALUE_Msk: any = '0xFFFFFFFFUL << CCM_KEY_VALUE_VALUE_Pos'
+export const CCM_NONCE_VALUE_MaxCount: any = '4UL'
+export const CCM_NONCE_VALUE_MaxIndex: any = '3UL'
+export const CCM_NONCE_VALUE_MinIndex: any = '0UL'
+export const CCM_NONCE_VALUE_ResetValue: any = '0x00000000UL'
+export const CCM_NONCE_VALUE_VALUE_Pos: any = '0UL'
+export const CCM_NONCE_VALUE_VALUE_Msk: any = '0xFFFFFFFFUL << CCM_NONCE_VALUE_VALUE_Pos'
+export const CCM_IN_PTR_ResetValue: any = '0x00000000UL'
+export const CCM_IN_PTR_PTR_Pos: any = '0UL'
+export const CCM_IN_PTR_PTR_Msk: any = '0xFFFFFFFFUL << CCM_IN_PTR_PTR_Pos'
+export const CCM_OUT_PTR_ResetValue: any = '0x00000000UL'
+export const CCM_OUT_PTR_PTR_Pos: any = '0UL'
+export const CCM_OUT_PTR_PTR_Msk: any = '0xFFFFFFFFUL << CCM_OUT_PTR_PTR_Pos'
+export const CCM_TASKS_START_ResetValue: any = '0x00000000UL'
+export const CCM_TASKS_START_TASKS_START_Pos: any = '0UL'
+export const CCM_TASKS_START_TASKS_START_Msk: any = '0x1UL << CCM_TASKS_START_TASKS_START_Pos'
+export const CCM_TASKS_START_TASKS_START_Min: any = '0x1UL'
+export const CCM_TASKS_START_TASKS_START_Max: any = '0x1UL'
+export const CCM_TASKS_START_TASKS_START_Trigger: any = '0x1UL'
+export const CCM_TASKS_STOP_ResetValue: any = '0x00000000UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Pos: any = '0UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Msk: any = '0x1UL << CCM_TASKS_STOP_TASKS_STOP_Pos'
+export const CCM_TASKS_STOP_TASKS_STOP_Min: any = '0x1UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Max: any = '0x1UL'
+export const CCM_TASKS_STOP_TASKS_STOP_Trigger: any = '0x1UL'
+export const CCM_TASKS_RATEOVERRIDE_ResetValue: any = '0x00000000UL'
+export const CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Pos: any = '0UL'
+export const CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Msk: any = '0x1UL << CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Pos'
+export const CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Min: any = '0x1UL'
+export const CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Max: any = '0x1UL'
+export const CCM_TASKS_RATEOVERRIDE_TASKS_RATEOVERRIDE_Trigger: any = '0x1UL'
+export const CCM_SUBSCRIBE_START_ResetValue: any = '0x00000000UL'
+export const CCM_SUBSCRIBE_START_CHIDX_Pos: any = '0UL'
+export const CCM_SUBSCRIBE_START_CHIDX_Msk: any = '0xFFUL << CCM_SUBSCRIBE_START_CHIDX_Pos'
+export const CCM_SUBSCRIBE_START_CHIDX_Min: any = '0x00UL'
+export const CCM_SUBSCRIBE_START_CHIDX_Max: any = '0xFFUL'
+export const CCM_SUBSCRIBE_START_EN_Pos: any = '31UL'
+export const CCM_SUBSCRIBE_START_EN_Msk: any = '0x1UL << CCM_SUBSCRIBE_START_EN_Pos'
+export const CCM_SUBSCRIBE_START_EN_Min: any = '0x0UL'
+export const CCM_SUBSCRIBE_START_EN_Max: any = '0x1UL'
+export const CCM_SUBSCRIBE_START_EN_Disabled: any = '0x0UL'
+export const CCM_SUBSCRIBE_START_EN_Enabled: any = '0x1UL'
+export const CCM_SUBSCRIBE_STOP_ResetValue: any = '0x00000000UL'
+export const CCM_SUBSCRIBE_STOP_CHIDX_Pos: any = '0UL'
+export const CCM_SUBSCRIBE_STOP_CHIDX_Msk: any = '0xFFUL << CCM_SUBSCRIBE_STOP_CHIDX_Pos'
+export const CCM_SUBSCRIBE_STOP_CHIDX_Min: any = '0x00UL'
+export const CCM_SUBSCRIBE_STOP_CHIDX_Max: any = '0xFFUL'
+export const CCM_SUBSCRIBE_STOP_EN_Pos: any = '31UL'
+export const CCM_SUBSCRIBE_STOP_EN_Msk: any = '0x1UL << CCM_SUBSCRIBE_STOP_EN_Pos'
+export const CCM_SUBSCRIBE_STOP_EN_Min: any = '0x0UL'
+export const CCM_SUBSCRIBE_STOP_EN_Max: any = '0x1UL'
+export const CCM_SUBSCRIBE_STOP_EN_Disabled: any = '0x0UL'
+export const CCM_SUBSCRIBE_STOP_EN_Enabled: any = '0x1UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_ResetValue: any = '0x00000000UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_CHIDX_Pos: any = '0UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_CHIDX_Msk: any = '0xFFUL << CCM_SUBSCRIBE_RATEOVERRIDE_CHIDX_Pos'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_CHIDX_Min: any = '0x00UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_CHIDX_Max: any = '0xFFUL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Pos: any = '31UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Msk: any = '0x1UL << CCM_SUBSCRIBE_RATEOVERRIDE_EN_Pos'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Min: any = '0x0UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Max: any = '0x1UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Disabled: any = '0x0UL'
+export const CCM_SUBSCRIBE_RATEOVERRIDE_EN_Enabled: any = '0x1UL'
+export const CCM_EVENTS_END_ResetValue: any = '0x00000000UL'
+export const CCM_EVENTS_END_EVENTS_END_Pos: any = '0UL'
+export const CCM_EVENTS_END_EVENTS_END_Msk: any = '0x1UL << CCM_EVENTS_END_EVENTS_END_Pos'
+export const CCM_EVENTS_END_EVENTS_END_Min: any = '0x0UL'
+export const CCM_EVENTS_END_EVENTS_END_Max: any = '0x1UL'
+export const CCM_EVENTS_END_EVENTS_END_NotGenerated: any = '0x0UL'
+export const CCM_EVENTS_END_EVENTS_END_Generated: any = '0x1UL'
+export const CCM_EVENTS_ERROR_ResetValue: any = '0x00000000UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Pos: any = '0UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Msk: any = '0x1UL << CCM_EVENTS_ERROR_EVENTS_ERROR_Pos'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Min: any = '0x0UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Max: any = '0x1UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_NotGenerated: any = '0x0UL'
+export const CCM_EVENTS_ERROR_EVENTS_ERROR_Generated: any = '0x1UL'
+export const CCM_PUBLISH_END_ResetValue: any = '0x00000000UL'
+export const CCM_PUBLISH_END_CHIDX_Pos: any = '0UL'
+export const CCM_PUBLISH_END_CHIDX_Msk: any = '0xFFUL << CCM_PUBLISH_END_CHIDX_Pos'
+export const CCM_PUBLISH_END_CHIDX_Min: any = '0x00UL'
+export const CCM_PUBLISH_END_CHIDX_Max: any = '0xFFUL'
+export const CCM_PUBLISH_END_EN_Pos: any = '31UL'
+export const CCM_PUBLISH_END_EN_Msk: any = '0x1UL << CCM_PUBLISH_END_EN_Pos'
+export const CCM_PUBLISH_END_EN_Min: any = '0x0UL'
+export const CCM_PUBLISH_END_EN_Max: any = '0x1UL'
+export const CCM_PUBLISH_END_EN_Disabled: any = '0x0UL'
+export const CCM_PUBLISH_END_EN_Enabled: any = '0x1UL'
+export const CCM_PUBLISH_ERROR_ResetValue: any = '0x00000000UL'
+export const CCM_PUBLISH_ERROR_CHIDX_Pos: any = '0UL'
+export const CCM_PUBLISH_ERROR_CHIDX_Msk: any = '0xFFUL << CCM_PUBLISH_ERROR_CHIDX_Pos'
+export const CCM_PUBLISH_ERROR_CHIDX_Min: any = '0x00UL'
+export const CCM_PUBLISH_ERROR_CHIDX_Max: any = '0xFFUL'
+export const CCM_PUBLISH_ERROR_EN_Pos: any = '31UL'
+export const CCM_PUBLISH_ERROR_EN_Msk: any = '0x1UL << CCM_PUBLISH_ERROR_EN_Pos'
+export const CCM_PUBLISH_ERROR_EN_Min: any = '0x0UL'
+export const CCM_PUBLISH_ERROR_EN_Max: any = '0x1UL'
+export const CCM_PUBLISH_ERROR_EN_Disabled: any = '0x0UL'
+export const CCM_PUBLISH_ERROR_EN_Enabled: any = '0x1UL'
+export const CCM_INTENSET_ResetValue: any = '0x00000000UL'
+export const CCM_INTENSET_END_Pos: any = '1UL'
+export const CCM_INTENSET_END_Msk: any = '0x1UL << CCM_INTENSET_END_Pos'
+export const CCM_INTENSET_END_Min: any = '0x0UL'
+export const CCM_INTENSET_END_Max: any = '0x1UL'
+export const CCM_INTENSET_END_Set: any = '0x1UL'
+export const CCM_INTENSET_END_Disabled: any = '0x0UL'
+export const CCM_INTENSET_END_Enabled: any = '0x1UL'
+export const CCM_INTENSET_ERROR_Pos: any = '2UL'
+export const CCM_INTENSET_ERROR_Msk: any = '0x1UL << CCM_INTENSET_ERROR_Pos'
+export const CCM_INTENSET_ERROR_Min: any = '0x0UL'
+export const CCM_INTENSET_ERROR_Max: any = '0x1UL'
+export const CCM_INTENSET_ERROR_Set: any = '0x1UL'
+export const CCM_INTENSET_ERROR_Disabled: any = '0x0UL'
+export const CCM_INTENSET_ERROR_Enabled: any = '0x1UL'
+export const CCM_INTENCLR_ResetValue: any = '0x00000000UL'
+export const CCM_INTENCLR_END_Pos: any = '1UL'
+export const CCM_INTENCLR_END_Msk: any = '0x1UL << CCM_INTENCLR_END_Pos'
+export const CCM_INTENCLR_END_Min: any = '0x0UL'
+export const CCM_INTENCLR_END_Max: any = '0x1UL'
+export const CCM_INTENCLR_END_Clear: any = '0x1UL'
+export const CCM_INTENCLR_END_Disabled: any = '0x0UL'
+export const CCM_INTENCLR_END_Enabled: any = '0x1UL'
+export const CCM_INTENCLR_ERROR_Pos: any = '2UL'
+export const CCM_INTENCLR_ERROR_Msk: any = '0x1UL << CCM_INTENCLR_ERROR_Pos'
+export const CCM_INTENCLR_ERROR_Min: any = '0x0UL'
+export const CCM_INTENCLR_ERROR_Max: any = '0x1UL'
+export const CCM_INTENCLR_ERROR_Clear: any = '0x1UL'
+export const CCM_INTENCLR_ERROR_Disabled: any = '0x0UL'
+export const CCM_INTENCLR_ERROR_Enabled: any = '0x1UL'
+export const CCM_MACSTATUS_ResetValue: any = '0x00000000UL'
+export const CCM_MACSTATUS_MACSTATUS_Pos: any = '0UL'
+export const CCM_MACSTATUS_MACSTATUS_Msk: any = '0x1UL << CCM_MACSTATUS_MACSTATUS_Pos'
+export const CCM_MACSTATUS_MACSTATUS_Min: any = '0x0UL'
+export const CCM_MACSTATUS_MACSTATUS_Max: any = '0x1UL'
+export const CCM_MACSTATUS_MACSTATUS_CheckFailed: any = '0x0UL'
+export const CCM_MACSTATUS_MACSTATUS_CheckPassed: any = '0x1UL'
+export const CCM_ERRORSTATUS_ResetValue: any = '0x00000000UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_Pos: any = '0UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_Msk: any = '0x7UL << CCM_ERRORSTATUS_ERRORSTATUS_Pos'
+export const CCM_ERRORSTATUS_ERRORSTATUS_Min: any = '0x0UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_Max: any = '0x4UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_NoError: any = '0x0UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_PrematureInptrEnd: any = '0x1UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_PrematureOutptrEnd: any = '0x2UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_EncryptionTooSlow: any = '0x3UL'
+export const CCM_ERRORSTATUS_ERRORSTATUS_DmaError: any = '0x4UL'
+export const CCM_ENABLE_ResetValue: any = '0x00000000UL'
+export const CCM_ENABLE_ENABLE_Pos: any = '0UL'
+export const CCM_ENABLE_ENABLE_Msk: any = '0x3UL << CCM_ENABLE_ENABLE_Pos'
+export const CCM_ENABLE_ENABLE_Min: any = '0x0UL'
+export const CCM_ENABLE_ENABLE_Max: any = '0x2UL'
+export const CCM_ENABLE_ENABLE_Disabled: any = '0x0UL'
+export const CCM_ENABLE_ENABLE_Enabled: any = '0x2UL'
+export const CCM_MODE_ResetValue: any = '0x00000001UL'
+export const CCM_MODE_MODE_Pos: any = '0UL'
+export const CCM_MODE_MODE_Msk: any = '0x3UL << CCM_MODE_MODE_Pos'
+export const CCM_MODE_MODE_Min: any = '0x0UL'
+export const CCM_MODE_MODE_Max: any = '0x2UL'
+export const CCM_MODE_MODE_Encryption: any = '0x0UL'
+export const CCM_MODE_MODE_Decryption: any = '0x1UL'
+export const CCM_MODE_MODE_FastDecryption: any = '0x2UL'
+export const CCM_MODE_PROTOCOL_Pos: any = '8UL'
+export const CCM_MODE_PROTOCOL_Msk: any = '0x3UL << CCM_MODE_PROTOCOL_Pos'
+export const CCM_MODE_PROTOCOL_Min: any = '0x0UL'
+export const CCM_MODE_PROTOCOL_Max: any = '0x1UL'
+export const CCM_MODE_PROTOCOL_Ble: any = '0x0UL'
+export const CCM_MODE_PROTOCOL_Ieee802154: any = '0x1UL'
+export const CCM_MODE_DATARATE_Pos: any = '16UL'
+export const CCM_MODE_DATARATE_Msk: any = '0x7UL << CCM_MODE_DATARATE_Pos'
+export const CCM_MODE_DATARATE_Min: any = '0x0UL'
+export const CCM_MODE_DATARATE_Max: any = '0x5UL'
+export const CCM_MODE_DATARATE_125Kbit: any = '0x0UL'
+export const CCM_MODE_DATARATE_250Kbit: any = '0x1UL'
+export const CCM_MODE_DATARATE_500Kbit: any = '0x2UL'
+export const CCM_MODE_DATARATE_1Mbit: any = '0x3UL'
+export const CCM_MODE_DATARATE_2Mbit: any = '0x4UL'
+export const CCM_MODE_DATARATE_4Mbit: any = '0x5UL'
+export const CCM_MODE_MACLEN_Pos: any = '24UL'
+export const CCM_MODE_MACLEN_Msk: any = '0x7UL << CCM_MODE_MACLEN_Pos'
+export const CCM_MODE_MACLEN_Min: any = '0x0UL'
+export const CCM_MODE_MACLEN_Max: any = '0x7UL'
+export const CCM_MODE_MACLEN_M0: any = '0x0UL'
+export const CCM_MODE_MACLEN_M4: any = '0x1UL'
+export const CCM_MODE_MACLEN_M6: any = '0x2UL'
+export const CCM_MODE_MACLEN_M8: any = '0x3UL'
+export const CCM_MODE_MACLEN_M10: any = '0x4UL'
+export const CCM_MODE_MACLEN_M12: any = '0x5UL'
+export const CCM_MODE_MACLEN_M14: any = '0x6UL'
+export const CCM_MODE_MACLEN_M16: any = '0x7UL'
+export const CCM_RATEOVERRIDE_ResetValue: any = '0x00000002UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_Pos: any = '0UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_Msk: any = '0x7UL << CCM_RATEOVERRIDE_RATEOVERRIDE_Pos'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_Min: any = '0x0UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_Max: any = '0x5UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_125Kbit: any = '0x0UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_500Kbit: any = '0x2UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_1Mbit: any = '0x3UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_2Mbit: any = '0x4UL'
+export const CCM_RATEOVERRIDE_RATEOVERRIDE_4Mbit: any = '0x5UL'
+export const CCM_ADATAMASK_ResetValue: any = '0x000000E3UL'
+export const CCM_ADATAMASK_ADATAMASK_Pos: any = '0UL'
+export const CCM_ADATAMASK_ADATAMASK_Msk: any = '0xFFUL << CCM_ADATAMASK_ADATAMASK_Pos'
 export const CLOCK_XO_RUN_ResetValue: any = '0x00000000UL'
 export const CLOCK_XO_RUN_STATUS_Pos: any = '0UL'
 export const CLOCK_XO_RUN_STATUS_Msk: any = '0x1UL << CLOCK_XO_RUN_STATUS_Pos'
@@ -2406,6 +2719,129 @@ export const CRACENCORE_IKG_HWCONFIG_PERSONALIZATIONSTRINGLENGTH_Pos: any = '24U
 export const CRACENCORE_IKG_HWCONFIG_PERSONALIZATIONSTRINGLENGTH_Msk: any = '0xFUL << CRACENCORE_IKG_HWCONFIG_PERSONALIZATIONSTRINGLENGTH_Pos'
 export const CRACENCORE_IKG_HWCONFIG_ADDITIONALINPUTLENGTH_Pos: any = '28UL'
 export const CRACENCORE_IKG_HWCONFIG_ADDITIONALINPUTLENGTH_Msk: any = '0xFUL << CRACENCORE_IKG_HWCONFIG_ADDITIONALINPUTLENGTH_Pos'
+export const ECB_KEY_VALUE_MaxCount: any = '4UL'
+export const ECB_KEY_VALUE_MaxIndex: any = '3UL'
+export const ECB_KEY_VALUE_MinIndex: any = '0UL'
+export const ECB_KEY_VALUE_ResetValue: any = '0x00000000UL'
+export const ECB_KEY_VALUE_VALUE_Pos: any = '0UL'
+export const ECB_KEY_VALUE_VALUE_Msk: any = '0xFFFFFFFFUL << ECB_KEY_VALUE_VALUE_Pos'
+export const ECB_IN_PTR_ResetValue: any = '0x00000000UL'
+export const ECB_IN_PTR_PTR_Pos: any = '0UL'
+export const ECB_IN_PTR_PTR_Msk: any = '0xFFFFFFFFUL << ECB_IN_PTR_PTR_Pos'
+export const ECB_OUT_PTR_ResetValue: any = '0x00000000UL'
+export const ECB_OUT_PTR_PTR_Pos: any = '0UL'
+export const ECB_OUT_PTR_PTR_Msk: any = '0xFFFFFFFFUL << ECB_OUT_PTR_PTR_Pos'
+export const ECB_TASKS_START_ResetValue: any = '0x00000000UL'
+export const ECB_TASKS_START_TASKS_START_Pos: any = '0UL'
+export const ECB_TASKS_START_TASKS_START_Msk: any = '0x1UL << ECB_TASKS_START_TASKS_START_Pos'
+export const ECB_TASKS_START_TASKS_START_Min: any = '0x1UL'
+export const ECB_TASKS_START_TASKS_START_Max: any = '0x1UL'
+export const ECB_TASKS_START_TASKS_START_Trigger: any = '0x1UL'
+export const ECB_TASKS_STOP_ResetValue: any = '0x00000000UL'
+export const ECB_TASKS_STOP_TASKS_STOP_Pos: any = '0UL'
+export const ECB_TASKS_STOP_TASKS_STOP_Msk: any = '0x1UL << ECB_TASKS_STOP_TASKS_STOP_Pos'
+export const ECB_TASKS_STOP_TASKS_STOP_Min: any = '0x1UL'
+export const ECB_TASKS_STOP_TASKS_STOP_Max: any = '0x1UL'
+export const ECB_TASKS_STOP_TASKS_STOP_Trigger: any = '0x1UL'
+export const ECB_SUBSCRIBE_START_ResetValue: any = '0x00000000UL'
+export const ECB_SUBSCRIBE_START_CHIDX_Pos: any = '0UL'
+export const ECB_SUBSCRIBE_START_CHIDX_Msk: any = '0xFFUL << ECB_SUBSCRIBE_START_CHIDX_Pos'
+export const ECB_SUBSCRIBE_START_CHIDX_Min: any = '0x00UL'
+export const ECB_SUBSCRIBE_START_CHIDX_Max: any = '0xFFUL'
+export const ECB_SUBSCRIBE_START_EN_Pos: any = '31UL'
+export const ECB_SUBSCRIBE_START_EN_Msk: any = '0x1UL << ECB_SUBSCRIBE_START_EN_Pos'
+export const ECB_SUBSCRIBE_START_EN_Min: any = '0x0UL'
+export const ECB_SUBSCRIBE_START_EN_Max: any = '0x1UL'
+export const ECB_SUBSCRIBE_START_EN_Disabled: any = '0x0UL'
+export const ECB_SUBSCRIBE_START_EN_Enabled: any = '0x1UL'
+export const ECB_SUBSCRIBE_STOP_ResetValue: any = '0x00000000UL'
+export const ECB_SUBSCRIBE_STOP_CHIDX_Pos: any = '0UL'
+export const ECB_SUBSCRIBE_STOP_CHIDX_Msk: any = '0xFFUL << ECB_SUBSCRIBE_STOP_CHIDX_Pos'
+export const ECB_SUBSCRIBE_STOP_CHIDX_Min: any = '0x00UL'
+export const ECB_SUBSCRIBE_STOP_CHIDX_Max: any = '0xFFUL'
+export const ECB_SUBSCRIBE_STOP_EN_Pos: any = '31UL'
+export const ECB_SUBSCRIBE_STOP_EN_Msk: any = '0x1UL << ECB_SUBSCRIBE_STOP_EN_Pos'
+export const ECB_SUBSCRIBE_STOP_EN_Min: any = '0x0UL'
+export const ECB_SUBSCRIBE_STOP_EN_Max: any = '0x1UL'
+export const ECB_SUBSCRIBE_STOP_EN_Disabled: any = '0x0UL'
+export const ECB_SUBSCRIBE_STOP_EN_Enabled: any = '0x1UL'
+export const ECB_EVENTS_END_ResetValue: any = '0x00000000UL'
+export const ECB_EVENTS_END_EVENTS_END_Pos: any = '0UL'
+export const ECB_EVENTS_END_EVENTS_END_Msk: any = '0x1UL << ECB_EVENTS_END_EVENTS_END_Pos'
+export const ECB_EVENTS_END_EVENTS_END_Min: any = '0x0UL'
+export const ECB_EVENTS_END_EVENTS_END_Max: any = '0x1UL'
+export const ECB_EVENTS_END_EVENTS_END_NotGenerated: any = '0x0UL'
+export const ECB_EVENTS_END_EVENTS_END_Generated: any = '0x1UL'
+export const ECB_EVENTS_ERROR_ResetValue: any = '0x00000000UL'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_Pos: any = '0UL'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_Msk: any = '0x1UL << ECB_EVENTS_ERROR_EVENTS_ERROR_Pos'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_Min: any = '0x0UL'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_Max: any = '0x1UL'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_NotGenerated: any = '0x0UL'
+export const ECB_EVENTS_ERROR_EVENTS_ERROR_Generated: any = '0x1UL'
+export const ECB_PUBLISH_END_ResetValue: any = '0x00000000UL'
+export const ECB_PUBLISH_END_CHIDX_Pos: any = '0UL'
+export const ECB_PUBLISH_END_CHIDX_Msk: any = '0xFFUL << ECB_PUBLISH_END_CHIDX_Pos'
+export const ECB_PUBLISH_END_CHIDX_Min: any = '0x00UL'
+export const ECB_PUBLISH_END_CHIDX_Max: any = '0xFFUL'
+export const ECB_PUBLISH_END_EN_Pos: any = '31UL'
+export const ECB_PUBLISH_END_EN_Msk: any = '0x1UL << ECB_PUBLISH_END_EN_Pos'
+export const ECB_PUBLISH_END_EN_Min: any = '0x0UL'
+export const ECB_PUBLISH_END_EN_Max: any = '0x1UL'
+export const ECB_PUBLISH_END_EN_Disabled: any = '0x0UL'
+export const ECB_PUBLISH_END_EN_Enabled: any = '0x1UL'
+export const ECB_PUBLISH_ERROR_ResetValue: any = '0x00000000UL'
+export const ECB_PUBLISH_ERROR_CHIDX_Pos: any = '0UL'
+export const ECB_PUBLISH_ERROR_CHIDX_Msk: any = '0xFFUL << ECB_PUBLISH_ERROR_CHIDX_Pos'
+export const ECB_PUBLISH_ERROR_CHIDX_Min: any = '0x00UL'
+export const ECB_PUBLISH_ERROR_CHIDX_Max: any = '0xFFUL'
+export const ECB_PUBLISH_ERROR_EN_Pos: any = '31UL'
+export const ECB_PUBLISH_ERROR_EN_Msk: any = '0x1UL << ECB_PUBLISH_ERROR_EN_Pos'
+export const ECB_PUBLISH_ERROR_EN_Min: any = '0x0UL'
+export const ECB_PUBLISH_ERROR_EN_Max: any = '0x1UL'
+export const ECB_PUBLISH_ERROR_EN_Disabled: any = '0x0UL'
+export const ECB_PUBLISH_ERROR_EN_Enabled: any = '0x1UL'
+export const ECB_INTENSET_ResetValue: any = '0x00000000UL'
+export const ECB_INTENSET_END_Pos: any = '0UL'
+export const ECB_INTENSET_END_Msk: any = '0x1UL << ECB_INTENSET_END_Pos'
+export const ECB_INTENSET_END_Min: any = '0x0UL'
+export const ECB_INTENSET_END_Max: any = '0x1UL'
+export const ECB_INTENSET_END_Set: any = '0x1UL'
+export const ECB_INTENSET_END_Disabled: any = '0x0UL'
+export const ECB_INTENSET_END_Enabled: any = '0x1UL'
+export const ECB_INTENSET_ERROR_Pos: any = '1UL'
+export const ECB_INTENSET_ERROR_Msk: any = '0x1UL << ECB_INTENSET_ERROR_Pos'
+export const ECB_INTENSET_ERROR_Min: any = '0x0UL'
+export const ECB_INTENSET_ERROR_Max: any = '0x1UL'
+export const ECB_INTENSET_ERROR_Set: any = '0x1UL'
+export const ECB_INTENSET_ERROR_Disabled: any = '0x0UL'
+export const ECB_INTENSET_ERROR_Enabled: any = '0x1UL'
+export const ECB_INTENCLR_ResetValue: any = '0x00000000UL'
+export const ECB_INTENCLR_END_Pos: any = '0UL'
+export const ECB_INTENCLR_END_Msk: any = '0x1UL << ECB_INTENCLR_END_Pos'
+export const ECB_INTENCLR_END_Min: any = '0x0UL'
+export const ECB_INTENCLR_END_Max: any = '0x1UL'
+export const ECB_INTENCLR_END_Clear: any = '0x1UL'
+export const ECB_INTENCLR_END_Disabled: any = '0x0UL'
+export const ECB_INTENCLR_END_Enabled: any = '0x1UL'
+export const ECB_INTENCLR_ERROR_Pos: any = '1UL'
+export const ECB_INTENCLR_ERROR_Msk: any = '0x1UL << ECB_INTENCLR_ERROR_Pos'
+export const ECB_INTENCLR_ERROR_Min: any = '0x0UL'
+export const ECB_INTENCLR_ERROR_Max: any = '0x1UL'
+export const ECB_INTENCLR_ERROR_Clear: any = '0x1UL'
+export const ECB_INTENCLR_ERROR_Disabled: any = '0x0UL'
+export const ECB_INTENCLR_ERROR_Enabled: any = '0x1UL'
+export const ECB_ERRORSTATUS_ResetValue: any = '0x00000000UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_Pos: any = '0UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_Msk: any = '0x7UL << ECB_ERRORSTATUS_ERRORSTATUS_Pos'
+export const ECB_ERRORSTATUS_ERRORSTATUS_Min: any = '0x0UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_Max: any = '0x4UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_NoError: any = '0x0UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_PrematureInptrEnd: any = '0x1UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_PrematureOutptrEnd: any = '0x2UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_EncryptionTooSlow: any = '0x3UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_Aborted: any = '0x3UL'
+export const ECB_ERRORSTATUS_ERRORSTATUS_DmaError: any = '0x4UL'
 export const FICR_INFO_CONFIGID_ResetValue: any = '0xFFFFFFFFUL'
 export const FICR_INFO_CONFIGID_HWID_Pos: any = '0UL'
 export const FICR_INFO_CONFIGID_HWID_Msk: any = '0xFFFFUL << FICR_INFO_CONFIGID_HWID_Pos'
@@ -12364,9 +12800,11 @@ export const VPR_INITPC_INITPC_Msk: any = '0xFFFFFFFFUL << VPR_INITPC_INITPC_Pos
 // -------- INSTANCES -------- //
 
 export const APPLICATION_ICACHE = {} as CACHE_t
+export const CCM00 = {} as CCM_t
 export const CLOCK = {} as CLOCK_t
 export const CRACEN = {} as CRACEN_t
 export const CRACENCORE = {} as CRACENCORE_t
+export const ECB00 = {} as ECB_t
 export const FICR = {} as FICR_t
 export const GPIOTE20 = {} as GPIOTE_t
 export const GRTC = {} as GRTC_t
