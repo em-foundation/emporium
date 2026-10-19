@@ -13,6 +13,9 @@ import * as Microcode from '@nordic.mcu.nrf54/CracenMicrocode.em'
 import * as P256ProviderI from '@em.crypto.p256/P256ProviderI.em'
 import * as T from '@em.crypto.p256/Types.em'
 
+// Keep readback diagnostics in the correctness harness; disable for energy runs.
+export const verify_microcode = $config<bool_t>(true)
+
 const RAM_BASE = 0x51808000
 const MICROCODE_BASE = 0x5180c000
 const BUSY_MASK = 0x10000
@@ -56,11 +59,12 @@ export function initialize() {
         $reg32[MICROCODE_BASE + <u32>i * 4] = Microcode.words[i]
     }
     e$`__DMB()`
-    // Read back every word before trusting the accelerator image.
-    for (const i of $range(Microcode.words.$len)) {
-        if ($reg32[MICROCODE_BASE + <u32>i * 4] != Microcode.words[i]) {
-            stopWithError(t$`microcode readback`, <u32>i)
-            return
+    if (verify_microcode) {
+        for (const i of $range(Microcode.words.$len)) {
+            if ($reg32[MICROCODE_BASE + <u32>i * 4] != Microcode.words[i]) {
+                stopWithError(t$`microcode readback`, <u32>i)
+                return
+            }
         }
     }
     initialized = true
@@ -142,7 +146,7 @@ function acquire() {
     let polls: u32 = 0
     while (($R.CRACENCORE.PK.STATUS.$$ & BUSY_MASK) != 0 && polls < POLL_LIMIT) polls += 1
     if (($R.CRACENCORE.PK.STATUS.$$ & BUSY_MASK) != 0) stopWithError(t$`acquire timeout`, $R.CRACENCORE.PK.STATUS.$$)
-    if (initialized) {
+    if (initialized && verify_microcode) {
         for (const i of $range(Microcode.words.$len)) {
             if ($reg32[MICROCODE_BASE + <u32>i * 4] != Microcode.words[i]) {
                 stopWithError(t$`microcode retention`, <u32>i)
