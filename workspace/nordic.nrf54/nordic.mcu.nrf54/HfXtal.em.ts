@@ -2,47 +2,52 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
-
 import * as Common from '@em.mcu/Common.em'
-import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
+
 
 export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
-var ready: volatile_t<bool_t> = false
+const POLL_LIMIT = 1000000
 
 export function start() {
-    ready = false
+    $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_XOSTARTED_Msk | $R.CLOCK_INTENSET_XOTUNED_Msk
+    $R.CLOCK.EVENTS_XOSTARTED.$$ = 0
     $R.CLOCK.EVENTS_XOTUNED.$$ = 0
     $R.CLOCK.TASKS_PLLSTART.$$ = 1
     $R.CLOCK.TASKS_XOSTART.$$ = 1
-    while ($R.CLOCK.EVENTS_XOSTARTED.$$ == 0) { }
+    let polls: u32 = 0
+    while ($R.CLOCK.EVENTS_XOSTARTED.$$ == 0 && polls < POLL_LIMIT) polls += 1
+    if ($R.CLOCK.EVENTS_XOSTARTED.$$ == 0) {
+        printf`BLE HF: XOSTARTED timeout; XO=%08x PLL=%08x\n`($R.CLOCK.XO.STAT.$$, $R.CLOCK.PLL.STAT.$$)
+        fail()
+        return
+    }
     $R.CLOCK.TASKS_XOTUNE.$$ = 1
+}
+
+export function wait() {
+    Common.BusyWait.wait(400) // retain the existing settling delay without a timer callback
+    let polls: u32 = 0
+    while ($R.CLOCK.EVENTS_XOTUNED.$$ == 0 && polls < POLL_LIMIT) polls += 1
+    if ($R.CLOCK.EVENTS_XOTUNED.$$ == 0) {
+        printf`BLE HF: XOTUNED timeout; XO=%08x PLL=%08x\n`($R.CLOCK.XO.STAT.$$, $R.CLOCK.PLL.STAT.$$)
+        fail()
+        return
+    }
 }
 
 export function stop() {
     $R.CLOCK.TASKS_XOTUNEABORT.$$ = 1
     $R.CLOCK.TASKS_XOSTOP.$$ = 1
     $R.CLOCK.TASKS_PLLSTOP.$$ = 1
-    $R.CLOCK.EVENTS_XOTUNED.$$ = 0
-    while ($R.CLOCK.PLL.STAT.$$ != 0) { }
-}
-
-export function wait() {
-    const usecs = Rtc.getRawUsecs()
-    Rtc.enableAux(usecs + 400, $cb(rtcHandler))
-    while (!ready) {
-        Common.Idle.exec()
+    let polls: u32 = 0
+    while ($R.CLOCK.PLL.STAT.$$ != 0 && polls < POLL_LIMIT) polls += 1
+    if ($R.CLOCK.PLL.STAT.$$ != 0) {
+        printf`BLE HF: PLL stop timeout\n`()
+        fail()
+        return
     }
-    // $['%%c+']
-    while ($R.CLOCK.EVENTS_XOTUNED.$$ == 0) { }
-    // $['%%c-']
+    $R.CLOCK.EVENTS_XOTUNED.$$ = 0
 }
-
-function rtcHandler() {
-    ready = true
-    Rtc.disableAux()
-}
-
-

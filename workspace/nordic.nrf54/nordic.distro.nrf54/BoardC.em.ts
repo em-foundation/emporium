@@ -18,6 +18,7 @@ import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf54/Mcu.em'
 import * as OneShot from '@nordic.mcu.nrf54/OneShotTimer20.em'
+import * as OneShotN from '@em.hal/OneShotN.em'
 import * as Poller from '@em.mcu/Poller.em'
 import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 import * as Rtc from '@nordic.mcu.nrf54/Rtc.em'
@@ -86,7 +87,8 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
-    Poller.OneShot.$$dlg = OneShot
+    Poller.OneShot.$$dlg = OneShotN // FIX: use busy-wait polling, including LED wink from ISR context, as on nRF52
+    RadioDriver.ifs_fence.$$val = 87 // FIX: supply inter-packet TX timing, matching the nRF54 FLPR configuration
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed

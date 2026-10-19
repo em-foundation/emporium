@@ -45,15 +45,37 @@ var rx_end_time: u32
 var rx_timeout: volatile_t<bool_t> = false
 
 export function disable() {
-    HfXtal.stop()
     Common.Irq.disable(e$`RADIO_0_IRQn`)
-    $R.RADIO.TASKS_DISABLE.$$ = 1
-    while ($R.RADIO.EVENTS_DISABLED.$$ == 0) { } // TODO -- remove
+    $R.RADIO.INTENCLR00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
+    Rtc.disableAux()
+    TimeFence.disable()
+    const state_before = $R.RADIO.STATE.$$
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
+    if (state_before != $R.RADIO_STATE_STATE_Disabled) { // FIX: an already-disabled radio need not emit a new DISABLED event
+        $R.RADIO.TASKS_DISABLE.$$ = 1
+        let polls: u32 = 0
+        while ($R.RADIO.EVENTS_DISABLED.$$ == 0 && polls < 10000) polls += 1
+        if ($R.RADIO.EVENTS_DISABLED.$$ == 0) {
+            printf`NRF54 RADIO disable timeout FAIL before=%d after=%d\n`(state_before, $R.RADIO.STATE.$$)
+            fail()
+            return
+        }
+    }
+    $R.RADIO.EVENTS_DISABLED.$$ = 0
+    $R.RADIO.SHORTS.$$ = 0
+    HfXtal.stop()
     setState(State.IDLE)
 }
 
 export function enable() {
-    HfXtal.start()
+    const cold_start = cur_state == State.IDLE // FIX: retain the running crystal when changing radio profiles
+    if (cold_start) HfXtal.start()
+    setup()
+    if (cold_start) HfXtal.wait()
+    setState(State.READY)
+}
+
+function setup() {
     cur_params = Registry.getParams()
     cur_phy = cur_params.$$.radio_phy
     const acc_adr = cur_params.$$.ble_acc_adr
@@ -70,7 +92,7 @@ export function enable() {
         }
         case TL.Phy.BLE_1M: {
             $R.RADIO.MODE.$$ = $R.RADIO_MODE_MODE_Ble_1Mbit
-            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos)
+            $R.RADIO.PCNF0.$$ = (8 << $R.RADIO_PCNF0_LFLEN_Pos) | (1 << $R.RADIO_PCNF0_S0LEN_Pos) | (acc_adr != 0 ? ($R.RADIO_PCNF0_S1INCL_Include << $R.RADIO_PCNF0_S1INCL_Pos) : 0) // FIX: match the shared data-channel S1 RAM byte
             $R.RADIO.PCNF1.$$ = (37 << $R.RADIO_PCNF1_MAXLEN_Pos) | (3 << $R.RADIO_PCNF1_BALEN_Pos) | $R.RADIO_PCNF1_WHITEEN_Msk
             $R.RADIO.BASE0.$$ = acc_adr != 0 ? ((acc_adr << 8) & 0xffffff00) : 0x89bed600
             $R.RADIO.PREFIX0.$$ = acc_adr != 0 ? ((acc_adr >> 24) & 0xff) : 0x8e
@@ -82,8 +104,6 @@ export function enable() {
         default: fail()
     }
     $R.RADIO.SHORTS.$$ = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_PHYEND_DISABLE_Msk
-    HfXtal.wait()
-    setState(State.READY)
 }
 
 export function getRxBuf(): TL.BufPtr {
@@ -165,6 +185,10 @@ export function RADIO_0_isr$$() {
             if (rx_timeout) break
             rx_end_time = nowTimeUs()
             Rtc.disableAux()
+            if (cur_phy == TL.Phy.BLE_1M && ($R.RADIO.CRCSTATUS.$$ == 0 || cur_rx_buf[1] > 37)) { // FIX: reject corrupt/oversized BLE RX before callbacks
+                cur_rx_buf = $null
+                break
+            }
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
