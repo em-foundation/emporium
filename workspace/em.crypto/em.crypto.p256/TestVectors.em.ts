@@ -2,11 +2,12 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as Common from '@em.mcu/Common.em'
-import * as EngineC from '@em.crypto.p256/EngineC.em'
+import * as Crypto from '@em.crypto/Crypto.em'
+import * as CryptoC from '@$distro/CryptoC.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as T from '@em.crypto.p256/Types.em'
 
-const Engine = $delegate(EngineC.Engine)
+// Exercise the provider selected by the target distro.
 
 const K_TEST = $config<T.U256>()
 const PUBLIC_X_EXPECTED = $config<T.U256>()
@@ -16,6 +17,10 @@ const PEER_Y_TEST = $config<T.U256>()
 const SECRET_EXPECTED = $config<T.U256>()
 
 export namespace em$meta {
+
+    export function em$configure() {
+        $using(CryptoC)
+    }
 
     export function em$construct() {
         T.em$meta.initU256(K_TEST.$$val, 'c88f01f5_10d9ac3f_70a292da_a2316de5_44e9aab8_afe84049_c62a9c57_862d1433')
@@ -43,7 +48,7 @@ function testMakePublicKey() {
     let pk = T.PubKey.$make()
     $['%%d+']
     Common.UsCounter.start()
-    Engine.makePublicKey(sk, $$(pk))
+    Crypto.P256.makePublicKey(sk, $$(pk))
     const usecs = Common.UsCounter.stop()
     $['%%d-']
 
@@ -71,7 +76,7 @@ function testEcdh() {
     let secret = T.U256.$make()
     $['%%d+']
     Common.UsCounter.start()
-    Engine.ecdh(sk, $$(peer), secret.$ptr())
+    Crypto.P256.ecdh(sk, $$(peer), secret.$ptr())
     const usecs = Common.UsCounter.stop()
     $['%%d-']
 
