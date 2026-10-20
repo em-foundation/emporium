@@ -88,7 +88,7 @@ export function em$configure(): void {
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
     Poller.OneShot.$$dlg = OneShotN // FIX: use busy-wait polling, including LED wink from ISR context, as on nRF52
-    RadioDriver.ifs_fence.$$val = 89 // TEMP: approximate working turnaround without hardware RX-end tracing
+    RadioDriver.ifs_fence.$$val = 88 // TEMP: controlled reply-fence reduction from 87 us; verify with Saleae
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
