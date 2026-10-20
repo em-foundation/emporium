@@ -47,8 +47,8 @@ var slot_bytes: u32
 var done: volatile_t<bool_t> = false
 
 // Explicit initialization lets a standalone test measure microcode loading
-// separately. Provider calls also initialize lazily. Keep module power enabled
-// until shutdown(): hardware testing proved disabling loses microcode.
+// separately. Provider calls also initialize lazily and shut down on completion.
+// Disabling loses microcode; keep power only across internal steps of an operation.
 export function initialize() {
     if (initialized) return
     acquire()
@@ -91,9 +91,16 @@ export function makePublicKey(sk: T.U256, pk_OUT: $$<T.PubKey>) {
     readOperand(pk_OUT.$$.x.$ptr(), 10)
     readOperand(pk_OUT.$$.y.$ptr(), 11)
     release()
+    shutdown() // FIX: public-key generation must not leave CRACEN powered
 }
 
 export function validatePublicKey(pk: $$<T.PubKey>): bool_t {
+    const valid = checkPublicKey(pk)
+    shutdown()
+    return valid
+}
+
+function checkPublicKey(pk: $$<T.PubKey>): bool_t {
     initialize()
     acquire()
     prepareCommand(OP_CHECK)
@@ -113,7 +120,8 @@ export function validatePublicKey(pk: $$<T.PubKey>): bool_t {
 
 export function ecdh(sk: T.U256, peer_pk: $$<T.PubKey>, secret_OUT: T.U256_Ref) {
     checkScalar(sk.$ptr())
-    if (!validatePublicKey(peer_pk)) {
+    if (!checkPublicKey(peer_pk)) {
+        shutdown()
         printf`CRACEN invalid peer public key\n`()
         fail()
         return
@@ -130,6 +138,7 @@ export function ecdh(sk: T.U256, peer_pk: $$<T.PubKey>, secret_OUT: T.U256_Ref) 
     }
     readOperand(secret_OUT, 10)
     release()
+    shutdown() // FIX: ECDH is complete; release CRACEN before returning to the caller
 }
 
 function acquire() {
@@ -178,7 +187,7 @@ function release() {
     active = false
 }
 
-// Explicit end of the standalone crypto session. The next use reloads microcode.
+// Power down after a public operation or explicit initialization session. The next use reloads microcode.
 export function shutdown() {
     if (active) {
         printf`CRACEN shutdown during operation FAIL\n`()

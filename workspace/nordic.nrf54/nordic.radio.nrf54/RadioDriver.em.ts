@@ -75,6 +75,7 @@ export function disable() {
     $R.RADIO.EVENTS_DISABLED.$$ = 0
     $R.RADIO.SHORTS.$$ = 0
     HfXtal.stop()
+    $R.POWER.TASKS_LOWPWR.$$ = 1 // FIX: release the radio clock/power requirement between events
     setState(State.IDLE)
 }
 
@@ -83,6 +84,7 @@ export function enable() {
     if (cold_start) HfXtal.start()
     setup()
     if (cold_start) HfXtal.wait()
+    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: nRF54L erratum 20 requires the MCU domain awake while RADIO is active
     setState(State.READY)
 }
 

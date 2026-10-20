@@ -60,3 +60,18 @@ record that distinction when comparing provider timings.
 ## Bring-up correction: microcode is lost on disable
 
 Bob's hardware run reports initialization 346 us, then a retention mismatch at word zero after disabling/re-enabling CRACEN (COMMAND reset to 0x0f). The initial retained-image assumption is disproved for this enable sequence. The provider now keeps CRACEN enabled until explicit shutdown; the test shuts it down after its final check. The next use reloads the image. Earlier per-operation power-release descriptions above are superseded. Retention-readback diagnostics remain inside acquisition and affect provisional timings. Power-release/reload policy is deferred until arithmetic passes.
+
+## GATT power lifecycle (2026-10-19)
+
+The arithmetic and secure-GATT paths have now passed hardware tests. The first
+GATT power capture showed approximately 605 uA between cycles; source inspection
+found that the provider retained CRACEN power after the crypto work completed.
+The standalone SleepyRunner activity had explicitly called shutdown, so it did
+not exercise that omission.
+
+The provider now shuts down explicitly before returning from makePublicKey,
+ecdh, or standalone validatePublicKey. ECDH retains power across its internal
+point-validation and multiplication steps. Microcode reloads lazily on the next
+public operation. There is no sleep-entry callback. This supersedes the temporary
+keep-enabled policy above; the quiet-current improvement and continued GATT
+operation still require Bob's hardware confirmation.
