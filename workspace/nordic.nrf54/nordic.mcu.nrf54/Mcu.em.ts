@@ -58,7 +58,7 @@ export function startup(): void {
         $R.MEMCONF.POWER[0].RET.$$ = 0x82
         $R.MEMCONF.POWER[0].RET2.$$ = 0x0
     }
-    $R.MEMCONF.POWER[1].CONTROL.$$ = 0x0
+    $R.MEMCONF.POWER[1].CONTROL.$$ = 0x2 // TEMP: retain ICACHE tag/data RAM across System ON sleep
     $R.MEMCONF.POWER[1].RET.$$ = 0x0
     $R.MEMCONF.POWER[1].RET2.$$ = 0
 

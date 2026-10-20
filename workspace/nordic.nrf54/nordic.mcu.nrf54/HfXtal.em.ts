@@ -17,7 +17,7 @@ const POLL_LIMIT = 1000000
 export function start() {
     if (energy_trace) Debug.DbgC.clear() // TEMP: active-low crystal start through settling/readiness
     $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_XOSTARTED_Msk | $R.CLOCK_INTENSET_XOTUNED_Msk
-    $R.CLOCK.EVENTS_XOSTARTED.$$ = 0
+    // $R.CLOCK.EVENTS_XOSTARTED.$$ = 0 // TEMP: v0 experiment; retain event across startups, keep XOTUNED checking
     $R.CLOCK.EVENTS_XOTUNED.$$ = 0
     $R.CLOCK.TASKS_PLLSTART.$$ = 1
     $R.CLOCK.TASKS_XOSTART.$$ = 1

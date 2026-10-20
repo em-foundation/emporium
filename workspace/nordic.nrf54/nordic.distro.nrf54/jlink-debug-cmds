@@ -1,0 +1,10 @@
+Device nRF54L15_M33
+SelectInterface SWD
+Speed 4000
+Connect
+Halt
+Regs
+Mem32 0xE000ED04 1
+Mem32 0xE000ED28 6
+// Dump the top 256 bytes of the nRF54 application's main stack RAM.
+Mem32 0x2003FF00 0x40

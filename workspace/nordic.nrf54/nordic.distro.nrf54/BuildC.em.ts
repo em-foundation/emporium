@@ -123,4 +123,7 @@ export function em$generate() {
     const exec = `${tools}/segger-jlink/JLink${ext}`
     out.addText(`${exec} -CommandFile ../nordic.nrf54/nordic.distro.nrf54/jlink-cmds`)
     out.close()
+    out = $outfile('debug.sh', 0o755)
+    out.addText(`${exec} -CommandFile ../nordic.nrf54/nordic.distro.nrf54/jlink-debug-cmds`)
+    out.close()
 }

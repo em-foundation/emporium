@@ -47,9 +47,9 @@ function doSleep() {
     $['%%b-']
     if (!energy_trace) Debug.reset() // TEMP: keep C/D driven across WFI while capturing digital markers
     IntrVec.PRIMASK_set(1)
-    e$`NRF_APPLICATION_ICACHE_S->ENABLE = 0`
+    // TEMP: cache stays enabled; Mcu retains ICACHE RAM across System ON sleep
     e$`asm volatile ("wfi")`
-    e$`NRF_APPLICATION_ICACHE_S->ENABLE = 1`
+    // TEMP: cache stays enabled; Mcu retains ICACHE RAM across System ON sleep
     if (energy_trace) {
         Debug.DbgB.clear() // awake again; preserve C/D instead of resetting every marker
     } else {
