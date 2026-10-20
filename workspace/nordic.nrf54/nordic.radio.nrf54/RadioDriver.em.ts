@@ -50,8 +50,17 @@ var rx_timeout: volatile_t<bool_t> = false
 var rx_crypto: bool_t = false
 var tx_crypto: bool_t = false
 var tifs_pending: bool_t = false
+var hf_pending: bool_t = false
+var hf_pause_level: u32
 
 export function disable() {
+    const key = GlobalInterrupts.disable()
+    Rtc.disableAux()
+    if (hf_pending) {
+        hf_pending = false
+        Common.Idle.setLevel(hf_pause_level)
+    }
+    setState(State.IDLE) // FIX: cancel readiness before stopping the crystal
     $R.RADIO.SHORTS.$$ = 0 // FIX: cancel automatic turnaround before disabling the radio
     tifs_pending = false
     Common.Irq.disable(e$`RADIO_0_IRQn`)
@@ -76,7 +85,7 @@ export function disable() {
     $R.RADIO.SHORTS.$$ = 0
     HfXtal.stop()
     $R.POWER.TASKS_LOWPWR.$$ = 1 // FIX: release the radio clock/power requirement between events
-    setState(State.IDLE)
+    GlobalInterrupts.restore(key)
 }
 
 export function enable() {
@@ -146,7 +155,30 @@ export function startCw(chan: u8, power: i8) {
 }
 
 export function startEnable() {
-    enable()
+    const key = GlobalInterrupts.disable()
+    const cold_start = cur_state == State.IDLE
+    if (cold_start) HfXtal.start() // retain the proven XOSTARTED polling and XOTUNE sequence
+    setup()
+    if (cold_start) {
+        hf_pause_level = Common.Idle.getLevel()
+        hf_pending = true
+        Common.Idle.setLevel(1)
+        Rtc.enableAux(Rtc.getRawUsecs() + 400, $cb(hfSettledHandler))
+    } else {
+        $R.POWER.TASKS_CONSTLAT.$$ = 1
+        setState(State.READY)
+        if (radio_handler != $null) radio_handler()
+    }
+    GlobalInterrupts.restore(key)
+}
+
+function hfSettledHandler() {
+    if (!hf_pending || cur_state != State.SETUP) return
+    hf_pending = false
+    HfXtal.waitSettled()
+    Common.Idle.setLevel(hf_pause_level)
+    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: retain erratum-20 protection before starting RADIO
+    setState(State.READY)
     if (radio_handler != $null) radio_handler()
 }
 
@@ -221,9 +253,18 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
 }
 
 export function waitReady() {
-    while (cur_state != State.READY) {
+    const pause_level = hf_pending ? hf_pause_level : Common.Idle.getLevel()
+    Common.Idle.setLevel(1)
+    while (true) {
+        const key = GlobalInterrupts.disable() // FIX: readiness must not arrive between the check and WFI
+        if (cur_state == State.READY) {
+            GlobalInterrupts.restore(key)
+            break
+        }
         Common.Idle.exec()
+        GlobalInterrupts.restore(key)
     }
+    Common.Idle.setLevel(pause_level)
 }
 
 export function RADIO_0_isr$$() {

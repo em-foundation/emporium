@@ -28,7 +28,12 @@ export function start() {
 }
 
 export function wait() {
-    Common.BusyWait.wait(400) // retain the existing settling delay without a timer callback
+    Common.BusyWait.wait(400) // blocking enable() retains the original settling delay
+    waitSettled()
+}
+
+// Caller has already allowed the 400 us settling interval to elapse.
+export function waitSettled() {
     let polls: u32 = 0
     while ($R.CLOCK.EVENTS_XOTUNED.$$ == 0 && polls < POLL_LIMIT) polls += 1
     if ($R.CLOCK.EVENTS_XOTUNED.$$ == 0) {
