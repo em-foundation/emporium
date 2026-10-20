@@ -3,6 +3,9 @@ export const $U = $declare('MODULE')
 
 import * as $R from '@nordic.distro.nrf54/REGS.em'
 import * as Common from '@em.mcu/Common.em'
+import * as Debug from '@em.lang/Debug.em'
+
+export const energy_trace = $config<bool_t>(false)
 
 
 export namespace em$meta { }
@@ -12,6 +15,7 @@ export namespace em$meta { }
 const POLL_LIMIT = 1000000
 
 export function start() {
+    if (energy_trace) Debug.DbgC.clear() // TEMP: active-low crystal start through settling/readiness
     $R.CLOCK.INTENCLR.$$ = $R.CLOCK_INTENSET_XOSTARTED_Msk | $R.CLOCK_INTENSET_XOTUNED_Msk
     $R.CLOCK.EVENTS_XOSTARTED.$$ = 0
     $R.CLOCK.EVENTS_XOTUNED.$$ = 0
@@ -41,9 +45,11 @@ export function waitSettled() {
         fail()
         return
     }
+    if (energy_trace) Debug.DbgC.set()
 }
 
 export function stop() {
+    if (energy_trace) Debug.DbgC.set() // cancelled startup is no longer pending
     $R.CLOCK.TASKS_XOTUNEABORT.$$ = 1
     $R.CLOCK.TASKS_XOSTOP.$$ = 1
     $R.CLOCK.TASKS_PLLSTOP.$$ = 1

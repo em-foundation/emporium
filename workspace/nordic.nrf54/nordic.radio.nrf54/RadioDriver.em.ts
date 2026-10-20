@@ -5,6 +5,7 @@ import * as $R from '@nordic.distro.nrf54/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
 import * as Common from '@em.mcu/Common.em'
+import * as Debug from '@em.lang/Debug.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as Link from '@em.link/Link.em'
@@ -18,6 +19,8 @@ import * as TL from '@em.link/Types.em'
 
 export const ifs_fence = $config<u32>()
 export const hardware_tifs = $config<bool_t>(false)
+export const energy_trace = $config<bool_t>(false)
+export const scheduled_rx = $config<bool_t>(false)
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -52,14 +55,25 @@ var tx_crypto: bool_t = false
 var tifs_pending: bool_t = false
 var hf_pending: bool_t = false
 var hf_pause_level: u32
+var rx_start_pending: bool_t = false
+var rx_timeout_enabled: bool_t = false
+var rx_timeout_us: u32
+
+const RX_RAMP_LEGACY_US = 140 // Nordic specifies 134 us typical BLE RX ramp; retain the nRF52 140 us allowance
+const RX_RAMP_FAST_US = 40
+const RX_START_IRQ_GUARD_US = 80 // allow RX ramp/wakeup margin; 49 us produced long RX waits
+const RX_SCHEDULE_MIN_US = 64
+const RX_SCHEDULE_MAX_US = 5000
 
 export function disable() {
     const key = GlobalInterrupts.disable()
+    cancelRxStart()
     Rtc.disableAux()
     if (hf_pending) {
         hf_pending = false
         Common.Idle.setLevel(hf_pause_level)
     }
+    if (energy_trace) Debug.DbgD.set() // TEMP: RX marker inactive when cancelled/disabled
     setState(State.IDLE) // FIX: cancel readiness before stopping the crystal
     $R.RADIO.SHORTS.$$ = 0 // FIX: cancel automatic turnaround before disabling the radio
     tifs_pending = false
@@ -183,6 +197,7 @@ function hfSettledHandler() {
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
+    cancelRxStart()
     const automatic = tifs_pending && cur_state == State.TX
     setState(State.RX)
     cur_rx_buf = buf
@@ -199,13 +214,13 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $R.RADIO.RXADDRESSES.$$ = $R.RADIO_RXADDRESSES_ADDR0_Msk
     $R.RADIO.INTENSET00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
     Common.Irq.enable(e$`RADIO_0_IRQn`)
-    if (timeout > 0) {
-        const usecs = Rtc.getRawUsecs()
-        Rtc.enableAux(usecs + (timeout * 1000), $cb(rtcHandler))
-    }
+    rx_timeout_enabled = timeout > 0
+    if (rx_timeout_enabled) rx_timeout_us = Rtc.getRawUsecs() + (timeout * 1000)
     let shorts: u32 = $R.RADIO_SHORTS_READY_START_Msk | $R.RADIO_SHORTS_PHYEND_DISABLE_Msk
     if (usesHardwareTifs() && cur_params.$$.ble_chain != $null) shorts |= $R.RADIO_SHORTS_DISABLED_TXEN_Msk
     if (automatic) {
+        armRxTimeout()
+        if (energy_trace) Debug.DbgD.clear() // TEMP: hardware TIFS RX is armed; this edge is software-timed
         if (!armTifs(shorts, $R.RADIO_STATE_STATE_RxRu, $R.RADIO_STATE_STATE_Rx)) {
             rx_timeout = true
             cancelExchange()
@@ -214,11 +229,16 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.RADIO.EVENTS_DISABLED.$$ = 0
         $R.RADIO.EVENTS_READY.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
-        $R.RADIO.TASKS_RXEN.$$ = 1
+        if (!scheduleRxStart()) {
+            if (energy_trace) Debug.DbgD.clear() // TEMP: actual RXEN, after any scheduled delay
+            $R.RADIO.TASKS_RXEN.$$ = 1
+            armRxTimeout()
+        }
     }
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
+    cancelRxStart()
     const automatic = tifs_pending && cur_state == State.RX
     setState(State.TX)
     cur_chan = chan
@@ -269,6 +289,7 @@ export function waitReady() {
 
 export function RADIO_0_isr$$() {
     if ($R.RADIO.EVENTS_PHYEND.$$ == 0) return
+    if (energy_trace && cur_state == State.RX) Debug.DbgD.set() // TEMP: ISR observation of RX PHYEND
     const shorts: u32 = $R.RADIO.SHORTS.$$
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
     Common.Irq.clear(e$`RADIO_0_IRQn`)
@@ -345,6 +366,48 @@ export function RADIO_0_isr$$() {
     if (radio_handler != $null) radio_handler()
 }
 
+// Honor the controller's RX-ready deadline, as the nRF52 driver does. GRTC is
+// already used for crystal settling and RX timeout; these phases do not overlap.
+function scheduleRxStart(): bool_t {
+    if (!scheduled_rx || cur_phy != TL.Phy.BLE_1M || cur_params.$$.ble_acc_adr == 0
+        || !cur_params.$$.ble_rx_start_valid) return false
+    const ramp_us: u32 = hardware_tifs ? RX_RAMP_LEGACY_US : RX_RAMP_FAST_US
+    const start_us: u32 = cur_params.$$.ble_rx_start_us - ramp_us - RX_START_IRQ_GUARD_US
+    const now_us = Rtc.getRawUsecs()
+    const remaining = <i32>(start_us - now_us)
+    if (remaining < RX_SCHEDULE_MIN_US || remaining > RX_SCHEDULE_MAX_US) return false
+    if (rx_timeout_enabled && <i32>(rx_timeout_us - start_us) <= 0) return false
+    rx_start_pending = true
+    Rtc.enableAux(start_us, $cb(rxStartHandler))
+    return true
+}
+
+function rxStartHandler() {
+    if (!rx_start_pending || cur_state != State.RX) return
+    rx_start_pending = false
+    if (rx_timeout_enabled && <i32>(rx_timeout_us - Rtc.getRawUsecs()) <= 0) {
+        rtcHandler()
+        return
+    }
+    if (energy_trace) Debug.DbgD.clear() // TEMP: actual RXEN from the scheduled callback
+    $R.RADIO.TASKS_RXEN.$$ = 1
+    armRxTimeout() // FIX: retain the original absolute timeout after the delayed start
+}
+
+function armRxTimeout() {
+    if (!rx_timeout_enabled) return
+    if (<i32>(rx_timeout_us - Rtc.getRawUsecs()) <= 0) {
+        rtcHandler()
+        return
+    }
+    Rtc.enableAux(rx_timeout_us, $cb(rtcHandler))
+}
+
+function cancelRxStart() {
+    if (!rx_start_pending) return
+    rx_start_pending = false
+    Rtc.disableAux()
+}
 function usesHardwareTifs(): bool_t {
     return hardware_tifs && cur_phy == TL.Phy.BLE_1M && cur_params.$$.ble_acc_adr != 0
 }
@@ -387,6 +450,8 @@ function stopTifs() {
 }
 
 function cancelExchange() {
+    if (energy_trace) Debug.DbgD.set()
+    cancelRxStart()
     Rtc.disableAux()
     stopTifs()
     TimeFence.disable()
@@ -395,6 +460,7 @@ function cancelExchange() {
 }
 
 function rtcHandler() {
+    rx_start_pending = false
     Rtc.disableAux()
     if (pause_handler != $null) {
         const h = pause_handler
@@ -402,6 +468,7 @@ function rtcHandler() {
         h()
         return
     }
+    if (energy_trace) Debug.DbgD.set() // TEMP: receive timeout
     rx_timeout = true
     $R.RADIO.SHORTS.$$ = 0 // FIX: an RX timeout must not trigger an automatic transmission
     tifs_pending = false
