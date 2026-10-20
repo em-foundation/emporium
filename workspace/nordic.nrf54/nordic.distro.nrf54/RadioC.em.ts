@@ -11,7 +11,7 @@ import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 export { PacketCrypto, RadioDriver }
 
 // TEMP: synchronized JS220 markers on B (CPU), C (crystal), D (RX); all active low.
-const ENERGY_TRACE = false
+const ENERGY_TRACE = true // TEMP: match the saved V0 Saleae timing capture
 
 export function em$configure() {
     Idle.energy_trace.$$val = ENERGY_TRACE
@@ -19,5 +19,5 @@ export function em$configure() {
     RadioDriver.energy_trace.$$val = ENERGY_TRACE
     RadioDriver.hardware_tifs.$$val = true // FIX: enforce connected BLE turnaround in hardware, as on nRF52
     RadioDriver.scheduled_rx.$$val = true // scheduled RX with the driver startup guard
-    Controller.hfclk_guard_us.$$val = 1500 // FIX: allow cold crystal start and hardware-TIFS RX ramp-up
+    Controller.hfclk_guard_us.$$val = 800 // TEMP: trim crystal-ready wait; verify with Saleae
 }
