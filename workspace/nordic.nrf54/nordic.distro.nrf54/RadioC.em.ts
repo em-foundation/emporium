@@ -17,8 +17,9 @@ export function em$configure() {
     Idle.energy_trace.$$val = ENERGY_TRACE
     HfXtal.energy_trace.$$val = ENERGY_TRACE
     RadioDriver.energy_trace.$$val = ENERGY_TRACE
+    RadioDriver.timing_trace.$$val = false // TEMP: isolate timestamp collection from the retained diagnostic code
     RadioDriver.hardware_tifs.$$val = false // TEMP: V0-style fast ramp and software turnaround experiment
     RadioDriver.scheduled_rx.$$val = true // scheduled RX with the driver startup guard
     Controller.connection_trace.$$val = true // TEMP: A low from accepted CONNECT_IND through CLOSED/HANGUP
-    Controller.hfclk_guard_us.$$val = 800 // TEMP: trim crystal-ready wait; verify with Saleae
+    Controller.hfclk_guard_us.$$val = 650 // TEMP: match V0 crystal wake lead; verify with Saleae
 }

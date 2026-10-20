@@ -13,6 +13,7 @@ import * as TL from '@em.link/Types.em'
 import * as TT from '@em.utils/TimeTypes.em'
 
 const CacheStats = $delegate(BoardC.CacheStats)
+const RadioDriver = $delegate(BoardC.RadioDriver) // TEMP: deferred timing diagnostic
 
 const ticker = $config<TickerMgr.Obj>()
 
@@ -37,6 +38,8 @@ export namespace em$meta {
 const CACHE_STATS = false
 
 var cycle_active: bool_t = false
+var timing_connected: bool_t = false // TEMP: report the first attempted connection, including hangup
+var timing_reported: bool_t = false
 
 export function em$run() {
     ticker.$$.start(TT.Secs30p2_initMsecs(1000), $cb(tickCb))
@@ -52,6 +55,7 @@ function tickCb() {
 function statusHandler(stat: TL.ConnectionStatus) {
     switch (stat) {
         case TL.ConnectionStatus.OPENING:
+            timing_connected = true
             if (CACHE_STATS) CacheStats.start()
             break
         case TL.ConnectionStatus.CLOSED:
@@ -62,6 +66,11 @@ function statusHandler(stat: TL.ConnectionStatus) {
         case TL.ConnectionStatus.HANGUP:
             // halt()
             Controller.stop()
+            if (timing_connected && !timing_reported) {
+                timing_reported = true
+                printf`BLE timing connection status=%d\n`(stat)
+                RadioDriver.printTimingTrace()
+            }
             cycle_active = false
             break
     }

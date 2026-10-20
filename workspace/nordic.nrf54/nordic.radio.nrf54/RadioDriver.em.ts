@@ -21,6 +21,7 @@ export const ifs_fence = $config<u32>()
 export const hardware_tifs = $config<bool_t>(false)
 export const energy_trace = $config<bool_t>(false)
 export const scheduled_rx = $config<bool_t>(false)
+export const timing_trace = $config<bool_t>(false) // TEMP: TIMER10/DPPI10 channels 0 and 1; first two connection replies
 
 enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
@@ -59,6 +60,12 @@ var rx_start_pending: bool_t = false
 var rx_timeout_enabled: bool_t = false
 var rx_timeout_us: u32
 
+class TimingWords extends $vector<u32> { $len = 8 }
+var timing_words: TimingWords
+var timing_count: u8 = 0
+var timing_active: bool_t = false
+var timing_printed: bool_t = false
+
 const RX_RAMP_LEGACY_US = 140 // Nordic specifies 134 us typical BLE RX ramp; retain the nRF52 140 us allowance
 const RX_RAMP_FAST_US = 40
 const RX_START_IRQ_GUARD_US = 80 // allow RX ramp/wakeup margin; 49 us produced long RX waits
@@ -67,6 +74,7 @@ const RX_SCHEDULE_MAX_US = 5000
 
 export function disable() {
     const key = GlobalInterrupts.disable()
+    stopTimingTrace() // TEMP: release diagnostic timer before sleep
     cancelRxStart()
     Rtc.disableAux()
     if (hf_pending) {
@@ -107,7 +115,7 @@ export function enable() {
     if (cold_start) HfXtal.start()
     setup()
     if (cold_start) HfXtal.wait()
-    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: nRF54L erratum 20 requires the MCU domain awake while RADIO is active
+    // TEMP: defer CONSTLAT until the actual radio enable task
     setState(State.READY)
 }
 
@@ -165,6 +173,7 @@ export function startCw(chan: u8, power: i8) {
     setState(State.CW)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_Pos5dBm
     $R.RADIO.FREQUENCY.$$ = 40
+    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: apply radio workaround only when RX/TX is actually starting
     $R.RADIO.TASKS_TXEN.$$ = 1
 }
 
@@ -179,7 +188,7 @@ export function startEnable() {
         Common.Idle.setLevel(1)
         Rtc.enableAux(Rtc.getRawUsecs() + 400, $cb(hfSettledHandler))
     } else {
-        $R.POWER.TASKS_CONSTLAT.$$ = 1
+        // TEMP: defer CONSTLAT until the actual radio enable task
         setState(State.READY)
         if (radio_handler != $null) radio_handler()
     }
@@ -191,7 +200,7 @@ function hfSettledHandler() {
     hf_pending = false
     HfXtal.waitSettled()
     Common.Idle.setLevel(hf_pause_level)
-    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: retain erratum-20 protection before starting RADIO
+    // TEMP: defer CONSTLAT until the actual radio enable task
     setState(State.READY)
     if (radio_handler != $null) radio_handler()
 }
@@ -229,8 +238,10 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.RADIO.EVENTS_DISABLED.$$ = 0
         $R.RADIO.EVENTS_READY.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
+        armTimingTrace() // TEMP: hardware captures, no GPIO routing
         if (!scheduleRxStart()) {
             if (energy_trace) Debug.DbgD.clear() // TEMP: actual RXEN, after any scheduled delay
+            $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: apply radio workaround only when RX/TX is actually starting
             $R.RADIO.TASKS_RXEN.$$ = 1
             armRxTimeout()
         }
@@ -268,6 +279,9 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
         $R.RADIO.EVENTS_DISABLED.$$ = 0
         $R.RADIO.EVENTS_READY.$$ = 0
         $R.RADIO.SHORTS.$$ = shorts
+        if (energy_trace) Debug.DbgC.clear() // TEMP: software TXEN request; crystal-ready marker is already high
+        if (timing_active) e$`NRF_TIMER10_S->TASKS_CAPTURE[2] = 1` // TEMP: software request timestamp, immediately before TXEN
+        $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: apply radio workaround only when RX/TX is actually starting
         $R.RADIO.TASKS_TXEN.$$ = 1
     }
 }
@@ -288,7 +302,9 @@ export function waitReady() {
 }
 
 export function RADIO_0_isr$$() {
+    if (timing_active && cur_state == State.RX) e$`NRF_TIMER10_S->TASKS_CAPTURE[1] = 1` // TEMP: timestamp ISR entry before other processing
     if ($R.RADIO.EVENTS_PHYEND.$$ == 0) return
+    if (energy_trace && cur_state == State.TX) Debug.DbgC.set() // TEMP: TX PHYEND observed by ISR
     if (energy_trace && cur_state == State.RX) Debug.DbgD.set() // TEMP: ISR observation of RX PHYEND
     const shorts: u32 = $R.RADIO.SHORTS.$$
     // $['%%>'](<u8>$R.RADIO.STATE.$$)
@@ -312,6 +328,11 @@ export function RADIO_0_isr$$() {
     }
     switch (cur_state) {
         case State.RX: {
+            if (timing_active) {
+                const idx = timing_count * 4
+                timing_words[idx] = e$`NRF_TIMER10_S->CC[0]`
+                timing_words[idx + 1] = e$`NRF_TIMER10_S->CC[1]`
+            }
             if (rx_timeout) break
             rx_end_time = nowTimeUs()
             Rtc.disableAux()
@@ -346,6 +367,13 @@ export function RADIO_0_isr$$() {
             break
         }
         case State.TX: {
+            if (timing_active) {
+                const idx = timing_count * 4
+                timing_words[idx + 2] = e$`NRF_TIMER10_S->CC[2]`
+                timing_words[idx + 3] = e$`NRF_TIMER10_S->CC[3]`
+                timing_count += 1
+                stopTimingTrace()
+            }
             if (tx_crypto) {
                 Link.PacketCrypto.completeTx()
                 tx_crypto = false
@@ -390,6 +418,7 @@ function rxStartHandler() {
         return
     }
     if (energy_trace) Debug.DbgD.clear() // TEMP: actual RXEN from the scheduled callback
+    $R.POWER.TASKS_CONSTLAT.$$ = 1 // FIX: apply radio workaround only when RX/TX is actually starting
     $R.RADIO.TASKS_RXEN.$$ = 1
     armRxTimeout() // FIX: retain the original absolute timeout after the delayed start
 }
@@ -495,4 +524,46 @@ function setPacketLimit(encrypted: bool_t) {
     if (cur_phy != TL.Phy.BLE_1M) return
     $R.RADIO.PCNF1.$$ = ($R.RADIO.PCNF1.$$ & ~$R.RADIO_PCNF1_MAXLEN_Msk)
         | ((encrypted ? 31 : 37) << $R.RADIO_PCNF1_MAXLEN_Pos)
+}
+
+// TEMP: raw TIMER10 ticks, prescaler 0. Hardware PHYEND and TXREADY captures
+// share the radio domain; no PPIB or GPIOTE resources are used.
+function armTimingTrace() {
+    if (!timing_trace || hardware_tifs || timing_count >= 2 || cur_params.$$.ble_acc_adr == 0) return
+    e$`NRF_TIMER10_S->TASKS_STOP = 1`
+    e$`NRF_TIMER10_S->SHORTS = 0`
+    e$`NRF_TIMER10_S->INTENCLR = 0xffffffffUL`
+    e$`NRF_TIMER10_S->MODE = TIMER_MODE_MODE_Timer`
+    e$`NRF_TIMER10_S->BITMODE = TIMER_BITMODE_BITMODE_32Bit`
+    e$`NRF_TIMER10_S->PRESCALER = 0`
+    e$`NRF_TIMER10_S->TASKS_CLEAR = 1`
+    e$`NRF_TIMER10_S->SUBSCRIBE_CAPTURE[0] = 0x80000000UL`
+    e$`NRF_TIMER10_S->SUBSCRIBE_CAPTURE[3] = 0x80000001UL`
+    e$`NRF_RADIO_S->PUBLISH_PHYEND = 0x80000000UL`
+    e$`NRF_RADIO_S->PUBLISH_TXREADY = 0x80000001UL`
+    e$`NRF_DPPIC10_S->CHENSET = 3`
+    e$`NRF_TIMER10_S->TASKS_START = 1`
+    timing_active = true
+}
+
+function stopTimingTrace() {
+    if (!timing_trace || !timing_active) return
+    timing_active = false
+    e$`NRF_RADIO_S->PUBLISH_PHYEND = 0`
+    e$`NRF_RADIO_S->PUBLISH_TXREADY = 0`
+    e$`NRF_TIMER10_S->SUBSCRIBE_CAPTURE[0] = 0`
+    e$`NRF_TIMER10_S->SUBSCRIBE_CAPTURE[3] = 0`
+    e$`NRF_DPPIC10_S->CHENCLR = 3`
+    e$`NRF_TIMER10_S->TASKS_STOP = 1`
+}
+
+export function printTimingTrace() {
+    if (!timing_trace || timing_printed) return
+    timing_printed = true
+    printf`BLE timing captured replies=%d\n`(timing_count)
+    for (const i of $range(2)) {
+        if (i >= timing_count) break
+        const idx = i * 4
+        printf`BLE timing reply %d ticks: RXEND=%d ISR=%d TXEN=%d TXREADY=%d\n`(i, timing_words[idx], timing_words[idx + 1], timing_words[idx + 2], timing_words[idx + 3])
+    }
 }

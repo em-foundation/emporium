@@ -349,15 +349,16 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (enc_tx_enabled) return chooseEncryptedTx()
     let tx = LnkTx.choose(lnk_req)
     tx[0] &= ~0x10
-    const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
-    const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
     if (!enc_rx_enabled && lnk_req.$$.pduLen == 0
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
-        && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT
-        && remaining > CHAIN_RESERVE_US) {
-        tx[0] |= 0x10
-        params.$$.ble_exch_buf = rx_buf
-        params.$$.ble_exch_end_ms = CHAIN_RX_TIMEOUT_MS
+        && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT) {
+        const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
+        const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs()) // FIX: read the clock only for a possible public-key chain
+        if (remaining > CHAIN_RESERVE_US) {
+            tx[0] |= 0x10
+            params.$$.ble_exch_buf = rx_buf
+            params.$$.ble_exch_end_ms = CHAIN_RX_TIMEOUT_MS
+        }
     }
     if (enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
         enc_rx_enabled = true
