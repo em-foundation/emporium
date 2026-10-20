@@ -25,7 +25,7 @@ export function startup(): void {
 
     // e$`NRF_OSCILLATORS_S->PLL.FREQ = 3` // 64 MHz
     // $reg32[0x5005340C] = 1  // errata 37
-    // unprotect()
+    unprotect() // FIX: open firmware-controlled debug access for non-erasing SWD attach
     e$`SCB->NSACR |= (3UL << 10ul)`  // FPU
     for (const i of $range($R.FICR_TRIMCNF_MaxCount)) {
         const addr = $R.FICR.TRIMCNF[i].ADDR.$$
