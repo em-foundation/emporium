@@ -10,14 +10,15 @@ import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 // Hardware CCM packet protection; the controller supplies counters and encryption state.
 export { PacketCrypto, RadioDriver }
 
-// TEMP: synchronized JS220 markers on B (CPU), C (crystal), D (RX); all active low.
+// TEMP: JS220 markers: A=connection window, B=CPU, C=crystal, D=RX; active low.
 const ENERGY_TRACE = true // TEMP: match the saved V0 Saleae timing capture
 
 export function em$configure() {
     Idle.energy_trace.$$val = ENERGY_TRACE
     HfXtal.energy_trace.$$val = ENERGY_TRACE
     RadioDriver.energy_trace.$$val = ENERGY_TRACE
-    RadioDriver.hardware_tifs.$$val = true // FIX: enforce connected BLE turnaround in hardware, as on nRF52
+    RadioDriver.hardware_tifs.$$val = false // TEMP: V0-style fast ramp and software turnaround experiment
     RadioDriver.scheduled_rx.$$val = true // scheduled RX with the driver startup guard
+    Controller.connection_trace.$$val = true // TEMP: A low from accepted CONNECT_IND through CLOSED/HANGUP
     Controller.hfclk_guard_us.$$val = 800 // TEMP: trim crystal-ready wait; verify with Saleae
 }

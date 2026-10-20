@@ -3,6 +3,7 @@ export const $U = $declare('MODULE')
 
 import * as Binder from '@em.link.ble/Binder.em'
 import * as Connection from '@em.link.ble/Connection.em'
+import * as Debug from '@em.lang/Debug.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
 import * as L2Cap from '@em.link.ble/L2Cap.em'
@@ -15,6 +16,7 @@ import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
+export const connection_trace = $config<bool_t>(false) // TEMP: DbgA low for connection-only energy integration
 export const hfclk_guard_us = $config<u32>(850) // Wake early enough for crystal settling and RX ramp-up.
 
 const rx_adr = $config<Heap.Adr>()
@@ -122,6 +124,7 @@ export function start() {
     if (cur_state != State.IDLE) {
         return
     }
+    if (connection_trace) Debug.DbgA.set() // TEMP: advertising is outside the measured window
     const params = Registry.getParams()
     adv_con_flag = params.$$.ble_connectible
     adv_count = params.$$.send_count
@@ -148,6 +151,7 @@ export function start() {
 
 export function stop() {
     radioOff()
+    if (connection_trace) Debug.DbgA.set() // TEMP: close window on explicit abort, after radio shutdown
     setState(State.IDLE)
 }
 
@@ -388,6 +392,8 @@ function radioHandler() {
 
 
 function notifyStatus(status: TL.ConnectionStatus) {
+    if (connection_trace && (status == TL.ConnectionStatus.CLOSED
+        || status == TL.ConnectionStatus.HANGUP || status == TL.ConnectionStatus.TIMEOUT)) Debug.DbgA.set() // TEMP: radio is off; exclude subsequent advertising
     pending_status = status
     statusF.$$.post()
 }
@@ -577,6 +583,7 @@ function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
         return scan_rsp.$$.frame()
     }
     if (adv_req.$$.isConn()) {
+        if (connection_trace) Debug.DbgA.clear() // TEMP: accepted CONNECT_IND; include connection setup and all following exchanges
         setState(State.CONN)
     }
     return $null

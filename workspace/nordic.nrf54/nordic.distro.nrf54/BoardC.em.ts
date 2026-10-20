@@ -88,7 +88,7 @@ export function em$configure(): void {
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
     Poller.OneShot.$$dlg = OneShotN // FIX: use busy-wait polling, including LED wink from ISR context, as on nRF52
-    RadioDriver.ifs_fence.$$val = 87 // FIX: supply inter-packet TX timing, matching the nRF54 FLPR configuration
+    RadioDriver.ifs_fence.$$val = 87 // TEMP: restore original V1 software fence; confirm basic connections first
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed

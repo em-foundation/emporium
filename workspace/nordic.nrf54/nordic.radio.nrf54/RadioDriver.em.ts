@@ -58,13 +58,6 @@ var hf_pause_level: u32
 var rx_start_pending: bool_t = false
 var rx_timeout_enabled: bool_t = false
 var rx_timeout_us: u32
-// TEMP: latest scheduled RX timing, retained for postmortem inspection; times are raw microseconds.
-export var rx_trace_state: volatile_t<u32> = 0 // 1=arming, 2=callback, 3=cancelled, 4=expired, 5=RXEN, 6=ignored
-export var rx_trace_deadline: volatile_t<u32> = 0
-export var rx_trace_selected: volatile_t<u32> = 0
-export var rx_trace_armed: volatile_t<u32> = 0
-export var rx_trace_callback: volatile_t<u32> = 0
-export var rx_trace_cancelled: volatile_t<u32> = 0
 
 const RX_RAMP_LEGACY_US = 140 // Nordic specifies 134 us typical BLE RX ramp; retain the nRF52 140 us allowance
 const RX_RAMP_FAST_US = 40
@@ -385,37 +378,17 @@ function scheduleRxStart(): bool_t {
     if (remaining < RX_SCHEDULE_MIN_US || remaining > RX_SCHEDULE_MAX_US) return false
     if (rx_timeout_enabled && <i32>(rx_timeout_us - start_us) <= 0) return false
     rx_start_pending = true
-    if (energy_trace) {
-        rx_trace_deadline = start_us
-        rx_trace_selected = now_us
-        rx_trace_armed = 0
-        rx_trace_callback = 0
-        rx_trace_cancelled = 0
-        rx_trace_state = 1
-        Debug.DbgA.clear() // TEMP: low while scheduled RX callback is outstanding
-    }
     Rtc.enableAux(start_us, $cb(rxStartHandler))
-    if (energy_trace) rx_trace_armed = Rtc.getRawUsecs() // TEMP: timestamp after programming compare
     return true
 }
 
 function rxStartHandler() {
-    if (energy_trace) {
-        Debug.DbgA.set() // TEMP: callback entered, even if subsequently rejected
-        rx_trace_callback = Rtc.getRawUsecs()
-        rx_trace_state = 2
-    }
-    if (!rx_start_pending || cur_state != State.RX) {
-        if (energy_trace) rx_trace_state = 6
-        return
-    }
+    if (!rx_start_pending || cur_state != State.RX) return
     rx_start_pending = false
     if (rx_timeout_enabled && <i32>(rx_timeout_us - Rtc.getRawUsecs()) <= 0) {
-        if (energy_trace) rx_trace_state = 4
         rtcHandler()
         return
     }
-    if (energy_trace) rx_trace_state = 5
     if (energy_trace) Debug.DbgD.clear() // TEMP: actual RXEN from the scheduled callback
     $R.RADIO.TASKS_RXEN.$$ = 1
     armRxTimeout() // FIX: retain the original absolute timeout after the delayed start
@@ -432,11 +405,6 @@ function armRxTimeout() {
 
 function cancelRxStart() {
     if (!rx_start_pending) return
-    if (energy_trace) {
-        Debug.DbgA.set() // TEMP: outstanding callback cancelled; RAM state distinguishes cancellation
-        rx_trace_cancelled = Rtc.getRawUsecs()
-        rx_trace_state = 3
-    }
     rx_start_pending = false
     Rtc.disableAux()
 }
