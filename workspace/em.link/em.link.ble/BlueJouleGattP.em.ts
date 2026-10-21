@@ -24,8 +24,8 @@ export namespace em$meta {
         Controller.Led.$$dlg = $delegate(BoardC.AppLed)
         Registry.DEFAULT_PARAMS.$$val.ble_connectible = true
         Registry.DEFAULT_PARAMS.$$val.ble_adv_chan_mask = 0x1
-        Registry.DEFAULT_PARAMS.$$val.send_count = 10
-        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 30
+        Registry.DEFAULT_PARAMS.$$val.send_count = 15
+        Registry.DEFAULT_PARAMS.$$val.send_interval_ms = 25 // spread discovery opportunities across the benchmark cycle
     }
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
