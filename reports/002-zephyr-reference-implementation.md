@@ -18,6 +18,8 @@
 - The measured connection charge is about **56.99 µC**.
 - At 3.0 V, this corresponds to about **171.0 µJ**.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

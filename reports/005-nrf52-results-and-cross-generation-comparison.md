@@ -30,6 +30,8 @@ At 3.0 V:
     nRF52 @ 3.0 V      28.16          30.44          +8.1%
     nRF54 @ 3.0 V      46.00          58.28         +26.7%
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

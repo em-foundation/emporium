@@ -31,6 +31,8 @@
 - These are engineering comparisons, not official benchmark scores.
 - EM•Script combines lower connection energy with smaller footprints.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

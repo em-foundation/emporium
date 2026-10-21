@@ -25,6 +25,8 @@
 - The scored window excludes the advertising period before connection.
 - The goal is a repeatable connection-energy impulse suitable for EM•Scope / BlueJoule scoring.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 10 — BlueJoule-GATT-Secure Definition](010-bluejoule-gatt-secure-definition.md) (secure variant of this benchmark)

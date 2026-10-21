@@ -24,6 +24,8 @@
 - Same-board comparisons are the meaningful comparisons.
 - The data supports the tiny-code locality claim.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

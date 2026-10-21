@@ -22,6 +22,8 @@
 * The visible difference is the post-exchange software tail: processing the received ATT request and preparing the next outbound response.
 * An EM•Script SRAM build is included as a secondary execution-locality note.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

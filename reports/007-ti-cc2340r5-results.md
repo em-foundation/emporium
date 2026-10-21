@@ -26,6 +26,8 @@
 - Zephyr drops much lower between connection intervals than SimpleLink.
 - The TI EM•Script result extends the tiny-code comparison beyond Nordic hardware.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

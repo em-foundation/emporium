@@ -20,6 +20,8 @@
 - Describes the workload; publishes no official score.
 - Does not establish production security or Bluetooth qualification.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

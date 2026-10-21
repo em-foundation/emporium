@@ -21,6 +21,8 @@
 - The EM•Script candidate scores about **29% higher** in EM•eralds.
 - This turns BlueJoule-GATT from a manually inspected waveform into a reproducible benchmark workflow.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

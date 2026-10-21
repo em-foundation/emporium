@@ -23,6 +23,8 @@
 - The FLPR image fits comfortably inside one retained 16 KB SRAM block.
 - Key result: same-class energy from Arm and RISC-V, with a tiny retained-SRAM FLPR image.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)

@@ -20,6 +20,8 @@
 - The Zephyr reference measured about **171.0 µJ**.
 - The EM•Script candidate is therefore about **21% lower energy** for this transaction.
 
+[← EM•Reports index](README.md)
+
 ## Related Reports
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
