@@ -10,16 +10,16 @@ import * as RadioDriver from '@nordic.radio.nrf54/RadioDriver.em'
 // Hardware CCM packet protection; the controller supplies counters and encryption state.
 export { PacketCrypto, RadioDriver }
 
-// TEMP: JS220 markers: A=connection window, B=CPU, C=crystal, D=RX; active low.
-const ENERGY_TRACE = true // TEMP: match the saved V0 Saleae timing capture
+// Keep only the active-low connection window for energy measurement.
+const ENERGY_TRACE = false
 
 export function em$configure() {
     Idle.energy_trace.$$val = ENERGY_TRACE
+    Idle.connection_trace.$$val = true
     HfXtal.energy_trace.$$val = ENERGY_TRACE
     RadioDriver.energy_trace.$$val = ENERGY_TRACE
-    RadioDriver.timing_trace.$$val = false // TEMP: isolate timestamp collection from the retained diagnostic code
-    RadioDriver.hardware_tifs.$$val = true // TEMP: restore hardware turnaround with legacy ramp; verify long-run connections
+    RadioDriver.hardware_tifs.$$val = true // hardware turnaround uses legacy ramp
     RadioDriver.scheduled_rx.$$val = true // scheduled RX with the driver startup guard
-    Controller.connection_trace.$$val = true // TEMP: A low from accepted CONNECT_IND through CLOSED/HANGUP
-    Controller.hfclk_guard_us.$$val = 750 // TEMP: restore RX startup margin for hardware TIFS legacy ramp
+    Controller.connection_trace.$$val = true // A low from accepted CONNECT_IND through CLOSED/HANGUP
+    Controller.hfclk_guard_us.$$val = 750 // measured crystal wake lead for legacy ramp
 }
