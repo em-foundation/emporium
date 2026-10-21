@@ -87,7 +87,7 @@ export function disable() {
     tifs_pending = false
     Common.Irq.disable(e$`RADIO_0_IRQn`)
     $R.RADIO.INTENCLR00.$$ = $R.RADIO_INTENSET00_PHYEND_Msk
-    Rtc.disableAux()
+    // FIX: auxiliary timer was already disabled at entry
     TimeFence.disable()
     rx_crypto = false
     tx_crypto = false
@@ -104,7 +104,7 @@ export function disable() {
         }
     }
     $R.RADIO.EVENTS_DISABLED.$$ = 0
-    $R.RADIO.SHORTS.$$ = 0
+    // FIX: shortcuts remain cleared from before RADIO disable
     HfXtal.stop()
     $R.POWER.TASKS_LOWPWR.$$ = 1 // FIX: release the radio clock/power requirement between events
     GlobalInterrupts.restore(key)
