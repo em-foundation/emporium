@@ -19,3 +19,4 @@ For reports 1–9, dates below are the first recorded commits in the original de
 | EMR 9 | 2026&#8209;06&#8209;30 | [nRF54 On-Chip Core Results: Cortex-M33 vs RISC-V](009-nrf54-on-chip-core-results-cortex-m33-vs-riscv.md) | Compares EM•Script BlueJoule-GATT on the nRF54 Cortex-M33 and FLPR RISC-V cores. |
 | EMR 10 | 2026&#8209;10&#8209;18 | [BlueJoule-GATT-Secure Definition](010-bluejoule-gatt-secure-definition.md) | Defines the secure benchmark extension, reference Central, pairing workload, and connection-energy measurement boundary. |
 | EMR 11 | 2026&#8209;10&#8209;18 | [nRF52 Secure GATT: Zephyr versus EM•Script](011-nrf52-secure-gatt-zephyr-vs-emscript.md) | Compares secure-GATT energy, timing, and memory footprints on nRF52. |
+| EMR 12 | 2026&#8209;10&#8209;21 | [nRF54 Secure GATT: Zephyr versus EM•Script](012-nrf54-secure-gatt-zephyr-vs-emscript.md) | Compares secure-GATT energy, timing, and memory footprints on the nRF54L15 Cortex-M33. |
