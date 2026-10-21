@@ -194,11 +194,11 @@ Both implementations use CRACEN hardware acceleration for P-256/ECDH. The purple
 
 ![Zephyr connection-event and pairing-region details](assets/012-fig2.png)
 
-<p align="center"><strong>Figure 2A — Zephyr connection-event and pairing details</strong><br>Blue: typical event (upper panel) · Purple: pairing activity (lower panel)</p>
+<p align="center"><strong>Figure 2A — Zephyr connection-event and pairing details</strong><br>Blue: typical event (left panel) · Purple: pairing activity (right panel)</p>
 
 ![EM•Script connection-event and pairing-region details](assets/012-fig4.png)
 
-<p align="center"><strong>Figure 2B — EM•Script connection-event and pairing details</strong><br>Blue: typical event (upper panel) · Purple: pairing activity (lower panel)</p>
+<p align="center"><strong>Figure 2B — EM•Script connection-event and pairing details</strong><br>Blue: typical event (left panel) · Purple: pairing activity (right panel)</p>
 
 ## 7. Basic GATT versus Secure GATT
 
