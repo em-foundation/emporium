@@ -4,7 +4,7 @@ export const $U = $declare('MODULE')
 import * as Common from '@em.mcu/Common.em'
 import * as P256Cracen from '@nordic.mcu.nrf54/P256Cracen.em'
 import * as T from '@em.crypto.p256/Types.em'
-import * as TestVectors from '@em.crypto.p256/TestVectors.em'
+import * as TestVectors from '@em.crypto.tests/TestVectors.em'
 
 export namespace em$meta { }
 

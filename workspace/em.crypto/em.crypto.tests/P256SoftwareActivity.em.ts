@@ -5,12 +5,14 @@ import * as ActivityI from '@em.utils/ActivityI.em'
 import * as Crypto from '@em.crypto/Crypto.em'
 import * as CmacN from '@em.crypto.cmac/CmacN.em'
 import * as Engine from '@em.crypto.p256/Engine.em'
+import * as MathOpsArmM0 from '@em.crypto.p256/MathOpsArmM0.em'
 import * as MathOpsArmM4 from '@em.crypto.p256/MathOpsArmM4.em'
 import * as MathOpsPortable from '@em.crypto.p256/MathOpsPortable.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as T from '@em.crypto.p256/Types.em'
 
 export const public_key_only = $config<bool_t>(false)
+export const arm_m0_math = $config<bool_t>(false)
 export const portable_math = $config<bool_t>(false)
 
 const SK = $config<T.U256>()
@@ -23,7 +25,9 @@ export namespace em$meta {
     export function em$configure() {
         Crypto.Cmac.$$dlg = CmacN
         Crypto.P256.$$dlg = Engine
-        if (portable_math.$$val) {
+        if (arm_m0_math.$$val) {
+            Engine.MathOps.$$dlg = MathOpsArmM0
+        } else if (portable_math.$$val) {
             Engine.MathOps.$$dlg = MathOpsPortable
         } else {
             Engine.MathOps.$$dlg = MathOpsArmM4
