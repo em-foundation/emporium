@@ -150,13 +150,10 @@ function ctEqMask(a: u32, b: u32): u32 {
 }
 
 
-function packTablePoint(table: $$<T.PointTableWords>, slot: u32, p: $$<T.PointJ>) {
-    const base = slot * T.POINT_WORDS
-    for (const i of $range(T.U256_LEN)) {
-        table.$$[base + i] = p.$$.x[i]
-        table.$$[base + T.U256_LEN + i] = p.$$.y[i]
-        table.$$[base + 2 * T.U256_LEN + i] = p.$$.z[i]
-    }
+// A table slot is one contiguous x/y/z PointJ (24 aligned u32 words).
+// Return a view into the table; do not allocate another point.
+function tablePoint(table: $$<T.PointTableWords>, slot: u32): $$<T.PointJ> {
+    return $cast2<$$<T.PointJ>>($$(table.$$[slot * T.POINT_WORDS]))
 }
 
 
@@ -248,68 +245,31 @@ function pointMul(k: T.U256_Ref, p: $$<T.PointJ>) {
     let win = T.Window64.$make()
     scalarRewriteFixed4(kk.$ptr(), $$(win))
 
-    let p1 = T.PointJ.$make()
-    MathOps.copy(p1.x.$ptr(), p.$$.x.$ptr())
-    MathOps.copy(p1.y.$ptr(), p.$$.y.$ptr())
-    MathOps.copy(p1.z.$ptr(), p.$$.z.$ptr())
-
-    // Match Emil's table construction closely: use the future 15P slot as
-    // temporary 2P storage, then overwrite it with 15P at the end.
-    let p15 = T.PointJ.$make()
-    MathOps.copy(p15.x.$ptr(), p1.x.$ptr())
-    MathOps.copy(p15.y.$ptr(), p1.y.$ptr())
-    MathOps.copy(p15.z.$ptr(), p1.z.$ptr())
-    pointDouble($$(p15))
-
-    let p3 = T.PointJ.$make()
-    MathOps.copy(p3.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p3.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p3.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p3), $$(p1))
-
-    let p5 = T.PointJ.$make()
-    MathOps.copy(p5.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p5.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p5.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p5), $$(p3))
-
-    let p7 = T.PointJ.$make()
-    MathOps.copy(p7.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p7.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p7.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p7), $$(p5))
-
-    let p9 = T.PointJ.$make()
-    MathOps.copy(p9.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p9.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p9.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p9), $$(p7))
-
-    let p11 = T.PointJ.$make()
-    MathOps.copy(p11.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p11.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p11.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p11), $$(p9))
-
-    let p13 = T.PointJ.$make()
-    MathOps.copy(p13.x.$ptr(), p15.x.$ptr())
-    MathOps.copy(p13.y.$ptr(), p15.y.$ptr())
-    MathOps.copy(p13.z.$ptr(), p15.z.$ptr())
-    pointAddJacobian($$(p13), $$(p11))
-
-    // p15 still contains 2P here.
-    pointAddJacobian($$(p15), $$(p13))
-
-    // Pack the odd multiples contiguously for the hot constant-time selector.
+    // Build the odd multiples directly in their final contiguous storage.
+    // Slot 7 holds temporary 2P until slots 1..6 contain 3P..13P.
     let table = T.PointTableWords.$make()
-    packTablePoint($$(table), 0, $$(p1))
-    packTablePoint($$(table), 1, $$(p3))
-    packTablePoint($$(table), 2, $$(p5))
-    packTablePoint($$(table), 3, $$(p7))
-    packTablePoint($$(table), 4, $$(p9))
-    packTablePoint($$(table), 5, $$(p11))
-    packTablePoint($$(table), 6, $$(p13))
-    packTablePoint($$(table), 7, $$(p15))
+    const p1 = tablePoint($$(table), 0)
+    MathOps.copy(p1.$$.x.$ptr(), p.$$.x.$ptr())
+    MathOps.copy(p1.$$.y.$ptr(), p.$$.y.$ptr())
+    MathOps.copy(p1.$$.z.$ptr(), p.$$.z.$ptr())
+
+    const p15 = tablePoint($$(table), T.TABLE_POINTS - 1)
+    MathOps.copy(p15.$$.x.$ptr(), p1.$$.x.$ptr())
+    MathOps.copy(p15.$$.y.$ptr(), p1.$$.y.$ptr())
+    MathOps.copy(p15.$$.z.$ptr(), p1.$$.z.$ptr())
+    pointDouble(p15)
+
+    for (let slot: u32 = 1; slot < T.TABLE_POINTS - 1; slot += 1) {
+        const dst = tablePoint($$(table), slot)
+        const prev = tablePoint($$(table), slot - 1)
+        MathOps.copy(dst.$$.x.$ptr(), p15.$$.x.$ptr())
+        MathOps.copy(dst.$$.y.$ptr(), p15.$$.y.$ptr())
+        MathOps.copy(dst.$$.z.$ptr(), p15.$$.z.$ptr())
+        pointAddJacobian(dst, prev)
+    }
+
+    // Overwrite temporary 2P with 2P + 13P = 15P.
+    pointAddJacobian(p15, tablePoint($$(table), T.TABLE_POINTS - 2))
 
     let r = T.PointJ.$make()
     let q = T.PointJ.$make()
