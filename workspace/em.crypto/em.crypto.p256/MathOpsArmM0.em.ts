@@ -17,8 +17,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-// First M0 checkpoint: retain portable point formulas and inversion schedule.
-// Only field multiplication and dedicated squaring use adapted M0 assembly.
+// Inversion retains the portable schedule.
+// Point doubling and addition use adapted unrolled M0 formulas.
+// Field multiply, square, add, subtract and half use adapted M0 assembly.
+// times2 also benefits by calling the M0 modular add with aliased inputs.
 // Raw kernels clobber r4-r11; wrappers preserve them and align SP at entry.
 // Inputs are consumed before the output is stored, allowing mul(a,a).
 export namespace em$meta { }
@@ -26,145 +28,92 @@ export namespace em$meta { }
 
 //>> ---- em$targ ---- <<//
 
+a$`naked,noinline`
 export function add(a: T.U256_Ref, b: T.U256_Ref) {
-    let carry: u64 = 0
-    for (const i of $range(T.U256_LEN)) {
-        const s = $cast2<u64>(a[i]) + $cast2<u64>(b[i]) + carry
-        a[i] = $cast2<u32>(s)
-        carry = s >> 32
-    }
-    let reduce = carry != 0
-    if (!reduce) {
-        for (const i of $range(T.U256_LEN - 1, -1, -1)) {
-            if (a[i] != T.FIELD_PRIME[i]) {
-                reduce = a[i] > T.FIELD_PRIME[i]
-                break
-            }
-            if (i == 0) reduce = true
-        }
-    }
-    if (reduce) {
-        let borrow: u64 = 0
-        for (const i of $range(T.U256_LEN)) {
-            const ai = $cast2<u64>(a[i])
-            const pi = $cast2<u64>(T.FIELD_PRIME[i])
-            const d = ai - pi - borrow
-            a[i] = $cast2<u32>(d)
-            borrow = ai < (pi + borrow) ? 1 : 0
-        }
-    }
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r8
+                mov r5,r9
+                mov r6,r10
+                mov r7,r11
+                push {r4-r7}
+                sub sp,#4
+                mov r2,r1
+                mov r1,r0
+                bl __em_p256_m0_addmod
+                add sp,#4
+                pop {r4-r7}
+                mov r8,r4
+                mov r9,r5
+                mov r10,r6
+                mov r11,r7
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
-
 
 export function copy(a: T.U256_Ref, b: T.U256_Ref) {
     T.copyU256(a, b)
 }
 
 
+// Keep the complete doubling formula in the raw M0 calling convention,
+// avoiding per-field-operation register saves and temporary copies.
+a$`naked,noinline`
 export function doublePoint(p: $$<T.PointJ>) {
-    // ePrint 2014/130 algorithm 10.
-    // Keeping this inside the backend removes the Engine -> proxy -> backend
-    // boundary for every primitive in the hot doubling path.
-
-    let t1 = T.U256.$make()
-    T.copyU256(t1.$ptr(), p.$$.z.$ptr())
-    square(t1.$ptr())
-
-    mul(p.$$.z.$ptr(), p.$$.y.$ptr())
-
-    let t2 = T.U256.$make()
-    T.copyU256(t2.$ptr(), p.$$.x.$ptr())
-    add(t2.$ptr(), t1.$ptr())
-
-    let t3 = T.U256.$make()
-    T.copyU256(t3.$ptr(), p.$$.x.$ptr())
-    sub(t3.$ptr(), t1.$ptr())
-    mul(t3.$ptr(), t2.$ptr())
-
-    T.copyU256(t1.$ptr(), t3.$ptr())
-    half(t1.$ptr())
-    add(t3.$ptr(), t1.$ptr())
-
-    T.copyU256(t2.$ptr(), t3.$ptr())
-    square(t2.$ptr())
-
-    square(p.$$.y.$ptr())
-    T.copyU256(t1.$ptr(), p.$$.y.$ptr())
-    square(t1.$ptr())
-
-    mul(p.$$.y.$ptr(), p.$$.x.$ptr())
-
-    T.copyU256(p.$$.x.$ptr(), p.$$.y.$ptr())
-    times2(p.$$.x.$ptr())
-    sub(t2.$ptr(), p.$$.x.$ptr())
-    T.copyU256(p.$$.x.$ptr(), t2.$ptr())
-
-    sub(p.$$.y.$ptr(), p.$$.x.$ptr())
-    mul(p.$$.y.$ptr(), t3.$ptr())
-    sub(p.$$.y.$ptr(), t1.$ptr())
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r8
+                mov r5,r9
+                mov r6,r10
+                mov r7,r11
+                push {r4-r7}
+                sub sp,#4
+                mov r1,r0
+                bl __em_p256_m0_double_j
+                add sp,#4
+                pop {r4-r7}
+                mov r8,r4
+                mov r9,r5
+                mov r10,r6
+                mov r11,r7
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
 
-
+// Same non-overlapping Jacobian operands as the portable formula.
+// Keep field operations in the raw M0 ABI; preserve the caller's registers once.
+a$`naked,noinline`
 export function addPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
-    // Rearranged like Emil Lenngren's P256_add_j.
-    // Composite backend operation keeps the hot Jacobian-add sequence local
-    // to the selected field backend, matching doublePoint() structurally.
-
-    let t1 = T.U256.$make()
-    copy(t1.$ptr(), q.$$.z.$ptr())
-    square(t1.$ptr())
-
-    mul(p.$$.x.$ptr(), t1.$ptr())
-
-    mul(t1.$ptr(), q.$$.z.$ptr())
-    mul(p.$$.y.$ptr(), t1.$ptr())
-
-    copy(t1.$ptr(), p.$$.z.$ptr())
-    square(t1.$ptr())
-
-    let t2 = T.U256.$make()
-    copy(t2.$ptr(), q.$$.x.$ptr())
-    mul(t2.$ptr(), t1.$ptr())
-
-    mul(t1.$ptr(), p.$$.z.$ptr())
-    mul(t1.$ptr(), q.$$.y.$ptr())
-
-    sub(p.$$.x.$ptr(), t2.$ptr())
-
-    let t3 = T.U256.$make()
-    copy(t3.$ptr(), p.$$.x.$ptr())
-    square(t3.$ptr())
-
-    mul(p.$$.z.$ptr(), p.$$.x.$ptr())
-    mul(p.$$.z.$ptr(), q.$$.z.$ptr())
-
-    mul(p.$$.x.$ptr(), t3.$ptr())
-
-    sub(p.$$.y.$ptr(), t1.$ptr())
-
-    mul(t2.$ptr(), t3.$ptr())
-
-    copy(t3.$ptr(), p.$$.y.$ptr())
-    square(t3.$ptr())
-
-    mul(t1.$ptr(), p.$$.x.$ptr())
-
-    sub(t3.$ptr(), p.$$.x.$ptr())
-    copy(p.$$.x.$ptr(), t2.$ptr())
-    times2(p.$$.x.$ptr())
-    sub(t3.$ptr(), p.$$.x.$ptr())
-    copy(p.$$.x.$ptr(), t3.$ptr())
-
-    copy(t3.$ptr(), t2.$ptr())
-    sub(t3.$ptr(), p.$$.x.$ptr())
-    mul(t3.$ptr(), p.$$.y.$ptr())
-    sub(t3.$ptr(), t1.$ptr())
-    copy(p.$$.y.$ptr(), t3.$ptr())
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r8
+                mov r5,r9
+                mov r6,r10
+                mov r7,r11
+                push {r4-r7}
+                sub sp,#4
+                bl __em_p256_m0_add_j
+                add sp,#4
+                pop {r4-r7}
+                mov r8,r4
+                mov r9,r5
+                mov r10,r6
+                mov r11,r7
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
-
-
-
-
 
 export function quadDoubleAddPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
     doublePoint(p)
@@ -270,7 +219,7 @@ export function mul(a: T.U256_Ref, b: T.U256_Ref) {
 // P-256 ECDH
 // Author: Emil Lenngren
 // Licensed under the BSD 2-clause license.
-// The 256x256->512 multiplication/square code is based on public domain µNaCl by Ana Helena Sánchez and Björn Haase (https://munacl.cryptojedi.org/curve25519-cortexm0.shtml)
+// The 256x256->512 multiplication/square code is based on public domain ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂµNaCl by Ana Helena SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nchez and BjÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶rn Haase (https://munacl.cryptojedi.org/curve25519-cortexm0.shtml)
 
 // Note on calling conventions: some of the local functions in this file use custom calling conventions.
 // Exported symbols use the standard C calling conventions for ARM, which means that r4-r11 and sp are preserved and the other registers are clobbered.
@@ -1692,6 +1641,446 @@ __em_p256_m0_sqrmod:
 	.endif
 
 
+// Field add/sub share the multiplication kernel's final reduction.
+	.type __em_p256_m0_addmod, %function
+__em_p256_m0_addmod:
+	push {r0,lr}
+	//frame push {lr}
+	//frame address sp,8
+	ldm r1!,{r0,r3,r4}
+	ldm r2!,{r5,r6,r7}
+	adds r0,r5
+	adcs r3,r6
+	adcs r4,r7
+	mov r8,r0
+	mov r9,r3
+	mov r10,r4
+	ldm r1!,{r5,r6}
+	ldm r2!,{r3,r4}
+	adcs r5,r3
+	adcs r6,r4
+	ldm r1,{r1,r3,r4}
+	ldm r2,{r0,r2,r7}
+	adcs r1,r0
+	adcs r3,r2
+	adcs r4,r7
+	movs r7,#0
+	adcs r7,r7
+	
+	subs r0,r0 //set r0 to 0 and C to 1
+	mov r2,r8
+	mov r8,r7
+	mov r7,r9
+	mov r9,r4
+	mov r4,r10
+	adcs r2,r0
+	mov r10,r2
+	adcs r7,r0
+	mov r11,r7
+	adcs r4,r0
+	sbcs r5,r0
+	sbcs r6,r0
+	sbcs r1,r0
+	movs r0,#1
+	sbcs r3,r0
+	movs r0,#0
+	mov r2,r9
+	adcs r2,r0
+	mov r7,r8
+	sbcs r7,r0
+	
+	// r10 r11 r4 r5 | r6 r1 r3 r2 | r7
+	
+	mov r8,r3
+	mov r3,r11
+	mov r11,r2
+	mov r2,r10
+	
+	// r2 r3 r4 r5 | r6 r1 r8 r11 | r7
+	
+	b reduce2
+	
+	.size __em_p256_m0_addmod, .-__em_p256_m0_addmod
+	
+// *r0 = output, *r1 = a, *r2 = b
+	.type __em_p256_m0_submod, %function
+__em_p256_m0_submod:
+	push {r0,lr}
+	//frame push {lr}
+	//frame address sp,8
+	ldm r1!,{r0,r3,r4}
+	ldm r2!,{r5,r6,r7}
+	subs r0,r5
+	sbcs r3,r6
+	sbcs r4,r7
+	mov r8,r0
+	mov r9,r3
+	mov r10,r4
+	ldm r1!,{r5,r6}
+	ldm r2!,{r3,r4}
+	sbcs r5,r3
+	sbcs r6,r4
+	ldm r1,{r1,r3,r4}
+	ldm r2,{r0,r2,r7}
+	sbcs r1,r0
+	sbcs r3,r2
+	sbcs r4,r7
+	
+	sbcs r7,r7
+	
+	mov r2,r8
+	mov r8,r3
+	mov r11,r4
+	mov r3,r9
+	mov r4,r10
+	b reduce2
+	
+	.size __em_p256_m0_submod, .-__em_p256_m0_submod
+
+
+// Unrolled M0 Jacobian doubling; same eight-word Montgomery coordinates.
+	.type __em_p256_m0_double_j, %function
+__em_p256_m0_double_j:
+	push {r0,r1,r4-r7,lr}
+	//frame push {r4-r7,lr}
+	//frame address sp,28
+	
+	// https://eprint.iacr.org/2014/130.pdf, algorithm 10
+	
+	// t1 = Z1^2
+	sub sp,#32
+	//frame address sp,60
+	mov r0,sp
+	adds r1,#64
+	bl __em_p256_m0_sqrmod
+	
+	// Z2 = Y1 * Z1
+	ldr r0,[sp,#32]
+	ldr r1,[sp,#36]
+	adds r0,#64
+	adds r1,#32
+	movs r2,#32
+	adds r2,r1
+	bl __em_p256_m0_mulmod
+	
+	// t2 = X1 + t1
+	ldr r1,[sp,#36]
+	mov r2,sp
+	sub sp,#32
+	//frame address sp,92
+	mov r0,sp
+	bl __em_p256_m0_addmod
+	
+	// t1 = X1 - t1
+	ldr r1,[sp,#68]
+	add r2,sp,#32
+	mov r0,r2
+	bl __em_p256_m0_submod
+	
+	// t1 = t1 * t2
+	add r1,sp,#32
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// t2 = t1 / 2
+	add sp,#32
+	//frame address sp,60
+	mov r7,sp
+	ldm r7!,{r0-r3}
+	lsls r6,r0,#31
+	asrs r5,r6,#31
+	lsrs r6,#31
+	movs r4,#0
+	adds r0,r5
+	adcs r1,r5
+	adcs r2,r5
+	adcs r3,r4
+	push {r0-r3}
+	//frame address sp,76
+	ldm r7!,{r0-r3}
+	adcs r0,r4
+	adcs r1,r4
+	adcs r2,r6
+	adcs r3,r5
+	movs r4,#0
+	adcs r4,r4
+	lsls r7,r4,#31
+	lsrs r6,r3,#1
+	orrs r7,r6
+	lsls r6,r3,#31
+	lsrs r5,r2,#1
+	orrs r6,r5
+	lsls r5,r2,#31
+	lsrs r4,r1,#1
+	orrs r5,r4
+	lsls r4,r1,#31
+	lsrs r3,r0,#1
+	orrs r4,r3
+	lsls r3,r0,#31
+	mov r8,r3
+	pop {r0-r3}
+	//frame address sp,60
+	push {r4-r7}
+	//frame address sp,76
+	mov r7,r8
+	lsrs r6,r3,#1
+	orrs r7,r6
+	lsls r6,r3,#31
+	lsrs r5,r2,#1
+	orrs r6,r5
+	lsls r5,r2,#31
+	lsrs r4,r1,#1
+	orrs r5,r4
+	lsls r4,r1,#31
+	lsrs r3,r0,#1
+	orrs r4,r3
+	push {r4-r7}
+	//frame address sp,92
+	
+	// t1 = t1 + t2
+	add r1,sp,#32
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_addmod
+	
+	// t2 = t1^2
+	mov r0,sp
+	add r1,sp,#32
+	bl __em_p256_m0_sqrmod
+	
+	// Y2 = Y1^2
+	ldr r0,[sp,#64]
+	ldr r1,[sp,#68]
+	adds r0,#32
+	adds r1,#32
+	bl __em_p256_m0_sqrmod
+	
+	// t3 = Y2^2
+	ldr r1,[sp,#64]
+	adds r1,#32
+	sub sp,#32
+	//frame address sp,124
+	mov r0,sp
+	bl __em_p256_m0_sqrmod
+	
+	// Y2 = X1 * Y2
+	ldr r0,[sp,#96]
+	ldr r1,[sp,#100]
+	adds r0,#32
+	mov r2,r0
+	bl __em_p256_m0_mulmod
+	
+	// X2 = 2 * Y2
+	ldr r0,[sp,#96]
+	mov r1,r0
+	adds r1,#32
+	mov r2,r1
+	bl __em_p256_m0_addmod
+	
+	// X2 = t2 - X2
+	ldr r0,[sp,#96]
+	add r1,sp,#32
+	mov r2,r0
+	bl __em_p256_m0_submod
+	
+	// t2 = Y2 - X2
+	ldr r2,[sp,#96]
+	mov r1,r2
+	adds r1,#32
+	add r0,sp,#32
+	bl __em_p256_m0_submod
+	
+	// t1 = t1 * t2
+	add r0,sp,#64
+	add r1,sp,#64
+	add r2,sp,#32
+	bl __em_p256_m0_mulmod
+	
+	// Y2 = t1 - t3
+	ldr r0,[sp,#96]
+	adds r0,#32
+	add r1,sp,#64
+	mov r2,sp
+	bl __em_p256_m0_submod
+	
+	add sp,#104
+	//frame address sp,20
+	
+	pop {r4-r7,pc}
+	.size __em_p256_m0_double_j, .-__em_p256_m0_double_j
+
+// Unrolled M0 Jacobian addition.
+	.type __em_p256_m0_add_j, %function
+__em_p256_m0_add_j:
+	push {r0,r1,r4-r7,lr}
+	//frame push {r4-r7,lr}
+	//frame address sp,28
+	
+	// Here a variant of
+	// https://www.hyperelliptic.org/EFD/g1p/auto-code/shortw/jacobian-3/addition/add-1998-cmo-2.op3
+	// is used, but rearranged and uses less temporaries.
+	// The first operand to the function is both (X3,Y3,Z3) and (X2,Y2,Z2).
+	// The second operand to the function is (X1,Y1,Z1)
+	
+	// Z1Z1 = Z1^2
+	sub sp,#32
+	//frame address sp,60
+	mov r0,sp
+	adds r1,#64
+	bl __em_p256_m0_sqrmod
+	
+	// U2 = X2*Z1Z1
+	ldr r1,[sp,#32]
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// t1 = Z1*Z1Z1
+	ldr r1,[sp,#36]
+	adds r1,#64
+	mov r2,sp
+	mov r0,sp
+	bl __em_p256_m0_mulmod
+	
+	// S2 = Y2*t1
+	ldr r1,[sp,#32]
+	adds r1,#32
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// Z2Z2 = Z2^2
+	sub sp,#32
+	//frame address sp,92
+	mov r0,sp
+	ldr r1,[sp,#64]
+	adds r1,#64
+	bl __em_p256_m0_sqrmod
+	
+	// U1 = X1*Z2Z2
+	ldr r1,[sp,#68]
+	mov r2,sp
+	add r0,sp,#32
+	bl __em_p256_m0_mulmod
+	
+	// t2 = Z2*Z2Z2
+	ldr r1,[sp,#64]
+	adds r1,#64
+	mov r2,sp
+	mov r0,sp
+	bl __em_p256_m0_mulmod
+	
+	// S1 = Y1*t2
+	ldr r1,[sp,#68]
+	adds r1,#32
+	mov r2,sp
+	mov r0,sp
+	bl __em_p256_m0_mulmod
+	
+	// H = U2-U1
+	ldr r1,[sp,#64]
+	add r2,sp,#32
+	mov r0,r1
+	bl __em_p256_m0_submod
+	
+	// HH = H^2
+	ldr r1,[sp,#64]
+	sub sp,#32
+	//frame address sp,124
+	mov r0,sp
+	bl __em_p256_m0_sqrmod
+	
+	// Z3 = Z2*H
+	ldr r2,[sp,#96]
+	mov r1,r2
+	adds r1,#64
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// Z3 = Z1*Z3
+	ldr r1,[sp,#100]
+	adds r1,#64
+	ldr r2,[sp,#96]
+	adds r2,#64
+	mov r0,r2
+	bl __em_p256_m0_mulmod
+	
+	// HHH = H*HH
+	ldr r1,[sp,#96]
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// r = S2-S1
+	ldr r1,[sp,#96]
+	adds r1,#32
+	add r2,sp,#32
+	mov r0,r1
+	bl __em_p256_m0_submod
+	
+	// V = U1*HH
+	add r1,sp,#64
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_mulmod
+	
+	// t3 = r^2
+	ldr r1,[sp,#96]
+	adds r1,#32
+	mov r0,sp
+	bl __em_p256_m0_sqrmod
+	
+	// t2 = S1*HHH
+	add r1,sp,#32
+	ldr r2,[sp,#96]
+	add r0,sp,#32
+	bl __em_p256_m0_mulmod
+	
+	// X3 = t3-HHH
+	mov r1,sp
+	ldr r2,[sp,#96]
+	mov r0,r2
+	bl __em_p256_m0_submod
+	
+	// t3 = 2*V
+	add r1,sp,#64
+	add r2,sp,#64
+	mov r0,sp
+	bl __em_p256_m0_addmod
+	
+	// X3 = X3-t3
+	ldr r1,[sp,#96]
+	mov r2,sp
+	mov r0,r1
+	bl __em_p256_m0_submod
+	
+	// t3 = V-X3
+	add r1,sp,#64
+	ldr r2,[sp,#96]
+	mov r0,sp
+	bl __em_p256_m0_submod
+	
+	// t3 = r*t3
+	ldr r1,[sp,#96]
+	adds r1,#32
+	mov r2,sp
+	mov r0,sp
+	bl __em_p256_m0_mulmod
+	
+	// Y3 = t3-t2
+	mov r1,sp
+	add r2,sp,#32
+	ldr r0,[sp,#96]
+	adds r0,#32
+	bl __em_p256_m0_submod
+	
+	add sp,#104
+	//frame address sp,20
+	
+	pop {r4-r7,pc}
+	.size __em_p256_m0_add_j, .-__em_p256_m0_add_j
+
             )"
         );
     `
@@ -1724,47 +2113,104 @@ export function square(a: T.U256_Ref) {
     `
 }
 
+a$`naked,noinline`
 export function sub(a: T.U256_Ref, b: T.U256_Ref) {
-    let borrow: u64 = 0
-    for (const i of $range(T.U256_LEN)) {
-        const ai = $cast2<u64>(a[i])
-        const bi = $cast2<u64>(b[i])
-        const d = ai - bi - borrow
-        a[i] = $cast2<u32>(d)
-        borrow = ai < (bi + borrow) ? 1 : 0
-    }
-    if (borrow != 0) {
-        let carry: u64 = 0
-        for (const i of $range(T.U256_LEN)) {
-            const s = $cast2<u64>(a[i]) + $cast2<u64>(T.FIELD_PRIME[i]) + carry
-            a[i] = $cast2<u32>(s)
-            carry = s >> 32
-        }
-    }
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r8
+                mov r5,r9
+                mov r6,r10
+                mov r7,r11
+                push {r4-r7}
+                sub sp,#4
+                mov r2,r1
+                mov r1,r0
+                bl __em_p256_m0_submod
+                add sp,#4
+                pop {r4-r7}
+                mov r8,r4
+                mov r9,r5
+                mov r10,r6
+                mov r11,r7
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
-
 
 export function times2(a: T.U256_Ref) {
     add(a, a)
 }
 
 
+// Adapted in place: the raw routine reads both halves before storing.
+// Only r9 is used among the high callee-saved registers; preserve it explicitly.
+a$`naked,noinline`
 export function half(a: T.U256_Ref) {
-    const odd = a[0] & 1
-    let carry: u64 = 0
-
-    if (odd != 0) {
-        for (const i of $range(T.U256_LEN)) {
-            const s = $cast2<u64>(a[i]) + T.FIELD_PRIME[i] + carry
-            a[i] = $cast2<u32>(s)
-            carry = s >> 32
-        }
-    }
-
-    let hi: u32 = $cast2<u32>(carry)
-    for (const i of $range(T.U256_LEN - 1, -1, -1)) {
-        const next = a[i] << 31
-        a[i] = (a[i] >> 1) | (hi << 31)
-        hi = next >> 31
-    }
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r9
+                push {r4}
+                mov r1,r0
+	mov r9,r0
+	mov r7,r1
+	ldm r7!,{r0-r3}
+	lsls r6,r0,#31
+	asrs r5,r6,#31
+	lsrs r6,#31
+	movs r4,#0
+	adds r0,r5
+	adcs r1,r5
+	adcs r2,r5
+	adcs r3,r4
+	push {r0-r3}
+	//frame address sp,76
+	ldm r7!,{r0-r3}
+	adcs r0,r4
+	adcs r1,r4
+	adcs r2,r6
+	adcs r3,r5
+	movs r4,#0
+	adcs r4,r4
+	lsls r7,r4,#31
+	lsrs r6,r3,#1
+	orrs r7,r6
+	lsls r6,r3,#31
+	lsrs r5,r2,#1
+	orrs r6,r5
+	lsls r5,r2,#31
+	lsrs r4,r1,#1
+	orrs r5,r4
+	lsls r4,r1,#31
+	lsrs r3,r0,#1
+	orrs r4,r3
+	lsls r3,r0,#31
+	mov r0,r9
+	adds r0,#16
+	stm r0!,{r4-r7}
+	mov r7,r3
+	pop {r0-r3}
+	lsrs r6,r3,#1
+	orrs r7,r6
+	lsls r6,r3,#31
+	lsrs r5,r2,#1
+	orrs r6,r5
+	lsls r5,r2,#31
+	lsrs r4,r1,#1
+	orrs r5,r4
+	lsls r4,r1,#31
+	lsrs r3,r0,#1
+	orrs r4,r3
+	mov r0,r9
+	stm r0!,{r4-r7}
+                pop {r4}
+                mov r9,r4
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
