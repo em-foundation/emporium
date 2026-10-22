@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 */
 
-// Inversion retains the portable schedule.
+// Inversion uses the reference fixed-chain M0 assembly schedule.
 // Point doubling and addition use adapted unrolled M0 formulas.
 // Field multiply, square, add, subtract and half use adapted M0 assembly.
 // times2 also benefits by calling the M0 modular add with aliased inputs.
@@ -124,72 +124,31 @@ export function quadDoubleAddPointJacobian(p: $$<T.PointJ>, q: $$<T.PointJ>) {
 }
 
 
+// Reference fixed-chain inversion, with squaring loops using the raw M0 ABI.
+// Preserve the external caller's registers once for the entire inversion.
+a$`naked,noinline`
 export function inv(a: T.U256_Ref) {
-    // Fixed addition chain for p - 2, following the Cortex-M4 speed-optimized
-    // P256_modinv schedule.  Input and output remain in Montgomery form.
-    let x = T.U256.$make()
-    copy(x.$ptr(), a)
-
-    // a^3
-    let r = T.U256.$make()
-    copy(r.$ptr(), x.$ptr())
-    square(r.$ptr())
-    mul(r.$ptr(), x.$ptr())
-
-    // a^12
-    let a12 = T.U256.$make()
-    copy(a12.$ptr(), r.$ptr())
-    square(a12.$ptr())
-    square(a12.$ptr())
-
-    // a^15
-    let a15 = T.U256.$make()
-    copy(a15.$ptr(), a12.$ptr())
-    mul(a15.$ptr(), r.$ptr())
-
-    // a^(2^8 - 1)
-    copy(r.$ptr(), a15.$ptr())
-    for (const i of $range(4)) square(r.$ptr())
-    mul(r.$ptr(), a15.$ptr())
-    let a255 = T.U256.$make()
-    copy(a255.$ptr(), r.$ptr())
-
-    // a^(2^16 - 1)
-    for (const i of $range(8)) square(r.$ptr())
-    mul(r.$ptr(), a255.$ptr())
-    let a65535 = T.U256.$make()
-    copy(a65535.$ptr(), r.$ptr())
-
-    // a^(2^32 - 1)
-    for (const i of $range(16)) square(r.$ptr())
-    mul(r.$ptr(), a65535.$ptr())
-    let a32m1 = T.U256.$make()
-    copy(a32m1.$ptr(), r.$ptr())
-
-    // Remaining fixed chain from Emil Lenngren's speed-optimized P256_modinv.
-    for (const i of $range(32)) square(r.$ptr())
-    mul(r.$ptr(), x.$ptr())
-
-    for (const i of $range(128)) square(r.$ptr())
-    mul(r.$ptr(), a32m1.$ptr())
-
-    for (const i of $range(32)) square(r.$ptr())
-    mul(r.$ptr(), a32m1.$ptr())
-
-    for (const i of $range(16)) square(r.$ptr())
-    mul(r.$ptr(), a65535.$ptr())
-
-    for (const i of $range(8)) square(r.$ptr())
-    mul(r.$ptr(), a255.$ptr())
-
-    for (const i of $range(4)) square(r.$ptr())
-    mul(r.$ptr(), a15.$ptr())
-
-    for (const i of $range(4)) square(r.$ptr())
-    mul(r.$ptr(), a12.$ptr())
-
-    mul(r.$ptr(), x.$ptr())
-    copy(a, r.$ptr())
+    e$`
+        asm volatile (
+            R"(
+                push {r4-r7,lr}
+                mov r4,r8
+                mov r5,r9
+                mov r6,r10
+                mov r7,r11
+                push {r4-r7}
+                sub sp,#4
+                bl __em_p256_m0_modinv
+                add sp,#4
+                pop {r4-r7}
+                mov r8,r4
+                mov r9,r5
+                mov r10,r6
+                mov r11,r7
+                pop {r4-r7,pc}
+            )"
+        );
+    `
 }
 
 a$`naked,noinline`
@@ -219,7 +178,7 @@ export function mul(a: T.U256_Ref, b: T.U256_Ref) {
 // P-256 ECDH
 // Author: Emil Lenngren
 // Licensed under the BSD 2-clause license.
-// The 256x256->512 multiplication/square code is based on public domain ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂµNaCl by Ana Helena SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡nchez and BjÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶rn Haase (https://munacl.cryptojedi.org/curve25519-cortexm0.shtml)
+// The 256x256->512 multiplication/square code is based on public domain ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚ÂµNaCl by Ana Helena SÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡nchez and BjÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶rn Haase (https://munacl.cryptojedi.org/curve25519-cortexm0.shtml)
 
 // Note on calling conventions: some of the local functions in this file use custom calling conventions.
 // Exported symbols use the standard C calling conventions for ARM, which means that r4-r11 and sp are preserved and the other registers are clobbered.
@@ -2080,6 +2039,159 @@ __em_p256_m0_add_j:
 	
 	pop {r4-r7,pc}
 	.size __em_p256_m0_add_j, .-__em_p256_m0_add_j
+
+// M0 inversion helpers and exponent schedule (Montgomery in/out).
+	.type __em_p256_m0_copy32, %function
+__em_p256_m0_copy32:
+	push {r4-r5,lr}
+	//frame push {r4-r5,lr}
+	ldm r1!,{r2-r5}
+	stm r0!,{r2-r5}
+	ldm r1!,{r2-r5}
+	stm r0!,{r2-r5}
+	pop {r4-r5,pc}
+	.size __em_p256_m0_copy32, .-__em_p256_m0_copy32
+
+	.type __em_p256_m0_sqrmod_many_and_mulmod, %function
+__em_p256_m0_sqrmod_many_and_mulmod:
+	push {r0,r2,lr}
+	//frame push {lr}
+	//frame address sp,12
+	cmp r1,#0
+	beq 1f
+0:
+	push {r1}
+	//frame address sp,16
+	ldr r0,[sp,#4]
+	mov r1,r0
+	bl __em_p256_m0_sqrmod
+	pop {r1}
+	//frame address sp,12
+	subs r1,#1
+	bne 0b
+1:
+	pop {r0,r1}
+	//frame address sp,4
+	mov r2,r0
+	bl __em_p256_m0_mulmod
+	pop {pc}
+	.size __em_p256_m0_sqrmod_many_and_mulmod, .-__em_p256_m0_sqrmod_many_and_mulmod
+
+
+// in: *r0 = value in/out
+// for modinv, call input a, then if a = A * R % p, then it calculates A^-1 * R % p = (a/R)^-1 * R % p = R^2 / a % p
+	.type __em_p256_m0_modinv, %function
+__em_p256_m0_modinv:
+	push {r0,lr}
+	//frame push {lr}
+	//frame address sp,8
+	
+	ldm r0,{r0-r7}
+	push {r0-r7}
+	//frame address sp,40
+	
+	// t = a^2*a
+	ldr r0,[sp,#32]
+	movs r1,#1
+	mov r2,sp
+	bl __em_p256_m0_sqrmod_many_and_mulmod
+	ldr r0,[sp,#32]
+	ldm r0,{r0-r7}
+	push {r0-r7}
+	//frame address sp,72
+	
+	// a4_2 = a2_0^(2^2)
+	
+	ldr r0,[sp,#64]
+	mov r1,r0
+	bl __em_p256_m0_sqrmod
+	ldr r0,[sp,#64]
+	mov r1,r0
+	bl __em_p256_m0_sqrmod
+	ldr r0,[sp,#64]
+	ldm r0,{r0-r7}
+	push {r0-r7}
+	//frame address sp,104
+	
+	// a4_0 = a4_2*a2_0
+	ldr r0,[sp,#96]
+	mov r1,sp
+	add r2,sp,#32
+	bl __em_p256_m0_mulmod
+	add r0,sp,#32
+	ldr r1,[sp,#96]
+	bl __em_p256_m0_copy32
+	
+	ldr r7,[sp,#96]
+	movs r4,#0
+0:
+	adr r2,__em_p256_m0_invtbl
+	ldrsb r0,[r2,r4]
+	adds r2,#1
+	ldrb r5,[r2,r4]
+	lsls r6,r0,#2
+	bpl 1f
+	sub sp,#32
+	//frame address sp,200 // not always correct
+	mov r0,sp
+	mov r1,r7
+	bl __em_p256_m0_copy32
+1:
+	mov r0,r7
+	uxtb r1,r6
+	mov r2,r5
+	add r2,sp
+	push {r4,r7}
+	//frame address sp,208 // not always correct
+	bl __em_p256_m0_sqrmod_many_and_mulmod
+	pop {r4,r7}
+	//frame address sp,200 // not always correct
+	adds r4,#2
+	cmp r4,#22
+	bne 0b
+
+	add sp,#6*32+4
+	//frame address sp,4
+	
+	pop {pc}
+	
+	.size __em_p256_m0_modinv, .-__em_p256_m0_modinv
+
+	.align 2
+__em_p256_m0_invtbl:
+	.byte ((8-4)>>2)
+	.byte 32
+	
+	.byte ((16-8)>>2)+128
+	.byte 0
+	
+	.byte (16>>2)+128
+	.byte 0
+	
+	.byte (32>>2)+128
+	.byte 5*32
+	
+	.byte (192-64)>>2
+	.byte 0
+	
+	.byte (224-192)>>2
+	.byte 0
+	
+	.byte (240-224)>>2
+	.byte 32
+	
+	.byte (248-240)>>2
+	.byte 64
+	
+	.byte (252-248)>>2
+	.byte 128
+	
+	.byte (256-252)>>2
+	.byte 96
+	
+	.byte 0
+	.byte 5*32
+	
 
             )"
         );
