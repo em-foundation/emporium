@@ -4,6 +4,7 @@ export const $U = $declare('MODULE')
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
 import * as Common from '@em.mcu/Common.em'
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 
@@ -18,7 +19,11 @@ export namespace em$meta {
 const IREF_MAX = 8
 const IREF_MIN = 3
 
+export type Handler = cb_t<[]>
+
 var osc_ready: volatile_t<bool_t>
+var osc_pending: bool_t
+var ready_handler: Handler = $null
 
 export function em$startup() {
     // Power_init
@@ -29,6 +34,13 @@ export function em$startup() {
 }
 
 export function disable() {
+    const key = GlobalInterrupts.disable()
+    osc_pending = false
+    ready_handler = $null
+    osc_ready = false
+    $R.CKMD.IMCLR.$$ = $R.CKMD_IMCLR_AMPSETTLED | $R.CKMD_IMCLR_LFCLKGOOD
+    $R.CKMD.ICLR.$$ = $R.CKMD_ICLR_AMPSETTLED | $R.CKMD_ICLR_LFCLKGOOD
+    IntrVec.NVIC_clear(e$`CPUIRQ3_IRQn`)
     // adjust amplitude
     const stat = $R.CKMD.AMPADCSTAT.$$
     const peak = (stat & $R.CKMD_AMPADCSTAT_PEAKRAW_M) >> $R.CKMD_AMPADCSTAT_PEAKRAW_S
@@ -39,9 +51,20 @@ export function disable() {
     setIrefTrim(<u32>(<i32>trim + adjust))
     $R.CKMD.HFXTCTL.$$ &= ~$R.CKMD_HFXTCTL_EN_M
     $R.CKMD.AMPADCCTL.$$ &= ~$R.CKMD_AMPADCCTL_SWOVR
+    GlobalInterrupts.restore(key)
 }
 
 export function enable() {
+    start($null)
+}
+
+// The long crystal settling interval completes through CPUIRQ3.
+// Only the hardware's initial bias sequence is polled here; never sleep in an ISR.
+export function start(handler: Handler) {
+    const key = GlobalInterrupts.disable()
+    osc_ready = false
+    osc_pending = true
+    ready_handler = handler
     // $['%%c+']
     // PowerCC23X0_startHFXT()
     $R.CKMD.LDOCTL.$$ =
@@ -60,7 +83,7 @@ export function enable() {
     $R.CKMD.HFXTCTL.$$ |= $R.CKMD_HFXTCTL_EN
     $R.CKMD.ICLR.$$ = $R.CKMD_ICLR_AMPSETTLED | $R.CKMD_ICLR_LFCLKGOOD
     $R.CKMD.IMSET.$$ = $R.CKMD_IMSET_AMPSETTLED | $R.CKMD_IMSET_LFCLKGOOD
-    osc_ready = false
+    GlobalInterrupts.restore(key)
 }
 
 function setIrefTrim(iref: u32) {
@@ -70,9 +93,21 @@ function setIrefTrim(iref: u32) {
 }
 
 export function waitReady() {
+    const level = Idle.getLevel()
     Idle.setLevel(1)
-    while (!osc_ready) Idle.exec()
-    Idle.setLevel(0)
+    while (true) {
+        const key = GlobalInterrupts.disable()
+        if (osc_ready) {
+            GlobalInterrupts.restore(key)
+            break
+        }
+        Idle.exec()
+        GlobalInterrupts.restore(key)
+    }
+    Idle.setLevel(level)
+}
+
+function finishReady() {
     // PowerCC23X0_oscillatorISR
     //while (($R.CKMD.RIS.$$ & $R.CKMD_RIS_AMPSETTLED) == 0) {}
     $R.CKMD.AMPADCCTL.$$ =
@@ -92,7 +127,12 @@ export function CPUIRQ3_isr$$() {
     const mis = $R.CKMD.MIS.$$
     $R.CKMD.ICLR.$$ = mis
     $R.CKMD.IMCLR.$$ = mis
-    osc_ready = (mis & $R.CKMD_MIS_AMPSETTLED) != 0
-    Common.BusyWait.wait(1); // TODO -- needed for SRAM execution
-
+    if (!osc_pending || (mis & $R.CKMD_MIS_AMPSETTLED) == 0) return
+    finishReady()
+    Common.BusyWait.wait(1); // retain the existing SRAM-execution settling margin
+    osc_pending = false
+    osc_ready = true
+    const h = ready_handler
+    ready_handler = $null
+    if (h != $null) h()
 }

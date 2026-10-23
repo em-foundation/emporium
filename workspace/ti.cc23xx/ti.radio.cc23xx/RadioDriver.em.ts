@@ -4,6 +4,7 @@ export const $U = $declare('MODULE', RadioDriverI)
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
 import * as Channel from '@em.link.ble/Channel.em'
+import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LRF from '@ti.radio.cc23xx/LRF.em'
@@ -38,7 +39,12 @@ export namespace em$meta {
 
 //>> ---- em$targ ---- <<//
 
-const TX_CHAIN_DELAY = 42
+const TX_CHAIN_DELAY = 47
+// Allow synthesizer/RX ramp-up before the controller's receive-ready target.
+// Conservative initial allowance; retain the controller's separate 50 us lead.
+const RX_RAMP_GUARD_US = 200
+const RX_SCHEDULE_MIN_US = 32
+const RX_SCHEDULE_MAX_US = 10000
 
 var cur_chan: u8
 var cur_params: $$<TL.Params>
@@ -46,42 +52,74 @@ var cur_rx_buf: TL.BufPtr
 var cur_state: volatile_t<State> = State.IDLE
 var pause_handler: RadioDriverI.Handler = $null
 var rx_end_time: u32
-var rx_timeout = false
+var rx_timeout: volatile_t<bool_t> = false
 var tx_chained = false
 var tx_start = 0
+var enable_notify: bool_t
 
 export function disable() {
-    $['%%d:'](3)
-    Idle.setLevel(0)
+    const key = GlobalInterrupts.disable()
     setState(State.IDLE)
+    enable_notify = false
+    pause_handler = $null
+    tx_chained = false
+    Rtc.disableAux()
+    IntrVec.NVIC_disable(e$`LRFD_IRQ0_IRQn`)
+    $R.LRFDDBELL.IMASK0.$$ = 0
+    $R.LRFDDBELL.ICLR0.$$ = 0xffff_ffff
+    IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     RfCtrl.disable()
     RfXtal.disable()
+    Idle.setLevel(0)
+    GlobalInterrupts.restore(key)
 }
 
+// Legacy foreground entry point. The controller uses startEnable(), never this wait.
 export function enable() {
-    $['%%d:'](0)
+    beginEnable(false)
+    waitReady()
+}
+
+function beginEnable(notify: bool_t) {
+    const key = GlobalInterrupts.disable()
     cur_params = Registry.getParams()
-    if (cur_params.$$.radio_phy != TL.Phy.BLE_1M) {
-        printf`*** bad phy\n`()
+    if (cur_params.$$.radio_phy != TL.Phy.BLE_1M
+        || cur_params.$$.ble_rx_encrypted || cur_params.$$.ble_tx_encrypted) {
+        printf`TI RadioDriver supports nonsecure BLE_1M only\n`()
+        fail()
     }
-    const acc_adr = cur_params.$$.ble_acc_adr
-    const crc_init = cur_params.$$.ble_crc_init
+    enable_notify = notify
+    Idle.setLevel(1) // retain radio RAM/clocks until disable(), including crystal startup
     if (cur_state == State.IDLE) {
         setState(State.SETUP)
-        RfXtal.enable()
+        RfXtal.start($cb(hfReadyHandler))
         RfCtrl.enableClocks()
         RfPatch.loadAll()
-        RfXtal.waitReady() // latest possible sync point
-        RfRegs.setup()
-        RfTrim.apply()
+        // CPUIRQ3 cannot enter the ready callback until this setup is complete.
+    } else {
+        configureProfile()
         setState(State.READY)
+        if (notify && handler != $null) handler()
     }
-    // cur_phy
+    GlobalInterrupts.restore(key)
+}
+
+function hfReadyHandler() {
+    if (cur_state != State.SETUP) return
+    RfRegs.setup()
+    RfTrim.apply()
+    configureProfile()
+    setState(State.READY)
+    if (enable_notify && handler != $null) handler()
+}
+
+function configureProfile() {
+    const acc_adr = cur_params.$$.ble_acc_adr
+    const crc_init = cur_params.$$.ble_crc_init
     $reg32[$R.LRFDRFE_BASE + $R.LRFDRFE_O_RSSI] = 127
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD] = <u16>(($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD) & 0x0FFF) >> 2
     $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = acc_adr != 0 ? acc_adr : 0x8E89_BED6
     $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_CRCINITL] = (crc_init != 0 ? crc_init : 0x555555) << 8
-    Idle.setLevel(1)
 }
 
 export function getRxBuf(): TL.BufPtr {
@@ -102,17 +140,17 @@ export function pause(usecs: u32, handler: RadioDriverI.Handler) {
 }
 
 export function startEnable() {
-    enable()
-    if (handler != $null) handler()
+    beginEnable(true)
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
-    $['%%d:'](2)
+    const key = GlobalInterrupts.disable()
     setState(State.RX)
     cur_rx_buf = buf
     cur_chan = chan
     RfCtrl.enableImages()
     rx_timeout = false
+    rx_end_time = 0
     const whiten_init = chan | 0x40
     let op = 0
     // cur_phy
@@ -141,6 +179,8 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     $R.LRFDMDM.DEMC1BE1.$$ = demc1be1
     op = $R.PBE_GENERIC_REGDEF_API_OP_RX
     RfFreq.program(Channel.getFrequency(chan))
+    $R.LRFDDBELL.ICLR0.$$ = 0xffff_ffff
+    IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     $R.LRFDDBELL.IMASK0.$$ =
         LRF.EventOpDone |
         LRF.EventOpError |
@@ -150,28 +190,40 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         LRF.EventRxEmpty |
         LRF.EventRxBufFull |
         LRF.EventRxOk |
-        LRF.EventSystim1
+        (timeout > 0 ? LRF.EventSystim1 : 0)
     // $R.LRFDDBELL.IMASK0.$$ = LRF.EventOpDone | LRF.EventOpError | LRF.EventRxOk | LRF.EventSystim1
     IntrVec.NVIC_enable(e$`LRFD_IRQ0_IRQn`)
     while ($reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX] == 0) { }
-    $R.SYSTIM.CH2CC.$$ = $R.SYSTIM.TIME250N.$$
+    // RTC and SYSTIM have different epochs. Translate only the remaining
+    // interval, with signed subtraction to handle wrapping microsecond time.
+    const now_us = nowTimeUs()
+    const now_ticks = $R.SYSTIM.TIME250N.$$
+    let rx_start_ticks = now_ticks
+    if (cur_params.$$.ble_acc_adr != 0 && cur_params.$$.ble_rx_start_valid) {
+        const remaining = <i32>(cur_params.$$.ble_rx_start_us - now_us) - RX_RAMP_GUARD_US
+        if (remaining >= RX_SCHEDULE_MIN_US && remaining <= RX_SCHEDULE_MAX_US) {
+            rx_start_ticks = now_ticks + (<u32>remaining * 4)
+        }
+    }
+    // PBE waits for this hardware trigger; the CPU need not busy-wait.
+    $R.SYSTIM.CH2CC.$$ = rx_start_ticks
     if (timeout > 0) {
         $R.LRFDDBELL.ICLR0.$$ = $R.LRFDDBELL_ICLR0_SYSTIM1_M
-        $R.SYSTIM.CH3CC.$$ = $R.SYSTIM.TIME250N.$$ + (<u32>timeout * 4000)
+        $R.SYSTIM.CH3CC.$$ = rx_start_ticks + (<u32>timeout * 4000)
     }
 
     $R.LRFDPBE.API.$$ = op
 
-    if (chan < 37) {
-    }
+    GlobalInterrupts.restore(key)
 
 }
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
-    $['%%d:'](1)
+    const key = GlobalInterrupts.disable()
     setState(State.TX)
     cur_chan = chan
-    RfFifo.writePkt(buf)
+
+    RfFifo.writePkt(buf, cur_params.$$.ble_acc_adr != 0)
     RfPower.program(cur_params.$$.radio_power)
     RfCtrl.enableImages()
     let op = 0
@@ -204,11 +256,18 @@ export function startTx(buf: TL.BufFrame, chan: u8) {
     $R.SYSTIM.CH2CC.$$ = tx_chained ? tx_start : $R.SYSTIM.TIME250N.$$
     $R.LRFDPBE.API.$$ = op
     tx_chained = false
+    GlobalInterrupts.restore(key)
 }
 
 export function waitReady() {
-    while (cur_state != State.READY) {
+    while (true) {
+        const key = GlobalInterrupts.disable()
+        if (cur_state == State.READY) {
+            GlobalInterrupts.restore(key)
+            break
+        }
         Idle.exec()
+        GlobalInterrupts.restore(key)
     }
 }
 
@@ -218,7 +277,7 @@ export function LRFD_IRQ0_isr$$() {
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     switch (cur_state) {
         case State.RX: {
-            if ((mis & LRF.EventSystim1) != 0) {
+            if ((mis & LRF.EventSystim1) != 0 && (mis & LRF.EventRxOk) == 0) {
                 rx_timeout = true
                 break
             }
@@ -237,7 +296,10 @@ export function LRFD_IRQ0_isr$$() {
             }
             rx_end_time = nowTimeUs()
             tx_start = $R.SYSTIM.TIME250N.$$ + (TX_CHAIN_DELAY * 4)
-            RfFifo.readPkt(cur_rx_buf)
+            if (RfFifo.readPkt(cur_rx_buf, cur_params.$$.ble_acc_adr != 0) == 0) {
+                cur_rx_buf = $null
+                break
+            }
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
@@ -269,6 +331,7 @@ export function LRFD_IRQ0_isr$$() {
             return
         }
     }
+    $R.LRFDDBELL.IMASK0.$$ = 0
     setState(State.READY)
     if (handler != $null) handler()
 }

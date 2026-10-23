@@ -18,6 +18,7 @@ import * as Idle from '@ti.mcu.cc23xx/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@ti.mcu.cc23xx/Mcu.em'
 import * as OneShot from '@ti.mcu.cc23xx/OneShotGpt3.em'
+import * as OneShotN from '@em.hal/OneShotN.em'
 import * as Poller from '@em.mcu/Poller.em'
 import * as RadioDriver from '@ti.radio.cc23xx/RadioDriver.em'
 import * as Rtc from '@ti.mcu.cc23xx/Rtc.em'
@@ -100,7 +101,7 @@ export function em$configure(): void {
     FlashCS.pin_num.$$val = brd.pins.extFlashCS
     FlashPICO.pin_num.$$val = brd.pins.extFlashPICO
     FlashPOCI.pin_num.$$val = brd.pins.extFlashPOCI
-    Poller.OneShot.$$dlg = OneShot
+    Poller.OneShot.$$dlg = OneShotN // FIX: busy-wait polling supports LED wink from ISR context, as on Nordic
     SysLed.Pin.$$dlg = SysLedPin
     SysLedPin.pin_num.$$val = brd.pins.sysLed
     Uptimer.Rtc.$$dlg = Rtc
