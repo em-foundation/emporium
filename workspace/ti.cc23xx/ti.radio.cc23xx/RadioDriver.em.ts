@@ -26,6 +26,11 @@ enum State {
     IDLE, SETUP, READY, RX, TX, CS, CW
 }
 
+// TEMP diagnostic: immediate RX while checking reception during foreground ECDH.
+export const scheduled_rx = $config<bool_t>(false)
+// TEMP isolation test: retain powered radio between completed events.
+export const retain_radio = $config<bool_t>(false)
+
 const handler = $config<RadioDriverI.Handler>()
 
 export namespace em$meta {
@@ -43,7 +48,9 @@ const TX_CHAIN_DELAY = 47
 // Allow synthesizer/RX ramp-up before the controller's receive-ready target.
 // Conservative initial allowance; retain the controller's separate 50 us lead.
 const RX_RAMP_GUARD_US = 200
-const RX_SCHEDULE_MIN_US = 32
+// TI RCL_Scheduler uses a 50 us future trigger for start-now commands.
+const RX_IMMEDIATE_LEAD_US = 50
+const RX_SCHEDULE_MIN_US = RX_IMMEDIATE_LEAD_US
 const RX_SCHEDULE_MAX_US = 10000
 
 var cur_chan: u8
@@ -59,6 +66,7 @@ var enable_notify: bool_t
 
 export function disable() {
     const key = GlobalInterrupts.disable()
+    const can_retain = retain_radio && cur_state != State.IDLE && cur_state != State.SETUP
     setState(State.IDLE)
     enable_notify = false
     pause_handler = $null
@@ -68,8 +76,20 @@ export function disable() {
     $R.LRFDDBELL.IMASK0.$$ = 0
     $R.LRFDDBELL.ICLR0.$$ = 0xffff_ffff
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
+    if (can_retain) {
+        // Leave clocks/crystal and radio configuration alive. startRx/startTx
+        // still initialize the engines and program the next channel.
+        setState(State.READY)
+        $['%%c-']
+        $['%%d-']
+        Idle.setLevel(1) // prevent standby from undoing the diagnostic retention
+        GlobalInterrupts.restore(key)
+        return
+    }
     RfCtrl.disable()
     RfXtal.disable()
+    $['%%c-']
+    $['%%d-']
     Idle.setLevel(0)
     GlobalInterrupts.restore(key)
 }
@@ -94,6 +114,7 @@ function beginEnable(notify: bool_t) {
         setState(State.SETUP)
         RfXtal.start($cb(hfReadyHandler))
         RfCtrl.enableClocks()
+        RfCtrl.resetBlocks()
         RfPatch.loadAll()
         // CPUIRQ3 cannot enter the ready callback until this setup is complete.
     } else {
@@ -107,6 +128,10 @@ function beginEnable(notify: bool_t) {
 function hfReadyHandler() {
     if (cur_state != State.SETUP) return
     RfRegs.setup()
+    // Each enable starts a fresh receive operation. Standby used to hide
+    // retained FIFO state; reset explicitly while PBE is still stopped.
+    // Preserve the profile's RX auto-deallocation configuration.
+    $R.LRFDPBE.FCMD.$$ = $R.LRFDPBE_FCMD_DATA_RXFIFO_RESET >> $R.LRFDPBE_FCMD_DATA_S
     RfTrim.apply()
     configureProfile()
     setState(State.READY)
@@ -198,8 +223,9 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     // interval, with signed subtraction to handle wrapping microsecond time.
     const now_us = nowTimeUs()
     const now_ticks = $R.SYSTIM.TIME250N.$$
-    let rx_start_ticks = now_ticks
-    if (cur_params.$$.ble_acc_adr != 0 && cur_params.$$.ble_rx_start_valid) {
+    // Submit the RX command before its start trigger can fire.
+    let rx_start_ticks = now_ticks + (RX_IMMEDIATE_LEAD_US * 4)
+    if (scheduled_rx && cur_params.$$.ble_acc_adr != 0 && cur_params.$$.ble_rx_start_valid) {
         const remaining = <i32>(cur_params.$$.ble_rx_start_us - now_us) - RX_RAMP_GUARD_US
         if (remaining >= RX_SCHEDULE_MIN_US && remaining <= RX_SCHEDULE_MAX_US) {
             rx_start_ticks = now_ticks + (<u32>remaining * 4)
@@ -212,6 +238,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.SYSTIM.CH3CC.$$ = rx_start_ticks + (<u32>timeout * 4000)
     }
 
+    $['%%c+'] // TEMP: RX submitted through receive/timeout interrupt
     $R.LRFDPBE.API.$$ = op
 
     GlobalInterrupts.restore(key)
@@ -220,6 +247,7 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
 
 export function startTx(buf: TL.BufFrame, chan: u8) {
     const key = GlobalInterrupts.disable()
+    $['%%d+'] // TEMP: TX preparation through completion interrupt
     setState(State.TX)
     cur_chan = chan
 
@@ -278,6 +306,7 @@ export function LRFD_IRQ0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             if ((mis & LRF.EventSystim1) != 0 && (mis & LRF.EventRxOk) == 0) {
+                $['%%c-']
                 rx_timeout = true
                 break
             }
@@ -296,6 +325,7 @@ export function LRFD_IRQ0_isr$$() {
             }
             rx_end_time = nowTimeUs()
             tx_start = $R.SYSTIM.TIME250N.$$ + (TX_CHAIN_DELAY * 4)
+            $['%%c-']
             if (RfFifo.readPkt(cur_rx_buf, cur_params.$$.ble_acc_adr != 0) == 0) {
                 cur_rx_buf = $null
                 break
@@ -321,6 +351,7 @@ export function LRFD_IRQ0_isr$$() {
             if ((mis & LRF.EventOpDone) == 0) {
                 return
             }
+            $['%%d-']
             if (cur_params.$$.ble_exch_buf != $null) {
                 startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
                 return

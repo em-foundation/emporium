@@ -66,7 +66,8 @@ export function writePkt(buf: TL.BufFrame, connected: bool_t) {
     prepareTX()
     const sz = <u8>(buf.$len - (connected ? 1 : 0))
     let word = <u32>(0x02030000 | (sz + 4))
-    let addr = <u32>($R.LRFD_BUFRAM_BASE + ($R.LRFDPBE.FCFG1.$$ << 2))
+    const fifo_base = <u32>($R.LRFD_BUFRAM_BASE + ($R.LRFDPBE.FCFG1.$$ << 2))
+    let addr = fifo_base
     $reg32[addr] = word
     // printf`[%08x] = %08x\n`(addr, word)
     addr += 4
@@ -95,7 +96,9 @@ export function writePkt(buf: TL.BufFrame, connected: bool_t) {
         $reg32[addr] = word
         addr += 4
     }
-    writeFifoPtr(addr, ($R.LRFDPBE_BASE + $R.LRFDPBE_O_TXFWP))
+    // TXFWP is a byte offset within the FIFO, not a buffer-RAM address.
+    // prepareTX() reset the FIFO pointers, so this packet starts at offset zero.
+    writeFifoPtr(addr - fifo_base, ($R.LRFDPBE_BASE + $R.LRFDPBE_O_TXFWP))
 
 }
 

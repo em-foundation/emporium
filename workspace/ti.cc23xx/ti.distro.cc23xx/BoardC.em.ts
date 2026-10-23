@@ -1,6 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
+import * as Aes128Ecb from '@ti.mcu.cc23xx/Aes128Ecb.em'
 import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
@@ -77,6 +78,7 @@ export function em$configure(): void {
     AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
     BusyWait.scalar.$$val = 6
+    Common.Aes128.$$dlg = Aes128Ecb
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart0
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts

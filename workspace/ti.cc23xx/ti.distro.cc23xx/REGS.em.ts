@@ -14,6 +14,451 @@ export const __FPU_PRESENT: any = '0x0000U'
 export const __VTOR_PRESENT: any = '0x0001U'
 export const __NVIC_PRIO_BITS: any = '0x0002U'
 
+// -------- AES TYPE -------- //
+
+export interface AES_t {
+    DESC: $Reg // offset 0x00000000U
+    TRG: $Reg // offset 0x00000010U
+    ABORT: $Reg // offset 0x00000014U
+    CLR: $Reg // offset 0x00000018U
+    STA: $Reg // offset 0x0000001CU
+    DMA: $Reg // offset 0x00000020U
+    DMACHA: $Reg // offset 0x00000024U
+    DMACHB: $Reg // offset 0x00000028U
+    AUTOCFG: $Reg // offset 0x0000002CU
+    KEY0: $Reg // offset 0x00000050U
+    KEY1: $Reg // offset 0x00000054U
+    KEY2: $Reg // offset 0x00000058U
+    KEY3: $Reg // offset 0x0000005CU
+    TXT0: $Reg // offset 0x00000070U
+    TXT1: $Reg // offset 0x00000074U
+    TXT2: $Reg // offset 0x00000078U
+    TXT3: $Reg // offset 0x0000007CU
+    TXTX0: $Reg // offset 0x00000080U
+    TXTX1: $Reg // offset 0x00000084U
+    TXTX2: $Reg // offset 0x00000088U
+    TXTX3: $Reg // offset 0x0000008CU
+    BUF0: $Reg // offset 0x00000090U
+    BUF1: $Reg // offset 0x00000094U
+    BUF2: $Reg // offset 0x00000098U
+    BUF3: $Reg // offset 0x0000009CU
+    TXTXBUF0: $Reg // offset 0x000000A0U
+    TXTXBUF1: $Reg // offset 0x000000A4U
+    TXTXBUF2: $Reg // offset 0x000000A8U
+    TXTXBUF3: $Reg // offset 0x000000ACU
+    IMASK: $Reg // offset 0x00000104U
+    RIS: $Reg // offset 0x00000108U
+    MIS: $Reg // offset 0x0000010CU
+    ISET: $Reg // offset 0x00000110U
+    ICLR: $Reg // offset 0x00000114U
+    IMSET: $Reg // offset 0x00000118U
+    IMCLR: $Reg // offset 0x0000011CU
+}
+export const AES_O_DESC: any = '0x00000000U'
+export const AES_O_TRG: any = '0x00000010U'
+export const AES_O_ABORT: any = '0x00000014U'
+export const AES_O_CLR: any = '0x00000018U'
+export const AES_O_STA: any = '0x0000001CU'
+export const AES_O_DMA: any = '0x00000020U'
+export const AES_O_DMACHA: any = '0x00000024U'
+export const AES_O_DMACHB: any = '0x00000028U'
+export const AES_O_AUTOCFG: any = '0x0000002CU'
+export const AES_O_KEY0: any = '0x00000050U'
+export const AES_O_KEY1: any = '0x00000054U'
+export const AES_O_KEY2: any = '0x00000058U'
+export const AES_O_KEY3: any = '0x0000005CU'
+export const AES_O_TXT0: any = '0x00000070U'
+export const AES_O_TXT1: any = '0x00000074U'
+export const AES_O_TXT2: any = '0x00000078U'
+export const AES_O_TXT3: any = '0x0000007CU'
+export const AES_O_TXTX0: any = '0x00000080U'
+export const AES_O_TXTX1: any = '0x00000084U'
+export const AES_O_TXTX2: any = '0x00000088U'
+export const AES_O_TXTX3: any = '0x0000008CU'
+export const AES_O_BUF0: any = '0x00000090U'
+export const AES_O_BUF1: any = '0x00000094U'
+export const AES_O_BUF2: any = '0x00000098U'
+export const AES_O_BUF3: any = '0x0000009CU'
+export const AES_O_TXTXBUF0: any = '0x000000A0U'
+export const AES_O_TXTXBUF1: any = '0x000000A4U'
+export const AES_O_TXTXBUF2: any = '0x000000A8U'
+export const AES_O_TXTXBUF3: any = '0x000000ACU'
+export const AES_O_IMASK: any = '0x00000104U'
+export const AES_O_RIS: any = '0x00000108U'
+export const AES_O_MIS: any = '0x0000010CU'
+export const AES_O_ISET: any = '0x00000110U'
+export const AES_O_ICLR: any = '0x00000114U'
+export const AES_O_IMSET: any = '0x00000118U'
+export const AES_O_IMCLR: any = '0x0000011CU'
+export const AES_DESC_MODID_W: any = '16U'
+export const AES_DESC_MODID_M: any = '0xFFFF0000U'
+export const AES_DESC_MODID_S: any = '16U'
+export const AES_DESC_STDIPOFF_W: any = '4U'
+export const AES_DESC_STDIPOFF_M: any = '0x0000F000U'
+export const AES_DESC_STDIPOFF_S: any = '12U'
+export const AES_DESC_INSTIDX_W: any = '4U'
+export const AES_DESC_INSTIDX_M: any = '0x00000F00U'
+export const AES_DESC_INSTIDX_S: any = '8U'
+export const AES_DESC_MAJREV_W: any = '4U'
+export const AES_DESC_MAJREV_M: any = '0x000000F0U'
+export const AES_DESC_MAJREV_S: any = '4U'
+export const AES_DESC_MINREV_W: any = '4U'
+export const AES_DESC_MINREV_M: any = '0x0000000FU'
+export const AES_DESC_MINREV_S: any = '0U'
+export const AES_TRG_DMACHA: any = '0x00000008U'
+export const AES_TRG_DMACHA_M: any = '0x00000008U'
+export const AES_TRG_DMACHA_S: any = '3U'
+export const AES_TRG_DMACHA_SET: any = '0x00000008U'
+export const AES_TRG_DMACHA_NOEFF: any = '0x00000000U'
+export const AES_TRG_DMACHB: any = '0x00000004U'
+export const AES_TRG_DMACHB_M: any = '0x00000004U'
+export const AES_TRG_DMACHB_S: any = '2U'
+export const AES_TRG_DMACHB_SET: any = '0x00000004U'
+export const AES_TRG_DMACHB_NOEFF: any = '0x00000000U'
+export const AES_TRG_AESOP_W: any = '2U'
+export const AES_TRG_AESOP_M: any = '0x00000003U'
+export const AES_TRG_AESOP_S: any = '0U'
+export const AES_TRG_AESOP_TXTXBUF: any = '0x00000003U'
+export const AES_TRG_AESOP_BUF: any = '0x00000002U'
+export const AES_TRG_AESOP_TXT: any = '0x00000001U'
+export const AES_ABORT_ABORTAES: any = '0x00000001U'
+export const AES_ABORT_ABORTAES_M: any = '0x00000001U'
+export const AES_ABORT_ABORTAES_S: any = '0U'
+export const AES_ABORT_ABORTAES_SET: any = '0x00000001U'
+export const AES_ABORT_ABORTAES_NOEFF: any = '0x00000000U'
+export const AES_CLR_TXT: any = '0x00000002U'
+export const AES_CLR_TXT_M: any = '0x00000002U'
+export const AES_CLR_TXT_S: any = '1U'
+export const AES_CLR_TXT_CLR: any = '0x00000002U'
+export const AES_CLR_TXT_NOEFF: any = '0x00000000U'
+export const AES_CLR_BUF: any = '0x00000001U'
+export const AES_CLR_BUF_M: any = '0x00000001U'
+export const AES_CLR_BUF_S: any = '0U'
+export const AES_CLR_BUF_CLR: any = '0x00000001U'
+export const AES_CLR_BUF_NOEFF: any = '0x00000000U'
+export const AES_STA_BUFSTA: any = '0x00000002U'
+export const AES_STA_BUFSTA_M: any = '0x00000002U'
+export const AES_STA_BUFSTA_S: any = '1U'
+export const AES_STA_BUFSTA_FULL: any = '0x00000002U'
+export const AES_STA_BUFSTA_EMPTY: any = '0x00000000U'
+export const AES_STA_STATE: any = '0x00000001U'
+export const AES_STA_STATE_M: any = '0x00000001U'
+export const AES_STA_STATE_S: any = '0U'
+export const AES_STA_STATE_BUSY: any = '0x00000001U'
+export const AES_STA_STATE_IDLE: any = '0x00000000U'
+export const AES_DMA_DONEACT_W: any = '4U'
+export const AES_DMA_DONEACT_M: any = '0x000F0000U'
+export const AES_DMA_DONEACT_S: any = '16U'
+export const AES_DMA_DONEACT_CLR_TXT_ON_CHB: any = '0x00080000U'
+export const AES_DMA_DONEACT_CLR_TXT_ON_CHA: any = '0x00040000U'
+export const AES_DMA_DONEACT_GATE_TRGAES_ON_CHA_DEL: any = '0x00020000U'
+export const AES_DMA_DONEACT_GATE_TRGAES_ON_CHA: any = '0x00010000U'
+export const AES_DMA_DONEACT_DIS: any = '0x00000000U'
+export const AES_DMA_ADRCHB_W: any = '2U'
+export const AES_DMA_ADRCHB_M: any = '0x00003000U'
+export const AES_DMA_ADRCHB_S: any = '12U'
+export const AES_DMA_ADRCHB_TXTXBUF0: any = '0x00003000U'
+export const AES_DMA_ADRCHB_BUF0: any = '0x00002000U'
+export const AES_DMA_ADRCHB_TXTX0: any = '0x00001000U'
+export const AES_DMA_ADRCHB_TXT0: any = '0x00000000U'
+export const AES_DMA_TRGCHB_W: any = '3U'
+export const AES_DMA_TRGCHB_M: any = '0x00000700U'
+export const AES_DMA_TRGCHB_S: any = '8U'
+export const AES_DMA_TRGCHB_RDTXT3: any = '0x00000400U'
+export const AES_DMA_TRGCHB_WRTXT3: any = '0x00000300U'
+export const AES_DMA_TRGCHB_AESDONE: any = '0x00000200U'
+export const AES_DMA_TRGCHB_AESSTART: any = '0x00000100U'
+export const AES_DMA_TRGCHB_DIS: any = '0x00000000U'
+export const AES_DMA_ADRCHA_W: any = '2U'
+export const AES_DMA_ADRCHA_M: any = '0x00000030U'
+export const AES_DMA_ADRCHA_S: any = '4U'
+export const AES_DMA_ADRCHA_TXTXBUF0: any = '0x00000030U'
+export const AES_DMA_ADRCHA_BUF0: any = '0x00000020U'
+export const AES_DMA_ADRCHA_TXTX0: any = '0x00000010U'
+export const AES_DMA_ADRCHA_TXT0: any = '0x00000000U'
+export const AES_DMA_TRGCHA_W: any = '3U'
+export const AES_DMA_TRGCHA_M: any = '0x00000007U'
+export const AES_DMA_TRGCHA_S: any = '0U'
+export const AES_DMA_TRGCHA_RDTXT3: any = '0x00000004U'
+export const AES_DMA_TRGCHA_WRTXT3: any = '0x00000003U'
+export const AES_DMA_TRGCHA_AESDONE: any = '0x00000002U'
+export const AES_DMA_TRGCHA_AESSTART: any = '0x00000001U'
+export const AES_DMA_TRGCHA_DIS: any = '0x00000000U'
+export const AES_DMACHA_VAL_W: any = '32U'
+export const AES_DMACHA_VAL_M: any = '0xFFFFFFFFU'
+export const AES_DMACHA_VAL_S: any = '0U'
+export const AES_DMACHB_VAL_W: any = '32U'
+export const AES_DMACHB_VAL_M: any = '0xFFFFFFFFU'
+export const AES_DMACHB_VAL_S: any = '0U'
+export const AES_AUTOCFG_CHBDNCLR: any = '0x10000000U'
+export const AES_AUTOCFG_CHBDNCLR_M: any = '0x10000000U'
+export const AES_AUTOCFG_CHBDNCLR_S: any = '28U'
+export const AES_AUTOCFG_CHBDNCLR_EN: any = '0x10000000U'
+export const AES_AUTOCFG_CHBDNCLR_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_CHADNCLR: any = '0x08000000U'
+export const AES_AUTOCFG_CHADNCLR_M: any = '0x08000000U'
+export const AES_AUTOCFG_CHADNCLR_S: any = '27U'
+export const AES_AUTOCFG_CHADNCLR_EN: any = '0x08000000U'
+export const AES_AUTOCFG_CHADNCLR_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_CLRAESST: any = '0x04000000U'
+export const AES_AUTOCFG_CLRAESST_M: any = '0x04000000U'
+export const AES_AUTOCFG_CLRAESST_S: any = '26U'
+export const AES_AUTOCFG_CLRAESST_EN: any = '0x04000000U'
+export const AES_AUTOCFG_CLRAESST_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_CLRAESDN: any = '0x02000000U'
+export const AES_AUTOCFG_CLRAESDN_M: any = '0x02000000U'
+export const AES_AUTOCFG_CLRAESDN_S: any = '25U'
+export const AES_AUTOCFG_CLRAESDN_EN: any = '0x02000000U'
+export const AES_AUTOCFG_CLRAESDN_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_BUSHALT: any = '0x01000000U'
+export const AES_AUTOCFG_BUSHALT_M: any = '0x01000000U'
+export const AES_AUTOCFG_BUSHALT_S: any = '24U'
+export const AES_AUTOCFG_BUSHALT_EN: any = '0x01000000U'
+export const AES_AUTOCFG_BUSHALT_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_CTRSIZE_W: any = '3U'
+export const AES_AUTOCFG_CTRSIZE_M: any = '0x00380000U'
+export const AES_AUTOCFG_CTRSIZE_S: any = '19U'
+export const AES_AUTOCFG_CTRSIZE_CTR128: any = '0x00280000U'
+export const AES_AUTOCFG_CTRSIZE_CTR64: any = '0x00200000U'
+export const AES_AUTOCFG_CTRSIZE_CTR32: any = '0x00180000U'
+export const AES_AUTOCFG_CTRSIZE_CTR16: any = '0x00100000U'
+export const AES_AUTOCFG_CTRSIZE_CTR8: any = '0x00080000U'
+export const AES_AUTOCFG_CTRSIZE_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_CTRALIGN: any = '0x00040000U'
+export const AES_AUTOCFG_CTRALIGN_M: any = '0x00040000U'
+export const AES_AUTOCFG_CTRALIGN_S: any = '18U'
+export const AES_AUTOCFG_CTRALIGN_RIGHTALIGN: any = '0x00040000U'
+export const AES_AUTOCFG_CTRALIGN_LEFTALIGN: any = '0x00000000U'
+export const AES_AUTOCFG_CTRENDN: any = '0x00020000U'
+export const AES_AUTOCFG_CTRENDN_M: any = '0x00020000U'
+export const AES_AUTOCFG_CTRENDN_S: any = '17U'
+export const AES_AUTOCFG_CTRENDN_BIGENDIAN: any = '0x00020000U'
+export const AES_AUTOCFG_CTRENDN_LITTLEENDIAN: any = '0x00000000U'
+export const AES_AUTOCFG_TRGTXT_W: any = '2U'
+export const AES_AUTOCFG_TRGTXT_M: any = '0x00000300U'
+export const AES_AUTOCFG_TRGTXT_S: any = '8U'
+export const AES_AUTOCFG_TRGTXT_RDTXTXBUF3: any = '0x00000200U'
+export const AES_AUTOCFG_TRGTXT_RDTXT3: any = '0x00000100U'
+export const AES_AUTOCFG_TRGTXT_DIS: any = '0x00000000U'
+export const AES_AUTOCFG_AESSRC_W: any = '2U'
+export const AES_AUTOCFG_AESSRC_M: any = '0x00000030U'
+export const AES_AUTOCFG_AESSRC_S: any = '4U'
+export const AES_AUTOCFG_AESSRC_TXTXBUF: any = '0x00000030U'
+export const AES_AUTOCFG_AESSRC_BUF: any = '0x00000020U'
+export const AES_AUTOCFG_AESSRC_TXT: any = '0x00000010U'
+export const AES_AUTOCFG_TRGAES_W: any = '4U'
+export const AES_AUTOCFG_TRGAES_M: any = '0x0000000FU'
+export const AES_AUTOCFG_TRGAES_S: any = '0U'
+export const AES_AUTOCFG_TRGAES_WRBUF3S: any = '0x00000008U'
+export const AES_AUTOCFG_TRGAES_WRBUF3: any = '0x00000004U'
+export const AES_AUTOCFG_TRGAES_RDTXT3: any = '0x00000002U'
+export const AES_AUTOCFG_TRGAES_WRTXT3: any = '0x00000001U'
+export const AES_AUTOCFG_TRGAES_DIS: any = '0x00000000U'
+export const AES_KEY0_VAL_W: any = '32U'
+export const AES_KEY0_VAL_M: any = '0xFFFFFFFFU'
+export const AES_KEY0_VAL_S: any = '0U'
+export const AES_KEY1_VAL_W: any = '32U'
+export const AES_KEY1_VAL_M: any = '0xFFFFFFFFU'
+export const AES_KEY1_VAL_S: any = '0U'
+export const AES_KEY2_VAL_W: any = '32U'
+export const AES_KEY2_VAL_M: any = '0xFFFFFFFFU'
+export const AES_KEY2_VAL_S: any = '0U'
+export const AES_KEY3_VAL_W: any = '32U'
+export const AES_KEY3_VAL_M: any = '0xFFFFFFFFU'
+export const AES_KEY3_VAL_S: any = '0U'
+export const AES_TXT0_VAL_W: any = '32U'
+export const AES_TXT0_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXT0_VAL_S: any = '0U'
+export const AES_TXT1_VAL_W: any = '32U'
+export const AES_TXT1_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXT1_VAL_S: any = '0U'
+export const AES_TXT2_VAL_W: any = '32U'
+export const AES_TXT2_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXT2_VAL_S: any = '0U'
+export const AES_TXT3_VAL_W: any = '32U'
+export const AES_TXT3_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXT3_VAL_S: any = '0U'
+export const AES_TXTX0_VAL_W: any = '32U'
+export const AES_TXTX0_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTX0_VAL_S: any = '0U'
+export const AES_TXTX1_VAL_W: any = '32U'
+export const AES_TXTX1_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTX1_VAL_S: any = '0U'
+export const AES_TXTX2_VAL_W: any = '32U'
+export const AES_TXTX2_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTX2_VAL_S: any = '0U'
+export const AES_TXTX3_VAL_W: any = '32U'
+export const AES_TXTX3_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTX3_VAL_S: any = '0U'
+export const AES_BUF0_VAL_W: any = '32U'
+export const AES_BUF0_VAL_M: any = '0xFFFFFFFFU'
+export const AES_BUF0_VAL_S: any = '0U'
+export const AES_BUF1_VAL_W: any = '32U'
+export const AES_BUF1_VAL_M: any = '0xFFFFFFFFU'
+export const AES_BUF1_VAL_S: any = '0U'
+export const AES_BUF2_VAL_W: any = '32U'
+export const AES_BUF2_VAL_M: any = '0xFFFFFFFFU'
+export const AES_BUF2_VAL_S: any = '0U'
+export const AES_BUF3_VAL_W: any = '32U'
+export const AES_BUF3_VAL_M: any = '0xFFFFFFFFU'
+export const AES_BUF3_VAL_S: any = '0U'
+export const AES_TXTXBUF0_VAL_W: any = '32U'
+export const AES_TXTXBUF0_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTXBUF0_VAL_S: any = '0U'
+export const AES_TXTXBUF1_VAL_W: any = '32U'
+export const AES_TXTXBUF1_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTXBUF1_VAL_S: any = '0U'
+export const AES_TXTXBUF2_VAL_W: any = '32U'
+export const AES_TXTXBUF2_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTXBUF2_VAL_S: any = '0U'
+export const AES_TXTXBUF3_VAL_W: any = '32U'
+export const AES_TXTXBUF3_VAL_M: any = '0xFFFFFFFFU'
+export const AES_TXTXBUF3_VAL_S: any = '0U'
+export const AES_IMASK_CHBDONE: any = '0x00000008U'
+export const AES_IMASK_CHBDONE_M: any = '0x00000008U'
+export const AES_IMASK_CHBDONE_S: any = '3U'
+export const AES_IMASK_CHBDONE_EN: any = '0x00000008U'
+export const AES_IMASK_CHBDONE_DIS: any = '0x00000000U'
+export const AES_IMASK_CHADONE: any = '0x00000004U'
+export const AES_IMASK_CHADONE_M: any = '0x00000004U'
+export const AES_IMASK_CHADONE_S: any = '2U'
+export const AES_IMASK_CHADONE_EN: any = '0x00000004U'
+export const AES_IMASK_CHADONE_DIS: any = '0x00000000U'
+export const AES_IMASK_AESSTART: any = '0x00000002U'
+export const AES_IMASK_AESSTART_M: any = '0x00000002U'
+export const AES_IMASK_AESSTART_S: any = '1U'
+export const AES_IMASK_AESSTART_EN: any = '0x00000002U'
+export const AES_IMASK_AESSTART_DIS: any = '0x00000000U'
+export const AES_IMASK_AESDONE: any = '0x00000001U'
+export const AES_IMASK_AESDONE_M: any = '0x00000001U'
+export const AES_IMASK_AESDONE_S: any = '0U'
+export const AES_IMASK_AESDONE_EN: any = '0x00000001U'
+export const AES_IMASK_AESDONE_DIS: any = '0x00000000U'
+export const AES_RIS_CHBDONE: any = '0x00000008U'
+export const AES_RIS_CHBDONE_M: any = '0x00000008U'
+export const AES_RIS_CHBDONE_S: any = '3U'
+export const AES_RIS_CHBDONE_SET: any = '0x00000008U'
+export const AES_RIS_CHBDONE_CLR: any = '0x00000000U'
+export const AES_RIS_CHADONE: any = '0x00000004U'
+export const AES_RIS_CHADONE_M: any = '0x00000004U'
+export const AES_RIS_CHADONE_S: any = '2U'
+export const AES_RIS_CHADONE_SET: any = '0x00000004U'
+export const AES_RIS_CHADONE_CLR: any = '0x00000000U'
+export const AES_RIS_AESSTART: any = '0x00000002U'
+export const AES_RIS_AESSTART_M: any = '0x00000002U'
+export const AES_RIS_AESSTART_S: any = '1U'
+export const AES_RIS_AESSTART_SET: any = '0x00000002U'
+export const AES_RIS_AESSTART_CLR: any = '0x00000000U'
+export const AES_RIS_AESDONE: any = '0x00000001U'
+export const AES_RIS_AESDONE_M: any = '0x00000001U'
+export const AES_RIS_AESDONE_S: any = '0U'
+export const AES_RIS_AESDONE_SET: any = '0x00000001U'
+export const AES_RIS_AESDONE_CLR: any = '0x00000000U'
+export const AES_MIS_CHBDONE: any = '0x00000008U'
+export const AES_MIS_CHBDONE_M: any = '0x00000008U'
+export const AES_MIS_CHBDONE_S: any = '3U'
+export const AES_MIS_CHBDONE_SET: any = '0x00000008U'
+export const AES_MIS_CHBDONE_CLR: any = '0x00000000U'
+export const AES_MIS_CHADONE: any = '0x00000004U'
+export const AES_MIS_CHADONE_M: any = '0x00000004U'
+export const AES_MIS_CHADONE_S: any = '2U'
+export const AES_MIS_CHADONE_SET: any = '0x00000004U'
+export const AES_MIS_CHADONE_CLR: any = '0x00000000U'
+export const AES_MIS_AESSTART: any = '0x00000002U'
+export const AES_MIS_AESSTART_M: any = '0x00000002U'
+export const AES_MIS_AESSTART_S: any = '1U'
+export const AES_MIS_AESSTART_SET: any = '0x00000002U'
+export const AES_MIS_AESSTART_CLR: any = '0x00000000U'
+export const AES_MIS_AESDONE: any = '0x00000001U'
+export const AES_MIS_AESDONE_M: any = '0x00000001U'
+export const AES_MIS_AESDONE_S: any = '0U'
+export const AES_MIS_AESDONE_SET: any = '0x00000001U'
+export const AES_MIS_AESDONE_CLR: any = '0x00000000U'
+export const AES_ISET_CHBDONE: any = '0x00000008U'
+export const AES_ISET_CHBDONE_M: any = '0x00000008U'
+export const AES_ISET_CHBDONE_S: any = '3U'
+export const AES_ISET_CHBDONE_SET: any = '0x00000008U'
+export const AES_ISET_CHBDONE_NOEFF: any = '0x00000000U'
+export const AES_ISET_CHADONE: any = '0x00000004U'
+export const AES_ISET_CHADONE_M: any = '0x00000004U'
+export const AES_ISET_CHADONE_S: any = '2U'
+export const AES_ISET_CHADONE_SET: any = '0x00000004U'
+export const AES_ISET_CHADONE_NOEFF: any = '0x00000000U'
+export const AES_ISET_AESSTART: any = '0x00000002U'
+export const AES_ISET_AESSTART_M: any = '0x00000002U'
+export const AES_ISET_AESSTART_S: any = '1U'
+export const AES_ISET_AESSTART_SET: any = '0x00000002U'
+export const AES_ISET_AESSTART_NOEFF: any = '0x00000000U'
+export const AES_ISET_AESDONE: any = '0x00000001U'
+export const AES_ISET_AESDONE_M: any = '0x00000001U'
+export const AES_ISET_AESDONE_S: any = '0U'
+export const AES_ISET_AESDONE_SET: any = '0x00000001U'
+export const AES_ISET_AESDONE_NOEFF: any = '0x00000000U'
+export const AES_ICLR_CHBDONE: any = '0x00000008U'
+export const AES_ICLR_CHBDONE_M: any = '0x00000008U'
+export const AES_ICLR_CHBDONE_S: any = '3U'
+export const AES_ICLR_CHBDONE_CLR: any = '0x00000008U'
+export const AES_ICLR_CHBDONE_NOEFF: any = '0x00000000U'
+export const AES_ICLR_CHADONE: any = '0x00000004U'
+export const AES_ICLR_CHADONE_M: any = '0x00000004U'
+export const AES_ICLR_CHADONE_S: any = '2U'
+export const AES_ICLR_CHADONE_CLR: any = '0x00000004U'
+export const AES_ICLR_CHADONE_NOEFF: any = '0x00000000U'
+export const AES_ICLR_AESSTART: any = '0x00000002U'
+export const AES_ICLR_AESSTART_M: any = '0x00000002U'
+export const AES_ICLR_AESSTART_S: any = '1U'
+export const AES_ICLR_AESSTART_CLR: any = '0x00000002U'
+export const AES_ICLR_AESSTART_NOEFF: any = '0x00000000U'
+export const AES_ICLR_AESDONE: any = '0x00000001U'
+export const AES_ICLR_AESDONE_M: any = '0x00000001U'
+export const AES_ICLR_AESDONE_S: any = '0U'
+export const AES_ICLR_AESDONE_CLR: any = '0x00000001U'
+export const AES_ICLR_AESDONE_NOEFF: any = '0x00000000U'
+export const AES_IMSET_CHBDONE: any = '0x00000008U'
+export const AES_IMSET_CHBDONE_M: any = '0x00000008U'
+export const AES_IMSET_CHBDONE_S: any = '3U'
+export const AES_IMSET_CHBDONE_SET: any = '0x00000008U'
+export const AES_IMSET_CHBDONE_NOEFF: any = '0x00000000U'
+export const AES_IMSET_CHADONE: any = '0x00000004U'
+export const AES_IMSET_CHADONE_M: any = '0x00000004U'
+export const AES_IMSET_CHADONE_S: any = '2U'
+export const AES_IMSET_CHADONE_SET: any = '0x00000004U'
+export const AES_IMSET_CHADONE_NOEFF: any = '0x00000000U'
+export const AES_IMSET_AESSTART: any = '0x00000002U'
+export const AES_IMSET_AESSTART_M: any = '0x00000002U'
+export const AES_IMSET_AESSTART_S: any = '1U'
+export const AES_IMSET_AESSTART_SET: any = '0x00000002U'
+export const AES_IMSET_AESSTART_NOEFF: any = '0x00000000U'
+export const AES_IMSET_AESDONE: any = '0x00000001U'
+export const AES_IMSET_AESDONE_M: any = '0x00000001U'
+export const AES_IMSET_AESDONE_S: any = '0U'
+export const AES_IMSET_AESDONE_SET: any = '0x00000001U'
+export const AES_IMSET_AESDONE_NOEFF: any = '0x00000000U'
+export const AES_IMCLR_CHBDONE: any = '0x00000008U'
+export const AES_IMCLR_CHBDONE_M: any = '0x00000008U'
+export const AES_IMCLR_CHBDONE_S: any = '3U'
+export const AES_IMCLR_CHBDONE_CLR: any = '0x00000008U'
+export const AES_IMCLR_CHBDONE_NOEFF: any = '0x00000000U'
+export const AES_IMCLR_CHADONE: any = '0x00000004U'
+export const AES_IMCLR_CHADONE_M: any = '0x00000004U'
+export const AES_IMCLR_CHADONE_S: any = '2U'
+export const AES_IMCLR_CHADONE_CLR: any = '0x00000004U'
+export const AES_IMCLR_CHADONE_NOEFF: any = '0x00000000U'
+export const AES_IMCLR_AESSTART: any = '0x00000002U'
+export const AES_IMCLR_AESSTART_M: any = '0x00000002U'
+export const AES_IMCLR_AESSTART_S: any = '1U'
+export const AES_IMCLR_AESSTART_CLR: any = '0x00000002U'
+export const AES_IMCLR_AESSTART_NOEFF: any = '0x00000000U'
+export const AES_IMCLR_AESDONE: any = '0x00000001U'
+export const AES_IMCLR_AESDONE_M: any = '0x00000001U'
+export const AES_IMCLR_AESDONE_S: any = '0U'
+export const AES_IMCLR_AESDONE_CLR: any = '0x00000001U'
+export const AES_IMCLR_AESDONE_NOEFF: any = '0x00000000U'
+
+// -------- AES INSTANCES -------- //
+
+export const AES = { } as AES_t
+
 // -------- CKMD TYPE -------- //
 
 export interface CKMD_t {
@@ -1211,7 +1656,7 @@ export const CKMD_WDTLOCK_STAT_S: any = '0U'
 
 // -------- CKMD INSTANCES -------- //
 
-export const CKMD = {} as CKMD_t
+export const CKMD = { } as CKMD_t
 
 // -------- CLKCTL TYPE -------- //
 
@@ -1524,7 +1969,7 @@ export const CLKCTL_IDLECFG_MODE_LDO_ON: any = '0x00000000U'
 
 // -------- CLKCTL INSTANCES -------- //
 
-export const CLKCTL = {} as CLKCTL_t
+export const CLKCTL = { } as CLKCTL_t
 
 // -------- DMA TYPE -------- //
 
@@ -1644,7 +2089,7 @@ export const DMA_DONEMASK_CHNLS_S: any = '0U'
 
 // -------- DMA INSTANCES -------- //
 
-export const DMA = {} as DMA_t
+export const DMA = { } as DMA_t
 
 // -------- EVTSVT TYPE -------- //
 
@@ -3192,7 +3637,7 @@ export const EVTSVT_DMACH7SEL_PUBID_NONE: any = '0x00000000U'
 
 // -------- EVTSVT INSTANCES -------- //
 
-export const EVTSVT = {} as EVTSVT_t
+export const EVTSVT = { } as EVTSVT_t
 
 // -------- EVTULL TYPE -------- //
 
@@ -3285,7 +3730,7 @@ export const EVTULL_WKUPMASK_AON_PMU_COMB_S: any = '2U'
 
 // -------- EVTULL INSTANCES -------- //
 
-export const EVTULL = {} as EVTULL_t
+export const EVTULL = { } as EVTULL_t
 
 // -------- GPIO TYPE -------- //
 
@@ -6022,7 +6467,7 @@ export const GPIO_EVTCFG_DIOSEL_MINIMUM: any = '0x00000000U'
 
 // -------- GPIO INSTANCES -------- //
 
-export const GPIO = {} as GPIO_t
+export const GPIO = { } as GPIO_t
 
 // -------- IOC TYPE -------- //
 
@@ -7797,7 +8242,7 @@ export const IOC_DTBSTAT_VAL_S: any = '0U'
 
 // -------- IOC INSTANCES -------- //
 
-export const IOC = {} as IOC_t
+export const IOC = { } as IOC_t
 
 // -------- LGPT TYPE -------- //
 
@@ -8675,7 +9120,7 @@ export const LGPT_C2CCNC_VAL_S: any = '0U'
 
 // -------- LGPT INSTANCES -------- //
 
-export const LGPT3 = {} as LGPT_t
+export const LGPT3 = { } as LGPT_t
 export const LGPT3_CNTR_VAL_W: any = '24U'
 export const LGPT3_CNTR_VAL_M: any = '0x00FFFFFFU'
 export const LGPT3_DMARW_VAL_W: any = '24U'
@@ -11548,7 +11993,7 @@ export const LRFDDBELL_ICLR2_PBE0_NOEFF: any = '0x00000000U'
 
 // -------- LRFDDBELL INSTANCES -------- //
 
-export const LRFDDBELL = {} as LRFDDBELL_t
+export const LRFDDBELL = { } as LRFDDBELL_t
 
 // -------- LRFDMDM TYPE -------- //
 
@@ -14280,7 +14725,7 @@ export const LRFDMDM_SYNC3_SWB31C16_ALLZEROS: any = '0x00000000U'
 
 // -------- LRFDMDM INSTANCES -------- //
 
-export const LRFDMDM = {} as LRFDMDM_t
+export const LRFDMDM = { } as LRFDMDM_t
 
 // -------- LRFDMDM32 TYPE -------- //
 
@@ -16878,7 +17323,7 @@ export const LRFDMDM32_SYNC3_SWB31C16_ALLZEROS: any = '0x00000000U'
 
 // -------- LRFDMDM32 INSTANCES -------- //
 
-export const LRFDMDM32 = {} as LRFDMDM32_t
+export const LRFDMDM32 = { } as LRFDMDM32_t
 
 // -------- LRFDPBE TYPE -------- //
 
@@ -18558,7 +19003,7 @@ export const LRFDPBE_TXFHWR_DATA_ALLZEROS: any = '0x00000000U'
 
 // -------- LRFDPBE INSTANCES -------- //
 
-export const LRFDPBE = {} as LRFDPBE_t
+export const LRFDPBE = { } as LRFDPBE_t
 
 // -------- LRFDPBE32 TYPE -------- //
 
@@ -20061,7 +20506,7 @@ export const LRFDPBE32_TXFHWR_TXFHRD_TXFHRD_DATA_ALLZEROS: any = '0x00000000U'
 
 // -------- LRFDPBE32 INSTANCES -------- //
 
-export const LRFDPBE32 = {} as LRFDPBE32_t
+export const LRFDPBE32 = { } as LRFDPBE32_t
 
 // -------- LRFDRFE TYPE -------- //
 
@@ -22911,7 +23356,7 @@ export const LRFDRFE_MULTCFG_MODE_UNSIGNED: any = '0x00000000U'
 
 // -------- LRFDRFE INSTANCES -------- //
 
-export const LRFDRFE = {} as LRFDRFE_t
+export const LRFDRFE = { } as LRFDRFE_t
 
 // -------- LRFDRFE32 TYPE -------- //
 
@@ -25591,7 +26036,7 @@ export const LRFDRFE32_MULTCFG_MODE_UNSIGNED: any = '0x00000000U'
 
 // -------- LRFDRFE32 INSTANCES -------- //
 
-export const LRFDRFE32 = {} as LRFDRFE32_t
+export const LRFDRFE32 = { } as LRFDRFE32_t
 export const FLASH_MAIN_BASE: any = '0x00000000'
 export const ROM_BASE: any = '0x0F000000'
 export const SRAM_BASE: any = '0x20000000'
@@ -25978,7 +26423,7 @@ export const PMCTL_RETCFG2_VAL_S: any = '0U'
 
 // -------- PMCTL INSTANCES -------- //
 
-export const PMCTL = {} as PMCTL_t
+export const PMCTL = { } as PMCTL_t
 
 // -------- PMUD TYPE -------- //
 
@@ -26325,7 +26770,7 @@ export const PMUD_DCDCSTAT_LOAD_S: any = '0U'
 
 // -------- PMUD INSTANCES -------- //
 
-export const PMUD = {} as PMUD_t
+export const PMUD = { } as PMUD_t
 
 // -------- RTC TYPE -------- //
 
@@ -26506,7 +26951,7 @@ export const RTC_DTB_SEL_DIS: any = '0x00000000U'
 
 // -------- RTC INSTANCES -------- //
 
-export const RTC = {} as RTC_t
+export const RTC = { } as RTC_t
 
 // -------- SYSTIM TYPE -------- //
 
@@ -27031,7 +27476,7 @@ export const SYSTIM_CH4CCSR_VAL_S: any = '0U'
 
 // -------- SYSTIM INSTANCES -------- //
 
-export const SYSTIM = {} as SYSTIM_t
+export const SYSTIM = { } as SYSTIM_t
 
 // -------- UART TYPE -------- //
 
@@ -27362,7 +27807,7 @@ export const UART_DMACTL_RXDMAE_S: any = '0U'
 
 // -------- UART INSTANCES -------- //
 
-export const UART0 = {} as UART_t
+export const UART0 = { } as UART_t
 
 // -------- VIMS TYPE -------- //
 
@@ -27543,7 +27988,7 @@ export const VIMS_DTB_SEL_DIS: any = '0x00000000U'
 
 // -------- VIMS INSTANCES -------- //
 
-export const VIMS = {} as VIMS_t
+export const VIMS = { } as VIMS_t
 
 // -------- PBE_BLE5_RAM TYPE -------- //
 
@@ -29589,7 +30034,7 @@ export const PBE_BLE5_RAM_FL2ADRH15_VAL_S: any = '0U'
 
 // -------- PBE_BLE5_RAM INSTANCES -------- //
 
-export const PBE_BLE5_RAM = {} as PBE_BLE5_RAM_t
+export const PBE_BLE5_RAM = { } as PBE_BLE5_RAM_t
 
 // -------- PBE_BLE5_REGDEF TYPE -------- //
 
@@ -29695,7 +30140,7 @@ export const PBE_BLE5_REGDEF_API_OP_TXRAW: any = '0x00000009U'
 
 // -------- PBE_BLE5_REGDEF INSTANCES -------- //
 
-export const PBE_BLE5_REGDEF = {} as PBE_BLE5_REGDEF_t
+export const PBE_BLE5_REGDEF = { } as PBE_BLE5_REGDEF_t
 
 // -------- PBE_COMMON_RAM TYPE -------- //
 
@@ -29744,7 +30189,7 @@ export const PBE_COMMON_RAM_FIFOCMDADD_VAL_S: any = '0U'
 
 // -------- PBE_COMMON_RAM INSTANCES -------- //
 
-export const PBE_COMMON_RAM = {} as PBE_COMMON_RAM_t
+export const PBE_COMMON_RAM = { } as PBE_COMMON_RAM_t
 
 // -------- PBE_GENERIC_RAM TYPE -------- //
 
@@ -30416,7 +30861,7 @@ export const PBE_GENERIC_RAM_TMPADR4_VAL_S: any = '0U'
 
 // -------- PBE_GENERIC_RAM INSTANCES -------- //
 
-export const PBE_GENERIC_RAM = {} as PBE_GENERIC_RAM_t
+export const PBE_GENERIC_RAM = { } as PBE_GENERIC_RAM_t
 
 // -------- PBE_GENERIC_REGDEF TYPE -------- //
 
@@ -30519,7 +30964,7 @@ export const PBE_GENERIC_REGDEF_API_OP_STOPFS: any = '0x00000013U'
 
 // -------- PBE_GENERIC_REGDEF INSTANCES -------- //
 
-export const PBE_GENERIC_REGDEF = {} as PBE_GENERIC_REGDEF_t
+export const PBE_GENERIC_REGDEF = { } as PBE_GENERIC_REGDEF_t
 
 // -------- RFE_COMMON_RAM TYPE -------- //
 
@@ -30847,4 +31292,4 @@ export const RFE_COMMON_RAM_AGCINFO_MODE_GEN: any = '0x0001U'
 
 // -------- RFE_COMMON_RAM INSTANCES -------- //
 
-export const RFE_COMMON_RAM = {} as RFE_COMMON_RAM_t
+export const RFE_COMMON_RAM = { } as RFE_COMMON_RAM_t

@@ -14,6 +14,8 @@ import * as Mem from '@em.utils/Mem.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
+// TEMP diagnostic: exercise foreground CPU load without invoking P256.
+export const ecdh_busywait_test = $config<bool_t>(false)
 export const halt_after_key_exchange = $config<bool_t>(false)
 export const halt_after_dhkey_check = $config<bool_t>(false)
 
@@ -356,10 +358,13 @@ function storeLeU256(dst: TL.BufPtr, src: T.U256_Ref) {
 }
 
 function workFB(_: arg_t) {
+    $['%%a+'] // TEMP trace phase 1: work entry through f4/CMAC
     let sk = T.U256.$make()
     Mem.cpy(sk.$ptr(), LOCAL_SK.$ptr(), $sizeof<T.U256>())
     // fixed nonce for bring-up; replace with fresh random Nb
     if (!halt_after_key_exchange) f4(local_pk.x.$ptr(), peer_pk.x.$ptr(), LOCAL_NB.$ptr(), confirm_b.$ptr())
+    $['%%a-']
+    $['%%a+'] // TEMP trace phase 2: assemble and stage local public key
     // stage local public key
     const out = L2Cap.beginTx(PUBLIC_KEY_LEN)
     out[0] = 0x41
@@ -370,7 +375,17 @@ function workFB(_: arg_t) {
     storeLeU256(<TL.BufPtr>$$(out[5]), local_pk.x.$ptr())
     storeLeU256(<TL.BufPtr>$$(out[37]), local_pk.y.$ptr())
     stageTx()
+    $['%%a-']
+    $['%%a+'] // TEMP trace phase 3: ECDH
+    if (ecdh_busywait_test) {
+        Common.BusyWait.wait(100000)
+        $['%%a-']
+        // No ECDH result exists: leave secret_ready false. This run tests
+        // radio reception only and must not proceed with an invalid key.
+        return
+    }
     Crypto.P256.ecdh(sk, $$(peer_pk), secret.$ptr())
+    $['%%a-']
     const key = Common.GlobalInterrupts.disable()
     secret_ready = true
     if (halt_after_key_exchange) {

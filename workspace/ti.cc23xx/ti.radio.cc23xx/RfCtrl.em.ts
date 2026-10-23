@@ -8,17 +8,17 @@ export namespace em$meta { }
 //>> ---- em$targ ---- <<//
 
 export function disable() {
-    $R.LRFDPBE.PDREQ.$h = $R.LRFDPBE_PDREQ_TOPSMPDREQ_M
-    $R.LRFDPBE.ENABLE.$h = 0
-    $R.LRFDPBE.PDREQ.$h = 0
+    $R.LRFDPBE.PDREQ.$$ = $R.LRFDPBE_PDREQ_TOPSMPDREQ_M
+    $R.LRFDPBE.ENABLE.$$ = 0
+    $R.LRFDPBE.PDREQ.$$ = 0
     //
-    $R.LRFDMDM.PDREQ.$h = $R.LRFDMDM_PDREQ_TOPSMPDREQ_M
-    $R.LRFDMDM.ENABLE.$h = 0
-    $R.LRFDMDM.PDREQ.$h = 0
+    $R.LRFDMDM.PDREQ.$$ = $R.LRFDMDM_PDREQ_TOPSMPDREQ_M
+    $R.LRFDMDM.ENABLE.$$ = 0
+    $R.LRFDMDM.PDREQ.$$ = 0
     //
-    $R.LRFDRFE.PDREQ.$h = $R.LRFDRFE_PDREQ_TOPSMPDREQ_M
-    $R.LRFDRFE.ENABLE.$h = 0
-    $R.LRFDRFE.PDREQ.$h = 0
+    $R.LRFDRFE.PDREQ.$$ = $R.LRFDRFE_PDREQ_TOPSMPDREQ_M
+    $R.LRFDRFE.ENABLE.$$ = 0
+    $R.LRFDRFE.PDREQ.$$ = 0
     //
     $reg16[$R.LRFDRFE32_BASE + $R.LRFDRFE32_O_ATSTREF] &= <u16>~$R.LRFDRFE32_ATSTREF_BIAS_M
 }
@@ -38,6 +38,15 @@ export function enableClocks() {
         $R.LRFDDBELL_CLKCTL_MDM_M |
         $R.LRFDDBELL_CLKCTL_PBE_M
     $R.CKMD.HFXTCTL.$$ |= $R.CKMD_HFXTCTL_HPBUFEN
+}
+
+// Full-enable restart: standby clears these controls, but light pause does not.
+// Keep separate from enableImages(), which also runs during chained exchanges.
+export function resetBlocks() {
+    $R.LRFDRFE.DLOCTL1.$$ = 0 // disable retained DCO/loop controls first
+    $R.LRFDRFE.DLOCTL0.$$ = 0
+    $R.LRFDRFE.DCOOVR0.$$ = 0
+    $R.LRFDRFE.DCOOVR1.$$ = 0
 }
 
 export function enableImages() {

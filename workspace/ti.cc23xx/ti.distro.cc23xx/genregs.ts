@@ -11,8 +11,8 @@ const INST_MAP = new Map<string, [number]>([
 let meta = em.$outfile('REGS.em.ts')
 let targ = em.$outfile('REGS.hpp.txt')
 
-meta.addText(`import em from '@$$emscript'\n`)
-meta.addText(`export const $U = em.$declare('COMPOSITE')\n`)
+meta.addText(`import '@$$emscript'\n`)
+meta.addText(`export const $U = $declare('COMPOSITE')\n`)
 meta.addText(`
 export function em$generate() {
     let out = $outfile('ti.distro.cc23xx/REGS.hpp')

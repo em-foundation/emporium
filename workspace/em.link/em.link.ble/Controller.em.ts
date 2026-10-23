@@ -16,6 +16,7 @@ import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
+export const public_key_chaining = $config<bool_t>(true) // Optional same-event SMP public-key fragments.
 export const connection_trace = $config<bool_t>(false) // TEMP: DbgA low for connection-only energy integration
 export const hfclk_guard_us = $config<u32>(850) // Wake early enough for crystal settling and RX ramp-up.
 
@@ -349,7 +350,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     if (enc_tx_enabled) return chooseEncryptedTx()
     let tx = LnkTx.choose(lnk_req)
     tx[0] &= ~0x10
-    if (!enc_rx_enabled && lnk_req.$$.pduLen == 0
+    if (public_key_chaining && !enc_rx_enabled && lnk_req.$$.pduLen == 0
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
         && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT) {
         const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
