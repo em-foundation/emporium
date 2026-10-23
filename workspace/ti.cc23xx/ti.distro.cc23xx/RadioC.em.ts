@@ -14,5 +14,5 @@ export function em$configure() {
     // TEMP: wake 2.5 ms early to test whether reception is starting late.
     Controller.hfclk_guard_us.$$val = 800
     Controller.public_key_chaining.$$val = false
-    Smp.ecdh_busywait_test.$$val = true // TEMP: replace ECDH with foreground load
+    Smp.ecdh_busywait_test.$$val = false // run real ECDH with the TI crypto provider
 }
