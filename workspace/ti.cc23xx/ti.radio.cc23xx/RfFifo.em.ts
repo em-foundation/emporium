@@ -1,8 +1,6 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-
-
 import * as $R from '@ti.distro.cc23xx/REGS.em'
 
 import * as Common from '@em.mcu/Common.em'
@@ -28,25 +26,24 @@ export function prepareTX() {
     $R.LRFDPBE.FCFG0.$$ = txcfg
 }
 
-
-export function readPkt(buf: TL.BufPtr, connected: bool_t): u8 {
+export function readPkt(buf: TL.BufPtr, connected: bool_t, encrypted: bool_t): u8 {
     var word = $reg32[$R.LRFDRXF_BASE]
-    // printf`rxd[0] = %08x\n`(word)
+
     word = $reg32[$R.LRFDRXF_BASE]
-    // printf`rxd[1] = %08x\n`(word)
+
     buf[0] = <u8>(word >> 16)
     buf[1] = <u8>(word >> 24)
     const payload_len = connected ? buf[1] : (buf[1] & 0x3f)
     // Controller buffers are 40 bytes. Connected RAM has an extra S1 byte;
     // advertising/CONNECT_IND retain the original two-byte header.
-    if (payload_len > (connected ? 27 : 37)) return 0
+    if (payload_len > (connected ? (encrypted ? 31 : 27) : 37)) return 0
     const header_len: u8 = connected ? 3 : 2
     if (connected) buf[2] = 0
     const sz = <u8>(payload_len + header_len)
     var i: u8 = header_len
     while (i < sz) {
         word = $reg32[$R.LRFDRXF_BASE]
-        // printf`rxd[%d] = %08x\n`(i, word)
+
         buf[i] = <u8>(word >> 0)
         i += 1
         if (i >= sz) break
@@ -69,7 +66,7 @@ export function writePkt(buf: TL.BufFrame, connected: bool_t) {
     const fifo_base = <u32>($R.LRFD_BUFRAM_BASE + ($R.LRFDPBE.FCFG1.$$ << 2))
     let addr = fifo_base
     $reg32[addr] = word
-    // printf`[%08x] = %08x\n`(addr, word)
+
     addr += 4
     // First FIFO word contains the command and the two on-air header bytes.
     // Skip the connected packet's RAM-only S1 byte once, before the payload.
@@ -99,13 +96,12 @@ export function writePkt(buf: TL.BufFrame, connected: bool_t) {
     // TXFWP is a byte offset within the FIFO, not a buffer-RAM address.
     // prepareTX() reset the FIFO pointers, so this packet starts at offset zero.
     writeFifoPtr(addr - fifo_base, ($R.LRFDPBE_BASE + $R.LRFDPBE_O_TXFWP))
-
 }
 
 function writeFifoPtr(value: u32, regAddr: u32) {
     const key = Common.GlobalInterrupts.disable()
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD] = <u16>((($R.LRFDPBE_BASE + $R.LRFDPBE_O_FSTAT) & 0x0FFF) >> 2)
-    // delay
+    // Two reads allow the FIFO command routing change to take effect.
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD]
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD]
     $reg32[regAddr] = value

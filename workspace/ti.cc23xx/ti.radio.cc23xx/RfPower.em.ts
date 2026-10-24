@@ -17,14 +17,15 @@ function findEntry(level: i8): LRF.PowerTableEntry {
     return LRF.POWER_TABLE[LRF.POWER_TABLE.$len - 1]
 }
 
-export function program(level: i8) {
+// Calculate temperature-compensated power before the RX-to-TX turnaround.
+export function calculate(level: i8): u16 {
     const entry = findEntry(level)
     const tempCoeff = entry.tempCoeff
     let value = entry.value
     if (tempCoeff != 0) {
         let ib: i32 = value.bits.ib
         const temperature = RfTemp.getTemperature()
-        // em.print("coeff = {d}, ib = {d}, temp = {d}\n", .{ tempCoeff, ib, temperature })
+
         const IB_MIN: i32 = 1
         const IB_MAX = <i32>($R.LRFDRFE_PA0_IB_MAX >> $R.LRFDRFE_PA0_IB_S)
         ib += (temperature - RfTemp.TXPOWER_REFERENCE_TEMPERATURE) * <i16>tempCoeff / RfTemp.TXPOWER_TEMPERATURE_SCALING
@@ -33,5 +34,9 @@ export function program(level: i8) {
         } else if (ib > IB_MAX) ib = IB_MAX
         value.bits.ib = <u8>ib
     }
-    $R.LRFDRFE.SPARE5.$$ = value.raw
+    return value.raw
+}
+
+export function program(level: i8) {
+    $R.LRFDRFE.SPARE5.$$ = calculate(level)
 }
