@@ -212,6 +212,12 @@ export function reqGatt(att_pkt: $$<TB.AttPkt>, rsp_pkt: $$<TB.LnkHdr>): bool_t 
             const handle = Mem.scan16($$(data[0]))
             return readValue(handle, rsp_pkt)
         }
+        case TB.ATT_HANDLE_VALUE_IND: {
+            // Confirm receipt even when the indicated handle is unknown to us.
+            rsp_pkt.$$.init(TB.LL_START)
+            rsp_pkt.$$.addAttPkt(TB.ATT_HANDLE_VALUE_CFM, EMPTY_DATA.$frame(0))
+            return true
+        }
         case TB.ATT_WRITE_REQ: {
             const data = <TL.BufPtr>att_pkt.$$.dataPtr()
             const handle = Mem.scan16($$(data[0]))

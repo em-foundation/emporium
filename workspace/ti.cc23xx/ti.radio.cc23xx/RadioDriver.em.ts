@@ -47,6 +47,8 @@ const RX_IMMEDIATE_LEAD_US = 50
 var cur_chan: u8
 var cur_params: $$<TL.Params>
 var cur_rx_buf: TL.BufPtr
+var prepared_tx_buf: TL.BufPtr = $null
+var prepared_tx_len: u16
 var cur_state: volatile_t<State> = State.IDLE
 var pause_handler: RadioDriverI.Handler = $null
 class WirePacket extends $vector<u8> { $len = 34 }
@@ -63,6 +65,7 @@ var enable_notify: bool_t
 
 export function disable() {
     const key = GlobalInterrupts.disable()
+    prepared_tx_buf = $null
     setState(State.IDLE)
     enable_notify = false
     pause_handler = $null
@@ -207,7 +210,20 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     GlobalInterrupts.restore(key)
 }
 
-export function startTx(buf: TL.BufFrame, chan: u8) {
+// Retain packet storage only; RX may still own radio registers and FIFOs.
+export function prepareTx(buf: TL.BufFrame) {
+    prepared_tx_len = buf.$len
+    prepared_tx_buf = <TL.BufPtr>$$(buf[0])
+}
+
+export function startTx(chan: u8) {
+    if (prepared_tx_buf == $null) {
+        printf`RadioDriver TX not prepared FAIL\n`()
+        fail()
+        return
+    }
+    const buf = prepared_tx_buf.$frame(prepared_tx_len)
+    prepared_tx_buf = $null
     const key = GlobalInterrupts.disable()
 
     $['%%d+'] // TX preparation through completion
@@ -330,7 +346,8 @@ export function LRFD_IRQ0_isr$$() {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
                     tx_chained = true
-                    startTx(tx_buf, cur_chan)
+                    prepareTx(tx_buf)
+                    startTx(cur_chan)
                     return
                 }
             }

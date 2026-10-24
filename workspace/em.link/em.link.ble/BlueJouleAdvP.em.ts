@@ -51,7 +51,8 @@ function tickCb() {
     Link.RadioDriver.startEnable()
     Link.RadioDriver.waitReady()
     for (const chan of $range(37, 40)) {
-        Link.RadioDriver.startTx(adv_hdr.$$.frame(), chan)
+        Link.RadioDriver.prepareTx(adv_hdr.$$.frame())
+        Link.RadioDriver.startTx(chan)
         Link.RadioDriver.waitReady()
     }
     Link.RadioDriver.disable()

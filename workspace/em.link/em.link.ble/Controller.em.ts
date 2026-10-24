@@ -187,7 +187,8 @@ function controller() {
             }
             case State.ADV_READY: {
                 setState(State.ADV_SCAN)
-                Link.RadioDriver.startTx(adv_hdr.$$.frame(), pending_chan)
+                Link.RadioDriver.prepareTx(adv_hdr.$$.frame())
+                Link.RadioDriver.startTx(pending_chan)
                 return
             }
             case State.ADV_SCAN: {
@@ -328,7 +329,10 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         enc_tx_enabled = true
         return chooseEncryptedTx()
     }
-    if (fresh) {
+    // Do not accept another ATT/signaling request until its response slot is free.
+    // Its peer ACK was handled above, so that ACK can release the previous reply.
+    const accepted = fresh && canAcceptRequest()
+    if (accepted) {
         rx_next_sn ^= 0x08
         if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
             rx_ctr_lo += 1
@@ -344,12 +348,13 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         enc_rsp_acked = true
         encAckF.$$.post()
     }
-    if (fresh && lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) {
+    if (accepted && lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) {
         reqF.$$.post()
     }
     if (enc_tx_enabled) return chooseEncryptedTx()
     let tx = LnkTx.choose(lnk_req)
-    tx[0] &= ~0x10
+    // ACK only accepted packets; a busy response slot leaves NESN unchanged.
+    tx[0] = (tx[0] & ~0x14) | (rx_next_sn >> 1)
     if (public_key_chaining && !enc_rx_enabled && lnk_req.$$.pduLen == 0
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
         && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT) {
@@ -367,6 +372,16 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     }
     Smp.txChosen()
     return tx
+}
+
+function canAcceptRequest(): bool_t {
+    if (lnk_req.$$.isCtrl() || lnk_req.$$.pduLen < 4
+        || (lnk_req.$$.lnkFlags & 0x03) != TB.LL_START) return true
+    const cid = lnk_req.$$.l2capPkt().$$.cid16()
+    if (cid == TB.L2CAP_CID_ATT || cid == TB.L2CAP_CID_LE_SIG) {
+        return LnkTx.getAttPkt() != $null
+    }
+    return true
 }
 
 function exchProf(params: $$<TL.Params>) {

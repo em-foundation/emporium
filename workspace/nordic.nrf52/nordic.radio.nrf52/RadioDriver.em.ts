@@ -51,6 +51,8 @@ var cur_chan: u8
 var cur_params: $$<TL.Params>
 var cur_phy: TL.Phy
 var cur_rx_buf: TL.BufPtr
+var prepared_tx_buf: TL.BufPtr = $null
+var prepared_tx_len: u16
 var cur_state: volatile_t<State> = State.IDLE
 var pause_handler: RadioDriverI.Handler = $null
 var rx_crypto: bool_t = false
@@ -65,6 +67,7 @@ var tx_crypto: bool_t = false
 export function disable() {
     stopRxTrace()
     const key = GlobalInterrupts.disable()
+    prepared_tx_buf = $null
     const starting = cur_state == State.SETUP
     setState(State.IDLE)
     tifs_pending = false
@@ -209,7 +212,20 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     }
 }
 
-export function startTx(buf: TL.BufFrame, chan: u8) {
+// Retain packet storage only; RX may still own radio registers and FIFOs.
+export function prepareTx(buf: TL.BufFrame) {
+    prepared_tx_len = buf.$len
+    prepared_tx_buf = <TL.BufPtr>$$(buf[0])
+}
+
+export function startTx(chan: u8) {
+    if (prepared_tx_buf == $null) {
+        printf`RadioDriver TX not prepared FAIL\n`()
+        fail()
+        return
+    }
+    const buf = prepared_tx_buf.$frame(prepared_tx_len)
+    prepared_tx_buf = $null
     const automatic = tifs_pending && cur_state == State.RX
     setState(State.TX)
     cur_chan = chan
@@ -337,7 +353,8 @@ export function RADIO_isr$$() {
             if (cur_params.$$.ble_chain != $null) {
                 const tx_buf = cur_params.$$.ble_chain(cur_rx_buf)
                 if (tx_buf != $null) {
-                    startTx(tx_buf, cur_chan)
+                    prepareTx(tx_buf)
+                    startTx(cur_chan)
                     return
                 }
             }

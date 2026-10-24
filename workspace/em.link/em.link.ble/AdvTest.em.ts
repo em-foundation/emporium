@@ -40,7 +40,8 @@ function tickCb() {
     AppLed.wink(5)
     $['%%d+']
     RadioDriver.enable()
-    RadioDriver.startTx(adv_pkt.$frame(0), CHAN)
+    RadioDriver.prepareTx(adv_pkt.$frame(0))
+    RadioDriver.startTx(CHAN)
     RadioDriver.waitReady()
     $['%%d-']
     RadioDriver.disable()
