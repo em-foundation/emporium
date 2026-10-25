@@ -10,7 +10,7 @@ import * as TL from '@em.link/Types.em'
 // AES block operations use the TI hardware provider; packet processing is synchronous.
 const MAX_PLAIN = 27
 const MIC_LEN = 4
-// Native words contain the same byte order previously produced by Mem.scan32.
+// Session keys use four native little-endian words.
 class Key extends $vector<u32> { $len = 4 }
 class Iv extends $vector<u8> { $len = 8 }
 class BlockWords extends $vector<u32> { $len = 4 }
@@ -74,9 +74,7 @@ export function completeRx(): TL.BufPtr {
     const len = rx_buf[1]
     if (len == 0) return rx_buf
     if (len <= MIC_LEN || len > MAX_PLAIN + MIC_LEN) return $null
-    $['%%a+'] // DbgA: CCM decryption and MIC verification
     const valid = crypt(true, rx_buf, rx_plain.$ptr(), rx_lo, rx_hi, tx_direction ^ 1)
-    $['%%a-']
     if (!valid) return $null
     return rx_plain.$ptr()
 }
@@ -89,9 +87,7 @@ export function prepareTx(buf: TL.BufPtr, lo: u32, hi: u8): TL.BufPtr {
         return $null
     }
     if (buf[1] == 0) return buf
-    $['%%a+'] // DbgA: CCM encryption and MIC generation
     crypt(false, buf, tx_cipher.$ptr(), lo, hi, tx_direction)
-    $['%%a-']
     return tx_cipher.$ptr()
 }
 

@@ -17,7 +17,7 @@ import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
 export const public_key_chaining = $config<bool_t>(true) // Optional same-event SMP public-key fragments.
-export const connection_trace = $config<bool_t>(false) // TEMP: DbgA low for connection-only energy integration
+export const connection_trace = $config<bool_t>(false) // Optional connection-only energy marker.
 export const hfclk_guard_us = $config<u32>(850) // Wake early enough for crystal settling and RX ramp-up.
 
 const rx_adr = $config<Heap.Adr>()
@@ -127,7 +127,7 @@ export function start() {
     if (cur_state != State.IDLE) {
         return
     }
-    if (connection_trace) Debug.DbgA.set() // TEMP: advertising is outside the measured window
+    if (connection_trace) Debug.DbgA.set() // Exclude advertising.
     const params = Registry.getParams()
     adv_con_flag = params.$$.ble_connectible
     adv_count = params.$$.send_count
@@ -155,7 +155,7 @@ export function start() {
 
 export function stop() {
     radioOff()
-    if (connection_trace) Debug.DbgA.set() // TEMP: close window on explicit abort, after radio shutdown
+    if (connection_trace) Debug.DbgA.set() // End the connection marker after radio shutdown.
     setState(State.IDLE)
 }
 
@@ -391,7 +391,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
         && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT) {
         const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
-        const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs()) // FIX: read the clock only for a possible public-key chain
+        const remaining = <i32>(deadline - Link.RadioDriver.nowTimeUs())
         if (remaining > CHAIN_RESERVE_US) {
             tx[0] |= 0x10
             params.$$.ble_exch_buf = rx_buf
@@ -442,7 +442,7 @@ function radioHandler() {
 
 function notifyStatus(status: TL.ConnectionStatus) {
     if (connection_trace && (status == TL.ConnectionStatus.CLOSED
-        || status == TL.ConnectionStatus.HANGUP || status == TL.ConnectionStatus.TIMEOUT)) Debug.DbgA.set() // TEMP: radio is off; exclude subsequent advertising
+        || status == TL.ConnectionStatus.HANGUP || status == TL.ConnectionStatus.TIMEOUT)) Debug.DbgA.set() // Exclude subsequent advertising.
     pending_status = status
     statusF.$$.post()
 }
@@ -637,7 +637,7 @@ function scanChain(in_buf: TL.BufPtr): TL.BufFrame {
         return scan_rsp.$$.frame()
     }
     if (adv_req.$$.isConn()) {
-        if (connection_trace) Debug.DbgA.clear() // TEMP: accepted CONNECT_IND; include connection setup and all following exchanges
+        if (connection_trace) Debug.DbgA.clear() // Include connection setup and all following exchanges.
         setState(State.CONN)
     }
     return $null

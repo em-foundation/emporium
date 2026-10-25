@@ -44,38 +44,14 @@ export namespace em$meta {
 //>> ---- em$targ ---- <<//
 
 const TX_CHAIN_DELAY = 47
-// RX starts on a future SYSTIM trigger; TX replies use the calibrated delay above.
+// Calibrated RX-to-TX command delay; RX uses a separate SYSTIM trigger.
 const RX_IMMEDIATE_LEAD_US = 50
 
 var cur_chan: u8
 var cur_params: $$<TL.Params>
 var cur_rx_buf: TL.BufPtr
-var prepared_tx_buf: TL.BufPtr = $null
-var prepared_tx_len: u16
 var cur_state: volatile_t<State> = State.IDLE
 var pause_handler: RadioDriverI.Handler = $null
-class WirePacket extends $vector<u8> { $len = 34 }
-var tx_wire: WirePacket
-// Prepared ciphertext and the last transmitted ciphertext have independent ownership.
-var cipher_buf: TL.BufPtr = $null
-var cipher_source: TL.BufPtr = $null
-var cipher_lo: u32
-var cipher_hi: u8
-var wire_source: TL.BufPtr = $null
-var wire_lo: u32
-var wire_hi: u8
-class EmptyReply extends $vector<u8> { $len = 3 }
-var empty_reply: EmptyReply
-var reply_buf: TL.BufPtr = $null
-var reply_len: u16
-var last_tx_flags: u8
-var rx_ack_pending: bool_t
-var rx_ack_flags: u8
-var crypto_pending: volatile_t<bool_t> = false
-var crypto_lo: u32
-var crypto_hi: u8
-var rx_crypto: bool_t
-var tx_crypto: bool_t
 var prepared_tx_power: u16
 var prepared_tx_level: i8
 var rx_end_time: u32
@@ -86,7 +62,7 @@ var enable_notify: bool_t
 
 export function disable() {
     const key = GlobalInterrupts.disable()
-    prepared_tx_buf = $null
+    TxPacket_o.cancel()
     setState(State.IDLE)
     enable_notify = false
     pause_handler = $null
@@ -98,8 +74,6 @@ export function disable() {
     IntrVec.NVIC_clear(e$`LRFD_IRQ0_IRQn`)
     RfCtrl.disable()
     RfXtal.disable()
-    $['%%c-']
-    $['%%d-']
     Idle.setLevel(0)
     GlobalInterrupts.restore(key)
 }
@@ -180,21 +154,12 @@ export function startEnable() {
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     const key = GlobalInterrupts.disable()
-    if (crypto_pending) {
+    if (!CryptoExchange_o.configureRx()) {
         GlobalInterrupts.restore(key)
-        printf`TI RX buffer still owned by crypto FAIL\n`()
-        fail()
         return
     }
     setState(State.RX)
     cur_rx_buf = buf
-    rx_crypto = cur_params.$$.ble_rx_encrypted
-    if (!rx_crypto) {
-        reply_buf = $null
-        rx_ack_pending = false
-    }
-    // Registry profiles reset each event; retain pending ACKs across RX timeouts.
-    cur_params.$$.ble_rx_ack_pending = rx_ack_pending
     cur_chan = chan
     RfCtrl.enableImages()
     rx_timeout = false
@@ -237,88 +202,27 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
         $R.SYSTIM.CH3CC.$$ = rx_start_ticks + (<u32>timeout * 4000)
     }
 
-    $['%%c+'] // RX active until receive completion or timeout
     $R.LRFDPBE.API.$$ = $R.PBE_GENERIC_REGDEF_API_OP_RX
 
     GlobalInterrupts.restore(key)
 }
 
-// Prepare RAM only; RX may still own radio registers and FIFOs.
 export function prepareTx(buf: TL.BufFrame) {
-    // A fiber can prepare while a radio interrupt consumes the previous packet.
-    const key = GlobalInterrupts.disable()
-    const params = Registry.getParams()
-    const src = <TL.BufPtr>$$(buf[0])
-    if (!params.$$.ble_tx_encrypted) {
-        cipher_buf = $null
-        cipher_source = $null
-        wire_source = $null
-    } else if (src[1] != 0) {
-        const lo = params.$$.ble_tx_ctr_lo
-        const hi = params.$$.ble_tx_ctr_hi
-        if (!(wire_source == src && wire_lo == lo && wire_hi == hi)
-            && !(cipher_source == src && cipher_lo == lo && cipher_hi == hi)) {
-            cipher_buf = Link.PacketCrypto.prepareTx(src, lo, hi)
-            if (cipher_buf == $null) {
-                GlobalInterrupts.restore(key)
-                fail()
-                return
-            }
-            cipher_source = src
-            cipher_lo = lo
-            cipher_hi = hi
-        }
-    }
-    prepared_tx_len = buf.$len
-    prepared_tx_buf = src
-    GlobalInterrupts.restore(key)
-}
-
-// Copy only in RAM; FIFO loading stays in startTx().
-function stageCipher(buf: TL.BufFrame): bool_t {
-    const src = <TL.BufPtr>$$(buf[0])
-    const lo = cur_params.$$.ble_tx_ctr_lo
-    const hi = cur_params.$$.ble_tx_ctr_hi
-    if (!(wire_source == src && wire_lo == lo && wire_hi == hi)) {
-        if (cipher_source != src || cipher_lo != lo || cipher_hi != hi || cipher_buf == $null) {
-            printf`TI TX ciphertext not prepared FAIL\n`()
-            fail()
-            return false
-        }
-        Mem.cpy(tx_wire.$ptr(), cipher_buf, 3 + cipher_buf[1])
-        wire_source = src
-        wire_lo = lo
-        wire_hi = hi
-    }
-    // CCM excludes SN/NESN/MD from AAD.
-    tx_wire[0] = buf[0]
-    return true
+    TxPacket_o.prepare(buf)
 }
 
 export function startTx(chan: u8) {
-    if (prepared_tx_buf == $null) {
-        printf`RadioDriver TX not prepared FAIL\n`()
-        fail()
-        return
-    }
-    const buf = prepared_tx_buf.$frame(prepared_tx_len)
-    prepared_tx_buf = $null
+    const buf = TxPacket_o.take()
+    if (buf == $null) return
     const key = GlobalInterrupts.disable()
 
-    $['%%d+'] // TX preparation through completion
     setState(State.TX)
     cur_chan = chan
 
-    tx_crypto = cur_params.$$.ble_tx_encrypted
-    last_tx_flags = buf[0]
-    if (tx_crypto && buf[1] != 0) {
-        if (!stageCipher(buf)) {
-            GlobalInterrupts.restore(key)
-            return
-        }
-        RfFifo.writePkt(tx_wire.$frame(0, 3 + tx_wire[1]), true)
-    } else {
-        RfFifo.writePkt(buf, cur_params.$$.ble_acc_adr != 0)
+    CryptoExchange_o.beginTx(buf)
+    if (!TxPacket_o.write(buf)) {
+        GlobalInterrupts.restore(key)
+        return
     }
 
     if (cur_params.$$.radio_power == prepared_tx_level) {
@@ -332,7 +236,7 @@ export function startTx(chan: u8) {
 
     const whiten_init = chan | 0x40
     const keep_fs = cur_params.$$.ble_chain != $null
-    // FS_NOCAL remains clear: every TX uses synthesizer calibration.
+    // Calibrate the synthesizer for each TX.
     const cfg_val =
         (2 << $R.PBE_GENERIC_RAM_OPCFG_TXFCMD_S) |
         ((keep_fs ? 1 : 0) << $R.PBE_GENERIC_RAM_OPCFG_FS_KEEPON_S) |
@@ -373,18 +277,12 @@ export function LRFD_IRQ0_isr$$() {
     switch (cur_state) {
         case State.RX: {
             if ((mis & LRF.EventSystim1) != 0 && (mis & LRF.EventRxOk) == 0) {
-                $['%%c-']
                 rx_timeout = true
                 break
             }
             if ((mis & LRF.EventOpError) != 0) {
                 const cause = $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE]
-                printf`OpError: %04x\n`(cause)
-                printf`FCFG0: %08x\n`($R.LRFDPBE.FCFG0.$$)
-                printf`RXFRP: %08x\n`($R.LRFDPBE.RXFRP.$$)
-                printf`RXFWP: %08x\n`($R.LRFDPBE.RXFWP.$$)
-                printf`RXFREADABLE: %08x\n`($R.LRFDPBE.RXFREADABLE.$$)
-                printf`RXFWRITABLE: %08x\n`($R.LRFDPBE.RXFWRITABLE.$$)
+                printf`TI radio RX error=%04x FAIL\n`(cause)
                 fail()
             }
             if ((mis & LRF.EventRxOk) == 0) {
@@ -392,35 +290,13 @@ export function LRFD_IRQ0_isr$$() {
             }
             rx_end_time = nowTimeUs()
             tx_start = $R.SYSTIM.TIME250N.$$ + (TX_CHAIN_DELAY * 4)
-            $['%%c-']
-            if (RfFifo.readPkt(cur_rx_buf, cur_params.$$.ble_acc_adr != 0, rx_crypto) == 0) {
+            if (RfFifo.readPkt(cur_rx_buf, cur_params.$$.ble_acc_adr != 0, CryptoExchange_o.rxEncrypted()) == 0) {
                 cur_rx_buf = $null
                 break
             }
 
-            if (rx_crypto) {
-                crypto_lo = cur_params.$$.ble_rx_ctr_lo
-                crypto_hi = cur_params.$$.ble_rx_ctr_hi
-                // A retry uses the last authenticated RX counter.
-                if (cur_rx_buf[1] != 0 && (cur_rx_buf[0] & 0x08) != cur_params.$$.ble_rx_next_sn
-                    && (crypto_lo != 0 || crypto_hi != 0)) {
-                    if (crypto_lo == 0) crypto_hi -= 1
-                    crypto_lo -= 1
-                }
-                crypto_pending = true
-                rx_crypto = false
-                tx_chained = true
-                if (reply_buf != $null) {
-                    // This reply was selected and encrypted after the previous event.
-                    prepareTx(reply_buf.$frame(reply_len))
-                } else {
-                    // Do not acknowledge this RX until its MIC has been verified.
-                    // Reuse the old TX SN: the controller has not selected a new PDU.
-                    empty_reply[0] = 0x01 | (last_tx_flags & 0x08) | (cur_params.$$.ble_rx_next_sn >> 1)
-                    empty_reply[1] = 0
-                    empty_reply[2] = 0
-                    prepareTx(empty_reply.$frame())
-                }
+            if (CryptoExchange_o.rxEncrypted()) {
+                CryptoExchange_o.deferRx()
                 startTx(cur_chan)
                 return
             }
@@ -439,28 +315,14 @@ export function LRFD_IRQ0_isr$$() {
         case State.TX: {
             if ((mis & LRF.EventOpError) != 0) {
                 const cause = $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_ENDCAUSE]
-                $['%%>'](cause)
+                printf`TI radio TX error=%04x FAIL\n`(cause)
                 fail()
             }
 
             if ((mis & LRF.EventOpDone) == 0) {
                 return
             }
-            if (tx_crypto) {
-                Link.PacketCrypto.completeTx()
-                tx_crypto = false
-            }
-            $['%%d-']
-            if (rx_ack_pending && (last_tx_flags & 0x04) == rx_ack_flags) {
-                rx_ack_pending = false
-                cur_params.$$.ble_rx_ack_pending = false
-            }
-            if (crypto_pending) {
-                $R.LRFDDBELL.IMASK0.$$ = 0
-                setState(State.READY)
-                cryptoF.$$.post()
-                return
-            }
+            if (CryptoExchange_o.completeTx()) return
             if (cur_params.$$.ble_exch_buf != $null) {
                 startRx(cur_params.$$.ble_exch_buf, cur_chan, cur_params.$$.ble_exch_end_ms)
                 return
@@ -476,33 +338,8 @@ export function LRFD_IRQ0_isr$$() {
     if (handler != $null) handler()
 }
 
-// Own cur_rx_buf until authentication and the controller callback have finished.
-// The next event is scheduled only after this fiber releases that ownership.
 function cryptoFB(_: arg_t) {
-    if (!crypto_pending) return
-    Link.PacketCrypto.prepareRx(cur_rx_buf, crypto_lo, crypto_hi)
-    const plain = Link.PacketCrypto.completeRx()
-    if (plain == $null) {
-        printf`TI deferred RX MIC verification FAIL\n`()
-        fail()
-        return
-    }
-    if (plain != cur_rx_buf) Mem.cpy(cur_rx_buf, plain, 3 + plain[1])
-    reply_buf = $null
-    if (cur_params.$$.ble_chain != $null) {
-        const tx = cur_params.$$.ble_chain(cur_rx_buf)
-        if (tx != $null) {
-            prepareTx(tx)
-            if (cur_params.$$.ble_tx_encrypted && tx[1] != 0 && !stageCipher(tx)) return
-            reply_buf = <TL.BufPtr>$$(tx[0])
-            reply_len = tx.$len
-            rx_ack_flags = tx[0] & 0x04
-            rx_ack_pending = (last_tx_flags & 0x04) != rx_ack_flags
-            cur_params.$$.ble_rx_ack_pending = rx_ack_pending
-        }
-    }
-    crypto_pending = false
-    if (handler != $null) handler()
+    CryptoExchange_o.completeRx()
 }
 
 function rtcHandler() {
@@ -519,3 +356,234 @@ function setState(s: State) {
     cur_state = s
 }
 
+// ---- TX packet storage ----
+
+class WirePacket extends $vector<u8> { $len = 34 }
+
+// One prepared candidate plus retained ciphertext for link-layer retries.
+class TxPacket extends $struct {
+    prepared_buf: TL.BufPtr
+    prepared_len: u16
+    cipher_buf: TL.BufPtr
+    cipher_source: TL.BufPtr
+    cipher_lo: u32
+    cipher_hi: u8
+    wire_source: TL.BufPtr
+    wire_lo: u32
+    wire_hi: u8
+    wire: WirePacket
+}
+interface TxPacket {
+    prepare(this: TxPacket, buf: TL.BufFrame): void
+    stage(this: TxPacket, buf: TL.BufFrame): bool_t
+    take(this: TxPacket): TL.BufFrame
+    write(this: TxPacket, buf: TL.BufFrame): bool_t
+    cancel(this: TxPacket): void
+}
+
+var TxPacket_o: TxPacket
+
+TxPacket.prototype.prepare = function (this: TxPacket, buf: TL.BufFrame): void {
+    // A fiber can prepare while a radio interrupt consumes the previous packet.
+    const key = GlobalInterrupts.disable()
+    const params = Registry.getParams()
+    const src = <TL.BufPtr>$$(buf[0])
+    if (!params.$$.ble_tx_encrypted) {
+        this.cipher_buf = $null
+        this.cipher_source = $null
+        this.wire_source = $null
+    } else if (src[1] != 0) {
+        const lo = params.$$.ble_tx_ctr_lo
+        const hi = params.$$.ble_tx_ctr_hi
+        if (!(this.wire_source == src && this.wire_lo == lo && this.wire_hi == hi)
+            && !(this.cipher_source == src && this.cipher_lo == lo && this.cipher_hi == hi)) {
+            this.cipher_buf = Link.PacketCrypto.prepareTx(src, lo, hi)
+            if (this.cipher_buf == $null) {
+                GlobalInterrupts.restore(key)
+                fail()
+                return
+            }
+            this.cipher_source = src
+            this.cipher_lo = lo
+            this.cipher_hi = hi
+        }
+    }
+    this.prepared_len = buf.$len
+    this.prepared_buf = src
+    GlobalInterrupts.restore(key)
+}
+
+TxPacket.prototype.stage = function (this: TxPacket, buf: TL.BufFrame): bool_t {
+    const src = <TL.BufPtr>$$(buf[0])
+    const lo = cur_params.$$.ble_tx_ctr_lo
+    const hi = cur_params.$$.ble_tx_ctr_hi
+    if (!(this.wire_source == src && this.wire_lo == lo && this.wire_hi == hi)) {
+        if (this.cipher_source != src || this.cipher_lo != lo || this.cipher_hi != hi || this.cipher_buf == $null) {
+            printf`TI TX ciphertext not prepared FAIL\n`()
+            fail()
+            return false
+        }
+        Mem.cpy(this.wire.$ptr(), this.cipher_buf, 3 + this.cipher_buf[1])
+        this.wire_source = src
+        this.wire_lo = lo
+        this.wire_hi = hi
+    }
+    // CCM excludes SN/NESN/MD from AAD.
+    this.wire[0] = buf[0]
+    return true
+}
+
+TxPacket.prototype.take = function (this: TxPacket): TL.BufFrame {
+    if (this.prepared_buf == $null) {
+        printf`RadioDriver TX not prepared FAIL\n`()
+        fail()
+        return $null
+    }
+    const buf = this.prepared_buf.$frame(this.prepared_len)
+    this.prepared_buf = $null
+    return buf
+}
+
+TxPacket.prototype.cancel = function (this: TxPacket): void {
+    this.prepared_buf = $null
+}
+
+TxPacket.prototype.write = function (this: TxPacket, buf: TL.BufFrame): bool_t {
+    if (CryptoExchange_o.txEncrypted() && buf[1] != 0) {
+        if (!this.stage(buf)) return false
+        RfFifo.writePkt(this.wire.$frame(0, 3 + this.wire[1]), true)
+    } else {
+        RfFifo.writePkt(buf, cur_params.$$.ble_acc_adr != 0)
+    }
+    return true
+}
+
+// ---- Deferred crypto exchange ----
+
+class EmptyReply extends $vector<u8> { $len = 3 }
+
+class CryptoExchange extends $struct {
+    empty_reply: EmptyReply
+    reply_buf: TL.BufPtr
+    reply_len: u16
+    last_tx_flags: u8
+    ack_pending: bool_t
+    ack_flags: u8
+    pending: volatile_t<bool_t>
+    rx_lo: u32
+    rx_hi: u8
+    rx_encrypted: bool_t
+    tx_encrypted: bool_t
+}
+interface CryptoExchange {
+    configureRx(this: CryptoExchange): bool_t
+    rxEncrypted(this: CryptoExchange): bool_t
+    txEncrypted(this: CryptoExchange): bool_t
+    beginTx(this: CryptoExchange, buf: TL.BufFrame): void
+    deferRx(this: CryptoExchange): void
+    completeTx(this: CryptoExchange): bool_t
+    completeRx(this: CryptoExchange): void
+}
+
+var CryptoExchange_o: CryptoExchange
+
+CryptoExchange.prototype.configureRx = function (this: CryptoExchange): bool_t {
+    if (this.pending) {
+        printf`TI RX buffer still owned by crypto FAIL\n`()
+        fail()
+        return false
+    }
+    this.rx_encrypted = cur_params.$$.ble_rx_encrypted
+    if (!this.rx_encrypted) {
+        this.reply_buf = $null
+        this.ack_pending = false
+    }
+    // Profiles reset each event; pending ACKs must survive RX timeouts.
+    cur_params.$$.ble_rx_ack_pending = this.ack_pending
+    return true
+}
+
+CryptoExchange.prototype.rxEncrypted = function (this: CryptoExchange): bool_t {
+    return this.rx_encrypted
+}
+
+CryptoExchange.prototype.txEncrypted = function (this: CryptoExchange): bool_t {
+    return this.tx_encrypted
+}
+
+CryptoExchange.prototype.beginTx = function (this: CryptoExchange, buf: TL.BufFrame): void {
+    this.tx_encrypted = cur_params.$$.ble_tx_encrypted
+    this.last_tx_flags = buf[0]
+}
+
+CryptoExchange.prototype.deferRx = function (this: CryptoExchange): void {
+    this.rx_lo = cur_params.$$.ble_rx_ctr_lo
+    this.rx_hi = cur_params.$$.ble_rx_ctr_hi
+    // A retry uses the last authenticated RX counter.
+    if (cur_rx_buf[1] != 0 && (cur_rx_buf[0] & 0x08) != cur_params.$$.ble_rx_next_sn
+        && (this.rx_lo != 0 || this.rx_hi != 0)) {
+        if (this.rx_lo == 0) this.rx_hi -= 1
+        this.rx_lo -= 1
+    }
+    this.pending = true
+    this.rx_encrypted = false
+    tx_chained = true
+    if (this.reply_buf != $null) {
+        // This reply was selected and encrypted after the previous event.
+        prepareTx(this.reply_buf.$frame(this.reply_len))
+    } else {
+        // Do not acknowledge this RX until its MIC has been verified.
+        // Reuse the old TX SN: the controller has not selected a new PDU.
+        this.empty_reply[0] = 0x01 | (this.last_tx_flags & 0x08) | (cur_params.$$.ble_rx_next_sn >> 1)
+        this.empty_reply[1] = 0
+        this.empty_reply[2] = 0
+        prepareTx(this.empty_reply.$frame())
+    }
+}
+
+CryptoExchange.prototype.completeTx = function (this: CryptoExchange): bool_t {
+    if (this.tx_encrypted) {
+        Link.PacketCrypto.completeTx()
+        this.tx_encrypted = false
+    }
+    if (this.ack_pending && (this.last_tx_flags & 0x04) == this.ack_flags) {
+        this.ack_pending = false
+        cur_params.$$.ble_rx_ack_pending = false
+    }
+    if (this.pending) {
+        $R.LRFDDBELL.IMASK0.$$ = 0
+        setState(State.READY)
+        cryptoF.$$.post()
+        return true
+    }
+    return false
+}
+
+// Own cur_rx_buf until authentication and the controller callback have finished.
+// The next event is scheduled only after this fiber releases that ownership.
+CryptoExchange.prototype.completeRx = function (this: CryptoExchange): void {
+    if (!this.pending) return
+    Link.PacketCrypto.prepareRx(cur_rx_buf, this.rx_lo, this.rx_hi)
+    const plain = Link.PacketCrypto.completeRx()
+    if (plain == $null) {
+        printf`TI deferred RX MIC verification FAIL\n`()
+        fail()
+        return
+    }
+    if (plain != cur_rx_buf) Mem.cpy(cur_rx_buf, plain, 3 + plain[1])
+    this.reply_buf = $null
+    if (cur_params.$$.ble_chain != $null) {
+        const tx = cur_params.$$.ble_chain(cur_rx_buf)
+        if (tx != $null) {
+            prepareTx(tx)
+            if (cur_params.$$.ble_tx_encrypted && tx[1] != 0 && !TxPacket_o.stage(tx)) return
+            this.reply_buf = <TL.BufPtr>$$(tx[0])
+            this.reply_len = tx.$len
+            this.ack_flags = tx[0] & 0x04
+            this.ack_pending = (this.last_tx_flags & 0x04) != this.ack_flags
+            cur_params.$$.ble_rx_ack_pending = this.ack_pending
+        }
+    }
+    this.pending = false
+    if (handler != $null) handler()
+}
