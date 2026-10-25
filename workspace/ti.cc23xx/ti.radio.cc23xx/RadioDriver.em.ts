@@ -69,6 +69,8 @@ var empty_reply: EmptyReply
 var reply_buf: TL.BufPtr = $null
 var reply_len: u16
 var last_tx_flags: u8
+var rx_ack_pending: bool_t
+var rx_ack_flags: u8
 var crypto_pending: volatile_t<bool_t> = false
 var crypto_lo: u32
 var crypto_hi: u8
@@ -187,7 +189,12 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     setState(State.RX)
     cur_rx_buf = buf
     rx_crypto = cur_params.$$.ble_rx_encrypted
-    if (!rx_crypto) reply_buf = $null
+    if (!rx_crypto) {
+        reply_buf = $null
+        rx_ack_pending = false
+    }
+    // Registry profiles reset each event; retain pending ACKs across RX timeouts.
+    cur_params.$$.ble_rx_ack_pending = rx_ack_pending
     cur_chan = chan
     RfCtrl.enableImages()
     rx_timeout = false
@@ -444,6 +451,10 @@ export function LRFD_IRQ0_isr$$() {
                 tx_crypto = false
             }
             $['%%d-']
+            if (rx_ack_pending && (last_tx_flags & 0x04) == rx_ack_flags) {
+                rx_ack_pending = false
+                cur_params.$$.ble_rx_ack_pending = false
+            }
             if (crypto_pending) {
                 $R.LRFDDBELL.IMASK0.$$ = 0
                 setState(State.READY)
@@ -485,6 +496,9 @@ function cryptoFB(_: arg_t) {
             if (cur_params.$$.ble_tx_encrypted && tx[1] != 0 && !stageCipher(tx)) return
             reply_buf = <TL.BufPtr>$$(tx[0])
             reply_len = tx.$len
+            rx_ack_flags = tx[0] & 0x04
+            rx_ack_pending = (last_tx_flags & 0x04) != rx_ack_flags
+            cur_params.$$.ble_rx_ack_pending = rx_ack_pending
         }
     }
     crypto_pending = false

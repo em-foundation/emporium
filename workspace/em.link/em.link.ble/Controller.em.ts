@@ -99,6 +99,7 @@ var adv_mask: u8
 var adv_power: i8
 var cur_adv_mask: u8
 var cur_state: State = State.IDLE
+var close_after_ack: bool_t
 var null_pkt_cnt: u8
 var pending_chan: u8
 var pending_end_ms: u16
@@ -134,6 +135,7 @@ export function start() {
     adv_inter = params.$$.send_interval_ms
     adv_power = params.$$.radio_power
     cur_adv_mask = 0
+    close_after_ack = false
     null_pkt_cnt = 0
     Smp.reset()
     enc_rsp_pending = false
@@ -241,6 +243,11 @@ function controller() {
                 return
             }
             case State.CONN_PAUSE: {
+                if (close_after_ack && !Registry.getParams().$$.ble_rx_ack_pending) {
+                    close_after_ack = false
+                    setState(State.CLOSING)
+                    continue
+                }
                 radioOff()
                 const air_us = event_rx_air_us
                 if (air_us == 0) {
@@ -531,7 +538,12 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             break
         }
         case TB.LL_TERMINATE_IND: {
-            setState(State.CLOSING)
+            // A deferred driver must transmit the verified RX acknowledgement first.
+            if (Registry.getParams().$$.ble_rx_ack_pending) {
+                close_after_ack = true
+            } else {
+                setState(State.CLOSING)
+            }
             return false
         }
         case TB.LL_UNKNOWN_RSP: {

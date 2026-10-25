@@ -29,6 +29,8 @@ export class Params extends $struct {
     ble_enable: bool_t
     ble_exch_buf: BufPtr
     ble_exch_end_ms: u16
+    // Driver reports a verified RX whose link ACK has not yet been transmitted.
+    ble_rx_ack_pending: bool_t
     ble_rx_ctr_hi: u8
     ble_rx_ctr_lo: u32
     ble_rx_encrypted: bool_t
