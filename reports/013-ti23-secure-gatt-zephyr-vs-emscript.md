@@ -1,7 +1,8 @@
 # EMR 13 — TI23 Secure GATT: Zephyr versus EM•Script
 
-**Report date:** 2026-10-24  
-**Status:** Preliminary draft — web review  
+**Report date:** 2026-10-25  
+**Status:** Released — engineering results, point-in-time snapshot  
+**Repository snapshot:** EM•porium `dev` at [`4a7ca4e`](https://github.com/em-foundation/emporium/tree/4a7ca4e0963cbf6f503ba2db7b857fee64497610)  
 **Target:** Texas Instruments CC2340R5, Arm Cortex-M0+
 
 ## TLDR
