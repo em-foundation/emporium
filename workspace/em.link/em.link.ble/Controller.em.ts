@@ -40,6 +40,7 @@ export namespace em$meta {
         tx_adr.$$val = Heap.em$meta.alloc(40)
         L2Cap.em$meta.allocRx(Binder.em$meta.getRxBufSize())
         LnkTx.em$meta.bindAttBuf(tx_adr.$$val)
+        LnkTx.em$meta.bindReadyHandler($cb(preparePendingTx))
     }
 }
 
@@ -154,6 +155,30 @@ export function stop() {
     radioOff()
     if (connection_trace) Debug.DbgA.set() // TEMP: close window on explicit abort, after radio shutdown
     setState(State.IDLE)
+}
+
+// Prepare the queued candidate; the incoming peer ACK still determines final selection.
+function preparePendingTx() {
+    if (!enc_tx_enabled) return
+    const tx = LnkTx.pending()
+    if (tx == $null) return
+    let lo = tx_ctr_lo
+    let hi = tx_ctr_hi
+    // A queued reply follows any encrypted packet still awaiting acknowledgement.
+    if (enc_tx_pending) {
+        lo += 1
+        if (lo == 0) hi += 1
+        if (hi > 0x7f) {
+            printf`Controller TX packet counter exhausted FAIL\n`()
+            fail()
+            return
+        }
+    }
+    const params = Registry.getParams()
+    params.$$.ble_tx_encrypted = true
+    params.$$.ble_tx_ctr_lo = lo
+    params.$$.ble_tx_ctr_hi = hi
+    Link.RadioDriver.prepareTx(tx)
 }
 
 function chooseEncryptedTx(): TL.BufFrame {

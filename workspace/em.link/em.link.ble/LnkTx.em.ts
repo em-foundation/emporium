@@ -11,8 +11,12 @@ class CtrlRsp extends $struct {
 }
 
 const att_adr = $config<Heap.Adr>()
+const ready_handler = $config<TL.SendDoneFxn>()
 
 export namespace em$meta {
+    export function bindReadyHandler(h: TL.SendDoneFxn) {
+        ready_handler.$$val = h
+    }
     export function bindAttBuf(adr: Heap.Adr) {
         att_adr.$$val = adr
     }
@@ -72,6 +76,13 @@ export function getCtrlPkt(): $$<TB.LnkHdr> {
     return isCtrlFree() ? $$(ctrl_rsp.hdr) : $null
 }
 
+// Inspect the next queued reply without choosing it or changing retransmission state.
+export function pending(): TL.BufFrame {
+    if (ctrl_flag) return ctrl_rsp.hdr.frame()
+    if (att_flag) return att_rsp.$$.frame()
+    return $null
+}
+
 export function reset() {
     tx_kind = TxKind.NONE
     ctrl_flag = false
@@ -84,6 +95,7 @@ export function reset() {
 
 export function setAttReady() {
     att_flag = true
+    if (ready_handler != $null) ready_handler()
 }
 
 export function takeAttAck(): bool_t {
@@ -100,6 +112,7 @@ export function takeCtrlAck(): bool_t {
 
 export function setCtrlReady() {
     ctrl_flag = true
+    if (ready_handler != $null) ready_handler()
 }
 
 function getTxPkt(): $$<TB.LnkHdr> {
