@@ -39,6 +39,8 @@
 
 - [EMR 1 — BlueJoule-GATT v0 Definition](001-bluejoule-gatt-definition.md)
 - [EMR 4 — EM•Scope Measurement Workflow](004-emscope-measurement-workflow.md)
+- [EMR 7 — TI CC2340R5 SimpleLink, Zephyr, and EM•Script Results](007-ti-cc2340r5-results.md)
+- [EMR 8 — TI CC2340R5 Connection-Event Drilldown](008-ti-cc2340r5-connection-event-drilldown.md)
 - [EMR 10 — BlueJoule-GATT-Secure Definition](010-bluejoule-gatt-secure-definition.md)
 - [EMR 11 — nRF52 Secure GATT](011-nrf52-secure-gatt-zephyr-vs-emscript.md)
 - [EMR 12 — nRF54 Secure GATT](012-nrf54-secure-gatt-zephyr-vs-emscript.md)
@@ -291,11 +293,15 @@ Figures 3A and 3B show typical connection events before the sustained pairing co
 
 The events are selected from comparable positions in the transaction, with roughly comparable complexity. Their energy and duration illustrate ordinary event-level behavior alongside the more intensive computation regions shown in Figures 2A and 2B.
 
-Unless independently matched to packet contents, these selections should not be interpreted as identical packet exchanges or an average across all connection events.
+Unless independently matched to packet contents, these selections should not be interpreted as identical packet exchanges or an average across all connection events. An earlier packet-matched basic-GATT event comparison is documented separately in [EMR 8](008-ti-cc2340r5-connection-event-drilldown.md).
 
 ## 8. Basic GATT versus Secure GATT
 
 Earlier TI23 basic-GATT measurements provide context for the additional work introduced by pairing and encryption. The application transaction remains service discovery, a `Command` write, a `Status` read, and disconnect.
+
+[EMR 7](007-ti-cc2340r5-results.md) documents the earlier same-device basic-GATT comparison across TI SimpleLink, Zephyr, and EM•Script, including program footprints and required radio firmware patches. [EMR 8](008-ti-cc2340r5-connection-event-drilldown.md) examines a matched basic-GATT ATT Read Request event, showing the software-processing tail and a secondary SRAM-execution comparison.
+
+Those reports provide historical context. The basic-GATT numbers below come from the saved capture metadata identified in this section, rather than the older measurement sets quoted in those reports.
 
 ### Connection Energy
 
