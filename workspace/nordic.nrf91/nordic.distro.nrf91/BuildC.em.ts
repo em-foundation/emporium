@@ -99,6 +99,8 @@ export function em$generate() {
         lmem_sram: { orig: 0x00008000, len: 0x00006000 },
         cmem_sram: LinkerC.MEM_NULL,
     })
+    const use_sram = $property('em.build.BootFlash', false)
+    const tfm_image = use_sram ? 'tfm_s-cache-off.hex' : 'tfm_s.hex'
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
     let fpu = $property('em.build.FPU', '')
@@ -182,7 +184,7 @@ export function em$generate() {
         |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
         |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
         |-> $OBJDUMP -h $OUT/main.out
-        |-> $SREC ../nordic.nrf91/nordic.distro.nrf91/tfm_s.hex -Intel $OUT/main.out.hex -Intel -o $OUT/merged.hex -Intel
+        |-> $SREC ../nordic.nrf91/nordic.distro.nrf91/${tfm_image} -Intel $OUT/main.out.hex -Intel -o $OUT/merged.hex -Intel
     `)
     out.close()
     //
@@ -190,5 +192,8 @@ export function em$generate() {
     out = $outfile('load.sh', 0o755)
     const exec = `${tools}/segger-jlink/JLink${ext}`
     out.addText(`${exec} -CommandFile ../nordic.nrf91/nordic.distro.nrf91/jlink-cmds`)
+    out.close()
+    out = $outfile('debug.sh', 0o755)
+    out.addText(`${exec} -CommandFile ../nordic.nrf91/nordic.distro.nrf91/jlink-debug-cmds`)
     out.close()
 }

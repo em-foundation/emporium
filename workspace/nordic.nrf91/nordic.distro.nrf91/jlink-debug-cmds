@@ -1,0 +1,8 @@
+Device NRF9151_XXCA
+SelectInterface SWD
+Speed 4000
+Connect
+Halt
+Regs
+Mem32 0xE000ED04 1
+Mem32 0xE000ED28 6
