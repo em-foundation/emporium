@@ -1,7 +1,8 @@
 # EMR 14 — nRF91 Modem Host: Zephyr versus EM•Script
 
 **Report date:** 2026-10-26  
-**Status:** Draft — engineering results, point-in-time snapshot  
+**Status:** Released — engineering results, point-in-time snapshot  
+**Repository snapshot:** EM•porium `dev` at [`aaa1f35`](https://github.com/em-foundation/emporium/tree/aaa1f35160d22249eb0f997fc9d1743c3b306da8)  
 **Target:** Nordic nRF9151 DK, Arm Cortex-M33  
 **Measurement setup:** Joulescope JS220, nominal 3.7 V supply  
 
