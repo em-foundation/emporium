@@ -86,23 +86,23 @@ This is an outgoing UDP workload. The measurements establish host-side send oper
 
 The footprint comparison uses the build outputs for the measured configurations: Zephyr executing from flash and EM•Script executing from SRAM. All sizes below are bytes. Application-image figures exclude TF-M and Nordic’s closed modem firmware.
 
-| Application footprint | Zephyr | EM•Script |
-|---|---:|---:|
-| Code, constants, startup, and tables | 82,328 | 4,540 |
-| Complete stored application | 83,828 | 10,324 |
-| Modem shared memory | 17,768 | 5,736 |
+> | Application footprint | Zephyr | EM•Script |
+> |---|---:|---:|
+> | Code, constants, startup, and tables | 82,328 | 4,540 |
+> | Complete stored application | 83,828 | 10,324 |
+> | Modem shared memory | 17,768 | 5,736 |
 
 EM•Script uses approximately **18× less code-and-constant storage**. Counting initialized data as part of the stored application reduces that ratio to approximately **8×**. Both comparisons describe the complete application-side implementation rather than the modem-host library alone.
 
 ### EM•Script Image Breakdown
 
-| Component | Bytes |
-|---|---:|
-| SRAM-resident code | 3,936 |
-| SRAM-resident constants | 436 |
-| Flash bootstrap | 168 |
-| Initialized writable data | 5,784 |
-| Zero-initialized data (BSS) | 84 |
+> | Component | Bytes |
+> |---|---:|
+> | SRAM-resident code | 3,936 |
+> | SRAM-resident constants | 436 |
+> | Flash bootstrap | 168 |
+> | Initialized writable data | 5,784 |
+> | Zero-initialized data (BSS) | 84 |
 
 The stored application totals 10,324 bytes, including the flash bootstrap and the initial contents copied into SRAM. BSS requires runtime memory but no stored initialization bytes.
 
@@ -112,12 +112,12 @@ SRAM-resident code, constants, initialized data, and BSS total **10,240 bytes**,
 
 The specialized host reduces the transmit and receive buffers while preserving the required control structure and padding.
 
-| Shared-memory component | Zephyr | EM•Script |
-|---|---:|---:|
-| Control | 1,256 | 1,256 |
-| Transmit buffer and padding | 8,320 | 384 |
-| Receive buffer | 8,192 | 4,096 |
-| **Total** | **17,768** | **5,736** |
+> | Shared-memory component | Zephyr | EM•Script |
+> |---|---:|---:|
+> | Control | 1,256 | 1,256 |
+> | Transmit buffer and padding | 8,320 | 384 |
+> | Receive buffer | 8,192 | 4,096 |
+> | **Total** | **17,768** | **5,736** |
 
 This is approximately **68% less modem shared memory**. The EM•Script allocation is already included in its writable-data footprint; it is not an additional allocation.
 
@@ -127,10 +127,10 @@ For context, the linked portion of Nordic’s libmodem contributes **12,638 byte
 
 The send-event measurements use the same nRF9151 DK, a nominal 3.7 V supply, and a Joulescope JS220. Each capture contains four complete sends. The windows include modem activity through the return to sleep, excluding initial boot, network registration, and socket setup.
 
-| Mean across four sends | Zephyr | EM•Script |
-|---|---:|---:|
-| Event energy | 98.76 mJ | 93.34 mJ |
-| Event duration | 1.445 s | 1.407 s |
+> | Mean across four sends | Zephyr | EM•Script |
+> |---|---:|---:|
+> | Event energy | 98.76 mJ | 93.34 mJ |
+> | Event duration | 1.445 s | 1.407 s |
 
 Individual event energies range from **95.46 to 102.92 mJ** for Zephyr and **91.90 to 95.66 mJ** for EM•Script.
 
@@ -156,10 +156,10 @@ The waveforms show similar sequences of modem activity and a return to low sleep
 
 Between sends, the modem remains registered with the network in PSM while the application processor waits for its next periodic wakeup. The measured sleep consumption includes both cores and the circuitry supplied through the DK’s `VDD_nRF` measurement path.
 
-| Mean over settled inter-send sleep windows | Zephyr | EM•Script |
-|---|---:|---:|
-| Sleep current | 2.98 µA | 2.44 µA |
-| Sleep power | 11.01 µW | 9.02 µW |
+> | Mean over settled inter-send sleep windows | Zephyr | EM•Script |
+> |---|---:|---:|
+> | Sleep current | 2.98 µA | 2.44 µA |
+> | Sleep power | 11.01 µW | 9.02 µW |
 
 EM•Script’s measured sleep current is approximately **18% lower** than the Zephyr reference. These values average the settled intervals between sends, excluding 500 ms at each end.
 
