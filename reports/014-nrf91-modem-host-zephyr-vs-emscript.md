@@ -142,11 +142,11 @@ Figures 1A and 1B show the event closest to each implementation’s mean energy.
 
 ![Figure 1A — Zephyr representative UDP send and subsequent sleep](assets/014-fig1.png)
 
-*Figure 1A. Zephyr: the selected send consumes 100.241 mJ over 1.48970 s.*
+<p align="center"><strong>Figure 1A — Zephyr representative UDP send and subsequent sleep</strong><br>1.48970 s · 100.241 mJ</p>
 
 ![Figure 1B — EM•Script representative UDP send and subsequent sleep](assets/014-fig2.png)
 
-*Figure 1B. EM•Script: the selected send consumes 93.5624 mJ over 1.48677 s.*
+<p align="center"><strong>Figure 1B — EM•Script representative UDP send and subsequent sleep</strong><br>1.48677 s · 93.5624 mJ</p>
 
 The figure selections use manually placed markers. The table averages use activity-based boundaries applied consistently across all four events. Small differences in the placement of boundaries affect reported duration more than energy because the surrounding sleep power is low.
 
