@@ -588,6 +588,8 @@ function stopRxTrace() {
     $R.PPI.CHENCLR.$$ = PPI_RX_TRACE
     $R.RTC0.EVTENCLR.$$ = $R.RTC_EVTEN_COMPARE2_Msk
     $R.TIMER1.TASKS_STOP.$$ = 1
+    // nRF52832 anomaly 78: STOP alone can retain elevated idle current.
+    $R.TIMER1.TASKS_SHUTDOWN.$$ = 1
     rx_trace_active = false
     Idle.setLevel(rx_trace_pause_level)
 }
