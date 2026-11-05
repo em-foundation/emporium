@@ -1,0 +1,16 @@
+#ifndef __REGS_M
+#define __REGS_M
+
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"
+#include "../../em.core/em.arch.arm/inc/core_cm33.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"
+
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_clkctl.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_gpio.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_ioc.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_pmctl.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_types.h"
+
+#endif

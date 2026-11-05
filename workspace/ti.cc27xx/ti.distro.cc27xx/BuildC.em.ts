@@ -5,6 +5,7 @@ import * as ArmStartupC from '@em.arch.arm/StartupC.em'
 import * as IsrEmpty from '@em.arch.arm/IsrEmpty.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LinkerC from '@em.build.segger/LinkerC.em'
+import * as REGS from '@ti.distro.cc27xx/REGS.em'
 import * as StartupC from '@ti.distro.cc27xx/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
@@ -12,6 +13,7 @@ export function em$configure() {
     $using(ArmStartupC)
     $using(IntrVec)
     $using(LinkerC)
+    $using(REGS)
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrEmpty
@@ -32,10 +34,6 @@ export function em$generate() {
             { name: 'FLASH_SCFG', sect: '.scfg', desc: { orig: 0x4e040000, len: 0x400 } },
         ],
     )
-    let regs = $outfile('ti.distro.cc27xx/REGS.hpp')
-    regs.addText('#pragma once\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"\n#include "core_cm33.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_clkctl.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_gpio.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_ioc.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_pmctl.h"\n#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_types.h"\n')
-    regs.close()
-
     let opt = $property('em.build.Optimize', 'Oz')
     let tools = $property('em.build.ToolsHome', '')
     let libflav = opt == 'Oz' ? 'small' : 'balanced'
