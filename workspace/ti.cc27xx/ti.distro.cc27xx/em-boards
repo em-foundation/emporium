@@ -1,0 +1,13 @@
+LP_EM_CC2755P10:
+    activeLowLeds: false
+    baudRate:      115200
+    clockFreq:     96000000
+    pins:
+        appBut:    20       ## Button 1, active low with pull-up
+        appLed:    12       ## Green LED, active high
+        appOut:    1        ## UART0 TX
+        sysDbgA:   18       ## BoosterPack contact 31
+        sysDbgB:   17       ## BoosterPack contact 32
+        sysDbgC:   22       ## BoosterPack contact 6
+        sysDbgD:   3        ## BoosterPack contact 7
+        sysLed:    16       ## Red LED, active high

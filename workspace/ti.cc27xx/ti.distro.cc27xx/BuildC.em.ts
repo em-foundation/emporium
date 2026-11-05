@@ -2,6 +2,7 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 import * as ArmStartupC from '@em.arch.arm/StartupC.em'
+import * as BoardC from '@ti.distro.cc27xx/BoardC.em'
 import * as IsrEmpty from '@em.arch.arm/IsrEmpty.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as LinkerC from '@em.build.segger/LinkerC.em'
@@ -11,6 +12,7 @@ import * as TargC from '@em.lang/TargC.em'
 
 export function em$configure() {
     $using(ArmStartupC)
+    if (!$isbare()) $using(BoardC)
     $using(IntrVec)
     $using(LinkerC)
     $using(REGS)
@@ -136,7 +138,6 @@ export function em$generate() {
         |-> fi
         |-> 
         |-> "$DSLITE" flash -c "$CONFIG" -s "VerifyAfterProgramLoad=No verification" -f -t 60 "$IMAGE"
-        |-> "$DSLITE" flash -c "$CONFIG" -s "ImageVerificationSetting=1" -t 60 "$IMAGE"
     `)
     out.close()
 }
