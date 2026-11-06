@@ -5,6 +5,7 @@ import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as Console from '@em.lang/Console.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as Common from '@em.mcu/Common.em'
+import * as Poller from '@em.mcu/Poller.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as LedT from '@em.utils/LedT.em'
@@ -69,6 +70,7 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
+    Poller.OneShot.$$dlg = OneShot
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed

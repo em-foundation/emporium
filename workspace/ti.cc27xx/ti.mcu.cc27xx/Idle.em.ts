@@ -16,7 +16,6 @@ export function em$startup(): void {
 }
 
 export function exec(): void {
-    const mask = IntrVec.PRIMASK_get()
     IntrVec.PRIMASK_set(1)
     if (cur_level > 0) {
         $['%%b:'](1)
@@ -24,7 +23,7 @@ export function exec(): void {
         e$`asm volatile ("wfi" ::: "memory")`
         $['%%b+']
     }
-    IntrVec.PRIMASK_set(mask)
+    IntrVec.PRIMASK_set(0)
 }
 
 export function getLevel(): IdleI.SleepLevel {
