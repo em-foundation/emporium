@@ -11,6 +11,8 @@ import * as ConsoleUart0 from '@ti.mcu.cc27xx/ConsoleUart0.em'
 import * as GpioT from '@ti.mcu.cc27xx/GpioT.em'
 import * as Mcu from '@ti.mcu.cc27xx/Mcu.em'
 
+export const AppLed = $clone(LedT)
+const AppLedPin = $clone(GpioT)
 const AppOutPin = $clone(GpioT)
 export const SysLed = $clone(LedT)
 const SysLedPin = $clone(GpioT)
@@ -20,6 +22,7 @@ const BRD_DEFAULTS = {
     baudRate: 115200,
     clockFreq: 96000000,
     pins: {
+        appLed: <i16>-1,
         appOut: <i16>-1,
         sysLed: <i16>-1,
     }
@@ -30,6 +33,9 @@ export function em$configure(): void {
     const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
+    AppLed.Pin.$$dlg = AppLedPin
+    AppLed.active_low.$$val = brd.activeLowLeds
+    AppLedPin.pin_num.$$val = brd.pins.appLed
     AppOutPin.pin_num.$$val = brd.pins.appOut
     BoardController.Led.$$dlg = SysLed
     // Initial estimate scaled from CC23xx at 48 MHz.

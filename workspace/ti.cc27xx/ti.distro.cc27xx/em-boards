@@ -6,8 +6,8 @@ LP_EM_CC2755P10:
         appBut:    20       ## Button 1, active low with pull-up
         appLed:    12       ## Green LED, active high
         appOut:    1        ## UART0 TX
-        sysDbgA:   18       ## BoosterPack contact 31
-        sysDbgB:   17       ## BoosterPack contact 32
-        sysDbgC:   22       ## BoosterPack contact 6
-        sysDbgD:   3        ## BoosterPack contact 7
+        sysDbgA:   22       ## BoosterPack contact 6
+        sysDbgB:   3        ## BoosterPack contact 7
+        sysDbgC:   18       ## BoosterPack contact 31
+        sysDbgD:   17       ## BoosterPack contact 32
         sysLed:    16       ## Red LED, active high
