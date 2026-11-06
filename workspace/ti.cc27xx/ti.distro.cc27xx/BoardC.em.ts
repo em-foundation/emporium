@@ -10,7 +10,11 @@ import * as BusyWait from '@em.utils/BusyWait.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as ConsoleUart0 from '@ti.mcu.cc27xx/ConsoleUart0.em'
 import * as GpioT from '@ti.mcu.cc27xx/GpioT.em'
+import * as Idle from '@ti.mcu.cc27xx/Idle.em'
 import * as Mcu from '@ti.mcu.cc27xx/Mcu.em'
+import * as OneShot from '@ti.mcu.cc27xx/OneShotGpt3.em'
+
+export { OneShot }
 
 export const AppLed = $clone(LedT)
 const AppLedPin = $clone(GpioT)
@@ -52,6 +56,7 @@ export function em$configure(): void {
     Common.BusyWait.$$dlg = BusyWait
     Common.ConsoleUart.$$dlg = ConsoleUart0
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts
+    Common.Idle.$$dlg = Idle
     Common.Mcu.$$dlg = Mcu
     ConsoleUart0.TxPin.$$dlg = AppOutPin
     // UART reference clock is half the board clock. The divisor has six fractional bits.

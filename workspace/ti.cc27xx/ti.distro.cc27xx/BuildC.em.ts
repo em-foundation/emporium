@@ -10,6 +10,44 @@ import * as REGS from '@ti.distro.cc27xx/REGS.em'
 import * as StartupC from '@ti.distro.cc27xx/StartupC.em'
 import * as TargC from '@em.lang/TargC.em'
 
+const NVIC_INTRS = [
+    'CPUIRQ0',
+    'CPUIRQ1',
+    'CPUIRQ2',
+    'CPUIRQ3',
+    'CPUIRQ4',
+    'GPIO_COMB',
+    'LRFD_IRQ0',
+    'LRFD_IRQ1',
+    'DMA_DONE_COMB',
+    'AES_COMB',
+    'SPI0_COMB',
+    'UART0_COMB',
+    'I2C0_IRQ',
+    'LGPT0_COMB',
+    'LGPT1_COMB',
+    'ADC_COMB',
+    'CPUIRQ16',
+    'CPUIRQ17',
+    'LGPT2_COMB',
+    'LGPT3_COMB',
+    'I2S_IRQ',
+    'CAN_IRQ',
+    'UART1_COMB',
+    'SPI1_COMB',
+    'APU_IRQ',
+    'HSM_SEC_IRQ',
+    'HSM_NONSEC_IRQ',
+    'HSM_OTP_IRQ',
+    'AON_PMU_COMB',
+    'AON_CKM_COMB',
+    'AON_RTC_COMB',
+    'AON_LPCMP_IRQ',
+    'AON_IOC_COMB',
+    'SW0',
+    'SW1',
+]
+
 export function em$configure() {
     $using(ArmStartupC)
     if (!$isbare()) $using(BoardC)
@@ -19,6 +57,7 @@ export function em$configure() {
     $using(StartupC)
     $using(TargC)
     IntrVec.IsrDefault.$$dlg = IsrEmpty
+    for (const name of NVIC_INTRS) IntrVec.em$meta.addIntr(name)
 }
 
 export function em$generate() {

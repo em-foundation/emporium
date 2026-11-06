@@ -9,6 +9,8 @@
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_clkctl.h"
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_gpio.h"
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_ioc.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lgpt.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lgpt3.h"
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_pmctl.h"
 #include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_types.h"
