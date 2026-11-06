@@ -25,6 +25,7 @@ targ.addText('#ifndef __REGS_M\n')
 targ.addText('#define __REGS_M\n\n')
 targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"\n')
 targ.addText('#include "../../em.core/em.arch.arm/inc/core_cm33.h"\n')
+targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/driverlib/hapi.h"\n')
 targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"\n\n')
 
 for (const file of Fs.readdirSync('./inc').sort()) {

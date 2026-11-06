@@ -4,9 +4,22 @@ export const $U = $declare('MODULE', ConsoleUartI)
 import * as ConsoleUartI from '@em.hal/ConsoleUartI.em'
 import * as GpioI from '@em.hal/GpioI.em'
 import * as $R from '@ti.distro.cc27xx/REGS.em'
+import * as Idle from '@ti.mcu.cc27xx/Idle.em'
 
 export const TxPin = $proxy<GpioI.$I>()
 export const baud_div = $config<u32>()
+
+export namespace em$meta {
+    export function em$construct(): void {
+        Idle.em$meta.addSleepEnter($cb(sleepEnter))
+        Idle.em$meta.addSleepLeave($cb(em$startup))
+    }
+}
+
+function sleepEnter(): void {
+    flush()
+    TxPin.reset()
+}
 
 export function em$startup(): void {
     $R.CLKCTL.CLKENSET0.$$ = $R.CLKCTL_CLKENSET0_UART0

@@ -12,6 +12,7 @@ import * as BusyWait from '@em.utils/BusyWait.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as ConsoleUart0 from '@ti.mcu.cc27xx/ConsoleUart0.em'
+import * as ExtFlashDisabler from '@ti.mcu.cc27xx/ExtFlashDisabler.em'
 import * as GpioT from '@ti.mcu.cc27xx/GpioT.em'
 import * as Idle from '@ti.mcu.cc27xx/Idle.em'
 import * as Mcu from '@ti.mcu.cc27xx/Mcu.em'
@@ -27,6 +28,10 @@ const DbgA = $clone(GpioT)
 const DbgB = $clone(GpioT)
 const DbgC = $clone(GpioT)
 const DbgD = $clone(GpioT)
+const FlashCLK = $clone(GpioT)
+const FlashCS = $clone(GpioT)
+const FlashPICO = $clone(GpioT)
+const FlashPOCI = $clone(GpioT)
 export const SysLed = $clone(LedT)
 const SysLedPin = $clone(GpioT)
 
@@ -34,9 +39,14 @@ const BRD_DEFAULTS = {
     activeLowLeds: false,
     baudRate: 115200,
     clockFreq: 96000000,
+    extFlashDisable: false,
     pins: {
         appLed: <i16>-1,
         appOut: <i16>-1,
+        extFlashCLK: <i16>-1,
+        extFlashCS: <i16>-1,
+        extFlashPICO: <i16>-1,
+        extFlashPOCI: <i16>-1,
         sysDbgA: <i16>-1,
         sysDbgB: <i16>-1,
         sysDbgC: <i16>-1,
@@ -75,6 +85,17 @@ export function em$configure(): void {
     Debug.DbgB.$$dlg = DbgB
     Debug.DbgC.$$dlg = DbgC
     Debug.DbgD.$$dlg = DbgD
+    if (brd.extFlashDisable) {
+        $using(ExtFlashDisabler)
+        ExtFlashDisabler.CLK.$$dlg = FlashCLK
+        ExtFlashDisabler.CS.$$dlg = FlashCS
+        ExtFlashDisabler.PICO.$$dlg = FlashPICO
+        ExtFlashDisabler.POCI.$$dlg = FlashPOCI
+        FlashCLK.pin_num.$$val = brd.pins.extFlashCLK
+        FlashCS.pin_num.$$val = brd.pins.extFlashCS
+        FlashPICO.pin_num.$$val = brd.pins.extFlashPICO
+        FlashPOCI.pin_num.$$val = brd.pins.extFlashPOCI
+    }
     Poller.OneShot.$$dlg = OneShot
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds

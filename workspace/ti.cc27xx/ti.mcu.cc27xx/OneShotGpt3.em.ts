@@ -11,6 +11,7 @@ export type Handler = OneShotI.Handler
 export namespace em$meta {
     export function em$construct() {
         IntrVec.em$meta.useIntr('LGPT3_COMB')
+        Idle.em$meta.addSleepLeave($cb(em$startup))
     }
 }
 
