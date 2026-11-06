@@ -6,14 +6,17 @@ import * as Console from '@em.lang/Console.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as Common from '@em.mcu/Common.em'
 import * as Poller from '@em.mcu/Poller.em'
+import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
 import * as LedT from '@em.utils/LedT.em'
+import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as ConsoleUart0 from '@ti.mcu.cc27xx/ConsoleUart0.em'
 import * as GpioT from '@ti.mcu.cc27xx/GpioT.em'
 import * as Idle from '@ti.mcu.cc27xx/Idle.em'
 import * as Mcu from '@ti.mcu.cc27xx/Mcu.em'
 import * as OneShot from '@ti.mcu.cc27xx/OneShotGpt3.em'
+import * as Rtc from '@ti.mcu.cc27xx/Rtc.em'
 
 export { OneShot }
 
@@ -47,6 +50,7 @@ export function em$configure(): void {
     const brd = $board(BRD_DEFAULTS)
     $using(BoardController)
     $using(Console)
+    AlarmMgr.Rtc.$$dlg = Rtc
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed
@@ -59,6 +63,7 @@ export function em$configure(): void {
     Common.GlobalInterrupts.$$dlg = GlobalInterrupts
     Common.Idle.$$dlg = Idle
     Common.Mcu.$$dlg = Mcu
+    Common.Uptimer.$$dlg = Uptimer
     ConsoleUart0.TxPin.$$dlg = AppOutPin
     // UART reference clock is half the board clock. The divisor has six fractional bits.
     ConsoleUart0.baud_div.$$val = Math.round(2 * brd.clockFreq / brd.baudRate)
@@ -74,4 +79,5 @@ export function em$configure(): void {
     SysLed.Pin.$$dlg = SysLedPin
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
+    Uptimer.Rtc.$$dlg = Rtc
 }

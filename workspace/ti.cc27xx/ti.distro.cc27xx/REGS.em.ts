@@ -6789,6 +6789,9 @@ export const LGPT_C2CCNC_VAL_S: any = '0U'
 
 // -------- LGPT INSTANCES -------- //
 
+export const LGPT0 = { } as LGPT_t
+export const LGPT1 = { } as LGPT_t
+export const LGPT2 = { } as LGPT_t
 export const LGPT3 = { } as LGPT_t
 export const LGPT3_CNTR_VAL_W: any = '24U'
 export const LGPT3_CNTR_VAL_M: any = '0x00FFFFFFU'
@@ -7481,6 +7484,209 @@ export const PMCTL_VREFSTA_GOOD_NOT_OK: any = '0x00000000U'
 // -------- PMCTL INSTANCES -------- //
 
 export const PMCTL = { } as PMCTL_t
+
+// -------- RTC TYPE -------- //
+
+export interface RTC_t {
+    DESC: $Reg // offset 0x00000000U
+    CTL: $Reg // offset 0x00000004U
+    ARMSET: $Reg // offset 0x00000008U
+    ARMCLR: $Reg // offset 0x0000000CU
+    TIME250N: $Reg // offset 0x00000010U
+    TIME1U: $Reg // offset 0x00000014U
+    TIME8U: $Reg // offset 0x00000018U
+    TIME524M: $Reg // offset 0x0000001CU
+    CH0CC250N: $Reg // offset 0x00000020U
+    CH0CC1U: $Reg // offset 0x00000024U
+    CH0CC8U: $Reg // offset 0x00000028U
+    CH1CC8U: $Reg // offset 0x00000038U
+    CH1CFG: $Reg // offset 0x0000003CU
+    IMASK: $Reg // offset 0x00000044U
+    RIS: $Reg // offset 0x00000048U
+    MIS: $Reg // offset 0x0000004CU
+    ISET: $Reg // offset 0x00000050U
+    ICLR: $Reg // offset 0x00000054U
+    IMSET: $Reg // offset 0x00000058U
+    IMCLR: $Reg // offset 0x0000005CU
+    EMU: $Reg // offset 0x00000060U
+    DTIME: $Reg // offset 0x00000068U
+}
+export const RTC_O_DESC: any = '0x00000000U'
+export const RTC_O_CTL: any = '0x00000004U'
+export const RTC_O_ARMSET: any = '0x00000008U'
+export const RTC_O_ARMCLR: any = '0x0000000CU'
+export const RTC_O_TIME250N: any = '0x00000010U'
+export const RTC_O_TIME1U: any = '0x00000014U'
+export const RTC_O_TIME8U: any = '0x00000018U'
+export const RTC_O_TIME524M: any = '0x0000001CU'
+export const RTC_O_CH0CC250N: any = '0x00000020U'
+export const RTC_O_CH0CC1U: any = '0x00000024U'
+export const RTC_O_CH0CC8U: any = '0x00000028U'
+export const RTC_O_CH1CC8U: any = '0x00000038U'
+export const RTC_O_CH1CFG: any = '0x0000003CU'
+export const RTC_O_IMASK: any = '0x00000044U'
+export const RTC_O_RIS: any = '0x00000048U'
+export const RTC_O_MIS: any = '0x0000004CU'
+export const RTC_O_ISET: any = '0x00000050U'
+export const RTC_O_ICLR: any = '0x00000054U'
+export const RTC_O_IMSET: any = '0x00000058U'
+export const RTC_O_IMCLR: any = '0x0000005CU'
+export const RTC_O_EMU: any = '0x00000060U'
+export const RTC_O_DTIME: any = '0x00000068U'
+export const RTC_DESC_MODID_W: any = '16U'
+export const RTC_DESC_MODID_M: any = '0xFFFF0000U'
+export const RTC_DESC_MODID_S: any = '16U'
+export const RTC_DESC_STDIPOFF_W: any = '4U'
+export const RTC_DESC_STDIPOFF_M: any = '0x0000F000U'
+export const RTC_DESC_STDIPOFF_S: any = '12U'
+export const RTC_DESC_INSTIDX_W: any = '4U'
+export const RTC_DESC_INSTIDX_M: any = '0x00000F00U'
+export const RTC_DESC_INSTIDX_S: any = '8U'
+export const RTC_DESC_MAJREV_W: any = '4U'
+export const RTC_DESC_MAJREV_M: any = '0x000000F0U'
+export const RTC_DESC_MAJREV_S: any = '4U'
+export const RTC_DESC_MINREV_W: any = '4U'
+export const RTC_DESC_MINREV_M: any = '0x0000000FU'
+export const RTC_DESC_MINREV_S: any = '0U'
+export const RTC_CTL_RST: any = '0x00000001U'
+export const RTC_CTL_RST_M: any = '0x00000001U'
+export const RTC_CTL_RST_S: any = '0U'
+export const RTC_CTL_RST_CLR: any = '0x00000001U'
+export const RTC_CTL_RST_NOEFF: any = '0x00000000U'
+export const RTC_ARMSET_CH1: any = '0x00000002U'
+export const RTC_ARMSET_CH1_M: any = '0x00000002U'
+export const RTC_ARMSET_CH1_S: any = '1U'
+export const RTC_ARMSET_CH1_SET: any = '0x00000002U'
+export const RTC_ARMSET_CH1_NOEFF: any = '0x00000000U'
+export const RTC_ARMSET_CH0: any = '0x00000001U'
+export const RTC_ARMSET_CH0_M: any = '0x00000001U'
+export const RTC_ARMSET_CH0_S: any = '0U'
+export const RTC_ARMSET_CH0_SET: any = '0x00000001U'
+export const RTC_ARMSET_CH0_NOEFF: any = '0x00000000U'
+export const RTC_ARMCLR_CH1: any = '0x00000002U'
+export const RTC_ARMCLR_CH1_M: any = '0x00000002U'
+export const RTC_ARMCLR_CH1_S: any = '1U'
+export const RTC_ARMCLR_CH1_CLR: any = '0x00000002U'
+export const RTC_ARMCLR_CH1_NOEFF: any = '0x00000000U'
+export const RTC_ARMCLR_CH0: any = '0x00000001U'
+export const RTC_ARMCLR_CH0_M: any = '0x00000001U'
+export const RTC_ARMCLR_CH0_S: any = '0U'
+export const RTC_ARMCLR_CH0_CLR: any = '0x00000001U'
+export const RTC_ARMCLR_CH0_NOEFF: any = '0x00000000U'
+export const RTC_TIME250N_VAL_W: any = '32U'
+export const RTC_TIME250N_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_TIME250N_VAL_S: any = '0U'
+export const RTC_TIME1U_VAL_W: any = '32U'
+export const RTC_TIME1U_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_TIME1U_VAL_S: any = '0U'
+export const RTC_TIME8U_VAL_W: any = '32U'
+export const RTC_TIME8U_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_TIME8U_VAL_S: any = '0U'
+export const RTC_TIME524M_VAL_W: any = '32U'
+export const RTC_TIME524M_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_TIME524M_VAL_S: any = '0U'
+export const RTC_CH0CC250N_VAL_W: any = '32U'
+export const RTC_CH0CC250N_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_CH0CC250N_VAL_S: any = '0U'
+export const RTC_CH0CC1U_VAL_W: any = '32U'
+export const RTC_CH0CC1U_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_CH0CC1U_VAL_S: any = '0U'
+export const RTC_CH0CC8U_VAL_W: any = '32U'
+export const RTC_CH0CC8U_VAL_M: any = '0xFFFFFFFFU'
+export const RTC_CH0CC8U_VAL_S: any = '0U'
+export const RTC_CH1CC8U_VAL_W: any = '21U'
+export const RTC_CH1CC8U_VAL_M: any = '0x001FFFFFU'
+export const RTC_CH1CC8U_VAL_S: any = '0U'
+export const RTC_CH1CFG_EDGE: any = '0x00000001U'
+export const RTC_CH1CFG_EDGE_M: any = '0x00000001U'
+export const RTC_CH1CFG_EDGE_S: any = '0U'
+export const RTC_CH1CFG_EDGE_FALL: any = '0x00000001U'
+export const RTC_CH1CFG_EDGE_RISE: any = '0x00000000U'
+export const RTC_IMASK_EV1: any = '0x00000002U'
+export const RTC_IMASK_EV1_M: any = '0x00000002U'
+export const RTC_IMASK_EV1_S: any = '1U'
+export const RTC_IMASK_EV1_EN: any = '0x00000002U'
+export const RTC_IMASK_EV1_DIS: any = '0x00000000U'
+export const RTC_IMASK_EV0: any = '0x00000001U'
+export const RTC_IMASK_EV0_M: any = '0x00000001U'
+export const RTC_IMASK_EV0_S: any = '0U'
+export const RTC_IMASK_EV0_EN: any = '0x00000001U'
+export const RTC_IMASK_EV0_DIS: any = '0x00000000U'
+export const RTC_RIS_EV1: any = '0x00000002U'
+export const RTC_RIS_EV1_M: any = '0x00000002U'
+export const RTC_RIS_EV1_S: any = '1U'
+export const RTC_RIS_EV1_SET: any = '0x00000002U'
+export const RTC_RIS_EV1_CLR: any = '0x00000000U'
+export const RTC_RIS_EV0: any = '0x00000001U'
+export const RTC_RIS_EV0_M: any = '0x00000001U'
+export const RTC_RIS_EV0_S: any = '0U'
+export const RTC_RIS_EV0_SET: any = '0x00000001U'
+export const RTC_RIS_EV0_CLR: any = '0x00000000U'
+export const RTC_MIS_EV1: any = '0x00000002U'
+export const RTC_MIS_EV1_M: any = '0x00000002U'
+export const RTC_MIS_EV1_S: any = '1U'
+export const RTC_MIS_EV1_SET: any = '0x00000002U'
+export const RTC_MIS_EV1_CLR: any = '0x00000000U'
+export const RTC_MIS_EV0: any = '0x00000001U'
+export const RTC_MIS_EV0_M: any = '0x00000001U'
+export const RTC_MIS_EV0_S: any = '0U'
+export const RTC_MIS_EV0_SET: any = '0x00000001U'
+export const RTC_MIS_EV0_CLR: any = '0x00000000U'
+export const RTC_ISET_EV1: any = '0x00000002U'
+export const RTC_ISET_EV1_M: any = '0x00000002U'
+export const RTC_ISET_EV1_S: any = '1U'
+export const RTC_ISET_EV1_SET: any = '0x00000002U'
+export const RTC_ISET_EV1_NO_EFFECT: any = '0x00000000U'
+export const RTC_ISET_EV0: any = '0x00000001U'
+export const RTC_ISET_EV0_M: any = '0x00000001U'
+export const RTC_ISET_EV0_S: any = '0U'
+export const RTC_ISET_EV0_SET: any = '0x00000001U'
+export const RTC_ISET_EV0_NO_EFFECT: any = '0x00000000U'
+export const RTC_ICLR_EV1: any = '0x00000002U'
+export const RTC_ICLR_EV1_M: any = '0x00000002U'
+export const RTC_ICLR_EV1_S: any = '1U'
+export const RTC_ICLR_EV1_CLR: any = '0x00000002U'
+export const RTC_ICLR_EV1_NO_EFF: any = '0x00000000U'
+export const RTC_ICLR_EV0: any = '0x00000001U'
+export const RTC_ICLR_EV0_M: any = '0x00000001U'
+export const RTC_ICLR_EV0_S: any = '0U'
+export const RTC_ICLR_EV0_CLR: any = '0x00000001U'
+export const RTC_ICLR_EV0_NO_EFF: any = '0x00000000U'
+export const RTC_IMSET_EV1: any = '0x00000002U'
+export const RTC_IMSET_EV1_M: any = '0x00000002U'
+export const RTC_IMSET_EV1_S: any = '1U'
+export const RTC_IMSET_EV1_SET: any = '0x00000002U'
+export const RTC_IMSET_EV1_NO_EFF: any = '0x00000000U'
+export const RTC_IMSET_EV0: any = '0x00000001U'
+export const RTC_IMSET_EV0_M: any = '0x00000001U'
+export const RTC_IMSET_EV0_S: any = '0U'
+export const RTC_IMSET_EV0_SET: any = '0x00000001U'
+export const RTC_IMSET_EV0_NO_EFF: any = '0x00000000U'
+export const RTC_IMCLR_EV1: any = '0x00000002U'
+export const RTC_IMCLR_EV1_M: any = '0x00000002U'
+export const RTC_IMCLR_EV1_S: any = '1U'
+export const RTC_IMCLR_EV1_CLR: any = '0x00000002U'
+export const RTC_IMCLR_EV1_NO_EFF: any = '0x00000000U'
+export const RTC_IMCLR_EV0: any = '0x00000001U'
+export const RTC_IMCLR_EV0_M: any = '0x00000001U'
+export const RTC_IMCLR_EV0_S: any = '0U'
+export const RTC_IMCLR_EV0_CLR: any = '0x00000001U'
+export const RTC_IMCLR_EV0_NO_EFF: any = '0x00000000U'
+export const RTC_EMU_HALT: any = '0x00000001U'
+export const RTC_EMU_HALT_M: any = '0x00000001U'
+export const RTC_EMU_HALT_S: any = '0U'
+export const RTC_EMU_HALT_STOP: any = '0x00000001U'
+export const RTC_EMU_HALT_RUN: any = '0x00000000U'
+export const RTC_DTIME_EXP: any = '0x80000000U'
+export const RTC_DTIME_EXP_M: any = '0x80000000U'
+export const RTC_DTIME_EXP_S: any = '31U'
+export const RTC_DTIME_MANT_W: any = '31U'
+export const RTC_DTIME_MANT_M: any = '0x7FFFFFFFU'
+export const RTC_DTIME_MANT_S: any = '0U'
+
+// -------- RTC INSTANCES -------- //
+
+export const RTC = { } as RTC_t
 export const __STATIC_INLINE: any = 'static'
 
 // -------- UART TYPE -------- //
@@ -7874,3 +8080,4 @@ export const UART_DMACTL_RXDMAE_S: any = '0U'
 // -------- UART INSTANCES -------- //
 
 export const UART0 = { } as UART_t
+export const UART1 = { } as UART_t

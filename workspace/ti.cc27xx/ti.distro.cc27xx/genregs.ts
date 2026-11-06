@@ -3,10 +3,10 @@ import * as Fs from 'fs'
 
 import em from '../../em.core/em.lang/emscript'
 
-const INST_MAP = new Map<string, [number]>([
-    ['LGPT', [3]],
-    ['UART', [0]]
-])
+const base_names = Array.from(
+    Fs.readFileSync('inc/hw_memmap.h', 'utf-8').matchAll(/^#define\s+(\w+)_BASE\s+0x[\da-f]+U?\b/gim),
+    m => m[1]
+)
 
 let meta = em.$outfile('REGS.em.ts')
 let targ = em.$outfile('REGS.hpp.txt')
@@ -58,13 +58,10 @@ for (const file of Fs.readdirSync('./inc').sort()) {
     }
     if (!tname) continue
     meta.genTitle(`${tname} INSTANCES`)
-    const id_arr = INST_MAP.get(tname)
-    if (id_arr) {
-        for (const id of id_arr) {
-            meta.print('export const %1%2 = { } as %1_t\n', tname, id)
+    for (const name of base_names) {
+        if (name === tname || name.replace(/\d+$/, '') === tname) {
+            meta.print('export const %1 = { } as %2_t\n', name, tname)
         }
-    } else {
-        meta.print('export const %1 = { } as %1_t\n', tname)
     }
 }
 targ.addText('\n#endif\n')
