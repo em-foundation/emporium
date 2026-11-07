@@ -1,0 +1,48 @@
+#ifndef __REGS_M
+#define __REGS_M
+
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/driverlib/hapi.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"
+
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_ckmd.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_clkctl.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_evtull.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_flash.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_gpio.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_ioc.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lgpt.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lgpt3.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfddbell.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdmdm.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdmdm32.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdpbe.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdpbe32.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdrfe.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_lrfdrfe32.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_pmctl.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_pmud.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_rtc.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_sys0.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_systim.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_types.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_uart.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_vims.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/pbe_common_ram_regs.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/pbe_generic_ram_regs.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/pbe_generic_regdef_regs.h"
+#include "../../ti.cc27xx/ti.distro.cc27xx/inc/rfe_common_ram_regs.h"
+
+// Use CMSIS core register bases after all TI peripheral headers.
+#undef SCB_BASE
+#undef NVIC_BASE
+#undef MPU_BASE
+#undef DCB_BASE
+#undef DIB_BASE
+#include "../../em.core/em.arch.arm/inc/core_cm33.h"
+static_assert(SCB_BASE + offsetof(SCB_Type, VTOR) == 0xE000ED08UL, "Invalid CMSIS VTOR address");
+static_assert(SCB_BASE + offsetof(SCB_Type, SCR) == 0xE000ED10UL, "Invalid CMSIS SCR address");
+
+#endif
