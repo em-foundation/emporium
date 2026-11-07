@@ -317,10 +317,14 @@ export namespace em$meta {
     }
 }
 
+var loaded = false
+
 export function loadAll(): void {
+    if (loaded) return
     loadPatch($R.LRFD_PBERAM_BASE, pbe.$frame(0))
     loadPatch($R.LRFD_MCERAM_BASE, mce.$frame(0))
     loadPatch($R.LRFD_RFERAM_BASE, rfe.$frame(0))
+    loaded = true
 }
 
 function loadPatch(addr: u32, words: frame_t<u32>): void {

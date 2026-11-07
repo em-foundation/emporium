@@ -113,15 +113,14 @@ export function startTx(chan: u8): void {
 }
 
 export function waitReady(): void {
-    let tries: u32 = 0
-    while (state != State.READY) {
-        if (tries++ == 20000) {
-            printf`CC27xx TX timeout ch=%d MIS=%08x RIS=%08x PBE=%04x RFE=%04x\n`(
-                tx_channel, $R.LRFDDBELL.MIS0.$$, $R.LRFDDBELL.RIS0.$$,
-                $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_MSGBOX], $R.LRFDRFE.MSGBOX.$$)
-            fail()
+    while (true) {
+        const key = GlobalInterrupts.disable()
+        if (state == State.READY) {
+            GlobalInterrupts.restore(key)
+            return
         }
-        Common.BusyWait.wait(1)
+        Idle.exec()
+        GlobalInterrupts.restore(key)
     }
 }
 
