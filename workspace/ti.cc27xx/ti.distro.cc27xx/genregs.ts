@@ -24,7 +24,7 @@ export function em$generate() {
 targ.addText('#ifndef __REGS_M\n')
 targ.addText('#define __REGS_M\n\n')
 targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/inc/cc27xx.h"\n')
-targ.addText('#include "../../em.core/em.arch.arm/inc/core_cm33.h"\n')
+
 targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/driverlib/hapi.h"\n')
 targ.addText('#include "../../ti.cc27xx/ti.distro.cc27xx/inc/hw_memmap.h"\n\n')
 
@@ -65,6 +65,13 @@ for (const file of Fs.readdirSync('./inc').sort()) {
         }
     }
 }
+targ.addText('\n// Use CMSIS core register bases after all TI peripheral headers.\n')
+for (const name of ['SCB_BASE', 'NVIC_BASE', 'MPU_BASE', 'DCB_BASE', 'DIB_BASE']) {
+    targ.addText(`#undef ${name}\n`)
+}
+targ.addText('#include "../../em.core/em.arch.arm/inc/core_cm33.h"\n')
+targ.addText('static_assert(SCB_BASE + offsetof(SCB_Type, VTOR) == 0xE000ED08UL, "Invalid CMSIS VTOR address");\n')
+targ.addText('static_assert(SCB_BASE + offsetof(SCB_Type, SCR) == 0xE000ED10UL, "Invalid CMSIS SCR address");\n')
 targ.addText('\n#endif\n')
 meta.close()
 targ.close()
