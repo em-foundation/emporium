@@ -2,6 +2,7 @@ import '@$$emscript'
 export const $U = $declare('COMPOSITE')
 
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
+import * as UsCounter from '@em.arch.arm/UsCounterSystick.em'
 import * as Console from '@em.lang/Console.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as Common from '@em.mcu/Common.em'
@@ -83,6 +84,7 @@ export function em$configure(): void {
     Common.Idle.$$dlg = Idle
     Common.Mcu.$$dlg = Mcu
     Common.Uptimer.$$dlg = Uptimer
+    Common.UsCounter.$$dlg = UsCounter
     ConsoleUart0.TxPin.$$dlg = AppOutPin
     // UART reference clock is half the board clock. The divisor has six fractional bits.
     ConsoleUart0.baud_div.$$val = Math.round(2 * brd.clockFreq / brd.baudRate)
@@ -110,4 +112,5 @@ export function em$configure(): void {
     SysLed.active_low.$$val = brd.activeLowLeds
     SysLedPin.pin_num.$$val = brd.pins.sysLed
     Uptimer.Rtc.$$dlg = Rtc
+    UsCounter.MHZ_P.$$val = brd.clockFreq / 1000000
 }
