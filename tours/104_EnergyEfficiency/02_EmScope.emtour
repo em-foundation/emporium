@@ -1,0 +1,34 @@
+title: EM•Scope
+
+files: []
+
+steps:
+  - text: |
+      {[ht,$start]&thinsp;From Inspection to Repeatability}
+
+  - text: |
+      {[ht,monitor_heart]&thinsp;Grab a Capture}
+
+  - text: |
+      {[ht,timeline]&thinsp;Scan for Events}
+
+  - text: |
+      {[ht,checklist]&thinsp;View the Results}
+
+  - text: |
+      {[ht,monitor_heart]&thinsp;Inspect the Waveform}
+
+  - text: |
+      {[ht,electric_bolt]&thinsp;EM&bull;eralds}
+
+  - text: |
+      {[ht,splitscreen]&thinsp;Compare the Boards}
+
+  - text: |
+      {[ht,cycle]&thinsp;Change the Cadence}
+
+  - text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+  - text: |
+      {[ht,$steps]&thinsp;Next Steps}
