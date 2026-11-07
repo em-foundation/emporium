@@ -7,6 +7,7 @@ import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as GlobalInterrupts from '@em.arch.arm/GlobalInterrupts.em'
 import * as IntrVec from '@em.arch.arm/IntrVec.em'
 import * as RadioDriverI from '@em.link/RadioDriverI.em'
+
 import * as Registry from '@em.link/Registry.em'
 import * as TL from '@em.link/Types.em'
 import * as Idle from '@ti.mcu.cc27xx/Idle.em'
@@ -38,6 +39,8 @@ enum State { OFF, READY, TX, RX }
 var state: volatile_t<State> = State.OFF
 var prepared: TL.BufFrame = $null
 var old_ipeak: u32
+var prepared_tx_power: u16
+var rx_connected: bool_t
 var tx_channel: u8
 var cur_params: $$<TL.Params>
 var cur_rx_buf: TL.BufPtr = $null
@@ -67,12 +70,22 @@ export function enable(): void {
 }
 
 export function startEnable(): void {
-    if (state != State.OFF) fail()
+    if (state != State.OFF && state != State.READY) fail()
     const params = Registry.getParams()
     cur_params = params
     if (params.$$.radio_phy != TL.Phy.BLE_1M
-        || params.$$.radio_power != 0 || params.$$.ble_acc_adr != 0
-        || params.$$.ble_tx_encrypted) fail()
+        || params.$$.radio_power != 0
+        || params.$$.ble_tx_encrypted || params.$$.ble_rx_encrypted) {
+        printf`CC27xx requires BLE 1M, 0 dBm, unencrypted packets\n`()
+        fail()
+    }
+    // CC23xx transition from CONNECT_IND to the connection profile:
+    // update AA/CRC without power-cycling a READY radio.
+    if (state == State.READY) {
+        configureProfile()
+        if (handler != $null) handler()
+        return
+    }
     Idle.setLevel(1)
     RfXtal.enable()
     RfCtrl.enableClocks()
@@ -86,10 +99,18 @@ export function startEnable(): void {
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_COMMON_RAM_O_FIFOCMDADD] = <u16>(($R.LRFDPBE_BASE + $R.LRFDPBE_O_FCMD) & 0x0fff) >> 2
     old_ipeak = ($reg32[$R.SYS0_BASE + $R.SYS0_O_TMUTE4] & $R.SYS0_TMUTE4_IPEAK_M) >> $R.SYS0_TMUTE4_IPEAK_S
     setIpeak(3)
-    $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = 0x8e89bed6
-    $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_CRCINITL] = 0x55555500
+    configureProfile()
     state = State.READY
     if (handler != $null) handler()
+}
+
+function configureProfile(): void {
+    prepared_tx_power = RfPower.calculate(cur_params.$$.radio_power)
+    const acc_adr = cur_params.$$.ble_acc_adr
+    const crc_init = cur_params.$$.ble_crc_init
+    $reg32[$R.LRFDRFE_BASE + $R.LRFDRFE_O_RSSI] = 127
+    $reg32[$R.LRFDPBE32_BASE + $R.LRFDPBE32_O_MDMSYNCA] = acc_adr != 0 ? acc_adr : 0x8e89bed6
+    $reg32[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_CRCINITL] = (crc_init != 0 ? crc_init : 0x555555) << 8
 }
 
 export function prepareTx(buf: TL.BufFrame): void {
@@ -98,11 +119,11 @@ export function prepareTx(buf: TL.BufFrame): void {
 }
 
 export function startTx(chan: u8): void {
-    if (state != State.READY || prepared == $null || chan < 37 || chan > 39) fail()
+    if (state != State.READY || prepared == $null || chan > 39) fail()
     const key = GlobalInterrupts.disable()
     state = State.TX
     tx_channel = chan
-    if (!tx_chained) RfPower.program(0)
+    $R.LRFDRFE.SPARE5.$$ = prepared_tx_power
     $reg16[$R.LRFD_BUFRAM_BASE + $R.PBE_GENERIC_RAM_O_OPCFG] =
         (2 << $R.PBE_GENERIC_RAM_OPCFG_TXFCMD_S) | (1 << $R.PBE_GENERIC_RAM_OPCFG_SINGLE_S)
 
@@ -127,7 +148,7 @@ export function startTx(chan: u8): void {
         }
         Common.BusyWait.wait(1)
     }
-    RfFifo.writePkt(prepared, false)
+    RfFifo.writePkt(prepared, cur_params.$$.ble_acc_adr != 0)
     prepared = $null
     // Allow PBE to accept OP_TX before its scheduled start event.
     $R.LRFDDBELL.ICLR0.$$ = $R.LRFDDBELL_ICLR0_SYSTIM0
@@ -163,7 +184,7 @@ export function LRFD_IRQ0_isr$$(): void {
         if (mis & EVENT_RX_OK) {
             rx_end_time = nowTimeUs()
             tx_start = $R.SYSTIM.TIME250N.$$ + TX_CHAIN_DELAY_US * 4
-            if (RfFifo.readPkt(cur_rx_buf, false, false) == 0) cur_rx_buf = $null
+            if (RfFifo.readPkt(cur_rx_buf, rx_connected, false) == 0) cur_rx_buf = $null
         } else if (mis & EVENT_TIMEOUT) {
             rx_timeout = true
         } else {
@@ -244,10 +265,11 @@ function pauseFB(_: arg_t): void {
 }
 
 export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16): void {
-    if (state != State.READY || buf == $null || chan < 37 || chan > 39) fail()
-    if (cur_params.$$.ble_rx_encrypted || cur_params.$$.ble_acc_adr != 0) fail()
+    if (state != State.READY || buf == $null || chan > 39) fail()
+    if (cur_params.$$.ble_rx_encrypted) fail()
     const key = GlobalInterrupts.disable()
     state = State.RX
+    rx_connected = cur_params.$$.ble_acc_adr != 0
     RfCtrl.enableImages()
     tx_channel = chan
     cur_rx_buf = buf
