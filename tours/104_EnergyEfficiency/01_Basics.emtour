@@ -1,0 +1,28 @@
+title: The Basics
+
+files: []
+
+steps:
+  - text: |
+      {[ht,$start]&thinsp;Every µJ Matters}
+
+  - text: |
+      {[ht,splitscreen]&thinsp;Side-by-Side Comparison}
+
+  - text: |
+      {[ht,monitor_heart]&thinsp;See the Pattern}
+
+  - text: |
+      {[ht,measuring_tape]&thinsp;What Does One Event Cost?}
+
+  - text: |
+      {[ht,cycle]&thinsp;The Whole Cycle Counts}
+
+  - text: |
+      {[ht,experiment]&thinsp;Try It Yourself}
+
+  - text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+  - text: |
+      {[ht,$steps]&thinsp;Next Steps}
