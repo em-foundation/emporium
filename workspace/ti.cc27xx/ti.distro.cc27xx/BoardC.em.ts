@@ -9,9 +9,11 @@ import * as Poller from '@em.mcu/Poller.em'
 import * as AlarmMgr from '@em.utils/AlarmMgr.em'
 import * as BoardController from '@em.utils/BoardController.em'
 import * as BusyWait from '@em.utils/BusyWait.em'
+import * as ButtonT from '@em.utils/ButtonT.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Uptimer from '@em.utils/UptimerRtc.em'
 import * as ConsoleUart0 from '@ti.mcu.cc27xx/ConsoleUart0.em'
+import * as EdgeT from '@ti.mcu.cc27xx/EdgeT.em'
 import * as ExtFlashDisabler from '@ti.mcu.cc27xx/ExtFlashDisabler.em'
 import * as GpioT from '@ti.mcu.cc27xx/GpioT.em'
 import * as Idle from '@ti.mcu.cc27xx/Idle.em'
@@ -21,6 +23,9 @@ import * as Rtc from '@ti.mcu.cc27xx/Rtc.em'
 
 export { OneShot }
 
+export const AppBut = $clone(ButtonT)
+export const AppButEdge = $clone(EdgeT)
+const AppButPin = $clone(GpioT)
 export const AppLed = $clone(LedT)
 const AppLedPin = $clone(GpioT)
 const AppOutPin = $clone(GpioT)
@@ -41,6 +46,7 @@ const BRD_DEFAULTS = {
     clockFreq: 96000000,
     extFlashDisable: false,
     pins: {
+        appBut: <i16>-1,
         appLed: <i16>-1,
         appOut: <i16>-1,
         extFlashCLK: <i16>-1,
@@ -61,6 +67,9 @@ export function em$configure(): void {
     $using(BoardController)
     $using(Console)
     AlarmMgr.Rtc.$$dlg = Rtc
+    AppBut.Edge.$$dlg = AppButEdge
+    AppButEdge.Pin.$$dlg = AppButPin
+    AppButEdge.pin_num.$$val = AppButPin.pin_num.$$val = brd.pins.appBut
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds
     AppLedPin.pin_num.$$val = brd.pins.appLed
