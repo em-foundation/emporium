@@ -21,7 +21,7 @@ export function disable() {
     $R.LRFDRFE.ENABLE.$$ = 0
     $R.LRFDRFE.PDREQ.$$ = 0
     //
-    $reg16[$R.LRFDRFE32_BASE + $R.LRFDRFE32_O_ATSTREF] &= <u16>~$R.LRFDRFE32_ATSTREF_BIAS_M
+    // Keep synth REFSYS alive across engine restarts during an exchange.
 }
 
 export function enableClocks() {
@@ -73,4 +73,7 @@ export function enableImages() {
     $R.LRFDRFE.INIT.$$ = $R.LRFDRFE_INIT_TOPSM_M
     $R.LRFDRFE.ENABLE.$$ = $R.LRFDRFE_ENABLE_TOPSM_M
 
+}
+export function disableSynthRefsys(): void {
+    $reg32[$R.LRFDRFE32_BASE + $R.LRFDRFE32_O_ATSTREF] &= ~$R.LRFDRFE32_ATSTREF_BIAS_M
 }

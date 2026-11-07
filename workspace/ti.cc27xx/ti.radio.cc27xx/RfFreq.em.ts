@@ -129,7 +129,11 @@ function programCMixN(rxIntFrequency: i32, invSynthFreq: u32) {
     cMixN = ((cMixN + (1 << 3)) >> 4) * 9
     const rightShift = (37 - 15) - findLog2Bde1($R.LRFDMDM.DEMMISC3.$$)
     cMixN = (cMixN + (1 << rightShift) - 1) >> rightShift
-    const signedCMixN = (rxIntFrequency > 0) ? -(<i32>cMixN) : <i32>cMixN
+    // TI LRFLPF3.c, LRF_programCMixN(), CC27XX RCL-489 workaround:
+    // CC27xx swaps RX I/Q, so invert the sign used on CC23xx.
+    // SDK commit 4aa2c92162fe6c62103bc7b60018ca47a44a3585 applies
+    // this unconditionally for DeviceFamily_PARENT_CC27XX.
+    const signedCMixN = (rxIntFrequency > 0) ? <i32>cMixN : -(<i32>cMixN)
     cMixN = <u32>signedCMixN & $R.LRFDMDM_DEMMISC0_CMIXN_M
     $R.LRFDMDM.DEMMISC0.$$ = cMixN
     $R.LRFDMDM.SPARE3.$$ = cMixN
@@ -228,3 +232,4 @@ function scaleFreqWithHFXTOffset(frequency: u32): u32 {
     }
     return freqOut
 }
+

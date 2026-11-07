@@ -4,7 +4,7 @@ export const $U = $declare('MODULE', SchemaI)
 import * as SchemaI from '@em.link/SchemaI.em'
 import * as TL from '@em.link/Types.em'
 
-export const $S_name = 'BlueJouleGatt'
+export const $S_name = 'BlueJoule-GATT'
 export const $S_uuid = '0000b100-0000-1000-8000-00805f9b34fb'
 
 export type Status_T = u8
@@ -29,3 +29,4 @@ export function Command_write(ibuf: TL.BufPtr) {
     command_val = ibuf[0]
     status_val = command_val | 0x80
 }
+

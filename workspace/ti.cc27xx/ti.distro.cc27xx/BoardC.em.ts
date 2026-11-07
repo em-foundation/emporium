@@ -23,6 +23,8 @@ import * as OneShot from '@ti.mcu.cc27xx/OneShotGpt3.em'
 import * as Rtc from '@ti.mcu.cc27xx/Rtc.em'
 
 export { OneShot }
+import * as CacheStats from '@em.utils/CacheStats.em'
+export { CacheStats }
 
 export const AppBut = $clone(ButtonT)
 export const AppButEdge = $clone(EdgeT)
@@ -114,3 +116,5 @@ export function em$configure(): void {
     Uptimer.Rtc.$$dlg = Rtc
     UsCounter.MHZ_P.$$val = brd.clockFreq / 1000000
 }
+
+
