@@ -3,6 +3,7 @@
 .history/
 .screenshots/
 .debug/
+.emscope
 **/.junk/
 node_modules/
 /tools/
