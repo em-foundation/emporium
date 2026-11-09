@@ -87,3 +87,11 @@ body {
     font-weight: bolder;
     margin: 0;
 }
+.scope-icon {
+    color: hsl(165, 80%, 45%);
+}
+
+.scope-icon svg {
+    display: inline-block;
+    vertical-align: middle;
+}
