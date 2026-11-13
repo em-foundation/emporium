@@ -3,8 +3,8 @@ import * as Path from 'path'
 import { sprintf } from 'sprintf-js'
 import * as Yaml from 'js-yaml'
 
-const PATH = 'workspace/.emscript/props.json'
-const PROPS = Fs.existsSync(PATH)
+const PATH = Path.resolve('workspace/.emscript/props.json')
+let PROPS = Fs.existsSync(PATH)
     ? JSON.parse(String(Fs.readFileSync(PATH)))
     : {}
 
@@ -810,13 +810,23 @@ namespace em {
         return 0
     }
 
-    export function $property<T>(name: string, defval: T): T {
+    function getProperty<T>(name: string, defval: T): T {
         const val = PROPS[name]
         if (val === undefined) return defval
         if (typeof defval === 'boolean') return Boolean(val) as T
         if (typeof defval === 'number') return Number(val) as T
         return val
     }
+
+    export const $property = new Proxy(getProperty, {
+        set(_getter, name, value) {
+            if (typeof name !== 'string') return false
+            const props = { ...PROPS, [name]: value }
+            Fs.writeFileSync(PATH, JSON.stringify(props, undefined, 4))
+            PROPS = props
+            return true
+        },
+    }) as typeof getProperty & { [name: string]: unknown }
 
     export function $range(stop: number): Iterable<number>
     export function $range(start: number, stop: number, step?: number): Iterable<number>
