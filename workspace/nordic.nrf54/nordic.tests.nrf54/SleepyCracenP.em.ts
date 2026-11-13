@@ -2,7 +2,7 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as P256CracenActivity from '@nordic.tests.nrf54/P256CracenActivity.em'
-import * as SleepyRunner from '@em.utils/SleepyRunner.em'
+import * as SleepyRunner from '@em.mark/SleepyRunner.em'
 
 export namespace em$meta {
     export function em$configure() {

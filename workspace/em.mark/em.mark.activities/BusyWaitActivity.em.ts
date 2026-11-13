@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', ActivityI)
 
-import * as ActivityI from '@em.utils/ActivityI.em'
+import * as ActivityI from '@em.mark.activities/ActivityI.em'
 import * as Common from '@em.mcu/Common.em'
 
 // Nominal duration: uses the distro's calibrated BusyWait supplier.
