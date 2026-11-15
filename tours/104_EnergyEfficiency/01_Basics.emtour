@@ -1,9 +1,12 @@
 title: The Basics
 
-files: []
+files:
+  - .assets/img-104-01-01.png
 
 steps:
-  - text: |
+  - cmds:
+      - view 1
+    text: |
       {[ht,$start]&thinsp;Every µJ Matters}
 
   - text: |
