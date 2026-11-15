@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as ActivityI from '@em.mark.activities/ActivityI.em'
+import * as ActivityI from '@em.mark/ActivityI.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
 import * as TT from '@em.utils/TimeTypes.em'

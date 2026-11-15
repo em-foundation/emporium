@@ -1,15 +1,15 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as BusyWaitActivity from '@em.mark.activities/BusyWaitActivity.em'
+import * as BusyWaitA from '@em.mark.busywait/BusyWaitA.em'
 import * as SleepyRunner from '@em.mark/SleepyRunner.em'
 
 export namespace em$meta {
     export function em$configure() {
-        SleepyRunner.Activity.$$dlg = BusyWaitActivity
+        SleepyRunner.Activity.$$dlg = BusyWaitA
         SleepyRunner.iterations.$$val = 10
         SleepyRunner.interval_ms.$$val = 1000
-        BusyWaitActivity.duration_us.$$val = 50000
+        BusyWaitA.duration_us.$$val = 50000
     }
 }
 

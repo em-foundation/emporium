@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE')
 
-import * as ActivityI from '@em.mark.activities/ActivityI.em'
+import * as ActivityI from '@em.mark/ActivityI.em'
 import * as TickerMgr from '@em.utils/TickerMgr.em'
 
 export const Activity = $proxy<ActivityI.$I>()

@@ -1,7 +1,7 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', ActivityI)
 
-import * as ActivityI from '@em.mark.activities/ActivityI.em'
+import * as ActivityI from '@em.mark/ActivityI.em'
 import * as Crypto from '@em.crypto/Crypto.em'
 import * as CmacN from '@em.crypto.cmac/CmacN.em'
 import * as Engine from '@em.crypto.p256/Engine.em'
