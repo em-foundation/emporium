@@ -2,29 +2,41 @@ title: The Basics
 
 files:
   - .assets/img-104-01-01.png
+  - .assets/img-104-01-02.png
+  - .assets/img-104-01-03.png
+  - .assets/img-104-01-04.png
+  - .assets/img-104-01-05.png
+  - .assets/img-104-01-06.png
 
 steps:
   - cmds:
       - view 1
     text: |
-      {[ht,$start]&thinsp;Every µJ Matters}
+      {[ht,$start]&thinsp;Space, Time, and Power}
 
-  - text: |
+  - cmds:
+      - view 2
+    text: |
       {[ht,splitscreen]&thinsp;Side-by-Side Comparison}
 
-  - text: |
+  - cmds:
+      - view 3
+    text: |
       {[ht,monitor_heart]&thinsp;See the Pattern}
 
-  - text: |
+  - cmds:
+      - view 4
+    text: |
       {[ht,measuring_tape]&thinsp;What Does One Event Cost?}
 
-  - text: |
+  - cmds:
+      - view 5
+    text: |
       {[ht,cycle]&thinsp;The Whole Cycle Counts}
 
-  - text: |
-      {[ht,experiment]&thinsp;Try It Yourself}
-
-  - text: |
+  - cmds:
+      - view 6
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
   - text: |
