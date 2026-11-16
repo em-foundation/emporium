@@ -7,6 +7,7 @@ files:
   - .assets/img-104-01-04.png
   - .assets/img-104-01-05.png
   - .assets/img-104-01-06.png
+  - .assets/img-104-01-07.png
 
 steps:
   - cmds:
@@ -39,5 +40,15 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-  - text: |
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
+  - cmds:
+      - view 7
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}
