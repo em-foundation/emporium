@@ -61,6 +61,21 @@ steps:
     text: |
       {[ht,monitor_heart]&thinsp;See the Pattern}
 
+      Earlier tours used `DbgB` logic traces to distinquish active execution periods from lite or deep sleep.&thinsp; {[tr,102/06/04]}
+
+      With **Joulescope Viewer** we can eyeball the height of the power trace to distinquish periods of work from sleep:
+
+      {[bi,arrow_circle_right]}&thinsp; WORK &mdash; the MCU draws milliwatts of power<br>
+      {[bi,arrow_circle_right]}&thinsp; SLEEP &mdash; the MCU draws microwatts of power<br>
+
+      As you'll appreciate, the WORK&thinsp;&middot;&thinsp;SLEEP power averages have significant impact on total energy consumption.
+
+      <div class="em-info">
+
+      But what if the MCU only wakes from sleep (say) every _minute_ &ndash; can we project the energy efficiency gain&thinsp;??
+
+      </div>
+
   - cmds:
       - view 4
     text: |
