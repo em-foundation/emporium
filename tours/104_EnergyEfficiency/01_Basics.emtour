@@ -61,9 +61,9 @@ steps:
     text: |
       {[ht,monitor_heart]&thinsp;See the Pattern}
 
-      Earlier tours used `DbgB` logic traces to distinquish active execution periods from lite or deep sleep.&thinsp; {[tr,102/06/04]}
+      Earlier tours used `DbgB` logic traces to distinguish active execution periods from lite or deep sleep.&thinsp; {[tr,102/06/04]}
 
-      With **Joulescope Viewer** we can eyeball the height of the power trace to distinquish periods of work from sleep:
+      With **Joulescope Viewer** we can eyeball the height of the power trace to distinguish periods of work from sleep:
 
       {[bi,arrow_circle_right]}&thinsp; WORK &mdash; the MCU draws milliwatts of power<br>
       {[bi,arrow_circle_right]}&thinsp; SLEEP &mdash; the MCU draws microwatts of power<br>
@@ -85,11 +85,11 @@ steps:
 
       For the purpose of comparison, we've conservatively cho&shy;sen a 20&thinsp;ms window &ndash; ample time to complete WORK.
 
-      The extra SLEEP margin does lower `avg mW` {[dc,1]} &ndash; but adds little to the event’s _cost_ of 91.87 µJ {[dc,2]}.
+      The extra SLEEP margin does lower avg power {[dc,1]} &ndash; but adds little to the event’s _cost_ of 91.87 µJ {[dc,2]}.
 
       💡&thinsp;HW draws power &ndash; but SW shapes energy over time.
 
-      Once we return to SLEEP (with SW _inactive_), `avg mW` {[dc, 3]} settles &ndash; allowing use to project energy consumption.
+      Once we return to SLEEP (with SW _inactive_), avg power {[dc, 3]} settles &ndash; allowing us to project energy consumption.
 
       <div class="em-info">
 
@@ -135,5 +135,15 @@ steps:
       - view 7
     text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      The next tour introduces **EM&bull;Scope** &ndash; which turns raw power captures into repeatable measurements.
+
+      <div class="em-info">
+
+      The values in column {[dc,1]} now enable easy comparison of the 20&thinsp;ms WORK windows seen at earlier stops.
+
+      </div>
+
+      We'll use **EM&bull;Scope** + **Joulescope Viewer** to analyze and display existing captures in different scenarios &ndash; w/o HW.
 
       {[hc]}
