@@ -125,11 +125,11 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Compare WORK duration between FLASH and SRAM.
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Compare power draw between FLASH and SRAM.
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Explain the drop from 116&thinsp;µJ {[dc,1]} to 70&thinsp;µJ {[dc,2]} per event.
 
   - cmds:
       - view 7
