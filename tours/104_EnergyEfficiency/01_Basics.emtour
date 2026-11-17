@@ -44,9 +44,9 @@ steps:
 
       Compare the width and height of each active burst:
 
-      burst {[dc,2]} &mdash; returns to sleep earliest with lowest avg mW <br>
-      burst {[dc,1]} &mdash; takes longer to sleep with highest avg mW<br>
-      burst {[dc,3]} &mdash; returns to sleep last but with good avg mW<br>
+      burst {[dc,2]} &mdash; returns to sleep earliest with lowest `avg mW` <br>
+      burst {[dc,1]} &mdash; takes longer to sleep with highest `avg mW`<br>
+      burst {[dc,3]} &mdash; returns to sleep last but with good `avg mW`<br>
 
       Clearly, `nordic.nrf54` consumes the least amount of energy over this 20&thinsp;ms window of time.
 
@@ -80,6 +80,22 @@ steps:
       - view 4
     text: |
       {[ht,measuring_tape]&thinsp;What Does One Event Cost?}
+
+      Let&rsquo;s zoom in on a single burst of activity from an earlier capture &ndash; quantifying the energy cost of this event.
+
+      For the purpose of comparison, we've conservatively cho&shy;sen a 20&thinsp;ms window &ndash; ample time to complete WORK.
+
+      Including some &ldquo;SLEEP margin&rdquo; in the window, `avg mW` {[dc,1]} no longer reflects event cost &ndash; but 91.87 &mu;J {[dc,2]} does.
+
+      💡&thinsp;HW draws power &ndash; but SW shapes energy over time.
+
+      Once we return to SLEEP (with SW _inactive_), `avg mW` {[dc, 3]} serves as reasonable indicator of energy consumption.
+
+      <div class="em-info">
+
+      But how much does SLEEP impact energy efficiency over a one-second event cycle&thinsp;?? &nbsp; Or a one-minute cycle&thinsp;??
+
+      </div>
 
   - cmds:
       - view 5
