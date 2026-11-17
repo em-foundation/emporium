@@ -13,7 +13,23 @@ steps:
   - cmds:
       - view 1
     text: |
-      {[ht,$start]&thinsp;Space, Time, and Power}
+      {[ht,$start]&thinsp;Space, Time, and Energy}
+
+      SW developers conventionally characterize their pro&shy;grams in terms of _time_ versus _space_ &ndash; a classic trade-off.
+
+      But when targeting HW with limited power sources, we must also measure our programs&rsquo; _energy_ consumption.
+
+      Consider `SleepyRunnerP`&thinsp;{[tr,102/07/03]} as a case in point:
+
+      {[DC,1]}&thinsp; **EM&bull;Builder** itself reports code&thinsp;&middot;&thinsp;data size in bytes<br>
+      {[DC,2]}&thinsp; **Logic 2** measures the time of active work {[tr,102/08/02]}<br>
+      {[DC,3]}&thinsp; **Joulescope Viewer** shows power drain over time
+
+      <div class="em-info">
+
+      The next tour formally introduces [Joulescope](https://www.joulescope.com/).&thinsp; For now, just follow the screenshots.
+
+      </div>
 
   - cmds:
       - view 2
