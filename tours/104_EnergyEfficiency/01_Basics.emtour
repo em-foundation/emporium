@@ -85,11 +85,11 @@ steps:
 
       For the purpose of comparison, we've conservatively cho&shy;sen a 20&thinsp;ms window &ndash; ample time to complete WORK.
 
-      Including some &ldquo;SLEEP margin&rdquo; in the window, `avg mW` {[dc,1]} no longer reflects event cost &ndash; but 91.87 &mu;J {[dc,2]} does.
+      The extra SLEEP margin does lower avg mW {[dc,1]} &ndash; but adds little to the event’s _cost_ of 91.87 µJ {[dc,2]}.
 
       💡&thinsp;HW draws power &ndash; but SW shapes energy over time.
 
-      Once we return to SLEEP (with SW _inactive_), `avg mW` {[dc, 3]} serves as reasonable indicator of energy consumption.
+      Once we return to SLEEP (with SW _inactive_), `avg mW` {[dc, 3]} settles &ndash; allowing use to project energy consumption.
 
       <div class="em-info">
 
