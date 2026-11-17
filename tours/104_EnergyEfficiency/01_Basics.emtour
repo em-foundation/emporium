@@ -23,9 +23,9 @@ steps:
 
       {[DC,1]} **EM&bull;Builder** itself reports code&thinsp;&middot;&thinsp;data size [bytes]<br>
       {[DC,2]} **Logic 2** measures execution time [&mu;s] {[tr,102/08/02]}<br>
-      {[DC,3]} **Joulescope Viewer** show power [mW] over time [&mu;J]
+      {[DC,3]} **Joulescope Viewer** shows power over time [&mu;J]
 
-      Note how {[dc,2]} and {[dc,3]} reveal complementary perspectives on the _same_ burst of active work.
+      Note how {[dc,2]} and {[dc,3]} reveal different perspectives on the _same_ burst of active work &ndash; a single **CoreMark** iteration.
 
       <div class="em-info">
 
@@ -37,6 +37,24 @@ steps:
       - view 2
     text: |
       {[ht,splitscreen]&thinsp;Side-by-Side Comparison}
+
+      We can execute `SleepyRunnerP` on any target HW whose EMS distro package supports sleep&thinsp;+&thinsp;wakeup.&thinsp; {[tr,103/07/01]}
+
+      Using the **Joulescope Viewer**, we've zoomed in on a single algorithmic burst running under three different distros.
+
+      Compare the width and height of each active burst:
+
+      burst {[dc,2]} &mdash; returns to sleep earliest with lowest avg mW <br>
+      burst {[dc,1]} &mdash; takes longer to sleep with highest avg mW<br>
+      burst {[dc,3]} &mdash; returns to sleep last but with good avg mW<br>
+
+      Clearly, `nordic.nrf54` consumes the least amount of energy over this 20&thinsp;ms window of time.
+
+      <div class="em-info">
+
+      But what about `nordic.nrf52` versus `ti.cc23xx`&thinsp;??
+
+      </div>
 
   - cmds:
       - view 3
