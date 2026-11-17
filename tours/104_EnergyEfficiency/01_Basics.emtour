@@ -21,13 +21,15 @@ steps:
 
       Consider `SleepyRunnerP`&thinsp;{[tr,102/07/03]} as a case in point:
 
-      {[DC,1]}&thinsp; **EM&bull;Builder** itself reports code&thinsp;&middot;&thinsp;data size in bytes<br>
-      {[DC,2]}&thinsp; **Logic 2** measures the time of active work {[tr,102/08/02]}<br>
-      {[DC,3]}&thinsp; **Joulescope Viewer** shows power drain over time
+      {[DC,1]} **EM&bull;Builder** itself reports code&thinsp;&middot;&thinsp;data size [bytes]<br>
+      {[DC,2]} **Logic 2** measures execution time [&mu;s] {[tr,102/08/02]}<br>
+      {[DC,3]} **Joulescope Viewer** show power [mW] over time [&mu;J]
+
+      Note how {[dc,2]} and {[dc,3]} reveal complementary perspectives on the _same_ burst of active work.
 
       <div class="em-info">
 
-      The next tour formally introduces [Joulescope](https://www.joulescope.com/).&thinsp; For now, just follow the screenshots.
+      The next tour will formally introduce [Joulescope](https://www.joulescope.com/).
 
       </div>
 
