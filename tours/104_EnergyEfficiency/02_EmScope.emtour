@@ -4,16 +4,10 @@ files: []
 
 steps:
   - text: |
-      {[ht,$start]&thinsp;From Inspection to Repeatability}
+      {[ht,$start]&thinsp;Open EM&bull;Scope}
 
   - text: |
-      {[ht,monitor_heart]&thinsp;Grab a Capture}
-
-  - text: |
-      {[ht,timeline]&thinsp;Scan for Events}
-
-  - text: |
-      {[ht,checklist]&thinsp;View the Results}
+      {[ht,checklist]&thinsp;Explore the Captures}
 
   - text: |
       {[ht,monitor_heart]&thinsp;Inspect the Waveform}
@@ -22,13 +16,21 @@ steps:
       {[ht,electric_bolt]&thinsp;EM&bull;eralds}
 
   - text: |
-      {[ht,splitscreen]&thinsp;Compare the Boards}
+      {[ht,cycle]&thinsp;What If&hellip;?}
 
   - text: |
-      {[ht,cycle]&thinsp;Change the Cadence}
+      {[ht,timeline]&thinsp;Rescan a Capture}
 
   - text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
   - text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}
