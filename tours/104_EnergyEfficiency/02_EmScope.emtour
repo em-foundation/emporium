@@ -1,27 +1,40 @@
 title: EM•Scope
 
-files: []
+files:
+  - .assets/img-104-02-01.png
+  - .assets/img-104-02-02.png
+  - .assets/img-104-02-03.png
+  - .assets/img-104-02-04.png
+  - .assets/img-104-02-05.png
+  - em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts
 
 steps:
   - text: |
       {[ht,$start]&thinsp;Open EM&bull;Scope}
 
-  - text: |
+  - cmds:
+      - view 1
+    text: |
       {[ht,checklist]&thinsp;Explore the Captures}
 
-  - text: |
+  - cmds:
+      - view 2
+    text: |
       {[ht,monitor_heart]&thinsp;Inspect the Waveform}
 
-  - text: |
+  - cmds:
+      - view 3
+    text: |
       {[ht,electric_bolt]&thinsp;EM&bull;eralds}
 
-  - text: |
-      {[ht,cycle]&thinsp;What If&hellip;?}
-
-  - text: |
+  - cmds:
+      - view 4
+    text: |
       {[ht,timeline]&thinsp;Rescan a Capture}
 
-  - text: |
+  - cmds:
+      - view 5
+    text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
       {[bi,task_alt]} TODO
@@ -30,7 +43,9 @@ steps:
 
       {[bi,task_alt]} TODO
 
-  - text: |
+  - cmds:
+      - open 6
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
 
       {[hc]}
