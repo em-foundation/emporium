@@ -12,10 +12,38 @@ steps:
   - text: |
       {[ht,$start]&thinsp;Open EM&bull;Scope}
 
+      The previous tour examined energy consumption by way of **Joulescope Viewer** screenshots of raw power captures.
+
+      We’ll now explore the _same_ captures with **EM&bull;Scope**, en&shy;abling more systematic measurement and comparison.
+
+      While you'll continue &ldquo;watching screenshots&rdquo;, we encour&shy;age you to explore **EM&bull;Scope** at each stop.
+
+      To that end, click **Open EM&bull;Scope** on the **EM&bull;Home** page and keep its tab handy as you advance through the tour.
+
+      <div class="em-info">
+
+      You should also follow the link to **Download Joulescope Viewer** in preparation for what follows.
+
+      </div>
+
   - cmds:
       - view 1
     text: |
       {[ht,checklist]&thinsp;Explore the Captures}
+
+      When initially launched, **EM&bull;Scope** displays a pre-popu&shy;lated list of _captures_ found in its default home folder {[dc,1]}&thinsp;.
+
+      <div class="em-info">
+
+      Buttons to the right enable you to select other capture folders, as well as to operate on the current captures.
+
+      </div>
+
+      Each row in the table (sorted here by **Capture** {[dc,2]} name) shows measurements and scores computed for this entry.
+
+      Besides its familiar **Sleep&thinsp;&mu;A** and **Event&thinsp;&mu;J** measurements, each capture entry receives a pair of **EM&bull;eralds** {[dc,3]} scores.
+
+      Before explaining **EM&bull;eralds**, let's click the last icon {[dc,4]} on the `nrf52` entry to view this capture's waveform&thinsp;&hellip;
 
   - cmds:
       - view 2
