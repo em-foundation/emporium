@@ -50,6 +50,22 @@ steps:
     text: |
       {[ht,monitor_heart]&thinsp;Inspect the Waveform}
 
+      **Joulescope Viewer** opens in its own window, letting you inspect the capture waveform in greater detail:
+
+      {[DC,1]} this panel gives a navigable view of all capture events<br>
+      {[DC,2]} this marker shows statistics for the bracketed event<br>
+      {[DC,3]} right-click on the marker to zoom into this event<br>
+      {[DC,4]} right-click on the vertical axis to adjust its scale<br>
+      {[DC,5]} these controls create additional markers<br>
+
+      <div class="em-info">
+
+      Refer to the [Joulescope Docs](https://docs.joulescope.com/en/software/joulescope_ui/widgets/waveform.html) for more information on the **Waveform** widget.
+
+      </div>
+
+      Against this vast trove of data shown by the **Joulescope Viewer**, we'll now pivot to a _single_ metric of efficiency&thinsp;&hellip;
+
   - cmds:
       - view 3
     text: |
