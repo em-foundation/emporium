@@ -71,6 +71,28 @@ steps:
     text: |
       {[ht,electric_bolt]&thinsp;EM&bull;eralds}
 
+      **EM&bull;eralds** combine _event energy_ and _sleep power_ into a single gamified score for a chosen repetition period:
+
+      <div style="text-align: center; margin: 0.2em 0;">
+        <span style="display: inline-block; border: 1px solid #4ec9b0;
+                     border-radius: 8px; padding: 0.3em 1em; font-size: 1.0em;">
+          <b>EM&bull;eralds = 80 &divide; J/day</b>
+        </span>
+      </div>
+
+      For the _fixed_ workload period {[dc,1]}, **EM&bull;Scope** calculates daily energy consumption from other raw measurements.
+
+      For _projected_ (longer) workload periods {[dc,2]}-{[dc,4]}, **EM&bull;Scope** extrapolates `J/day` from these same measurements.
+
+      <div class="em-info">
+
+      Click the stopwatch icon to choose another period &ndash; and
+      note how SLEEP dominates as these periods grow.
+
+      </div>
+
+      Since higher ≡ better, **EM&bull;eralds** scores intuitively reward econom&shy;ical WORK in combination with frugal SLEEP.
+
   - cmds:
       - view 4
     text: |
