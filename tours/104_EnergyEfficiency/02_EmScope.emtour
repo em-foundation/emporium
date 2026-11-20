@@ -73,12 +73,13 @@ steps:
 
       **EM&bull;eralds** combine _event energy_ and _sleep power_ into a single gamified score for a chosen repetition period:
 
-      <div style="text-align: center; margin: 0.2em 0;">
-        <span style="display: inline-block; border: 1px solid #4ec9b0;
-                     border-radius: 8px; padding: 0.3em 1em; font-size: 1.0em;">
+      <div style="margin: 0.5em 3em;">
+        <span style="text-align: center; display: inline-block; border: 1px solid #4ec9b0;
+                     border-radius: 8px; padding: 0.4em 0.7em;">
           <b>EM&bull;eralds = 80 &divide; J/day</b>
         </span>
-      </div>
+        &ensp;<a href="https://novelbits.io/bluejoule/#emeralds">&ensp;Why 80&thinsp;??&nbsp;</a>
+      </div>      
 
       For the _fixed_ workload period {[dc,1]}, **EM&bull;Scope** calculates daily energy consumption from other raw measurements.
 
@@ -98,6 +99,25 @@ steps:
     text: |
       {[ht,timeline]&thinsp;Rescan a Capture}
 
+      Starting with raw power signals, **EM&bull;Scope** can _scan_ this data to locate meaningful segments of WORK and SLEEP.
+
+      <div class="em-info">
+
+      A later tour shows how to _grab_ a raw power capture.
+
+      </div>
+
+      To illustrate, let's change the _event window_ from 20&thinsp;ms to 100&thinsp;ms, and then update the table by re-scanning:
+
+      {[DC,1]} click the gear icon, which displays current settings <br>
+      {[DC,2]} update the event window duration accordingly <br>
+      {[DC,3]} save your changes to the capture folder settings<br>
+      {[DC,4]} click the refresh icon to rescan the capture folder<br>
+      {[DC,5]} note the update to the event window duration<br>
+      {[DC,6]} inspect changes in measurements and scores<br>
+
+      The longer window slightly changes WORK and SLEEP meas&shy;urements, as well as _projected_ **EM&bull;eralds** scores.
+
   - cmds:
       - view 5
     text: |
@@ -105,7 +125,7 @@ steps:
 
       {[bi,task_alt]} TODO
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} TOD
 
       {[bi,task_alt]} TODO
 
