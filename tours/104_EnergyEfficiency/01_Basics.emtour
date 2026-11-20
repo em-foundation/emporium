@@ -19,7 +19,7 @@ steps:
 
       But when targeting HW with limited power sources, we must also measure our programs&rsquo; _energy_ consumption.
 
-      Consider `SleepyRunnerP`&thinsp;{[tr,102/07/03]} as a case in point:
+      Consider {[cu]SleepyRunnerP}&thinsp;{[tr,102/07/03]} as a case in point:
 
       {[DC,1]} **EM&bull;Builder** itself reports code&thinsp;&middot;&thinsp;data size [bytes]<br>
       {[DC,2]} **Logic 2** measures execution time [&mu;s] {[tr,102/08/02]}<br>
@@ -38,7 +38,7 @@ steps:
     text: |
       {[ht,splitscreen]&thinsp;Side-by-Side Comparison}
 
-      We can execute `SleepyRunnerP` on any target HW whose EMS distro package supports sleep&thinsp;+&thinsp;wakeup.&thinsp; {[tr,103/07/01]}
+      We can execute {[cu]SleepyRunnerP} on any target HW whose EMS distro package supports sleep&thinsp;+&thinsp;wakeup.&thinsp; {[tr,103/07/01]}
 
       Using the **Joulescope Viewer**, we've zoomed in on a single algorithmic burst running under three different distros.
 
@@ -106,7 +106,7 @@ steps:
 
       Registering 96.10&thinsp;&mu;J &thinsp;{[dc,1]} over the entire cycle, the 20&thinsp;ms WORK window contributes 91.87&thinsp;&mu;J &thinsp;{[dc,2]} to this total.
 
-      At this cadence, `SleepyRunnerP` incurs 96% of its total ener&shy;gy cost in just 2% of its elapsed running time.
+      At this cadence, {[cu]SleepyRunnerP} incurs 96% of its total ener&shy;gy cost in just 2% of its elapsed running time.
 
       While power consumption fundamentally occurs at the HW level, SW can take steps to _increase_ energy efficiency:
 

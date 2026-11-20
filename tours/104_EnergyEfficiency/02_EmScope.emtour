@@ -142,4 +142,12 @@ steps:
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
+      The {[cu]SleepyRunnerP} program has served us well&thinsp;&hellip;
+
+      Since introduction {[tr,102/07/01]}&thinsp;, {[cu]SleepyRunnerP} has emerged as a "prototype" for cyclic WORK&thinsp;&middot;&thinsp;SLEEP applications.
+
+      These **Energy Efficiency** tours {[tr,104/01/01]} have benchmarked this single program across multiple MCU configurations.
+
+      The next tour will take a step back &ndash; crafting a bench&shy;mark _framework_ which generalizes the {[cu]SleepyRunnerP} design.
+
       {[hc]}
