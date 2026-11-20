@@ -18,6 +18,8 @@ steps:
 
       While you'll continue &ldquo;watching screenshots&rdquo;, we encour&shy;age you to explore **EM&bull;Scope** at each stop.
 
+      💡&thinsp;No target HW required here&thinsp;!!
+
       To that end, click **Open EM&bull;Scope** on the **EM&bull;Home** page and keep its tab handy as you advance through the tour.
 
       <div class="em-info">
@@ -127,7 +129,7 @@ steps:
 
       {[bi,task_alt]} Rank the captures at 1&thinsp;s, 30&thinsp;s, and 1&thinsp;min intervals {[dc,2]}&thinsp;.
 
-      {[bi,task_alt]} Shorten the event window from 20&thinsp;ms to 10&thinsp;ms {[dc,3]}&thinsp;.
+      {[bi,task_alt]} Shorten the current event window to 10&thinsp;ms {[dc,3]}&thinsp;.
 
       {[bi,task_alt]} Rescan all captures {[dc,3]} &ndash; use {[dc,1]} to explain the changes.
 
