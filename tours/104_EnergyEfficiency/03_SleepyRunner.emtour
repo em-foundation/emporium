@@ -1,0 +1,56 @@
+title: SleepyRunner Generalized
+
+files:
+  - .assets/img-104-03-01.png
+  - em.mark:em.mark/ActivityI.em.ts
+  - em.mark:em.mark.busywait/BusyWaitA.em.ts
+  - em.mark:em.mark/RunnerP.em.ts
+  - em.mark:em.mark.busywait/BusyWaitC.em.ts
+  - em.mark:em.mark.coremark/CoreMarkA.em.ts
+
+steps:
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$start]&thinsp;Architecture}
+
+  - cmds:
+      - open 2
+    text: |
+      {[ht,$peek]&thinsp;%[cu]ActivityI% &ndash; Quick Look}
+
+  - cmds:
+      - open 3
+    text: |
+      {[ht,$details]&thinsp;%[cu]BusyWaitA% &ndash; Details}
+
+  - cmds:
+      - open 4
+    text: |
+      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Details}
+
+  - cmds:
+      - open 5
+    text: |
+      {[ht,$details]&thinsp;%[cu]BusyWaitC% &ndash; Details}
+
+  - cmds:
+      - open 6
+    text: |
+      {[ht,$peek]&thinsp;%[cu]CoreMarkA% &ndash; Quick Look}
+
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
+      {[bi,task_alt]} TODO
+
+  - text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}

@@ -1,8 +1,8 @@
 import '@$$emscript'
 export const $U = $declare('MODULE', ActivityI)
 
-import * as CoreBench from '@em.benchmark.coremark/CoreBench.em'
 import * as ActivityI from '@em.mark/ActivityI.em'
+import * as CoreBench from '@em.benchmark.coremark/CoreBench.em'
 
 var crc: volatile_t<u16>
 
