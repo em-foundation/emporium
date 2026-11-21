@@ -12,7 +12,21 @@ steps:
   - cmds:
       - view 1
     text: |
-      {[ht,$start]&thinsp;Architecture}
+      {[ht,$start]&thinsp;%[cx]em.mark.*% Architecture}
+
+      Our generalization of {[cu]SleepyRunnerP} organizes bench&shy;mark elements across a family of `em.mark.*` buckets.
+
+      The {[cu]RunnerP} program {[dc,1]} anchors this architecture by calling {[cu]ActivityI} delegates {[dc,2]} at run-time.
+
+      <div class="em-info">
+
+      Each conformant **Delegate** implements the actual work&shy;load defined by a particular benchmark.
+
+      </div>
+
+      A corresponding set of EMS **Composites** {[dc,3]} orchestrate _build-time_ configuration and binding of {[dc,1]} and {[dc,2]}.
+
+      This tour first examines these elements, then sets the stage for defining additional benchmark activities.
 
   - cmds:
       - open 2
@@ -26,8 +40,15 @@ steps:
 
   - cmds:
       - open 4
+    focus: [4, 1]
     text: |
-      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Details}
+      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Declarations}
+
+  - cmds:
+      - open 4
+    focus: [4, 33]
+    text: |
+      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Runtime}
 
   - cmds:
       - open 5
