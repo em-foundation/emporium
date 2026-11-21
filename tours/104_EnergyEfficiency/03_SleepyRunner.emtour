@@ -33,6 +33,16 @@ steps:
     text: |
       {[ht,$peek]&thinsp;%[cu]ActivityI% &ndash; Quick Look}
 
+      The {[cu]ActivityI} **Interface** (found in the `em.mark` **Bucket**) defines the run-time behavior of benchmark workloads.
+
+      Besides implementing the specified functions, a conform&shy;ing **Delegate** often exports additional config parameters.
+
+      <div class="em-info">
+
+      Depending upon the {[cu]ActivityI} implementation, the {[cf]setup} and {[cf]teardown} functions may remain empty.
+
+      </div>
+
   - cmds:
       - open 3
     text: |
