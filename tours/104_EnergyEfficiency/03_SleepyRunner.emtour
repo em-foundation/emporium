@@ -45,8 +45,20 @@ steps:
 
   - cmds:
       - open 3
+      - mark 3 A 2
+      - mark 3 B 7
+      - mark 3 C 12
+    focus: [3, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]BusyWaitA% &ndash; Details}
+
+      The {[cu]BusyWaitA} activity provides a rudi&shy;mentary spring&shy;board for implementing more complex benchmarks.
+
+      {[BM,A]} {[cu]BusyWaitA} declares its conformance to {[cu]ActivityI}<br>
+      {[BM,B]} {[cn]duration_us} configures the workload's length<br>
+      {[BM,C]} {[cf]exec} invokes the current distro's {[cn]BusyWait} proxy<br>
+
+      Not requiring any initialization or finalization of the bench&shy;mark workload, {[cf]setup} and {[cf]teardown} can remain empty.
 
   - cmds:
       - open 4
