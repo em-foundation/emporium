@@ -10,7 +10,7 @@ const use_sram = $config<bool_t>()
 
 export namespace em$meta {
     export function em$construct() {
-        use_sram.$$val = $property('em.lang.BootFlash', false)
+        use_sram.$$val = $property('em.build.BootFlash', false)
     }
 }
 
