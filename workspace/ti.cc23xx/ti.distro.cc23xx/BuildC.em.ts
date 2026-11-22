@@ -49,13 +49,15 @@ export function em$generate() {
     LinkerC.genScript(
         {
             dmem_flash: { orig: 0x20000000, len: 0x00009000 },
-            imem_flash: { orig: 0x00000000, len: 0x00080000 },
+            imem_flash: { orig: 0x00000000, len: 0x0007c000 },
             dmem_sram: { orig: 0x20008000, len: 0x00001000 },
             imem_sram: { orig: 0x20000000, len: 0x00008000 },
-            lmem_sram: { orig: 0x00000000, len: 0x00080000 },
+            lmem_sram: { orig: 0x00000000, len: 0x0007c000 },
             cmem_sram: LinkerC.MEM_NULL,
         },
         [
+            // Reserve the top 16 KiB of main Flash for radio firmware, outside the SRAM copy.
+            { name: 'FLASH_RADIO', sect: '.radio_firmware', desc: { orig: 0x0007c000, len: 0x4000 } },
             { name: 'FLASH_CCFG', sect: '.ccfg', desc: { orig: 0x4e020000, len: 0x800 } }
         ]
     )

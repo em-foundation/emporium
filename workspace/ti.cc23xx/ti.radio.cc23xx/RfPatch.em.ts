@@ -6,11 +6,14 @@ import * as $R from '@ti.distro.cc23xx/REGS.em'
 import * as T from '@em.link/Types.em'
 
 const LRF_MCE_patch_genfsk = $table<u32>()
+a$`section(".radio_firmware")`
 const LRF_PBE_patch_generic = $table<u32>()
 const LRF_RFE_patch_genfsk = $table<u32>()
 
+a$`section(".radio_firmware")`
 const LRF_MCE_patch_ble5 = $table<u32>()
 const LRF_PBE_patch_ble5 = $table<u32>()
+a$`section(".radio_firmware")`
 const LRF_RFE_patch_ble5 = $table<u32>()
 
 export namespace em$meta {
