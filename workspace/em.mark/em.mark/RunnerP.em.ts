@@ -7,20 +7,20 @@ import * as TickerMgr from '@em.utils/TickerMgr.em'
 import * as T from '@em.utils/TimeTypes.em'
 
 export const Activity = $proxy<ActivityI.$I>()
+
 export const interval_ms = $config<u16>(1000)
 export const wake_count = $config<u16>(10)
+
+export const optimization_level = $config<string>('')
 export const run_from_sram = $config<bool_t>(false)
 
 const ticker = $config<TickerMgr.Obj>()
 
 export namespace em$meta {
-    export let optimization_level = ''
-
     export function em$configure() {
-        if (optimization_level) $property['em.build.Optimize'] = optimization_level
+        if (optimization_level.$$val) $property['em.build.Optimize'] = optimization_level.$$val
         if (run_from_sram.$$val) $property['em.build.BootFlash'] = true
     }
-
     export function em$construct() {
         ticker.$$val = TickerMgr.em$meta.create()
     }
