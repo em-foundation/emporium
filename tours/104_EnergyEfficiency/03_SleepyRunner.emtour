@@ -84,9 +84,39 @@ steps:
 
   - cmds:
       - open 4
-    focus: [4, 33]
+      - mark 4 A 9
+      - mark 4 B 11
+      - mark 4 C 12
+      - mark 4 D 14
+      - mark 4 E 15
+      - mark 4 F 21
+      - mark 4 G 34
+      - mark 4 H 41
+      - mark 4 I 45
+
+    focus: [4, 21]
     text: |
       {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Run-time}
+
+      After invoking {[cn]Activity}.{[cf]setup}{[bm,G]}, a private {[cn]ticker} ob&shy;ject and {[cn]count} variable pace the run-time execution.
+
+      Compare these versions of {[cs]em$run} and {[cf]tickCB} with their counter&shy;parts in {[cu]SleepyRunnerP}&thinsp;{[tr,102/07/04]}&thinsp;.
+
+      <div class="em-info">
+
+      Note how the {[cn]wake_count} and {[cn]interval_ms} configs replace the manifest constants used in {[cu]SleepyRunnerP}.
+
+      </div>
+
+      Inside {[cf]tickCB}, {[cn]Activity}.{[cf]exec}{[bm,H]} performs a _single_ burst of benchmark activity &ndash; whatever that entails.
+
+      <div class="em-info">
+
+      As in {[cu]SleepyRunnerP}, toggling {[cd]%%d} around {[bm,H]} allows us to meas&shy;ure activity execution time using a logic analyzer.
+
+      </div>
+
+      Once {[cn]count} decrements to `0`, {[cn]Activity}.{[cf]teardown}{[bm,I]} performs benchmark finalization before halting {[cu]RunnerP}.
 
   - cmds:
       - open 5
