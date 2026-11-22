@@ -39,7 +39,7 @@ steps:
 
       <div class="em-info">
 
-      Depending upon the {[cu]ActivityI} implementation, the {[cf]setup} and {[cf]teardown} functions may remain empty.
+      Depending upon the {[cu]ActivityI} implementation, func&shy;tions other than {[cf]exec} may remain empty.
 
       </div>
 
@@ -58,7 +58,11 @@ steps:
       {[BM,B]} {[cn]duration_us} configures the workload's length<br>
       {[BM,C]} {[cf]exec} invokes the current distro's {[cn]BusyWait} proxy<br>
 
-      Not requiring any initialization or finalization of the bench&shy;mark workload, {[cf]setup} and {[cf]teardown} can remain empty.
+      <div class="em-info">
+
+      Note that {[cu]BusyWait} provides empty implementations of {[cf]setup}, {[cf]report}, and {[cf]teardown}.
+
+      </div>
 
   - cmds:
       - open 4
@@ -92,15 +96,14 @@ steps:
       - mark 4 F 21
       - mark 4 G 34
       - mark 4 H 41
-      - mark 4 I 45
+      - mark 4 I 43
+      - mark 4 J 46
 
     focus: [4, 21]
     text: |
       {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Run-time}
 
-      After invoking {[cn]Activity}.{[cf]setup}{[bm,G]}, a private {[cn]ticker} ob&shy;ject and {[cn]count} variable pace the run-time execution.
-
-      Compare these versions of {[cs]em$run} and {[cf]tickCB} with their counter&shy;parts in {[cu]SleepyRunnerP}&thinsp;{[tr,102/07/04]}&thinsp;.
+      As in {[cu]SleepyRunnerP}&thinsp;{[tr,102/07/04]}, a private {[cn]ticker} ob&shy;ject and {[cn]count} variable pace the run-time execution.
 
       <div class="em-info">
 
@@ -108,7 +111,9 @@ steps:
 
       </div>
 
-      Inside {[cf]tickCB}, {[cn]Activity}.{[cf]exec}{[bm,H]} performs a _single_ burst of benchmark activity &ndash; whatever that entails.
+      Invoking the {[cn]Activity} _life-cycle_ methods at {[bm,G]}&thinsp;&ndash;{[bm,J]} tracks the control-flow used within {[cu]SleepyRunnerP}.
+
+      Inside {[cf]tickCB}, {[bm,H]} executes a _single_ burst of benchmark activity before reporting {[bm,I]} any interim results.
 
       <div class="em-info">
 
@@ -116,7 +121,7 @@ steps:
 
       </div>
 
-      Once {[cn]count} decrements to `0`, {[cn]Activity}.{[cf]teardown}{[bm,I]} performs benchmark finalization before halting {[cu]RunnerP}.
+      Once {[cn]count} decrements to `0`, {[bm,J]} performs benchmark finalization before halting {[cu]RunnerP}.
 
   - cmds:
       - open 5
@@ -151,6 +156,16 @@ steps:
       - open 6
     text: |
       {[ht,$peek]&thinsp;%[cu]CoreMarkA% &ndash; Quick Look}
+
+      With the workload encapsulated by {[cu]CoreBench} {[tr,102/02/05]}, implementation of {[cu]CoreMarkA} proves trivial.
+
+      <div class="em-info">
+
+      The corresponding {[cu]CoreMarkC} **Composite** proves just as straightforward &ndash; cloning the design of {[cu]BusyWaitC}.
+
+      </div>
+
+      To mimic {[cu]SleepyRunnerP}, this benchmark activity uses its {[cf]report} function to print each checksum.
 
   - cmds:
       - view 1

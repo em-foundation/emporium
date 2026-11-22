@@ -40,6 +40,7 @@ function tickCB() {
     $['%%d+']
     Activity.exec()
     $['%%d-']
+    Activity.report()
     if (--count > 0) return
     ticker.$$.stop()
     Activity.teardown()

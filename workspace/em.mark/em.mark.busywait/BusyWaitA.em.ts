@@ -12,4 +12,6 @@ export function exec() {
     Common.BusyWait.wait(duration_us)
 }
 
+export function report() { }
+
 export function teardown() { }
