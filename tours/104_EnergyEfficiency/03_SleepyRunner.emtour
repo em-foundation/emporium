@@ -7,6 +7,7 @@ files:
   - em.mark:em.mark/RunnerP.em.ts
   - em.mark:em.mark.busywait/BusyWaitC.em.ts
   - em.mark:em.mark.coremark/CoreMarkA.em.ts
+  - .assets/img-104-03-02.png
 
 steps:
   - cmds:
@@ -60,7 +61,7 @@ steps:
 
       <div class="em-info">
 
-      Note that {[cu]BusyWait} provides empty implementations of {[cf]setup}, {[cf]report}, and {[cf]teardown}.
+      Note that {[cu]BusyWaitA} provides empty implementations of {[cf]setup}, {[cf]report}, and {[cf]teardown}.
 
       </div>
 
@@ -140,7 +141,7 @@ steps:
 
       <div class="em-info">
 
-      Our {[cs]em$fconfigure} meta-function follows the same design pattern found in a typical distro {[cu]BoardC}.
+      Our {[cs]em$configure} meta-function follows the same design pattern found in a typical distro {[cu]BoardC}.
 
       </div>
 
@@ -172,13 +173,32 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Vary {[cu]BusyWaitC} duration and cycle count.
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Optimize {[cu]CoreMarkC} for speed; compare code size.
 
-      {[bi,task_alt]} TODO
+      {[bi,task_alt]} Implement {[cu]PauseA} with light-sleep, not busy-wait.
 
-  - text: |
+      &nbsp;
+
+      <div class="em-info">
+
+      How do these changes affect energy efficiency&thinsp;??<br>
+      Our next tour will let you put them to the test&thinsp;!!
+
+      </div>
+
+  - cmds:
+      - view 7
+    text: |
       {[ht,$steps]&thinsp;Next Steps}
+
+      The `em.mark.*` framework has three axes of variability:
+
+      {[DC,1]} {[cu]RunnerP}, with its proxy and config parameters<br>
+      {[DC,2]} {[cu]ActivityI} implementations, with their own configs<br>
+      {[DC,3]} benchmark **Composites**, which glue it all together<br>
+
+      Our final tour circles back to **EM&bull;Scope**, where we'll learn how to _grab&thinsp;&middot;&thinsp;scan&thinsp;&middot;&thinsp;view_ in your own capture folder&thinsp;{[dc,4]}.
 
       {[hc]}
