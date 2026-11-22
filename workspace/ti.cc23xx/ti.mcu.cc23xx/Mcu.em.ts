@@ -19,6 +19,10 @@ export function isWarm(): bool_t {
 }
 
 export function startup(): void {
+    // Install SRAM vectors before any startup hook can enable a pending IRQ.
+    e$`SCB->VTOR = (uint32_t)(&__vector_table)`
+    e$`__DSB()`
+    e$`__ISB()`
     Debug.startup()
     $['%%a:'](2)
     $R.CKMD.IMSET.$$ =

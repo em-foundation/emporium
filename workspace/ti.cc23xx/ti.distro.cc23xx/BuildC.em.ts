@@ -50,8 +50,8 @@ export function em$generate() {
         {
             dmem_flash: { orig: 0x20000000, len: 0x00009000 },
             imem_flash: { orig: 0x00000000, len: 0x00080000 },
-            dmem_sram: { orig: 0x20005000, len: 0x00004000 },
-            imem_sram: { orig: 0x20000000, len: 0x00005000 },
+            dmem_sram: { orig: 0x20008000, len: 0x00001000 },
+            imem_sram: { orig: 0x20000000, len: 0x00008000 },
             lmem_sram: { orig: 0x00000000, len: 0x00080000 },
             cmem_sram: LinkerC.MEM_NULL,
         },
