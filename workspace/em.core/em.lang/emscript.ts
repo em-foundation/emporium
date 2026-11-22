@@ -441,6 +441,7 @@ namespace em {
     // #region
 
     const typeDefaults: ReadonlyMap<string, any> = new Map<string, any>([
+        ['string', ''],
         ['bool_t', false],
         ['cb_t', $cb(null)],
         ['i8', 0],
