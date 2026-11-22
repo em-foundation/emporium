@@ -62,15 +62,26 @@ steps:
 
   - cmds:
       - open 4
+      - mark 4 A 9
+      - mark 4 B 11
+      - mark 4 C 12
+      - mark 4 D 13
     focus: [4, 1]
     text: |
-      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Declarations}
+      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Build-time}
+
+      In generalizing {[cu]SleepyRunnerP}&thinsp;{[tr,102/07/04]}&thinsp;, {[cu]RunnerP} ex&shy;ports additional features for clients to bind at build-time:
+
+      {[BM,A]} the conforming benchmark workload<br>
+      {[BM,B]} the duration of the WORK-SLEEP event interval<br>
+      {[BM,C]} the number of WORK-SLEEP cycles executed<br>
+      {[BM,D]} whether to load code into FLASH or SRAM<br>
 
   - cmds:
       - open 4
     focus: [4, 33]
     text: |
-      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Runtime}
+      {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Run-time}
 
   - cmds:
       - open 5
