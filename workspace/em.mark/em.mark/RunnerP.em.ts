@@ -11,8 +11,8 @@ export const Activity = $proxy<ActivityI.$I>()
 export const interval_ms = $config<u16>(1000)
 export const wake_count = $config<u16>(10)
 
-export const optimization_level = $config<string>('')
-export const run_from_sram = $config<bool_t>(false)
+export const optimization_level = $config<string>()
+export const run_from_sram = $config<bool_t>()
 
 const ticker = $config<TickerMgr.Obj>()
 

@@ -65,7 +65,9 @@ steps:
       - mark 4 A 9
       - mark 4 B 11
       - mark 4 C 12
-      - mark 4 D 13
+      - mark 4 D 14
+      - mark 4 E 15
+      - mark 4 F 21
     focus: [4, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]RunnerP% &ndash; Build-time}
@@ -75,7 +77,10 @@ steps:
       {[BM,A]} the conforming benchmark workload<br>
       {[BM,B]} the duration of the WORK-SLEEP event interval<br>
       {[BM,C]} the number of WORK-SLEEP cycles executed<br>
-      {[BM,D]} whether to load code into FLASH or SRAM<br>
+      {[BM,D]} override the {[cs]'em.build.Optimize'} build property<br>
+      {[BM,E]} override the {[cs]'em.build.BootFlash'} build property<br>
+
+      {[cs]em$configure} tests the latter two configs {[bm,F]} and over&shy;rides their corresponding property using an intrinsic setter.
 
   - cmds:
       - open 4
