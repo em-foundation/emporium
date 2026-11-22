@@ -120,8 +120,32 @@ steps:
 
   - cmds:
       - open 5
+      - mark 5 A 9
+      - mark 5 B 10
+    focus: [5, 1]
     text: |
       {[ht,$details]&thinsp;%[cu]BusyWaitC% &ndash; Details}
+
+      Though {[cu]RunnerP} furnishes the {[cs]em$run} implementation, activity-specific **Composites** drive the program build.
+
+      In the case of {[cu]BusyWaitC} this entails:
+
+      {[BM,A]} including {[cu]RunnerP} in the target image via {[cs]$using}<br>
+      {[BM,B]} delegating the {[cn]Activity} proxy to {[cu]BusyWaitA}<br>
+
+      <div class="em-info">
+
+      Our {[cs]em$fconfigure} meta-function follows the same design pattern found in a typical distro {[cu]BoardC}.
+
+      </div>
+
+      Though not seen here, {[cu]BusyWaitC} could explicitly over&shy;ride config params exported by {[cu]RunnerP} and {[cu]BusyWaitA}.
+
+      <div class="em-info">
+
+      As activities and config choices multiply, how should we manage a _family_ of benchmark **Composites**?
+
+      </div>
 
   - cmds:
       - open 6
