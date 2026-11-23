@@ -1,0 +1,60 @@
+title: Managing Benchmarks
+
+files:
+  - .assets/img-104-04-01.png
+  - .assets/img-104-04-02.png
+  - .assets/img-104-04-03.png
+  - .assets/img-104-04-04.png
+
+steps:
+  - cmds:
+      - view 1
+    text: |
+      {[ht,$start]&thinsp;EM&bull;Scope Capture Collections}
+
+  - cmds:
+      - view 2
+    text: |
+      {[ht,$build]&thinsp;Prepare the Benchmark}
+
+  - cmds:
+      - view 3
+    text: |
+      {[ht,$look]&thinsp;Connect and Verify}
+
+  - cmds:
+      - view 4
+    text: |
+      {[ht,$details]&thinsp;Create a Collection}
+
+  - cmds: []
+    text: |
+      {[ht,$details]&thinsp;Add a Capture}
+
+  - cmds: []
+    text: |
+      {[ht,$build]&thinsp;Vary the Workload}
+
+  - cmds: []
+    text: |
+      {[ht,$peek]&thinsp;An Alternative Activity}
+
+  - cmds: []
+    text: |
+      {[ht,$details]&thinsp;Manage a Capture}
+
+  - cmds: []
+    text: |
+      {[ht,$extra]&thinsp;Extra Credit}
+
+      {[bi,task_alt]} ...
+
+      {[bi,task_alt]} ...
+
+      {[bi,task_alt]} ...
+
+  - cmds: []
+    text: |
+      {[ht,$steps]&thinsp;Next Steps}
+
+      {[hc]}
