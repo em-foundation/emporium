@@ -39,6 +39,26 @@ steps:
     text: |
       {[ht,$build]&thinsp;Prepare the Benchmark}
 
+      The capture collection you'll soon create will benchmark al&shy;ternative forms of "waiting" on a particular MCU.
+
+      <div class="em-info">
+
+      This tour's (portable) examples chose the `ti.cc23xx` distro &ndash; but work equally well with other target MCUs.
+
+      </div>
+
+      Our first benchmark uses the {[cu]BusyWaitA} activity from the prior tour {[tr,104/03/03]} &ndash; to wait for 50&thinsp;ms, once per second.
+
+      We've copied {[cu]BusyWaitC} {[tr,104/03/06]} into our own compos&shy;ite [{[cu]BusyWait50C}] which explicitly binds {[cn]duration_us} {[dc,1]}.
+
+      Running {[cu]BusyWait50C}, **Logic 2** confirms the program's ten periodic events {[dc,2]} which each spend ~50&thinsp;ms {[dc,3]} waiting.
+
+      <div class="em-info">
+
+      To "play along at home", create your _own_ private copy of `BusyWait50C.em.ts` within the `zlocal` package.
+
+      </div>
+
   - cmds:
       - view 3
     text: |
