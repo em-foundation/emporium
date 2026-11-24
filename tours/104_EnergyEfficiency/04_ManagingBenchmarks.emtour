@@ -104,10 +104,42 @@ steps:
     text: |
       {[ht,$details]&thinsp;Add a Capture}
 
+      Adding a new capture to a collection entails five steps:
+
+      {[DC,1]} click the **`+`** button to launch the **New Capture** dialog<br>
+      {[DC,2]} supply a name, review the options, then click accept<br>
+      {[DC,3]} monitor the status bar for {[em]EM&bull;Scope} progress<br>
+      {[DC,4]} review the provisional capture, then accept/reject it<br>
+      {[DC,5]} the new capture finally joins this collection<br>
+
+      Before clicking {[dc,1]}:&nbsp; build/load the benchmark program, connect the **PPK** to the DUT, and _quit_ the Nordic app.
+
+      <div class="em-info">
+
+      As a check, the pre-populated **New Capture** fields reflect properties of the _latest_ EMS build.
+
+      </div>
+
+      Before choosing accept/reject at {[dc,4]}, you can _view_ {[tr,104/02/02]} or _re-scan_ {[tr,104/02/05]} data in the provisional capture.
+
   - cmds:
       - view 6
     text: |
       {[ht,$build]&thinsp;Vary the Workload}
+
+      We've copied {[cu]BusyWait50C} into a new **Composite** which increases {[cu]BusyWaitA}.{[cn]duration_us} to `250000` {[dc,1]}.
+
+      To verify correctness, we build/load {[cu]BusyWait250C} and use **Logic 2** to inspect the timing of program execution.
+
+      <div class="em-info">
+
+      The trace at {[dc,2]} shows the expected ten WORK-SLEEP cycles; the zoom at {[dc,3]} confirms ~250&thinsp;ms of activity
+
+      </div>
+
+      Using the five-step process outlined at the last stop, we've added a `wait-250` entry {[dc,4]} to our capture collection.
+
+      Consuming ~5&times; more WORK energy, {[cu]BusyWait250C} earns roughly one-fifth the {[em]EM&bull;eralds} score &ndash; as anticipated.
 
   - cmds:
       - view 7
