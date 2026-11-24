@@ -186,15 +186,24 @@ steps:
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
-      {[bi,task_alt]} ...
+      {[bi,task_alt]} Create {[cu]Pause250C} and compare with `wait-250`.
 
-      {[bi,task_alt]} ...
+      {[bi,task_alt]} Compare **FLASH**&thinsp;&middot;&thinsp;**SRAM** versions of one benchmark.
 
-      {[bi,task_alt]} ...
+      {[bi,task_alt]} Create a new capture collection with your own activity.
 
   - cmds:
       - view 10
     text: |
-      {[ht,$steps]&thinsp;Next Steps}
+      {[ht,school]&thinsp;Congratulations}
+
+      You've completed the **EM&bull;Tours 100** curriculum &ndash; focusing first on *code size* and culminating with *energy efficiency*:
+
+      {[DC,1]} we built compact programs, many smaller than 2&thinsp;KB<br>
+      {[DC,2]} we used logic traces to quantify execution timing<br>
+      {[DC,3]} we examined power captures to measure energy<br>
+      {[DC,4]} we combined WORK&thinsp;&middot;&thinsp;SLEEP into **EM&bull;eralds** scores<br>
+
+      You now have the tools to build, measure, and improve your _own_ {[em]Tiny code for Tiny chips}.
 
       {[hc]}
