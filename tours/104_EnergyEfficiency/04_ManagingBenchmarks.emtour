@@ -97,7 +97,7 @@ steps:
 
       </div>
 
-      We've increased the scan event window to 300&thinsp;ms {[dc,3]} for our planned workloads, using features seen at {[tr,104/02/05]}.
+      We've increased the scan event window to 300&thinsp;ms {[dc,3]} for our planned workloads, using features seen at&thinsp; {[tr,104/02/05]}.
 
   - cmds:
       - view 5
@@ -146,10 +146,40 @@ steps:
     text: |
       {[ht,$peek]&thinsp;An Alternative Activity}
 
+      Our next benchmark returns to the original workload of "waiting" for 50&thinsp;ms &ndash; but now uses an alternative activity.
+
+      The {[cu]Pause50C} **Composite** imports the stock {[cu]PauseA} {[dc,1]} and explicitly binds its {[cn]duration_us} config to `50000` {[dc,2]}.
+
+      The {[cu]PauseA} activity then binds {[cu]BoardC}.{[cn]OneShot} to the {[cu]Poller}.{[cn]OneShot} proxy {[dc,3]} &ndash; waiting with a _light pause_.
+
+      The **Logic 2** traces at {[dc,4]} and {[dc,5]} confirm ten WORK-SLEEP event cycles and ~50&thinsp;ms of WORK duration.
+
+      <div class="em-info">
+
+      Looking carefully at `DbgB`, however, reveals that the CPU in fact lightly idles during this interval&thinsp; {[tr,101/06/04]}.
+
+      </div>
+
+      Once entered in the collection {[dc,6]}, `pause-50` more than _doubles_ the **EM&bull;eralds** efficiency scores of `wait-50`.
+
   - cmds:
       - view 8
     text: |
-      {[ht,$details]&thinsp;Manage a Capture}
+      {[ht,$details]&thinsp;Manage a Capture Collection}
+
+      **EM&bull;Scope** offers a number of features for managing entries in a capture collection:
+
+      {[DC,1]} reveal its meta-data by hovering over its name<br>
+      {[DC,2]} **Edit** its meta-data or **Grab Again** its power signals<br>
+      {[DC,3]} **Remove** this entry from the collection<br>
+
+      <div class="em-info">
+
+      You'll find features {[dc,2]} and {[dc,3]} on the right-click context menu associated with a particular capture entry.
+
+      </div>
+
+      To remove the _entire_ collection, use **Remove** {[dc,4]} from the `emscope-captures` right-click menu {[tr,100/02/06]}&thinsp;.
 
   - cmds:
       - view 9
