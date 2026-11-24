@@ -5,6 +5,12 @@ files:
   - .assets/img-104-04-02.png
   - .assets/img-104-04-03.png
   - .assets/img-104-04-04.png
+  - .assets/img-104-04-05.png
+  - .assets/img-104-04-06.png
+  - .assets/img-104-04-07.png
+  - .assets/img-104-04-08.png
+  - .assets/img-104-04-09.png
+  - .assets/img-104-04-10.png
 
 steps:
   - cmds:
@@ -27,23 +33,28 @@ steps:
     text: |
       {[ht,$details]&thinsp;Create a Collection}
 
-  - cmds: []
+  - cmds:
+      - view 5
     text: |
       {[ht,$details]&thinsp;Add a Capture}
 
-  - cmds: []
+  - cmds:
+      - view 6
     text: |
       {[ht,$build]&thinsp;Vary the Workload}
 
-  - cmds: []
+  - cmds:
+      - view 7
     text: |
       {[ht,$peek]&thinsp;An Alternative Activity}
 
-  - cmds: []
+  - cmds:
+      - view 8
     text: |
       {[ht,$details]&thinsp;Manage a Capture}
 
-  - cmds: []
+  - cmds:
+      - view 9
     text: |
       {[ht,$extra]&thinsp;Extra Credit}
 
@@ -53,7 +64,8 @@ steps:
 
       {[bi,task_alt]} ...
 
-  - cmds: []
+  - cmds:
+      - view 10
     text: |
       {[ht,$steps]&thinsp;Next Steps}
 
