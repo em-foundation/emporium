@@ -18,6 +18,22 @@ steps:
     text: |
       {[ht,$start]&thinsp;EM&bull;Scope Capture Collections}
 
+      So far, we've worked with pre-populated collections of **EM&bull;Scope** captures.&thinsp; Now you'll create your own&thinsp;!!
+
+      Any EMS **bucket** can hold _one_ capture collection (named `emscope-captures`), alongside related source files.
+
+      Our familiar {[cu]SleepyRunnerP} captures {[dc,1]} reside within `em.benchmark.coremark` &ndash; as does {[cu]SleepyRunnerP} itself.
+
+      Individual `em.mark.*` _activity_ buckets (such as {[dc,2]} and {[dc,3]}) follow this same pattern.
+
+      Clicking on any `emscope-captures` element {[dc,1]} opens this capture collection within **EM&bull;Scope**.
+
+      <div class="em-info">
+
+      This tour uses the special `zlocal` package as a private sandbox for experimenting with **EM&bull;Scope**.
+
+      </div>
+
   - cmds:
       - view 2
     text: |
