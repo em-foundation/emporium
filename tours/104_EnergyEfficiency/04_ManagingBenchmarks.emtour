@@ -64,6 +64,22 @@ steps:
     text: |
       {[ht,$look]&thinsp;Connect and Verify}
 
+      With {[cu]BusyWait50C} built and loaded, we'll now observe its _current consumption_ using Nordic's [PPK2](https://www.nordicsemi.com/Products/Development-hardware/Power-Profiler-Kit-2) analyzer.
+
+      <div class="em-info">
+
+      The **PPK** operates as a **Source** or **Ampere** meter &ndash; the form&shy;er powering the DUT at a selected voltage.
+
+      </div>
+
+      In this setup, we've disconnected the debugger adapter from the DUT and then connected the **PPK** as shown {[dc,1]}.
+
+      Using Nordic's desktop app, select  **Source Meter** at 3V0 and enable DUT power _before_ you start recording.
+
+      A trace like {[dc,2]} should appear, with a large inrush at reset followed by ten WORK-SLEEP activity cycles.
+
+      Zooming in to one WORK burst {[dc,3]} shows sustained cur&shy;rent during busy-wait, followed by a return to deep SLEEP.
+
   - cmds:
       - view 4
     text: |
