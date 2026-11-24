@@ -85,6 +85,20 @@ steps:
     text: |
       {[ht,$details]&thinsp;Create a Collection}
 
+      Examples in this tour use the `my.bench.wait` **Bucket**, which you should place within the `zlocal` **Package**.
+
+      The right-click context menu of `my.bench.wait` enables us to create a new collection of **EM&bull;Scope** captures {[dc,1]}.
+
+      Upon creation, the `emscope-captures` element {[dc,2]} ap&shy;pears in the bucket &ndash; alongside related source code.
+
+      <div class="em-info">
+
+      The **EM&bull;Scope** view simultaneously opens, with explicit linkage back to {[cu]zlocal://my.bench.wait}.
+
+      </div>
+
+      We've increased the scan event window to 300&thinsp;ms {[dc,3]} for our planned workloads, using features seen at {[tr,104/02/05]}.
+
   - cmds:
       - view 5
     text: |
