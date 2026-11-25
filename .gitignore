@@ -10,6 +10,7 @@ node_modules/
 .vscode/settings.json
 **/*.jls
 tours.zip
+tours/.screens
 tsconfig.json
 wokwi.vcd
 workspace/.emscript
