@@ -334,12 +334,13 @@ function parseTour(emtourPath: string): TourFile {
       if (/^\S/.test(line)) mode = "root";
     }
 
-    const stepStart = line.match(/^\s*-\s+cmds:\s*$/);
+    const stepStart = line.match(/^  - (cmds:\s*|text:\s*\|\s*)$/);
     if (mode === "steps" || mode === "cmds" || mode === "text") {
       if (stepStart) {
         current = { index: steps.length + 1, cmds: [], acts: [], text: "" };
         steps.push(current);
-        mode = "cmds";
+        mode = stepStart[1].startsWith('text:') ? 'text' : 'cmds';
+        if (mode === 'text') textIndent = 6;
         continue;
       }
     }

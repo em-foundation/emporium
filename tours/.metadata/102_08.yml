@@ -7,11 +7,11 @@ source_file: "tours/102_CoreMark/08_SleepyHW.emtour"
 title: "SleepyRunnerP on Hardware"
 
 source_snapshot:
-  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
-  generated_at: "2026-09-18T18:34:47.699Z"
+  git_sha: "unknown"
+  generated_at: "2026-11-25T05:31:40.144Z"
 
 ground_truth:
-  stop_count: 7
+  stop_count: 8
   files:
     - index: 1
       raw: "em.prog:em.benchmark.coremark/SleepyRunnerP.em.ts"
@@ -38,6 +38,16 @@ ground_truth:
       resolved: "tours/.assets/img-102-08-03.png"
       kind: "image"
       exists: true
+    - index: 6
+      raw: "em.prog:em.examples.basic/Ex02_BlinkerP.em.ts"
+      resolved: "em.prog/em.examples.basic/Ex02_BlinkerP.em.ts"
+      kind: "source"
+      exists: true
+    - index: 7
+      raw: ".assets/img-102-08-04.png"
+      resolved: "tours/.assets/img-102-08-04.png"
+      kind: "image"
+      exists: true
 
 steps:
   - stop: 1
@@ -45,6 +55,7 @@ steps:
     icon: "$start"
     cmds:
       - "view 2"
+      - "reveal 6"
     focus: []
     acts:
       []
@@ -53,26 +64,38 @@ steps:
     icon: "monitor_heart"
     cmds:
       - "view 3"
+      - "reveal 6"
     focus: []
     acts:
       []
   - stop: 3
-    heading: "Configuring PulseView"
-    icon: "settings"
+    heading: "An Alternative to PulseView"
+    icon: "ssid_chart"
     cmds:
-      - "view 4"
+      - "view 7"
+      - "reveal 6"
     focus: []
     acts:
       []
   - stop: 4
-    heading: "Steady-State Workflow"
-    icon: "cycle"
+    heading: "Configuring PulseView"
+    icon: "settings"
     cmds:
-      - "view 5"
+      - "view 4"
+      - "reveal 6"
     focus: []
     acts:
       []
   - stop: 5
+    heading: "Steady-State Workflow"
+    icon: "cycle"
+    cmds:
+      - "view 5"
+      - "reveal 6"
+    focus: []
+    acts:
+      []
+  - stop: 6
     heading: "Observing %[cu]SleepyRunnerP%"
     icon: "biotech"
     cmds:
@@ -80,7 +103,7 @@ steps:
     focus: []
     acts:
       - "$build"
-  - stop: 6
+  - stop: 7
     heading: "Extra Credit"
     icon: "$extra"
     cmds:
@@ -88,11 +111,12 @@ steps:
     focus: []
     acts:
       - "$build"
-  - stop: 7
+  - stop: 8
     heading: "Next Steps"
     icon: "$steps"
     cmds:
       - "view 3"
+      - "reveal 1"
     focus: []
     acts:
       []
@@ -104,6 +128,7 @@ usage:
   heading_icons:
     - "$start"
     - "monitor_heart"
+    - "ssid_chart"
     - "settings"
     - "cycle"
     - "biotech"
@@ -111,15 +136,16 @@ usage:
     - "$steps"
   macros:
     "bi": 3
-    "cu": 11
-    "dc": 6
+    "cu": 12
+    "dc": 10
     "em": 1
     "hc": 1
-    "ht": 7
+    "ht": 8
     "tr": 7
   commands:
     "open": 2
-    "view": 5
+    "reveal": 6
+    "view": 6
   actions:
     - "$build"
 
