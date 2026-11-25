@@ -7,6 +7,7 @@ files:
   - .assets/img-102-08-02.png
   - .assets/img-102-08-03.png
   - em.prog:em.examples.basic/Ex02_BlinkerP.em.ts
+  - .assets/img-102-08-04.png
 
 steps:
   - cmds:
@@ -50,6 +51,34 @@ steps:
       ☑️&thinsp; connect the jumper wires to your board's colored pins<br>
       ☑️&thinsp; also connect analyzer GND to board GND [grey]<br>
       ☑️&thinsp; plug the USB logic analyzer into your host PC
+
+  - cmds:
+      - view 7
+      - reveal 6
+    text: |
+      {[ht,ssid_chart]&thinsp;An Alternative to PulseView}
+
+      **Saleae Logic 2** offers another way to capture and inspect the same eight signals.&thinsp; Later tours will use this software.
+
+      <div class="em-info">
+
+      Find a link to **Logic 2** on the **EM&bull;Home** tab.
+
+      </div>
+
+      Launch **Logic 2** with your analyzer _unplugged_, and then open `logic2.sal` {[dc,1]}&thinsp; found in the Emporium root.
+
+      Explore this _read-only_ capture of {[cu]BlinkerP}&thinsp;{[dc,2]}&thinsp;, and then _plug in_ your analyzer.
+
+      **Logic 2** detects your analyzer and opens a _new_ recording session {[dc,3]}.&thinsp; The status bar confirms the connection.
+
+      To start recording, first click the blue **Start** button {[dc,4]} and then reset your board to trigger the capture.
+
+      <div class="em-info">
+
+      Back to **PulseView** &ndash; but feel free to use **Logic 2** instead.
+
+      </div>
 
   - cmds:
       - view 4
