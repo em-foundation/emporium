@@ -43,7 +43,7 @@ steps:
 
       <div class="em-info">
 
-      This tour's (portable) examples chose the `ti.cc23xx` distro &ndash; but work equally well with other target MCUs.
+      This tour chose the `ti.cc23xx` distro for its examples &ndash; which work equally well with other supported MCUs.
 
       </div>
 
@@ -74,7 +74,7 @@ steps:
 
       In this setup, we've disconnected the debugger adapter from the DUT and then connected the **PPK** as shown {[dc,1]}.
 
-      Using Nordic's desktop app, select  **Source Meter** at 3V0 and enable DUT power _before_ you start recording.
+      Using Nordic's desktop app, select  **Source Meter** at 3V0 and start recording _before_ you enable power to the DUT.
 
       A trace like {[dc,2]} should appear, with a large inrush at reset followed by ten WORK-SLEEP activity cycles.
 
@@ -133,13 +133,13 @@ steps:
 
       <div class="em-info">
 
-      The trace at {[dc,2]} shows the expected ten WORK-SLEEP cycles; the zoom at {[dc,3]} confirms ~250&thinsp;ms of activity
+      The trace at {[dc,2]} shows the expected ten WORK-SLEEP cycles; the zoom at {[dc,3]} confirms ~250&thinsp;ms of activity.
 
       </div>
 
       Using the five-step process outlined at the last stop, we've added a `wait-250` entry {[dc,4]} to our capture collection.
 
-      Consuming ~5&times; more WORK energy, {[cu]BusyWait250C} earns roughly one-fifth the {[em]EM&bull;eralds} score &ndash; as anticipated.
+      Consuming ~5&times; the WORK energy, {[cu]BusyWait250C} earns roughly one-fifth the {[em]EM&bull;eralds} score &ndash; as anticipated.
 
   - cmds:
       - view 7
@@ -170,7 +170,7 @@ steps:
       **EM&bull;Scope** offers a number of features for managing entries in a capture collection:
 
       {[DC,1]} reveal its meta-data by hovering over its name<br>
-      {[DC,2]} **Edit** its meta-data or **Grab Again** its power signals<br>
+      {[DC,2]} **Edit** meta-data or **Grab Again** to record new signals<br>
       {[DC,3]} **Remove** this entry from the collection<br>
 
       <div class="em-info">
