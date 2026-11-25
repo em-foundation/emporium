@@ -1,5 +1,24 @@
 # Changelog
 
+## release-26.12
+
+* Added Energy Efficiency tours (104)
+* Completed the EM•Tours 100-level curriculum
+* Added integrated EM•Scope viewer for energy measurement and analysis
+* Added supplied benchmark capture collections
+* Added PPK2 acquisition and capture management workflows
+* Added configurable energy projections and EM•eralds comparisons
+* Added generalized SleepyRunner benchmark framework (`em.mark`)
+* Added BusyWait, CoreMark, and Pause benchmark activities
+* Added TI CC27xx distro support
+* Added third-party tooling links to EM•Home
+* Added Saleae Logic 2 guidance for real-hardware workflows
+* Removed generated tour screenshots from change control
+* EM•Script pinned to 26.4.3
+* EM•Builder pinned to 26.4.0
+* EM•Scope pinned to 26.2.4
+* Validated released tour metadata
+
 ## release-26.10
 
 * Added Distro Packages tours (103)
