@@ -29,6 +29,9 @@ Before installing the **EM&bull;porium**, you'll need **VS Code**, **Node.js**, 
 
 &emsp;&emsp;&emsp;If already installed locally, enter `code --version` from the shell and verify **VS Code** version 1.90 or later.
 
+> [!IMPORTANT]
+> On Debian and Ubuntu, install Microsoft's native [VS Code .deb package](https://code.visualstudio.com/docs/setup/linux#_debian-and-ubuntu-based-distributions). Avoid the Snap package.
+
 #### 🟠&ensp;download [**Node.js**](https://nodejs.org/en/download)
 
 &emsp;&emsp;&emsp;If already installed locally, enter `node --version` from the shell and verify **Node.js** version 22 or later.

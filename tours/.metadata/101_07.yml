@@ -7,8 +7,8 @@ source_file: "tours/101_BasicExamples/07_Ticker.emtour"
 title: "Cyclic Tasks"
 
 source_snapshot:
-  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
-  generated_at: "2026-09-18T18:34:44.423Z"
+  git_sha: "2785335a621d930af073d9fe5b976ac0ad391dfa"
+  generated_at: "2026-11-26T13:47:43.800Z"
 
 ground_truth:
   stop_count: 7
@@ -35,6 +35,7 @@ steps:
     icon: "$start"
     cmds:
       - "view 3"
+      - "reveal 1"
     focus: []
     acts:
       []
@@ -429,7 +430,7 @@ marker_audit:
     context_after:
       - "    if (ticker.$$._tick_cb == $null) return"
       - "    ticker.$$._tick_cb()"
-      - "    ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)"
+      - "    if (ticker.$$._tick_cb != $null) ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate) // FIX: do not rearm after callback stops ticker"
     status: "ok"
   - stop: 5
     file_index: 2
@@ -444,7 +445,7 @@ marker_audit:
       - "    const ticker = $$(ticker_tab[<u16>a])"
     context_after:
       - "    ticker.$$._tick_cb()"
-      - "    ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)"
+      - "    if (ticker.$$._tick_cb != $null) ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate) // FIX: do not rearm after callback stops ticker"
       - "}"
     status: "ok"
   - stop: 5
@@ -459,7 +460,7 @@ marker_audit:
       - "    const ticker = $$(ticker_tab[<u16>a])"
       - "    if (ticker.$$._tick_cb == $null) return"
     context_after:
-      - "    ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)"
+      - "    if (ticker.$$._tick_cb != $null) ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate) // FIX: do not rearm after callback stops ticker"
       - "}"
       - ""
     status: "ok"
@@ -469,7 +470,7 @@ marker_audit:
     file_resolved: "em.core/em.utils/TickerMgr.em.ts"
     label: "J"
     line: 41
-    expect: "    ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate)"
+    expect: "    if (ticker.$$._tick_cb != $null) ticker.$$._alarm.$$.wakeupAligned(ticker.$$._rate) // FIX: do not rearm after callback stops ticker"
     context_before:
       - "    const ticker = $$(ticker_tab[<u16>a])"
       - "    if (ticker.$$._tick_cb == $null) return"
@@ -505,6 +506,7 @@ usage:
   commands:
     "mark": 23
     "open": 6
+    "reveal": 1
     "view": 1
   actions:
     []

@@ -128,15 +128,15 @@ steps:
 
   - cmds:
       - open 6
-      - fold 6 9 189
-      - fold 6 190 220
-      - fold 6 228 2897
-      - fold 6 2901 2933
+      - fold 6 9 209
+      - fold 6 210 240
+      - fold 6 248 3728
+      - fold 6 3732 3764
       - mark 6 A 2
       - mark 6 B 5
-      - mark 6 C 224
-      - mark 6 D 2899
-      - mark 6 E 2945
+      - mark 6 C 244
+      - mark 6 D 3730
+      - mark 6 E 3781
     focus: [6, 1]
     text: |
       {[ht,sync_arrow_up]&thinsp;The %[cu]REGS% Facade}
@@ -161,16 +161,16 @@ steps:
 
   - cmds:
       - open 7
-      - fold 7 5 12
-      - fold 7 17 88
-      - fold 7 104 116
-      - mark 7 A 14
-      - mark 7 B 90
-      - mark 7 C 100
-      - mark 7 D 104
-      - mark 7 E 118
-      - mark 7 F 121
-      - mark 7 G 124
+      - fold 7 5 16
+      - fold 7 22 94
+      - fold 7 110 122
+      - mark 7 A 19
+      - mark 7 B 96
+      - mark 7 C 106
+      - mark 7 D 110
+      - mark 7 E 124
+      - mark 7 F 127
+      - mark 7 G 130
       - reveal 7
     focus: [7, 1]
     text: |

@@ -7,8 +7,8 @@ source_file: "tours/101_BasicExamples/01_Blink.emtour"
 title: "Blinking LEDs"
 
 source_snapshot:
-  git_sha: "9465d2eff1920c1e92046c9c4ed716be9ed1b214"
-  generated_at: "2026-09-18T18:34:44.046Z"
+  git_sha: "2785335a621d930af073d9fe5b976ac0ad391dfa"
+  generated_at: "2026-11-26T13:47:43.181Z"
 
 ground_truth:
   stop_count: 8
@@ -83,10 +83,10 @@ steps:
     cmds:
       - "open 4"
       - "mark 4 A 26"
-      - "mark 4 B 57"
+      - "mark 4 B 55"
     focus: [4, 30]
     acts:
-      - "$reveal"
+      []
   - stop: 6
     heading: "%[cu]BlinkerP% – Signal Capture"
     icon: "monitor_heart"
@@ -214,16 +214,16 @@ marker_audit:
     file_raw: "rpi.2040:rpi.distro.2040/BoardC.em.ts"
     file_resolved: "rpi.2040/rpi.distro.2040/BoardC.em.ts"
     label: "B"
-    line: 57
-    expect: "    const brd = $board(DEFAULTS)"
+    line: 55
+    expect: "    const brd = $board(BRD_DEFAULTS)"
     context_before:
+      - ""
+      - "export function em$configure(): void {"
       - "    if ($isbare()) return"
+    context_after:
       - "    $using(BoardController)"
       - "    $using(Console)"
-    context_after:
       - "    AlarmMgr.Rtc.$$dlg = Rtc"
-      - "    AppBut.Edge.$$dlg = AppButEdge"
-      - "    AppButEdge.Pin.$$dlg = AppButPin"
     status: "ok"
 
 usage:
@@ -255,7 +255,6 @@ usage:
     "view": 3
   actions:
     - "$build"
-    - "$reveal"
 
 curated:
   summary: ""

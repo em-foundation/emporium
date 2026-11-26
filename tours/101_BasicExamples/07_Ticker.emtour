@@ -111,7 +111,7 @@ steps:
       {[BM,G]} We locate the {[ct]Ticker} object using its index {[bm,E]}.<br>
       {[BM,H]} We test for a {[cs]$null} callback (set inside {[cf]stop}).<br>
       {[BM,I]} We invoke the callback function at this point.<br>
-      {[BM,J]} We schedule the next wakeup at the current rate.
+      {[BM,J]} If the callback left the ticker running, we schedule the next wakeup at the current rate.
 
   - cmds:
       - open 2
