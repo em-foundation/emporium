@@ -1,5 +1,8 @@
 import '@$$emscript'
-export const $U = $declare('MODULE')
+export const $U = $declare('MODULE', SmpI)
+
+import * as Binder from '@em.link.ble/Binder.em'
+import * as SmpI from '@em.link.ble/SmpI.em'
 
 import * as Aes128I from '@em.hal/Aes128I.em'
 import * as CmacProviderI from '@em.crypto.cmac/CmacProviderI.em'
@@ -49,6 +52,7 @@ const ack_f = $config<FiberMgr.Obj>()
 
 export namespace em$meta {
     export function em$construct() {
+        L2Cap.em$meta.allocRx(Binder.em$meta.getRxBufSize())
         work_f.$$val = FiberMgr.em$meta.create($cb(workFB))
         verify_f.$$val = FiberMgr.em$meta.create($cb(verifyFB))
         ack_f.$$val = FiberMgr.em$meta.create($cb(ackFB))

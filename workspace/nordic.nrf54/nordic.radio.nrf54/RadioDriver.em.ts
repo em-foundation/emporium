@@ -18,6 +18,7 @@ import * as TimeFence from '@em.utils/TimeFence.em'
 import * as TL from '@em.link/Types.em'
 
 export const ifs_fence = $config<u32>()
+export const packet_crypto_enabled = $config<bool_t>(true)
 export const hardware_tifs = $config<bool_t>(false)
 export const energy_trace = $config<bool_t>(false)
 export const scheduled_rx = $config<bool_t>(false)
@@ -206,10 +207,10 @@ export function startRx(buf: TL.BufPtr, chan: u8, timeout: u16) {
     cur_chan = chan
     rx_end_time = 0
     rx_timeout = false
-    rx_crypto = cur_params.$$.ble_rx_encrypted
-    if (rx_crypto) requireConnectionCrypto()
-    setPacketLimit(rx_crypto)
-    if (rx_crypto) Link.PacketCrypto.prepareRx(buf, cur_params.$$.ble_rx_ctr_lo, cur_params.$$.ble_rx_ctr_hi)
+    rx_crypto = packet_crypto_enabled && cur_params.$$.ble_rx_encrypted
+    if (packet_crypto_enabled && rx_crypto) requireConnectionCrypto()
+    setPacketLimit(packet_crypto_enabled && rx_crypto)
+    if (packet_crypto_enabled && rx_crypto) Link.PacketCrypto.prepareRx(buf, cur_params.$$.ble_rx_ctr_lo, cur_params.$$.ble_rx_ctr_hi)
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(buf)
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
     $R.RADIO.DATAWHITE.$$ = chan | $R.RADIO_DATAWHITE_ResetValue
@@ -259,12 +260,12 @@ export function startTx(chan: u8) {
     setState(State.TX)
     cur_chan = chan
     let tx_buf = <TL.BufPtr>$$(buf[0])
-    tx_crypto = cur_params.$$.ble_tx_encrypted
-    if (tx_crypto) {
+    tx_crypto = packet_crypto_enabled && cur_params.$$.ble_tx_encrypted
+    if (packet_crypto_enabled && tx_crypto) {
         requireConnectionCrypto()
         tx_buf = Link.PacketCrypto.prepareTx(tx_buf, cur_params.$$.ble_tx_ctr_lo, cur_params.$$.ble_tx_ctr_hi)
     }
-    setPacketLimit(tx_crypto)
+    setPacketLimit(packet_crypto_enabled && tx_crypto)
     $R.RADIO.PACKETPTR.$$ = $cast2<u32>(tx_buf)
     $R.RADIO.TXPOWER.$$ = $R.RADIO_TXPOWER_TXPOWER_0dBm
     $R.RADIO.FREQUENCY.$$ = Channel.getFreqOff(chan)
@@ -333,11 +334,11 @@ export function RADIO_0_isr$$() {
             if (rx_timeout) break
             rx_end_time = nowTimeUs()
             Rtc.disableAux()
-            if (cur_phy == TL.Phy.BLE_1M && ($R.RADIO.CRCSTATUS.$$ == 0 || cur_rx_buf[1] > (rx_crypto ? 31 : 37))) { // FIX: reject corrupt/oversized BLE RX before callbacks
+            if (cur_phy == TL.Phy.BLE_1M && ($R.RADIO.CRCSTATUS.$$ == 0 || cur_rx_buf[1] > (packet_crypto_enabled && rx_crypto ? 31 : 37))) { // FIX: reject corrupt/oversized BLE RX before callbacks
                 cur_rx_buf = $null
                 break
             }
-            if (rx_crypto) {
+            if (packet_crypto_enabled && rx_crypto) {
                 let counter_lo = cur_params.$$.ble_rx_ctr_lo
                 let counter_hi = cur_params.$$.ble_rx_ctr_hi
                 if (cur_rx_buf[1] != 0 && (cur_rx_buf[0] & 0x08) != cur_params.$$.ble_rx_next_sn
@@ -365,7 +366,7 @@ export function RADIO_0_isr$$() {
             break
         }
         case State.TX: {
-            if (tx_crypto) {
+            if (packet_crypto_enabled && tx_crypto) {
                 Link.PacketCrypto.completeTx()
                 tx_crypto = false
             }

@@ -6,16 +6,17 @@ import * as Connection from '@em.link.ble/Connection.em'
 import * as Debug from '@em.lang/Debug.em'
 import * as FiberMgr from '@em.utils/FiberMgr.em'
 import * as Heap from '@em.utils/Heap.em'
-import * as L2Cap from '@em.link.ble/L2Cap.em'
 import * as LedI from '@em.hal/LedI.em'
 import * as LnkTx from '@em.link.ble/LnkTx.em'
 import * as Link from '@em.link/Link.em'
 import * as Registry from '@em.link/Registry.em'
-import * as Smp from '@em.link.ble/Smp.em'
+import * as SmpI from '@em.link.ble/SmpI.em'
 import * as TB from '@em.link.ble/Types.em'
 import * as TL from '@em.link/Types.em'
 
 export const Led = $proxy<LedI.$I>()
+export const Smp = $proxy<SmpI.$I>()
+export const security_enabled = $config<bool_t>(false)
 export const public_key_chaining = $config<bool_t>(true) // Optional same-event SMP public-key fragments.
 export const connection_trace = $config<bool_t>(false) // Optional connection-only energy marker.
 export const hfclk_guard_us = $config<u32>(850) // Wake early enough for crystal settling and RX ramp-up.
@@ -34,13 +35,12 @@ export namespace em$meta {
     export function em$construct() {
         reqF.$$val = FiberMgr.em$meta.create($cb(reqFB))
         statusF.$$val = FiberMgr.em$meta.create($cb(statusFB))
-        encAckF.$$val = FiberMgr.em$meta.create($cb(encAckFB))
         Link.RadioDriver.em$meta.bindHandler($cb(radioHandler))
         rx_adr.$$val = Heap.em$meta.alloc(40)
         tx_adr.$$val = Heap.em$meta.alloc(40)
-        L2Cap.em$meta.allocRx(Binder.em$meta.getRxBufSize())
         LnkTx.em$meta.bindAttBuf(tx_adr.$$val)
-        LnkTx.em$meta.bindReadyHandler($cb(preparePendingTx))
+        encAckF.$$val = security_enabled.$$val ? FiberMgr.em$meta.create($cb(encAckFB)) : $null
+        if (security_enabled.$$val) LnkTx.em$meta.bindReadyHandler($cb(preparePendingTx))
     }
 }
 
@@ -56,6 +56,12 @@ const LL_ENC_RSP = 0x04
 const LL_START_ENC_REQ = 0x05
 const LL_START_ENC_RSP = 0x06
 const SMP_ADDR_LEN = 7
+const SMP_PAIRING_REQUEST = 0x01
+const SMP_PAIRING_REQUEST_LEN = 7
+const SMP_PAIRING_NOT_SUPPORTED = $table<u8>([
+    0x02, 0x00, 0x06, 0x00, // L2CAP length and SMP CID
+    0x05, 0x05,             // Pairing Failed, Pairing Not Supported
+])
 const NULL_PKT_LIMIT = 6
 const NUM_ADV_CHANS = 3
 
@@ -137,18 +143,20 @@ export function start() {
     cur_adv_mask = 0
     close_after_ack = false
     null_pkt_cnt = 0
-    Smp.reset()
-    enc_rsp_pending = false
-    enc_rsp_acked = false
-    enc_rx_enabled = false
-    enc_start_pending = false
-    enc_tx_enabled = false
-    enc_tx_pending = false
-    rx_ctr_hi = 0
-    rx_ctr_lo = 0
+    if (security_enabled) {
+        Smp.reset()
+        enc_rsp_pending = false
+        enc_rsp_acked = false
+        enc_rx_enabled = false
+        enc_start_pending = false
+        enc_tx_enabled = false
+        enc_tx_pending = false
+        rx_ctr_hi = 0
+        rx_ctr_lo = 0
+        tx_ctr_hi = 0
+        tx_ctr_lo = 0
+    }
     rx_next_sn = 0
-    tx_ctr_hi = 0
-    tx_ctr_lo = 0
     setState(State.ADV_PAUSE)
     controller()
 }
@@ -233,9 +241,11 @@ function controller() {
             }
             case State.CONN: {
                 Connection.open(conn_pkt)
-                enc_rsp_pending = false
-                enc_rsp_acked = false
-                setSmpAddresses()
+                if (security_enabled) {
+                    enc_rsp_pending = false
+                    enc_rsp_acked = false
+                    setSmpAddresses()
+                }
                 notifyStatus(TL.ConnectionStatus.OPENING)
                 anchor.reset()
                 LnkTx.reset()
@@ -329,7 +339,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     }
     event_rx_count += 1
     const fresh = (lnk_req.$$.lnkFlags & 0x08) == rx_next_sn
-    if (enc_tx_pending && (lnk_req.$$.lnkFlags & 0x04) != (enc_tx_sn >> 1)) {
+    if (security_enabled && enc_tx_pending && (lnk_req.$$.lnkFlags & 0x04) != (enc_tx_sn >> 1)) {
         tx_ctr_lo += 1
         if (tx_ctr_lo == 0) tx_ctr_hi += 1
         if (tx_ctr_hi > 0x7f) {
@@ -339,8 +349,8 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
         enc_tx_pending = false
     }
     LnkTx.ack(lnk_req)
-    Smp.txAcked()
-    if (enc_rx_enabled && !enc_tx_enabled && lnk_req.$$.pduLen > 0) {
+    if (security_enabled) Smp.txAcked()
+    if (security_enabled && enc_rx_enabled && !enc_tx_enabled && lnk_req.$$.pduLen > 0) {
         if (!lnk_req.$$.isCtrl() || lnk_req.$$.pduLen != 1 || lnk_req.$$.pduPtr()[0] != LL_START_ENC_RSP) {
             printf`SMP expected encrypted LL_START_ENC_RSP FAIL\n`()
             fail()
@@ -366,7 +376,7 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
     const accepted = fresh && canAcceptRequest()
     if (accepted) {
         rx_next_sn ^= 0x08
-        if (enc_rx_enabled && lnk_req.$$.pduLen > 0) {
+        if (security_enabled && enc_rx_enabled && lnk_req.$$.pduLen > 0) {
             rx_ctr_lo += 1
             if (rx_ctr_lo == 0) rx_ctr_hi += 1
             if (rx_ctr_hi > 0x7f) {
@@ -375,19 +385,19 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
             }
         }
     }
-    if (LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
+    if (security_enabled && LnkTx.takeCtrlAck() && enc_rsp_pending && !enc_rsp_acked) {
         enc_rsp_pending = false
         enc_rsp_acked = true
         encAckF.$$.post()
     }
-    if (accepted && lnk_req.$$.pduLen > 0 && !Smp.accept(lnk_req)) {
+    if (accepted && lnk_req.$$.pduLen > 0 && !(security_enabled && Smp.accept(lnk_req))) {
         reqF.$$.post()
     }
-    if (enc_tx_enabled) return chooseEncryptedTx()
+    if (security_enabled && enc_tx_enabled) return chooseEncryptedTx()
     let tx = LnkTx.choose(lnk_req)
     // ACK only accepted packets; a busy response slot leaves NESN unchanged.
     tx[0] = (tx[0] & ~0x14) | (rx_next_sn >> 1)
-    if (public_key_chaining && !enc_rx_enabled && lnk_req.$$.pduLen == 0
+    if (security_enabled && public_key_chaining && !enc_rx_enabled && lnk_req.$$.pduLen == 0
         && (tx[0] & 0x03) != TB.LL_CTRL && tx[1] != 0
         && Smp.publicKeyTxActive() && event_rx_count < CHAIN_TX_LIMIT) {
         const deadline = event_rx_end_us - event_rx_air_us + Connection.params().$$.interval_us - hfclk_guard_us
@@ -398,11 +408,11 @@ function exchChain(in_buf: TL.BufPtr): TL.BufFrame {
             params.$$.ble_exch_end_ms = CHAIN_RX_TIMEOUT_MS
         }
     }
-    if (enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
+    if (security_enabled && enc_start_pending && tx[1] == 1 && (tx[0] & 0x03) == TB.LL_CTRL && tx[3] == LL_START_ENC_REQ) {
         enc_rx_enabled = true
         enc_start_pending = false
     }
-    Smp.txChosen()
+    if (security_enabled) Smp.txChosen()
     return tx
 }
 
@@ -410,10 +420,17 @@ function canAcceptRequest(): bool_t {
     if (lnk_req.$$.isCtrl() || lnk_req.$$.pduLen < 4
         || (lnk_req.$$.lnkFlags & 0x03) != TB.LL_START) return true
     const cid = lnk_req.$$.l2capPkt().$$.cid16()
-    if (cid == TB.L2CAP_CID_ATT || cid == TB.L2CAP_CID_LE_SIG) {
+    if (cid == TB.L2CAP_CID_ATT || cid == TB.L2CAP_CID_LE_SIG
+        || (!security_enabled && cid == TB.L2CAP_CID_SMP && isPairingRequest())) {
         return LnkTx.getAttPkt() != $null
     }
     return true
+}
+
+function isPairingRequest(): bool_t {
+    if (lnk_req.$$.pduLen != 4 + SMP_PAIRING_REQUEST_LEN) return false
+    const pdu = lnk_req.$$.pduPtr()
+    return pdu[0] == SMP_PAIRING_REQUEST_LEN && pdu[1] == 0 && pdu[4] == SMP_PAIRING_REQUEST
 }
 
 function exchProf(params: $$<TL.Params>) {
@@ -424,15 +441,17 @@ function exchProf(params: $$<TL.Params>) {
     params.$$.ble_crc_init = Connection.params().$$.crcInit
     params.$$.ble_exch_buf = $null
     params.$$.ble_chain = $cb(exchChain)
-    params.$$.ble_rx_ctr_hi = rx_ctr_hi
-    params.$$.ble_rx_ctr_lo = rx_ctr_lo
-    params.$$.ble_rx_encrypted = enc_rx_enabled
-    params.$$.ble_rx_next_sn = rx_next_sn
     params.$$.ble_rx_start_us = anchor.usecs - RX_START_LEAD_US
     params.$$.ble_rx_start_valid = cur_state == State.EXCH && !upd_flag
-    params.$$.ble_tx_ctr_hi = tx_ctr_hi
-    params.$$.ble_tx_ctr_lo = tx_ctr_lo
-    params.$$.ble_tx_encrypted = enc_tx_enabled
+    if (security_enabled) {
+        params.$$.ble_rx_ctr_hi = rx_ctr_hi
+        params.$$.ble_rx_ctr_lo = rx_ctr_lo
+        params.$$.ble_rx_encrypted = enc_rx_enabled
+        params.$$.ble_rx_next_sn = rx_next_sn
+        params.$$.ble_tx_ctr_hi = tx_ctr_hi
+        params.$$.ble_tx_ctr_lo = tx_ctr_lo
+        params.$$.ble_tx_encrypted = enc_tx_enabled
+    }
 }
 
 function radioHandler() {
@@ -493,6 +512,10 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             return false
         }
         case LL_ENC_REQ: {
+            if (!security_enabled) {
+                unk_flag = true
+                break
+            }
             if (lnk_req.$$.pduLen != LL_ENC_REQ_LEN) {
                 printf`SMP bad LL_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
                 fail()
@@ -516,6 +539,10 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
             return true
         }
         case LL_START_ENC_REQ: {
+            if (!security_enabled) {
+                unk_flag = true
+                break
+            }
             if (lnk_req.$$.pduLen != 1) {
                 printf`SMP bad LL_START_ENC_REQ len=%d\n`(lnk_req.$$.pduLen)
                 fail()
@@ -558,6 +585,7 @@ function reqCtrl(rsp_pkt: $$<TB.LnkHdr>): bool_t {
         rsp_pkt.$$.addUnkRsp(opcode)
     } else {
         rsp_pkt.$$.addPdu(rsp_data)
+        if (!security_enabled && opcode == TB.LL_FEATURE_REQ) rsp_pkt.$$.pduPtr()[1] &= ~0x01
     }
     return true
 }
@@ -570,6 +598,7 @@ function reqFB(_: arg_t) {
             LnkTx.setCtrlReady()
         }
     } else {
+        if (lnk_req.$$.pduLen < 4 || (lnk_req.$$.lnkFlags & 0x03) != TB.LL_START) return
         const l2 = lnk_req.$$.l2capPkt()
         switch (l2.$$.cid16()) {
             case TB.L2CAP_CID_ATT: {
@@ -613,7 +642,15 @@ function reqFB(_: arg_t) {
                 break
             }
             case TB.L2CAP_CID_SMP: {
-                Smp.unexpected(lnk_req)
+                if (security_enabled) {
+                    Smp.unexpected(lnk_req)
+                } else if (isPairingRequest()) {
+                    const rsp = LnkTx.getAttPkt()
+                    if (rsp == $null) return
+                    rsp.$$.init(TB.LL_START)
+                    rsp.$$.addPdu(SMP_PAIRING_NOT_SUPPORTED.$frame(0))
+                    LnkTx.setAttReady()
+                }
                 break
             }
             default: {
@@ -625,7 +662,7 @@ function reqFB(_: arg_t) {
 }
 
 function rxAirtimeUs(pkt: $$<TB.LnkHdr>): u32 {
-    const mic_len = enc_rx_enabled && pkt.$$.pduLen > 0 ? 4 : 0
+    const mic_len = security_enabled && enc_rx_enabled && pkt.$$.pduLen > 0 ? 4 : 0
     return (10 + pkt.$$.pduLen + mic_len) * 8
 }
 

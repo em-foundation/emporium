@@ -18,6 +18,7 @@ export function em$configure() {
     Idle.connection_trace.$$val = true
     HfXtal.energy_trace.$$val = ENERGY_TRACE
     RadioDriver.energy_trace.$$val = ENERGY_TRACE
+    RadioDriver.packet_crypto_enabled.$$val = Controller.security_enabled.$$val
     RadioDriver.hardware_tifs.$$val = true // hardware turnaround uses legacy ramp
     RadioDriver.scheduled_rx.$$val = true // scheduled RX with the driver startup guard
     Controller.connection_trace.$$val = true // A low from accepted CONNECT_IND through CLOSED/HANGUP
