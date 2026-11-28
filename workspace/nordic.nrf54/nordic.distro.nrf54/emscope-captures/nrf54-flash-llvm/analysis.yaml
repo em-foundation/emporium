@@ -4,18 +4,18 @@ span:
 events:
     -
         offset: 50125
-        width: 2000
+        width: 5000
     -
         offset: 150125
-        width: 2000
+        width: 5000
     -
         offset: 250125
-        width: 2000
+        width: 5000
     -
         offset: 350125
-        width: 2000
+        width: 5000
 excluded: []
-event_width: 2000
+event_width: 5000
 sleep:
     avg: 0.0000013860884521932349
     std: 9.89622666292515e-7
@@ -23,5 +23,5 @@ sleep:
     width: 50000
 options:
     - '--trim 4'
-    - '--event-window 20'
+    - '--event-window 50'
 version: 26.2.4
