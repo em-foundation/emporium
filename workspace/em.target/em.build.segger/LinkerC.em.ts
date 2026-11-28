@@ -42,7 +42,17 @@ function genXtraSects(xtra_segs: XtraSeg[]) {
     }
 }
 
-export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
+function genInitArray() {
+    out.addFrag(`
+        |->         . = ALIGN(., 4);
+        |->         __init_array_start = .;
+        |->         KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)))
+        |->         KEEP(*(.init_array))
+        |->         __init_array_end = .;
+    `)
+}
+
+export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = [], options: { initArray?: boolean } = {}) {
     const use_sram = $property('em.build.BootFlash', false)
     if (!use_sram) {
         const stack_top = $sprintf('0x%08x', mem_segs.dmem_flash.orig + mem_segs.dmem_flash.len)
@@ -73,6 +83,9 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
             |-> 
             |->     .const : {
             |->         *(.rodata .rodata.* .constdata .constdata.*)
+        `)
+        if (options.initArray) genInitArray()
+        out.addFrag(`
             |->         . = ALIGN(., 4);
             |->     } > IMEM
             |-> 
@@ -144,6 +157,9 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = []) {
             |-> 
             |->     .const : AT(__const_load_start__) {
             |->         *(.rodata .rodata.* .constdata .constdata.*)
+        `)
+        if (options.initArray) genInitArray()
+        out.addFrag(`
             |->         . = ALIGN(., 4);
             |->     } > IMEM
             |->  

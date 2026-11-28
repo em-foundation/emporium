@@ -24,6 +24,11 @@ export function em$generate() {
         |-> 
         |-> extern "C" int main();
         |-> extern "C" bool __is_warm();
+        |-> #ifdef __EM_RUN_INIT_ARRAY__
+        |-> using InitFn = void (*)();
+        |-> extern "C" InitFn const __init_array_start[];
+        |-> extern "C" InitFn const __init_array_end[];
+        |-> #endif
         |-> 
         |-> typedef struct {
         |->     unsigned int* codeLoad;
@@ -66,6 +71,11 @@ export function em$generate() {
         |->         SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  /* set CP10 and CP11 Full Access */
         |->         __DSB();
         |->         __ISB();
+        |-> #endif
+        |-> #ifdef __EM_RUN_INIT_ARRAY__
+        |->         for (auto fn = __init_array_start; fn != __init_array_end; ++fn) {
+        |->             (*fn)();
+        |->         }
         |-> #endif
         |->     }
         |-> 

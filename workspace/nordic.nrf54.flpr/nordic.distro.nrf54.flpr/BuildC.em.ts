@@ -24,18 +24,29 @@ export function em$generate() {
     let fpu = $property('em.build.FPU', '')
     let fpuabi = fpu ? 'hard' : 'soft'
     let fpudef = fpu ? '1' : '0'
+    const windows = process.platform === 'win32'
+    const suffix = windows ? '.exe' : ''
+    const shellPath = (path: string) => {
+        const normalized = windows ? path.replaceAll('\\', '/') : path
+        return "'" + normalized.replaceAll("'", "'\\''") + "'"
+    }
     let out = $outfile('build.sh', 0o755)
     out.addFrag(`
         |-> #!/bin/sh
         |-> 
         |-> set -e
         |-> 
-        |-> TOOLS=${tools}/segger-riscv
-        |-> CC=$TOOLS/bin/segger-cc
-        |-> LD=$TOOLS/gcc/riscv32-none-elf/bin/ld
-        |-> OBJCOPY=$TOOLS/gcc/riscv32-none-elf/bin/objcopy
-        |-> OBJDUMP=$TOOLS/gcc/riscv32-none-elf/bin/objdump
-        |-> SREC=${tools}/srecord/bin/srec_cat
+        |-> TOOLS=${shellPath(tools + '/segger-riscv')}
+        |-> TOOLS="\${SEGGER_RISCV_HOME:-$TOOLS}"
+        |-> CC="$TOOLS/bin/segger-cc${suffix}"
+        |-> LD="$TOOLS/gcc/riscv32-none-elf/bin/ld${suffix}"
+        |-> OBJCOPY="$TOOLS/gcc/riscv32-none-elf/bin/objcopy${suffix}"
+        |-> OBJDUMP="$TOOLS/gcc/riscv32-none-elf/bin/objdump${suffix}"
+        |-> SREC=${shellPath(tools + '/srecord/bin/srec_cat' + suffix)}
+        |-> if [ ! -x "$CC" ]; then
+        |->     echo "SEGGER RISC-V compiler missing from $TOOLS. Set SEGGER_RISCV_HOME to the toolchain directory." >&2
+        |->     exit 1
+        |-> fi
         |-> 
         |-> OUT=.out
         |-> 
@@ -75,11 +86,6 @@ export function em$generate() {
         |->     -Wno-return-type \\
         |-> "
         |-> 
-        |-> CINCS="\\
-        |->     -I . \\
-        |->     -I $TOOLS/include \\
-        |-> "
-        |-> 
         |-> COPTS="\\
         |->     -${opt} \\
         |-> "
@@ -90,20 +96,16 @@ export function em$generate() {
         |->     --gc-sections \\
         |-> "
         |-> 
-        |-> LIBS="
-        |->     $TOOLS/lib/libc_rv32emc_small.a \\
-        |-> "
-        |-> 
-        |-> $CC -c $CFLAGS $CINCS $COPTS -x c++ main.cpp -o $OUT/main.obj
-        |-> $LD $LFLAGS -Map=$OUT/main.map -T linkcmd.ld -o $OUT/main.out $OUT/main.obj $LIBS
-        |-> $OBJCOPY -O ihex $OUT/main.out $OUT/main.out.hex
-        |-> $OBJDUMP -h -D --demangle $OUT/main.out >$OUT/main.out.dis
-        |-> $OBJDUMP -t --demangle $OUT/main.out | tail -n +5 | sed -e 's/[FO] /  /' | sed -e 's/df /   /' >$OUT/main.out.sym
+        |-> "$CC" -c $CFLAGS -I . -I "$TOOLS/include" $COPTS -x c++ main.cpp -o $OUT/main.obj
+        |-> "$LD" $LFLAGS -Map=$OUT/main.map -T linkcmd.ld -o $OUT/main.out $OUT/main.obj "$TOOLS/lib/libc_rv32emc_small.a"
+        |-> "$OBJCOPY" -O ihex $OUT/main.out $OUT/main.out.hex
+        |-> "$OBJDUMP" -h -D --demangle $OUT/main.out >$OUT/main.out.dis
+        |-> "$OBJDUMP" -t --demangle $OUT/main.out | tail -n +5 | sed -e 's/[FO] /  /' | sed -e 's/df /   /' >$OUT/main.out.sym
         |-> sort -k1 $OUT/main.out.sym > $OUT/main.out.syma
         |-> sort -k5 $OUT/main.out.sym > $OUT/main.out.symn
-        |-> $OBJDUMP -h $OUT/main.out
-        |-> $SREC $OUT/main.out.hex -Intel -offset - -minimum-addr $OUT/main.out.hex -Intel -o $OUT/main.out.bin -Binary
-        |-> $SREC ../nordic.nrf54/nordic.distro.nrf54/vpr-launcher.hex -Intel $OUT/main.out.bin  -Binary -offset 0x00008000 -o $OUT/merged.hex -Intel
+        |-> "$OBJDUMP" -h $OUT/main.out
+        |-> "$SREC" $OUT/main.out.hex -Intel -offset - -minimum-addr $OUT/main.out.hex -Intel -o $OUT/main.out.bin -Binary
+        |-> "$SREC" ../nordic.nrf54/nordic.distro.nrf54/vpr-launcher.hex -Intel $OUT/main.out.bin  -Binary -offset 0x00008000 -o $OUT/merged.hex -Intel
 `)
     out.close()
     //

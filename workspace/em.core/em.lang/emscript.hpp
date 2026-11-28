@@ -1,8 +1,10 @@
 #ifndef emscript__M
 #define emscript__M
 
+#ifndef __EM_COMPILER_llvm__
 #include <cstring>
 #include <math.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 
