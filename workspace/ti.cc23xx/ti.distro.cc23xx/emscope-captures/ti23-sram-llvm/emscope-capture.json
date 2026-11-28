@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "ti.cc23xx://LP_EM_CC2340R5",
+  "setup": "ti.cc23xx://sram-llvm",
+  "imageSizes": {
+    "text": 4824,
+    "const": 404,
+    "data": 284,
+    "bss": 1484
+  },
+  "acquisition": {
+    "mode": "-S",
+    "voltage": 3,
+    "duration": 6
+  }
+}

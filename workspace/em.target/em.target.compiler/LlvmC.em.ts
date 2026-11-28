@@ -3,7 +3,8 @@ export const $U = $declare('COMPOSITE')
 
 export function arm(cpu: string, fpu: boolean, suffix: string) {
     const abi = fpu ? '-mfloat-abi=hard -mfpu=fpv5-sp-d16' : '-mfloat-abi=soft'
-    const target = `--target=arm-none-eabi -mcpu=${cpu} -mthumb ${abi}`
+    const triple = ['cortex-m0', 'cortex-m0plus'].includes(cpu) ? 'thumbv6m-none-eabi' : 'arm-none-eabi'
+    const target = `--target=${triple} -mcpu=${cpu} -mthumb ${abi}`
     return profile(target, '-funsigned-char -mno-unaligned-access', suffix)
 }
 
