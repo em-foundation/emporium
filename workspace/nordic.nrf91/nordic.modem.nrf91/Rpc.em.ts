@@ -43,10 +43,6 @@ var tx_k: u32 = 1
 
 var done_flag: volatile_t<bool_t>
 
-export function em$startup() {
-    shmemConstruct()
-}
-
 export function IPC_isr$$() {
     const pend = $R.IPC.INTPEND.$$
     // $['%%a']
@@ -160,6 +156,7 @@ export function txBase(): ptr_t<u32> {
 }
 
 export function start(): bool_t {
+    shmemConstruct()
     ipcInit()
     const shmem = $$(shmem_tab[0])
     const ctrl = $$(shmem.$$.ctrl)

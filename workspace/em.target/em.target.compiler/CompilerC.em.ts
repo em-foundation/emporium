@@ -15,7 +15,7 @@ function shellQuote(value: string) {
     return "'" + value.replaceAll("'", "'\\''") + "'"
 }
 
-type Target = { arch?: 'arm', cpu: string, fpu: boolean } | { arch: 'riscv', cpu: string }
+type Target = ({ arch?: 'arm', cpu: string, fpu: boolean } | { arch: 'riscv', cpu: string }) & { includeDirs?: string[] }
 
 export function genScript(target: Target, postBuild = '') {
     const compiler = $property('em.build.Compiler', 'segger')
@@ -24,6 +24,7 @@ export function genScript(target: Target, postBuild = '') {
     const windows = process.platform === 'win32'
     const suffix = windows ? '.exe' : ''
     const opt = shellQuote('-' + optimize)
+    const includeFlags = target.includeDirs?.map(dir => `-I ${shellQuote(dir)}`).join(' ') ?? ''
     const arch = target.arch ?? 'arm'
     const riscv = target.arch === 'riscv'
     let profile
@@ -64,7 +65,7 @@ CFLAGS="-D__EM_ARCH_${arch}__ -D__EM_BOOT__=0 -D__EM_BOOT_FLASH__=0 -D__EM_MCU_n
     ${riscv ? '' : `-D__FPU_PRESENT=${fpu} -D__FPU_USED=${fpu}`}
     -ffunction-sections -fdata-sections -fno-threadsafe-statics
     ${profile.flags}"
-"$CC" -c $CFLAGS -I . ${profile.includes} ${opt} -x c++ main.cpp -o "$OUT/main.obj"
+"$CC" -c $CFLAGS -I . ${profile.includes} ${includeFlags} ${opt} -x c++ main.cpp -o "$OUT/main.obj"
 ${profile.link}
 "$OBJCOPY" -O ihex "$OUT/main.out" "$OUT/main.out.hex"
 "$OBJDUMP" -h ${riscv ? '-D' : '-d'} --demangle "$OUT/main.out" > "$OUT/main.out.dis"

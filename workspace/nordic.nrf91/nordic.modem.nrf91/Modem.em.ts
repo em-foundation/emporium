@@ -2,7 +2,6 @@ import '@$$emscript'
 export const $U = $declare('MODULE')
 
 import * as BoardC from '@nordic.distro.nrf91/BoardC.em'
-import * as Common from '@em.mcu/Common.em'
 import * as Mem from '@em.utils/Mem.em'
 import * as AtCmd from '@nordic.modem.nrf91/AtCmd.em'
 import * as Rpc from '@nordic.modem.nrf91/Rpc.em'
@@ -61,10 +60,6 @@ export function enable(): bool_t {
     if (enabled) {
         return true
     }
-    if (!Rpc.start() || !Rpc.atInit()) {
-        return false
-    }
-    modemPostInit()
     AppLed.on()
     $['%%d+']
     if (!networkBringUp()) {
@@ -101,24 +96,8 @@ export function handshake() {
     disable()
 }
 
-export function init() {
-    // POWER/CLOCK are assumed non-secure before entry.
-    modemPrep()
-}
-
 function modemShutdown() {
     AtCmd.run(POWER_OFF)
-}
-
-function modemPostInit() {
-    const MODEM_POST = $cast2<ptr_t<u32>>(0x4000506C)
-    MODEM_POST[0] = 1
-}
-
-function modemPrep() {
-    const MODEM_PREP = $cast2<ptr_t<u32>>(0x40005068)
-    MODEM_PREP[0] = 1
-    Common.BusyWait.wait(200)
 }
 
 function networkBringUp(): bool_t {
@@ -249,6 +228,5 @@ function openUdpInternal(addr: u32, port: u16): bool_t {
 //>> ---- test ---- <<//
 
 export function em$run() {
-    init()
     handshake()
 }

@@ -21,6 +21,10 @@ export function isWarm(): bool_t {
 }
 
 export function startup(): void {
+    // Install the application vectors before board startup hooks run.
+    e$`SCB->VTOR = (uint32_t)(&__vector_table)`
+    e$`__DSB()`
+    e$`__ISB()`
     Debug.startup()
     $['%%a:'](2)
     //

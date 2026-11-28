@@ -13,6 +13,7 @@ import * as GpioT from '@nordic.mcu.nrf91/GpioT.em'
 import * as Idle from '@nordic.mcu.nrf91/Idle.em'
 import * as LedT from '@em.utils/LedT.em'
 import * as Mcu from '@nordic.mcu.nrf91/Mcu.em'
+import * as ModemStartup from '@nordic.modem.nrf91/ModemStartup.em'
 import * as OneShot from '@nordic.mcu.nrf91/OneShotTimer0.em'
 import * as Poller from '@em.mcu/Poller.em'
 import * as Rtc from '@nordic.mcu.nrf91/Rtc0.em'
@@ -50,6 +51,7 @@ export function em$configure(): void {
     const brd = $board(DEFAULTS)
     $using(BoardController)
     $using(Console)
+    $using(ModemStartup)
     AlarmMgr.Rtc.$$dlg = Rtc
     AppLed.Pin.$$dlg = AppLedPin
     AppLed.active_low.$$val = brd.activeLowLeds

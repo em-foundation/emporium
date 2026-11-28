@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "nordic.nrf91://NRF9151_DK",
+  "setup": "nordic.nrf91://flash-gcc",
+  "imageSizes": {
+    "text": 5624,
+    "const": 316,
+    "data": 5752,
+    "bss": 1848
+  },
+  "acquisition": {
+    "mode": "-A",
+    "voltage": 3,
+    "duration": 6
+  }
+}

@@ -29,7 +29,6 @@ const SERVER_ADDR = 0x08080808
 const SERVER_PORT = 2469
 
 export function em$run() {
-    Modem.init()
     if (!Modem.enable()) fail()
     if (!Modem.openUdp(SERVER_ADDR, SERVER_PORT)) fail()
     send_ticker.$$.start(TT.Secs30p2_initMsecs(10000), $cb(sendTickCb))

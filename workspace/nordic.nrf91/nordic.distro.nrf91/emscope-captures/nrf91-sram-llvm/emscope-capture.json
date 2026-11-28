@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "nordic.nrf91://NRF9151_DK",
+  "setup": "nordic.nrf91://sram-llvm",
+  "imageSizes": {
+    "text": 4892,
+    "const": 412,
+    "data": 6024,
+    "bss": 1520
+  },
+  "acquisition": {
+    "mode": "-A",
+    "voltage": 3,
+    "duration": 6
+  }
+}
