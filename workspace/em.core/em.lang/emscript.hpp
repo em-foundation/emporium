@@ -20,6 +20,33 @@ static void em__halt();
 
 namespace em {
 
+    inline int mem_cmp(const uint8_t* lhs, const uint8_t* rhs, size_t size) {
+#ifdef __EM_FREESTANDING_HEADERS__
+        for (size_t i = 0; i < size; ++i) {
+            if (lhs[i] != rhs[i]) return int(lhs[i]) - int(rhs[i]);
+        }
+        return 0;
+#else
+        return memcmp(lhs, rhs, size);
+#endif
+    }
+
+    inline void mem_copy(uint8_t* dst, const uint8_t* src, size_t size) {
+#ifdef __EM_FREESTANDING_HEADERS__
+        for (size_t i = 0; i < size; ++i) dst[i] = src[i];
+#else
+        memcpy(dst, src, size);
+#endif
+    }
+
+    inline void mem_set(uint8_t* dst, uint8_t value, size_t size) {
+#ifdef __EM_FREESTANDING_HEADERS__
+        for (size_t i = 0; i < size; ++i) dst[i] = value;
+#else
+        memset(dst, value, size);
+#endif
+    }
+
     using f32 = float;
 
     using i8 = int8_t;

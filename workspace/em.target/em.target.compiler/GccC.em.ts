@@ -4,7 +4,7 @@ export const $U = $declare('COMPOSITE')
 export function arm(cpu: string, fpu: boolean, suffix: string) {
     const abi = fpu ? '-mfloat-abi=hard -mfpu=fpv5-sp-d16' : '-mfloat-abi=soft'
     const target = `-mcpu=${cpu} -mthumb ${abi}`
-    return profile('gcc-arm', 'arm-none-eabi', 'arm-zephyr-eabi', target, '-funsigned-char -mno-unaligned-access', suffix)
+    return profile('gcc-arm', 'arm-none-eabi', 'arm-zephyr-eabi', target, '-funsigned-char -mno-unaligned-access -D__EM_FREESTANDING_HEADERS__', suffix)
 }
 
 export function riscv(suffix: string) {

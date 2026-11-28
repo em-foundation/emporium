@@ -6,11 +6,11 @@ export namespace em$meta { }
 //>> ---- em$targ ---- <<//
 
 export function cmp(src1: arg_t, src2: arg_t, len: u16): i32 {
-    return <i32>e$`memcmp((uint8_t*)src1, (uint8_t*)src2, len)`
+    return <i32>e$`em::mem_cmp((const uint8_t*)src1, (const uint8_t*)src2, len)`
 }
 
 export function cpy(dst: arg_t, src: arg_t, len: u16) {
-    e$`memcpy((uint8_t*)dst, (uint8_t*)src, len)`
+    e$`em::mem_copy((uint8_t*)dst, (const uint8_t*)src, len)`
 }
 
 export function prB(label: text_t, ptr: arg_t, size: u32) {
@@ -85,6 +85,6 @@ export function scan32(src: arg_t): u32 {
 }
 
 export function set(dst: arg_t, val: u8, len: u16) {
-    e$`memset((uint8_t*)dst, val, len)`
+    e$`em::mem_set((uint8_t*)dst, val, len)`
 }
 
