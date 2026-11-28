@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "nordic.nrf54.riscv://NRF54L15_DK",
+  "setup": "nordic.nrf54.riscv://sram-segger",
+  "imageSizes": {
+    "text": 5868,
+    "const": 436,
+    "data": 284,
+    "bss": 1492
+  },
+  "acquisition": {
+    "mode": "-S",
+    "voltage": 3,
+    "duration": 6
+  }
+}
