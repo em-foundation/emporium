@@ -11,7 +11,7 @@ RfTrim_aux.hpp preserves TI's trim types and temperature compensation. The appTr
 The additional PMUD, SYSTIM, and SYS0 headers come from T:/ti/zephyr-ti/modules/hal/ti/simplelink_lpf3/source/ti/devices/cc27xx/inc.
 
 RfCtrl, RfFifo, RfFreq, and RfTemp start from the CC23xx EM implementation.
-Build with ti.cc27xx://flash. The scan-response turnaround starts from the CC23xx 47 us command-lead model and has passed the phone scan-response test. BlueJouleGattP supports the unencrypted manual connection test described below. Shared software P256 supports SMP startup; CMAC and packet protection use explicit unsupported providers. RTC radio pauses and AlarmMgr share the CH0 compare, preserving the earlier deadline; CH1 is capture-only.
+Build with ti.cc27xx://flash-segger. The scan-response turnaround starts from the CC23xx 47 us command-lead model and has passed the phone scan-response test. BlueJouleGattP supports the unencrypted manual connection test described below. Shared software P256 supports SMP startup; CMAC and packet protection use explicit unsupported providers. RTC radio pauses and AlarmMgr share the CH0 compare, preserving the earlier deadline; CH1 is capture-only.
 
 
 RX target difference: TI LRFLPF3.c LRF_programCMixN applies the CC27XX RCL-489 I/Q-swap workaround by reversing the CC23 mixer sign. RfFreq now follows that target conditional. Bob verified phone discovery after this correction. Temporary UART dumps, DBG-C/D instrumentation, and isolation probes were then removed; the cleaned scan-response image was reverified on the phone.

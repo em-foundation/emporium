@@ -79,7 +79,7 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = [], options:
             |->          . = ALIGN(., 4);
             |->     } > IMEM
             |-> 
-            |->     .ARM.exidx : { } > IMEM
+            |->     .ARM.exidx : { *(.ARM.exidx .ARM.exidx.*) } > IMEM
             |-> 
             |->     .const : {
             |->         *(.rodata .rodata.* .constdata .constdata.*)
@@ -151,7 +151,7 @@ export function genScript(mem_segs: MemSegs, xtra_segs: XtraSeg[] = [], options:
             |->         . = ALIGN(., 4);
             |->     } > IMEM AT > LMEM
             |-> 
-            |->     .ARM.exidx : { } > IMEM AT > LMEM
+            |->     .ARM.exidx : { *(.ARM.exidx .ARM.exidx.*) } > IMEM AT > LMEM
             |->  
             |->     __const_load_start__ = (ALIGN(LOADADDR(.text) + SIZEOF(.text) + SIZEOF(.ARM.exidx), 4));
             |-> 

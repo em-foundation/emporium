@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "ti.cc27xx://LP_EM_CC2755P10",
+  "setup": "ti.cc27xx://flash-gcc",
+  "imageSizes": {
+    "text": 6340,
+    "const": 324,
+    "data": 12,
+    "bss": 1816
+  },
+  "acquisition": {
+    "mode": "-S",
+    "voltage": 3,
+    "duration": 6
+  }
+}
