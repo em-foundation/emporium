@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "nordic.nrf54://NRF54L15_DK",
+  "setup": "nordic.nrf54://sram-llvm",
+  "imageSizes": {
+    "text": 5748,
+    "const": 404,
+    "data": 284,
+    "bss": 1488
+  },
+  "acquisition": {
+    "mode": "-S",
+    "voltage": 3,
+    "duration": 6
+  }
+}

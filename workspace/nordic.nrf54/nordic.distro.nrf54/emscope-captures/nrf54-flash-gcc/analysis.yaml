@@ -1,0 +1,27 @@
+span:
+    offset: 99425
+    width: 400000
+events:
+    -
+        offset: 149425
+        width: 2000
+    -
+        offset: 249425
+        width: 2000
+    -
+        offset: 349425
+        width: 2000
+    -
+        offset: 449400
+        width: 2000
+excluded: []
+event_width: 2000
+sleep:
+    avg: 0.000001382018859743539
+    std: 9.972274378692801e-7
+    'off': 374425
+    width: 50000
+options:
+    - '--trim 4'
+    - '--event-window 20'
+version: 26.2.4

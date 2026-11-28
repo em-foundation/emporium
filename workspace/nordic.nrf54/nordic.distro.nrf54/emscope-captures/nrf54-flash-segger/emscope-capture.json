@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "program": "em.mark.coremark/CoreMarkC",
+  "board": "nordic.nrf54://NRF54L15_DK",
+  "setup": "nordic.nrf54://flash-segger",
+  "imageSizes": {
+    "text": 4364,
+    "const": 404,
+    "data": 284,
+    "bss": 1484
+  },
+  "acquisition": {
+    "mode": "-S",
+    "voltage": 3,
+    "duration": 6
+  }
+}
