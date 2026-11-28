@@ -58,6 +58,9 @@ export function em$generate() {
         |->             dst[i] = src[i];
         |->         }
         |-> #if __EM_BOOT_FLASH__ == 1
+        |-> #ifdef EM_ARM_PREPARE_CODE_RAM
+        |->         EM_ARM_PREPARE_CODE_RAM();
+        |-> #endif
         |->         sz = (uint32_t)&__code_size__;
         |->         src = &__code_load__;
         |->         dst = &__code_copy_addr__;
