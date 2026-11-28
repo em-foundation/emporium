@@ -1,7 +1,7 @@
 #ifndef emscript__M
 #define emscript__M
 
-#ifndef __EM_COMPILER_llvm__
+#ifndef __EM_FREESTANDING_HEADERS__
 #include <cstring>
 #include <math.h>
 #endif

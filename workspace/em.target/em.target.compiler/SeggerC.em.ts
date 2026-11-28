@@ -23,3 +23,22 @@ OBJDUMP="$TOOLS/gcc/arm-none-eabi/bin/objdump${suffix}"`,
     -o "$OUT/main.out" "$OUT/main.obj" "$TOOLS/lib/libc_${lib}" "$TOOLS/lib/strops_${lib}"`,
     }
 }
+
+export function riscv(suffix: string) {
+    return {
+        folder: 'segger-riscv',
+        tools: `TOOLS="\${SEGGER_RISCV_HOME:-$TOOLS}"
+CC="$TOOLS/bin/segger-cc${suffix}"
+LD="$TOOLS/gcc/riscv32-none-elf/bin/ld${suffix}"
+OBJCOPY="$TOOLS/gcc/riscv32-none-elf/bin/objcopy${suffix}"
+OBJDUMP="$TOOLS/gcc/riscv32-none-elf/bin/objdump${suffix}"`,
+        flags: `-D__GNUC__ --std=c++14 -triple riscv32-none-elf -target-cpu generic-rv32
+    -target-feature +e -target-feature +m -target-feature +c -target-feature +zicsr
+    -target-feature +zba -target-feature +zbb -target-feature +zbs -target-feature +zcb -target-abi ilp32e
+    -ffreestanding -Wno-deprecated-register -Wno-invalid-noreturn -Wno-macro-redefined
+    -Wno-switch -Wno-uninitialized -Wno-return-type`,
+        includes: '-I "$TOOLS/include"',
+        runtime: '',
+        link: '"$LD" -eem__start -N --gc-sections -Map="$OUT/main.map" -T linkcmd.ld -o "$OUT/main.out" "$OUT/main.obj" "$TOOLS/lib/libc_rv32emc_small.a"',
+    }
+}

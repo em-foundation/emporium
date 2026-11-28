@@ -2,8 +2,8 @@ import em from '@$$emscript'
 export const $U = em.$declare('COMPOSITE')
 
 export function em$generate() {
-    let out = $outfile('nordic.distro.nrf54.flpr/REGS.hpp')
-    out.addFile('../nordic.nrf54/nordic.distro.nrf54.flpr/REGS.hpp.txt')
+    let out = $outfile('nordic.distro.nrf54.riscv/REGS.hpp')
+    out.addFile('../nordic.nrf54.riscv/nordic.distro.nrf54.riscv/REGS.hpp.txt')
     out.close()
 }
 

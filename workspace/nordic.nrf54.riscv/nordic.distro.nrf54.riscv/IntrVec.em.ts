@@ -14,7 +14,7 @@ export namespace em$meta {
     const VEC_OFF = 16
     export function em$generate() {
         const len = VEC_OFF + intr_list.length
-        let out = $outfile('nordic.distro.nrf54.flpr/intr.cpp')
+        let out = $outfile('nordic.distro.nrf54.riscv/intr.cpp')
         out.addFrag(`
                         |-> //
                         |-> #include <stdint.h>
@@ -33,7 +33,7 @@ export namespace em$meta {
         }
         out.addFrag(`
                         |-> 
-                        |-> extern "C" void __attribute__((interrupt("machine"))) em__riscv_default_irq_entry(void) {
+                        |-> extern "C" void __attribute__((interrupt("machine"), aligned(64))) em__riscv_default_irq_entry(void) {
                         |->     DEFAULT_isr$$();
                         |-> }
         `)
