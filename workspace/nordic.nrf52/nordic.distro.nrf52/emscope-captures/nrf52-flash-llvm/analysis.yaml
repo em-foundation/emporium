@@ -1,25 +1,25 @@
 span:
-    offset: 725
+    offset: 97750
     width: 400000
 events:
     -
-        offset: 50725
+        offset: 147750
         width: 2000
     -
-        offset: 150725
+        offset: 247750
         width: 2000
     -
-        offset: 250725
+        offset: 347750
         width: 2000
     -
-        offset: 350750
+        offset: 447750
         width: 2000
 excluded: []
 event_width: 2000
 sleep:
-    avg: 0.000001669969726393994
-    std: 0.0000025813131098120774
-    'off': 175725
+    avg: 0.0000014426419031017268
+    std: 0.000002609363974221446
+    'off': 97750
     width: 50000
 options:
     - '--trim 4'

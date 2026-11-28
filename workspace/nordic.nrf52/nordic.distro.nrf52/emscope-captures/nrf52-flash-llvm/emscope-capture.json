@@ -10,7 +10,7 @@
     "bss": 1484
   },
   "acquisition": {
-    "mode": "-S",
+    "mode": "-A",
     "voltage": 3,
     "duration": 6
   }
